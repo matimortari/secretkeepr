@@ -1,7 +1,6 @@
 export async function getUserService(): Promise<UserType> {
   const response = await fetch("/api/user", {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
   })
   if (!response.ok) {
     throw new Error(`Failed to get user: ${response.statusText}`)
@@ -22,7 +21,7 @@ export async function deleteUserService(): Promise<{ message: string }> {
   return await response.json()
 }
 
-export async function updateUserService(data: Partial<UserType>): Promise<{ message: string, user: UserType }> {
+export async function updateUserService(data: UpdateUserPayload): Promise<{ message: string, user: UserType }> {
   const response = await fetch("/api/user", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

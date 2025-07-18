@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
       members: {
         select: {
           role: true,
+          userId: true,
           user: {
             select: {
               name: true,
@@ -30,11 +31,9 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
+
     },
   })
-  if (!projects) {
-    throw createError({ statusCode: 404, statusMessage: "Projects not found" })
-  }
 
   const projectsWithDecryptedSecrets = projects.map(project => ({
     ...project,

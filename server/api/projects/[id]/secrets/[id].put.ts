@@ -44,22 +44,17 @@ export default defineEventHandler(async (event) => {
   const updatedSecret = await db.secret.update({
     where: { id: secretId },
     data: {
-      key: body.key ?? secret.key,
-      description: typeof body.description === "string" ? body.description : secret.description,
+      key: body.key || secret.key,
+      description: body.description || secret.description,
+      values: {
+        deleteMany: {}, // Remove all previous values
+        create: body.values.map((v: { environment: Environment, value: string }) => ({
+          environment: v.environment,
+          value: encrypt(v.value.trim()),
+        })),
+      },
     },
   })
-  if (body.values) {
-    await db.secretValue.deleteMany({ where: { secretId } })
-
-    await db.secretValue.createMany({
-      data: body.values.map((v: { environment: Environment, value: string }) => ({
-        secretId,
-        environment: v.environment,
-        value: encrypt(v.value),
-      })),
-      skipDuplicates: true,
-    })
-  }
 
   await createAuditLog({
     userId: sessionUser.id!,
@@ -68,7 +63,7 @@ export default defineEventHandler(async (event) => {
     metadata: {
       updatedKey: body.key || secret.key,
       updatedDescription: body.description || secret.description,
-      environments: body.values ? body.values.map((v: { environment: Environment }) => v.environment) : [],
+      environments: body.values.map((v: { environment: Environment }) => v.environment),
     },
     req: event.node.req,
   })

@@ -1,4 +1,4 @@
-export async function createOrganizationService(data: OrganizationType): Promise<OrganizationType> {
+export async function createOrganizationService(data: CreateOrganizationPayload): Promise<{ message: string, newOrganization: OrganizationType }> {
   const response = await fetch("/api/organization", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -11,8 +11,8 @@ export async function createOrganizationService(data: OrganizationType): Promise
   return await response.json()
 }
 
-export async function updateOrganizationService(orgId: string, data: Partial<OrganizationType>): Promise<OrganizationType> {
-  const response = await fetch(`/api/organization/${orgId}`, {
+export async function updateOrganizationService(organizationId: string, data: CreateOrganizationPayload): Promise<{ message: string, updatedOrganization: OrganizationType }> {
+  const response = await fetch(`/api/organization/${organizationId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -24,8 +24,8 @@ export async function updateOrganizationService(orgId: string, data: Partial<Org
   return await response.json()
 }
 
-export async function deleteOrganizationService(orgId: string): Promise<{ message: string, orgId: string }> {
-  const response = await fetch(`/api/organization/${orgId}`, {
+export async function deleteOrganizationService(organizationId: string): Promise<{ message: string, organizationId: string }> {
+  const response = await fetch(`/api/organization/${organizationId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
@@ -36,7 +36,7 @@ export async function deleteOrganizationService(orgId: string): Promise<{ messag
   return await response.json()
 }
 
-export async function updateOrganizationMemberService(memberId: string, data: { role: Role }): Promise<UserOrganizationMembershipType> {
+export async function updateOrganizationMemberService(memberId: string, data: { role: Role, organizationId: string }): Promise<UserOrganizationMembershipType> {
   const response = await fetch(`/api/organization/members/${memberId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -49,26 +49,13 @@ export async function updateOrganizationMemberService(memberId: string, data: { 
   return await response.json()
 }
 
-export async function removeOrganizationMemberService(memberId: string): Promise<{ message: string, memberId: string }> {
-  const response = await fetch(`/api/organization/members/${memberId}`, {
+export async function removeUserFromOrganizationService(organizationId: string, memberId: string): Promise<{ message: string, userId: string }> {
+  const response = await fetch(`/api/organization/members/${memberId}?organizationId=${organizationId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
   if (!response.ok) {
-    throw new Error(`Failed to remove organization member: ${response.statusText}`)
-  }
-
-  return await response.json()
-}
-
-export async function leaveOrganizationService(memberId: string, organizationId: string): Promise<{ message: string, userId: string }> {
-  const response = await fetch(`/api/organization/${organizationId}/members/${memberId}`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-  })
-
-  if (!response.ok) {
-    throw new Error(`Failed to leave organization: ${response.statusText}`)
+    throw new Error(`Failed to remove user from organization: ${response.statusText}`)
   }
 
   return await response.json()
@@ -99,12 +86,10 @@ export async function acceptOrganizationInviteService(token: string): Promise<{ 
   return await response.json()
 }
 
-export async function getAuditLogsService(page: number = 1, limit: number = 20): Promise<AuditLogsResponseType> {
+export async function getAuditLogsService(page: number = 1, limit: number = 20): Promise<AuditLogsResponse> {
   const response = await fetch(`/api/organization/audit-logs?page=${page}&limit=${limit}`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
   })
-
   if (!response.ok) {
     throw new Error(`Failed to get audit logs for organization: ${response.statusText}`)
   }

@@ -36,8 +36,9 @@ const props = defineProps<{
 
 const router = useRouter()
 
+const projectsStore = useProjectsStore()
+
 async function handleDeleteProject() {
-  // eslint-disable-next-line no-alert
   if (!confirm("Are you sure you want to delete this project?"))
     return
 
@@ -47,10 +48,10 @@ async function handleDeleteProject() {
       return
     }
 
-    await useProjectsStore().deleteProject(props.project.id)
+    await projectsStore.deleteProject(props.project.id)
     router.push("/admin/projects")
   }
-  catch (error) {
+  catch (error: any) {
     console.error("Failed to delete project:", error)
   }
 }

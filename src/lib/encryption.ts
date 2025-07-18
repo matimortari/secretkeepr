@@ -18,7 +18,7 @@ export function encrypt(input: string): string {
     const encrypted = Buffer.concat([cipher.update(input, "utf8"), cipher.final()])
     return `${iv.toString("hex")}:${encrypted.toString("hex")}`
   }
-  catch (error) {
+  catch (error: any) {
     console.error("Encryption failed:", error)
     throw new Error("Encryption failed")
   }
@@ -33,7 +33,7 @@ export function decrypt(output: string): string {
     const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()])
     return decrypted.toString("utf8")
   }
-  catch (error) {
+  catch (error: any) {
     console.error("Decryption failed:", error)
     throw new Error("Decryption failed")
   }

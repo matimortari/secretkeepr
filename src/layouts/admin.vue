@@ -31,8 +31,10 @@
 import { useOrganizationStore } from "~/lib/stores/organization-store"
 import { useUserStore } from "~/lib/stores/user-store"
 
-const router = useRouter()
 const { data: session, status } = useAuth()
+const router = useRouter()
+const userStore = useUserStore()
+const organizationStore = useOrganizationStore()
 
 const isLoading = ref(true)
 const isSidebarOpen = ref(false)
@@ -42,39 +44,47 @@ function toggleSidebar() {
 }
 
 const organizations = computed(() =>
-  (useUserStore().user?.memberships?.map(m => m.organization).filter((org): org is OrganizationType => !!org)) ?? [],
+  (userStore.user?.memberships?.map(m => m.organization).filter((org): org is OrganizationType => !!org)) ?? [],
 )
 
-const activeOrganization = computed(() => useOrganizationStore().selectedOrganization)
+const activeOrganization = computed(() => organizationStore.selectedOrganization)
 
 function onUpdateActiveOrganization(org: OrganizationType) {
-  useOrganizationStore().setSelectedOrganization(org.id)
-  useUserStore().setSelectedOrganization(org)
+  organizationStore.setSelectedOrganization(org.id)
+  userStore.setSelectedOrganization(org)
 }
 
 function initSelectedOrganization() {
-  useOrganizationStore().organizations = organizations.value
+  organizationStore.organizations = organizations.value
 
   const storedId = localStorage.getItem("active_org_id")
-  const match = useOrganizationStore().organizations.find(org => org.id === storedId)
+  const match = organizationStore.organizations.find(org => org.id === storedId)
 
   if (match) {
-    useOrganizationStore().setSelectedOrganization(match.id)
-    useUserStore().setSelectedOrganization(match)
+    organizationStore.setSelectedOrganization(match.id)
+    userStore.setSelectedOrganization(match)
   }
-  else if (useOrganizationStore().organizations.length) {
-    const firstOrg = useOrganizationStore().organizations[0]
-    useOrganizationStore().setSelectedOrganization(firstOrg.id)
-    useUserStore().setSelectedOrganization(firstOrg)
+  else if (organizationStore.organizations.length) {
+    const firstOrg = organizationStore.organizations[0]
+    organizationStore.setSelectedOrganization(firstOrg.id)
+    userStore.setSelectedOrganization(firstOrg)
   }
 }
 
-onMounted(async () => {
-  if (status.value !== "authenticated" || !session.value?.user)
-    return
+watch(() => organizationStore.selectedOrganization, (org) => {
+  if (org?.id) {
+    localStorage.setItem("active_org_id", org.id)
+  }
+})
 
-  await useUserStore().getUser()
-  if (!useUserStore().user?.memberships?.length) {
+onMounted(async () => {
+  if (status.value !== "authenticated" || !session.value?.user) {
+    isLoading.value = false
+    return
+  }
+
+  await userStore.getUser()
+  if (!userStore.user?.memberships?.length) {
     router.replace("/setup/create-org")
     return
   }

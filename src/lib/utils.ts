@@ -12,9 +12,9 @@ export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
 }
 
 // Check if the user has a specific role in an organization
-export async function requireOrgRole(userId: string, orgId: string, roles: string[]) {
+export async function requireOrgRole(userId: string, organizationId: string, roles: string[]) {
   const membership = await db.userOrganizationMembership.findUnique({
-    where: { userId_organizationId: { userId, organizationId: orgId } },
+    where: { userId_organizationId: { userId, organizationId: organizationId } },
     select: { role: true },
   })
   if (!membership) {

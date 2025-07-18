@@ -1,5 +1,5 @@
 import db from "~/lib/db"
-import { getUserFromSession } from "~/lib/utils"
+import { createAuditLog, getUserFromSession } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -19,6 +19,16 @@ export default defineEventHandler(async (event) => {
         },
       },
     },
+  })
+
+  await createAuditLog({
+    userId: sessionUser.id!,
+    action: "organization.create",
+    resource: `Organization:${newOrganization.id}`,
+    metadata: {
+      newName: body.name,
+    },
+    req: event.node.req,
   })
 
   return { message: "Organization created successfully", newOrganization }

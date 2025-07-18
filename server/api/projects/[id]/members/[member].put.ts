@@ -9,9 +9,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Project ID is required" })
   }
 
-  const userId = event.context.params?.memberId
+  const userId = event.context.params?.member
   if (!userId || typeof userId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "User ID is required" })
+  }
+  if (sessionUser.id === userId) {
+    throw createError({ statusCode: 403, statusMessage: "You cannot modify your own project membership" })
   }
 
   const body = await readBody(event)
@@ -43,11 +46,11 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
-    action: "project.member.add",
+    action: "project.member.role.update",
     resource: `Project:${projectId}`,
     metadata: {
-      addedUserId: body.userId,
-      addedUserRole: body.role,
+      updatedUserId: userId,
+      newRole: body.role,
     },
     req: event.node.req,
   })
