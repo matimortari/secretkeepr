@@ -25,7 +25,7 @@
             <li class="p-2 hover:bg-muted truncate group" role="option">
               <NuxtLink to="/setup/create-org" class="flex flex-row items-center gap-2">
                 <span class="text-primary group-hover:text-muted-foreground">Create New</span>
-                <Icon name="ph:plus" size="20" class="text-primary group-hover:text-muted-foreground" />
+                <Icon name="ph:plus-bold" size="20" class="text-primary group-hover:text-muted-foreground" />
               </NuxtLink>
             </li>
           </ul>
