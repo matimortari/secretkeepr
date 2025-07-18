@@ -1,7 +1,6 @@
 export async function getProjectSecretsService(projectId: string): Promise<{ secrets: SecretType[] }> {
   const response = await fetch(`/api/projects/${projectId}/secrets`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
   })
   if (!response.ok) {
     throw new Error(`Failed to get project secrets: ${response.statusText}`)
@@ -9,7 +8,7 @@ export async function getProjectSecretsService(projectId: string): Promise<{ sec
   return await response.json()
 }
 
-export async function createSecretService(projectId: string, data: SecretType): Promise<SecretType> {
+export async function createSecretService(projectId: string, data: CreateSecretPayload): Promise<{ message: string, newSecret: SecretType }> {
   const response = await fetch(`/api/projects/${projectId}/secrets`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -22,14 +21,14 @@ export async function createSecretService(projectId: string, data: SecretType): 
   return await response.json()
 }
 
-export async function updateSecretService(projectId: string, secretId: string, data: Partial<SecretType>): Promise<SecretType> {
+export async function updateSecretService(projectId: string, secretId: string, data: CreateSecretPayload): Promise<{ message: string, updatedSecret: SecretType }> {
   const response = await fetch(`/api/projects/${projectId}/secrets/${secretId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
   if (!response.ok) {
-    throw new Error(`Failed to update project service: ${response.statusText}`)
+    throw new Error(`Failed to update project secret: ${response.statusText}`)
   }
   return await response.json()
 }

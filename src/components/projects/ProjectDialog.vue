@@ -3,7 +3,11 @@
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-2">
         <label for="name" class="text-sm font-medium">Project Name</label>
-        <input id="name" v-model="form.name" type="text" class="w-full" required>
+        <input
+          id="name" v-model="form.name"
+          type="text" class="w-full"
+          required
+        >
       </div>
 
       <div class="flex flex-col items-start gap-2">
@@ -43,12 +47,15 @@ const emit = defineEmits<{
   (e: "save", payload: ProjectType): void
 }>()
 
+const userStore = useUserStore()
+
 const form = ref<{ name: string, description: string }>({
   name: "",
   description: "",
 })
 
 const formErrors = ref<{ [key: string]: string }>({})
+
 const hasErrors = computed(() => Object.keys(formErrors.value).length > 0)
 
 watch(() => props.isOpen, (open) => {
@@ -71,24 +78,23 @@ const dialogTitle = computed(() =>
 
 async function handleSubmit() {
   formErrors.value = {}
-
-  if (Object.keys(formErrors.value).length > 0)
-    return
-  if (!form.value.name) {
-    formErrors.value.key = "Project name is required"
+  if (!form.value.name.trim()) {
+    formErrors.value.name = "Project name is required"
   }
 
-  const { selectedOrganization } = storeToRefs(useUserStore())
+  const { selectedOrganization } = storeToRefs(userStore)
   if (!selectedOrganization.value?.id) {
     formErrors.value.organization = "Organization is required"
+  }
+  if (hasErrors.value) {
     return
   }
 
   const payload: ProjectType = {
     id: props.selectedProject?.id,
-    name: form.value.name,
-    description: form.value.description,
-    organizationId: selectedOrganization.value?.id,
+    name: form.value.name.trim(),
+    description: form.value.description.trim(),
+    organizationId: selectedOrganization.value?.id ?? "",
   }
 
   emit("save", payload)

@@ -21,7 +21,12 @@
       </thead>
 
       <tbody>
-        <tr v-for="(key, index) in secretKeys" :key="key" v-motion class="border" :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0 }" :duration="600" :delay="100 * index">
+        <tr
+          v-for="(key, index) in secretKeys" :key="key"
+          v-motion class="border"
+          :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0 }"
+          :duration="600" :delay="100 * index"
+        >
           <td class="flex flex-row items-center justify-between relative p-2 font-bold text-muted-foreground text-sm font-mono">
             <span class="truncate max-w-[80%]">{{ key }}</span>
             <span class="button-group">
@@ -68,6 +73,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(["edit", "deleted", "update"])
+
+const secretsStore = useSecretsStore()
 
 const visibleKeys = ref<Record<string, boolean>>({})
 const environments = ref(["development", "staging", "production"])
@@ -127,11 +134,11 @@ async function handleDeleteSecret(key: string) {
   try {
     const secret = props.secrets.find(s => s.key === key)
     if (secret?.id) {
-      await useSecretsStore().deleteSecret(props.projectId, secret.id)
+      await secretsStore.deleteSecret(props.projectId, secret.id)
       emit("deleted", key)
     }
   }
-  catch (error) {
+  catch (error: any) {
     console.error("Failed to delete secret:", error)
   }
 }

@@ -23,10 +23,18 @@
       <input :value="selectedOrganization?.name" class="bg-muted cursor-not-allowed" readonly>
 
       <label class="text-sm font-medium">Active Organization Role</label>
-      <input :value="currentMembership?.role" class="bg-muted cursor-not-allowed capitalize" readonly>
+      <input
+        :value="currentMembership?.role"
+        class="bg-muted cursor-not-allowed capitalize"
+        readonly
+      >
 
       <p class="flex flex-col md:flex-row gap-2 text-sm">
-        Joined On <span class="text-muted-foreground">{{ user?.createdAt?.toLocaleString() }}</span>
+        Joined On <span class="text-muted-foreground">{{ formattedJoinedDate }}</span>
+      </p>
+
+      <p v-if="errorMsg" class="text-sm text-danger">
+        {{ errorMsg }}
       </p>
 
       <button class="btn-primary self-start" type="submit">
@@ -45,38 +53,57 @@ const props = defineProps<{
   user: UserType | null
 }>()
 
+const userStore = useUserStore()
+const organizationStore = useOrganizationStore()
+
 const form = ref({
   name: props.user?.name || "",
 })
 
-watch(() => useUserStore().user, (newUser) => {
-  form.value.name = newUser?.name || ""
-}, { immediate: true })
+const errorMsg = ref("")
 
-const selectedOrganization = computed(() => useOrganizationStore().selectedOrganization)
+watch(
+  () => userStore.user,
+  (newUser) => {
+    form.value.name = newUser?.name || ""
+  },
+  { immediate: true },
+)
+
+const selectedOrganization = computed(() => organizationStore.selectedOrganization)
 
 const currentMembership = computed(() => {
   const org = selectedOrganization.value
-  const user = useUserStore().user
+  const user = userStore.user
   if (!org || !user || !user.memberships)
     return null
 
   return user.memberships.find(m => m.organization?.id === org.id) || null
 })
 
+const formattedJoinedDate = computed(() => {
+  const date = userStore.user?.createdAt
+  return date ? new Date(date).toLocaleString() : "-"
+})
+
 async function handleSubmit() {
-  if (!props.user)
+  if (!userStore.user)
     return
 
+  errorMsg.value = ""
+
   try {
-    await useUserStore().updateUser({
+    const result = await userStore.updateUser({
       name: form.value.name,
-      image: props.user.image ?? undefined,
+      image: userStore.user.image ?? undefined,
     })
-    await useUserStore().getUser()
+    if (!result)
+      throw new Error("Update failed")
+    await userStore.getUser()
   }
-  catch (error) {
+  catch (error: any) {
     console.error("Failed to update user data:", error)
+    errorMsg.value = error?.message || "Failed to update user data."
   }
 }
 </script>

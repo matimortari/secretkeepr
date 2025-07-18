@@ -2,7 +2,11 @@
   <nav class="flex flex-row items-center justify-between gap-2 p-4 border-b-2">
     <div class="flex flex-row items-center gap-2">
       <NuxtLink to="/">
-        <img src="/logo.png" alt="Logo" width="40" height="40" class="flex-shrink-0">
+        <img
+          src="/logo.png" alt="Logo"
+          width="40" height="40"
+          class="flex-shrink-0"
+        >
       </NuxtLink>
 
       <div class="flex flex-row items-center gap-2 text-sm">
@@ -19,7 +23,11 @@
           </button>
 
           <ul v-if="isDropdownOpen" class="dropdown overflow-y-auto scroll-area">
-            <li v-for="org in organizations" :key="org.id" class="p-2 hover:bg-muted rounded cursor-pointer truncate" role="option" @click="selectOrganization(org)">
+            <li
+              v-for="org in organizations" :key="org.id"
+              class="p-2 hover:bg-muted rounded cursor-pointer truncate" role="option"
+              @click="selectOrganization(org)"
+            >
               {{ org.name }}
             </li>
             <li class="p-2 hover:bg-muted rounded truncate group" role="option">
@@ -68,9 +76,10 @@ defineEmits<{
   (e: "toggleSidebar"): void
 }>()
 
-const route = useRoute()
-const { signOut } = useAuth()
 const { themeIcon, toggleTheme } = useTheme()
+const { signOut } = useAuth()
+const route = useRoute()
+const userStore = useUserStore()
 
 const isDropdownOpen = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)
@@ -79,19 +88,19 @@ useClickOutside(dropdownRef, () => {
   isDropdownOpen.value = false
 }, { escapeKey: true })
 
+const user = computed(() => userStore.user)
+
 const currentPage = computed(() => {
   const path = route.path.split("/").filter(Boolean)
   return path.length > 0 ? path[path.length - 1] : "home"
 })
 
-const user = computed(() => useUserStore().user)
-
 const selectedId = computed({
-  get: () => useUserStore().selectedOrganization?.id,
+  get: () => userStore.selectedOrganization?.id,
   set: (newId: string) => {
     const org = props.organizations.find(o => o.id === newId)
     if (org) {
-      useUserStore().setSelectedOrganization(org)
+      userStore.setSelectedOrganization(org)
       window.location.reload()
     }
   },
@@ -102,7 +111,7 @@ const selectedOrganization = computed(() =>
 )
 
 function selectOrganization(org: OrganizationType) {
-  useUserStore().setSelectedOrganization(org)
+  userStore.setSelectedOrganization(org)
   isDropdownOpen.value = false
   window.location.reload()
 }

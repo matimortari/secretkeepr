@@ -24,6 +24,10 @@
         <span>Delete Account</span>
       </button>
     </section>
+
+    <p v-if="errorMsg" class="text-sm text-danger px-2">
+      {{ errorMsg }}
+    </p>
   </div>
 </template>
 
@@ -31,18 +35,22 @@
 import { useUserStore } from "~/lib/stores/user-store"
 
 const { signOut } = useAuth()
+const userStore = useUserStore()
+
+const errorMsg = ref("")
 
 async function handleDeleteUser() {
-  // eslint-disable-next-line no-alert
+  errorMsg.value = ""
   if (!confirm("Are you sure you want to delete your account?"))
     return
 
   try {
-    await useUserStore().deleteUser()
+    await userStore.deleteUser()
     await signOut({ callbackUrl: "/" })
   }
-  catch (error) {
+  catch (error: any) {
     console.error("Failed to delete user:", error)
+    errorMsg.value = error?.message || "Failed to delete user account."
   }
 }
 </script>

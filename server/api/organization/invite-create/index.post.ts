@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
       token,
       organizationId: membership.organizationId,
       role: "member",
-      expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
+      expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000),
     },
   })
 
@@ -35,5 +35,5 @@ export default defineEventHandler(async (event) => {
     return `${protocol}://${host}`
   }
 
-  return { message: "Invitation link created successfully", inviteLink: `${getBaseUrl(event)}/setup/invite?token=${token}` }
+  return { message: "Invitation link created successfully", inviteLink: `${getBaseUrl(event)}/setup/join-org?token=${token}` }
 })

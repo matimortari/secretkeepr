@@ -1,19 +1,35 @@
 <template>
-  <div v-motion class="min-h-screen" :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
+  <div
+    v-motion class="min-h-screen"
+    :initial="{ opacity: 0 }" :enter="{ opacity: 1 }"
+    :duration="800"
+  >
     <div class="flex flex-col gap-2">
-      <header v-motion class="flex flex-row items-center gap-4 border-b pb-2" :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }" :duration="800" :delay="200">
+      <header
+        v-motion class="flex flex-row items-center gap-4 border-b pb-2"
+        :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
+        :duration="800" :delay="200"
+      >
         <NuxtLink to="/admin/projects">
           <Icon name="ph:arrow-left-bold" size="25" class="text-muted-foreground hover:text-accent md:mt-2" />
         </NuxtLink>
         <h2>
           {{ project?.name }}
         </h2>
-        <p v-motion class="hidden md:block text-muted-foreground text-sm mt-2" :initial="{ opacity: 0, x: -10 }" :enter="{ opacity: 1, x: 0 }" :duration="800">
+        <p
+          v-motion class="hidden md:block text-muted-foreground text-sm mt-2"
+          :initial="{ opacity: 0, x: -10 }" :enter="{ opacity: 1, x: 0 }"
+          :duration="800"
+        >
           {{ project?.description || "No description provided." }}
         </p>
       </header>
 
-      <div class="flex flex-row justify-between items-center gap-2" :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }" :duration="800" :delay="200">
+      <div
+        class="flex flex-row justify-between items-center gap-2" :initial="{ opacity: 0, x: -20 }"
+        :enter="{ opacity: 1, x: 0 }" :duration="800"
+        :delay="200"
+      >
         <header class="button-group w-full">
           <h3 class="hidden md:block whitespace-nowrap">
             Secrets Overview
@@ -22,7 +38,11 @@
             <span class="absolute inset-y-0 left-0 flex flex-row items-center pl-4 text-muted-foreground">
               <Icon name="ph:magnifying-glass-bold" size="20" />
             </span>
-            <input id="search" v-model="searchQuery" type="text" placeholder="Search secrets..." class="w-full pl-10">
+            <input
+              id="search" v-model="searchQuery"
+              type="text" placeholder="Search secrets..."
+              class="w-full pl-10"
+            >
           </div>
         </header>
 
@@ -83,6 +103,8 @@ import { useSecretsStore } from "~/lib/stores/secrets-store"
 const route = useRoute()
 const projectId = route.params.project as string
 const { project, secrets } = useProjectSecrets(route.params.project as string)
+const projectsStore = useProjectsStore()
+const secretsStore = useSecretsStore()
 
 const searchQuery = ref("")
 const selectedSecret = ref<SecretType | null>(null)
@@ -122,21 +144,10 @@ function closeDialog() {
 
 async function handleImportFromEnv(importedSecrets: SecretType[]) {
   closeDialog()
-  const secretsStore = useSecretsStore()
-
   try {
     for (const secret of importedSecrets) {
       const existingSecret = secretsStore.secrets.find(s => s.key === secret.key)
-
       if (existingSecret) {
-        const incomingEnv = secret.values?.[0]?.environment
-        const envExists = (existingSecret.values ?? []).some(v => v.environment === incomingEnv)
-
-        if (envExists) {
-          console.warn(`Secret with key "${secret.key}" already has value for environment "${incomingEnv}". Skipping.`)
-          continue
-        }
-
         const updatedValues = [...(existingSecret.values ?? []), ...(secret.values ?? [])]
 
         await secretsStore.updateSecret(projectId, existingSecret.id!, {
@@ -145,7 +156,6 @@ async function handleImportFromEnv(importedSecrets: SecretType[]) {
         })
       }
       else {
-        // Secret doesn't exist, create new
         await secretsStore.createSecret(projectId, {
           key: secret.key,
           values: secret.values ?? [],
@@ -155,7 +165,7 @@ async function handleImportFromEnv(importedSecrets: SecretType[]) {
 
     await secretsStore.getSecretsByProject(projectId)
   }
-  catch (error) {
+  catch (error: any) {
     console.error("Failed to import secrets:", error)
   }
 }
@@ -165,7 +175,7 @@ async function handleExportToEnv() {
     return
 
   try {
-    const secrets = useSecretsStore().secrets.filter(s => s.projectId === projectId)
+    const secrets = secretsStore.secrets.filter(s => s.projectId === projectId)
     const env = selectedEnvironment.value
     const filteredSecrets = secrets
       .map((secret) => {
@@ -184,7 +194,7 @@ async function handleExportToEnv() {
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
   }
-  catch (error) {
+  catch (error: any) {
     console.error("Failed to export secrets:", error)
   }
   finally {
@@ -196,36 +206,36 @@ async function handleSaveSecret(secret: SecretType) {
   closeDialog()
   try {
     if (secret.id) {
-      await useSecretsStore().updateSecret(projectId, secret.id, {
+      await secretsStore.updateSecret(projectId, secret.id, {
         key: secret.key,
         values: secret.values ?? [],
       })
     }
     else {
-      await useSecretsStore().createSecret(projectId, {
+      await secretsStore.createSecret(projectId, {
         key: secret.key,
         values: secret.values ?? [],
       })
     }
-    await useSecretsStore().getSecretsByProject(projectId)
+    await secretsStore.getSecretsByProject(projectId)
   }
-  catch (error) {
+  catch (error: any) {
     console.error("Failed to create or update secret:", error)
   }
 }
 
 onMounted(async () => {
-  if (!useProjectsStore().projects?.length) {
-    await useProjectsStore().getProjects()
+  if (!projectsStore.projects?.length) {
+    await projectsStore.getProjects()
   }
-  await useSecretsStore().getSecretsByProject(projectId)
+  await secretsStore.getSecretsByProject(projectId)
 })
 
 watch(() => projectId, async (id) => {
-  await useProjectsStore().getProjects()
-  await useSecretsStore().getSecretsByProject(id)
+  await projectsStore.getProjects()
+  await secretsStore.getSecretsByProject(id)
 
-  const newProject = useProjectsStore().projects?.find(p => p.id === id)
+  const newProject = projectsStore.projects?.find(p => p.id === id)
   const titleName = newProject?.name
 
   useHead({
