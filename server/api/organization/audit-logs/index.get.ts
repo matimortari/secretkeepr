@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     select: { organizationId: true },
   })
 
-  const orgRoles = await Promise.all(memberships.map(async ({ organizationId }) => {
+  const organizationRoles = await Promise.all(memberships.map(async ({ organizationId }) => {
     try {
       const membership = await requireOrgRole(sessionUser.id!, organizationId, ["owner", "admin", "member"])
       return { organizationId, role: membership.role }
@@ -24,14 +24,13 @@ export default defineEventHandler(async (event) => {
     }
   }))
 
-  const validOrgRoles = orgRoles.filter(Boolean) as { organizationId: string, role: string }[]
-
-  if (validOrgRoles.length === 0) {
+  const validOrganizationRoles = organizationRoles.filter(Boolean) as { organizationId: string, role: string }[]
+  if (validOrganizationRoles.length === 0) {
     throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
   }
 
-  const ownerOrgIds = validOrgRoles.filter(r => r.role === "owner").map(r => r.organizationId)
-  const adminOrgIds = validOrgRoles.filter(r => r.role === "admin").map(r => r.organizationId)
+  const ownerOrganizationIds = validOrganizationRoles.filter(r => r.role === "owner").map(r => r.organizationId)
+  const adminOrganizationIds = validOrganizationRoles.filter(r => r.role === "admin").map(r => r.organizationId)
 
   const projectMemberships = await db.projectMember.findMany({
     where: { userId: sessionUser.id },
@@ -41,8 +40,8 @@ export default defineEventHandler(async (event) => {
 
   const logsWhere = {
     OR: [
-      { resource: { in: ownerOrgIds.map(id => `Organization:${id}`) } },
-      { resource: { in: adminOrgIds.map(id => `Organization:${id}`) } },
+      { resource: { in: ownerOrganizationIds.map(id => `Organization:${id}`) } },
+      { resource: { in: adminOrganizationIds.map(id => `Organization:${id}`) } },
       { resource: { in: projectResourceIds } },
     ],
   }

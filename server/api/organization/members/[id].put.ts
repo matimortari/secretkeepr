@@ -9,14 +9,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "User ID is required" })
   }
 
-  const organizationId = event.context.params?.organizationId
-  if (!organizationId || typeof organizationId !== "string") {
-    throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
-  }
-
   const body = await readBody(event)
   if (!body.role || !["owner", "admin", "member"].includes(body.role)) {
     throw createError({ statusCode: 400, statusMessage: "Valid role is required" })
+  }
+
+  const organizationId = body.organizationId || event.context.query.organizationId
+  if (!organizationId || typeof organizationId !== "string") {
+    throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
   const currentMembership = await requireOrgRole(sessionUser.id!, organizationId, ["owner", "admin"])

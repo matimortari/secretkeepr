@@ -40,6 +40,10 @@
         <span>Delete Organization</span>
       </button>
     </section>
+
+    <p v-if="errorMsg" class="text-sm text-danger px-2">
+      {{ errorMsg }}
+    </p>
   </div>
 </template>
 
@@ -52,43 +56,50 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
+const userStore = useUserStore()
+const organizationStore = useOrganizationStore()
+
+const errorMsg = ref("")
 
 async function handleLeaveOrganization() {
-  if (!props.organization?.id || !useUserStore().user?.id) {
-    console.error("Missing organization or user ID")
+  errorMsg.value = ""
+  if (!props.organization?.id || !userStore.user?.id) {
+    errorMsg.value = "Missing organization or user ID."
     return
   }
-  // eslint-disable-next-line no-alert
   if (!confirm("Are you sure you want to leave this organization?"))
     return
 
-  const result = await useOrganizationStore().leaveOrganization(props.organization.id, useUserStore().user!.id)
+  await organizationStore.removeOrganizationMember(userStore.user.id, props.organization.id)
+  if (organizationStore.error) {
+    errorMsg.value = organizationStore.error
+    return
+  }
 
-  // TODO: check message or handle this better
-  if (result?.message === "You have left the organization") {
-    router.push("/setup/create-org")
-  }
-  else {
-    console.error("Failed to leave organization:", result?.message || "Unknown error")
-  }
+  router.push("/setup/create-org")
 }
 
 async function handleDeleteOrganization() {
-  // eslint-disable-next-line no-alert
-  if (!confirm("Are you sure you want to delete this organization? This action cannot be undone.")) {
-    return
-  }
+  errorMsg.value = ""
   if (!props.organization?.id) {
-    console.error("Organization ID is undefined.")
+    errorMsg.value = "Organization ID is undefined."
     return
   }
+  if (!confirm("Are you sure you want to delete this organization? This action cannot be undone."))
+    return
 
-  const result = await useOrganizationStore().deleteOrganization(props.organization.id)
-  if (result?.message === "Organization deleted successfully") {
-    router.push("/setup/create-org")
+  try {
+    const result = await organizationStore.deleteOrganization(props.organization.id)
+
+    if (result?.message === "Organization deleted successfully" && !userStore.user?.memberships?.length) {
+      router.push("/setup/create-org")
+    }
+    else {
+      errorMsg.value = result?.message || "Failed to delete organization."
+    }
   }
-  else {
-    console.error("Failed to delete organization:", result?.message || "Unknown error")
+  catch (error: any) {
+    errorMsg.value = error.message || "An error occurred while deleting the organization."
   }
 }
 </script>

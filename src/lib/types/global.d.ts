@@ -83,9 +83,35 @@ interface AuditLogType {
   req: IncomingMessage
 }
 
-interface AuditLogsResponseType {
+interface AuditLogsResponse {
   logs: AuditLogType[]
   page: number
   limit: number
   total: number
+}
+
+interface UpdateUserPayload {
+  name?: string
+  image?: string | null
+}
+
+interface CreateProjectPayload {
+  name: string
+  description?: string
+  organizationId?: string
+}
+
+interface CreateSecretPayload {
+  key?: string
+  description?: string
+  values: { environment: Environment, value: string }[]
+}
+
+interface CreateProjectMemberPayload {
+  userId?: string
+  role: Role
+}
+
+interface CreateOrganizationPayload {
+  name: string
 }

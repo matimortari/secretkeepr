@@ -3,7 +3,11 @@
     <header class="flex flex-row items-center justify-between gap-2 p-4 border-b-2">
       <div class="flex flex-row items-center gap-2">
         <NuxtLink to="/">
-          <img src="/logo.png" alt="Logo" width="40" height="40" class="flex-shrink-0">
+          <img
+            src="/logo.png" alt="Logo"
+            width="40" height="40"
+            class="flex-shrink-0"
+          >
         </NuxtLink>
         <p class="flex flex-row items-center gap-2 text-muted-foreground text-sm">
           Please sign in to use all features.

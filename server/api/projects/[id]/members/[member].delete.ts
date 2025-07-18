@@ -9,9 +9,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Project ID is required" })
   }
 
-  const userId = event.context.params?.memberId
+  const userId = event.context.params?.member
   if (!userId || typeof userId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "User ID is required" })
+  }
+  if (sessionUser.id === userId) {
+    throw createError({ statusCode: 403, statusMessage: "You cannot modify your own project membership" })
   }
 
   await requireProjectRole(sessionUser.id!, projectId, ["owner", "admin"])
