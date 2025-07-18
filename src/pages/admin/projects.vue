@@ -34,11 +34,11 @@
         </li>
         <li v-motion :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }" :duration="400" :delay="20 * filteredProjects.length">
           <button
-            class="h-[180px] w-full flex flex-col items-center justify-center gap-4 border-2 border-dashed card bg-transparent text-muted-foreground hover:text-accent hover:border-secondary transition-all duration-500 group"
+            class="h-[180px] w-full flex flex-col items-center justify-center gap-4 border-2 border-dashed card bg-transparent text-muted-foreground hover:text-secondary hover:border-secondary transition-all duration-500 group"
             @click="openDialog()"
           >
-            <Icon name="ph:plus" size="50" class="group-hover:scale-md group-hover:text-accent transition-all duration-500" />
-            <span class="font-semibold group-hover:scale-sm group-hover:text-accent transition-all duration-500">Add New Project</span>
+            <Icon name="ph:plus" size="50" class="group-hover:scale-md group-hover:text-secondary transition-all duration-500" />
+            <span class="font-semibold group-hover:scale-sm group-hover:text-secondary transition-all duration-500">Add New Project</span>
           </button>
         </li>
       </ul>

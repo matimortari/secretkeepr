@@ -13,6 +13,9 @@
       <label class="text-sm font-medium">Project Name</label>
       <input v-model="form.name" type="text" placeholder="Enter project name">
 
+      <label class="text-sm font-medium">Project Description</label>
+      <textarea v-model="form.description" placeholder="Enter project description" rows="3" class="resize-none scroll-area" />
+
       <label class="text-sm font-medium">Project ID</label>
       <input :value="form.id ?? ''" type="text" class="bg-muted cursor-not-allowed" readonly>
 
@@ -33,11 +36,13 @@ const props = defineProps<{
 
 const form = ref({
   name: props.project?.name || "",
+  description: props.project?.description || "",
   id: props.project?.id || "",
 })
 
 watch(() => props.project, (newProject) => {
   form.value.name = newProject?.name || ""
+  form.value.description = newProject?.description || ""
   form.value.id = newProject?.id || ""
 })
 
@@ -47,6 +52,7 @@ async function handleSubmit() {
 
   await useProjectsStore().updateProject(props.project.id ?? "", {
     name: form.value.name,
+    description: form.value.description,
   })
   await useProjectsStore().getProjects()
 }

@@ -60,7 +60,7 @@
       <div v-else class="overflow-auto max-h-[50vh] scroll-area">
         <table class="w-full table-fixed border rounded-sm overflow-hidden">
           <thead>
-            <tr class="bg-muted font-semibold text-sm">
+            <tr class="bg-muted font-semibold text-sm transition-all duration-500">
               <th v-for="header in headers" :key="header.value" class="p-2 text-left select-none border w-1/5">
                 <div class="flex flex-row items-center gap-2">
                   <Icon :name="header.icon" size="15" class="mr-1" />

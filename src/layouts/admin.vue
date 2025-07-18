@@ -5,14 +5,22 @@
     </div>
 
     <div v-show="!isLoading" class="flex flex-col">
-      <Navbar :organizations="organizations" :model-value="activeOrganization" @update:model-value="onUpdateActiveOrganization" />
+      <Navbar
+        :organizations="organizations"
+        :model-value="activeOrganization"
+        :is-sidebar-open="isSidebarOpen"
+        @update:model-value="onUpdateActiveOrganization"
+        @toggle-sidebar="toggleSidebar"
+      />
+
       <div class="flex flex-1">
-        <Sidebar :organization="activeOrganization" />
+        <Sidebar :organization="activeOrganization" :is-open="isSidebarOpen" />
         <main class="flex-1 overflow-x-hidden relative p-8">
           <slot :active-organization="activeOrganization" />
         </main>
       </div>
     </div>
+
     <footer class="py-4 text-center text-sm">
       <p>© {{ new Date().getFullYear() }} – SecretKeepR</p>
     </footer>
@@ -27,6 +35,11 @@ const router = useRouter()
 const { data: session, status } = useAuth()
 
 const isLoading = ref(true)
+const isSidebarOpen = ref(false)
+
+function toggleSidebar() {
+  isSidebarOpen.value = !isSidebarOpen.value
+}
 
 const organizations = computed(() =>
   (useUserStore().user?.memberships?.map(m => m.organization).filter((org): org is OrganizationType => !!org)) ?? [],

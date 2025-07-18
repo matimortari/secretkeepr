@@ -2,7 +2,7 @@
   <div class="overflow-x-auto scroll-area">
     <table class="table-auto md:table-fixed w-full border rounded-sm overflow-hidden">
       <thead>
-        <tr class="bg-muted font-semibold text-sm border">
+        <tr class="bg-muted font-semibold text-sm border transition-all duration-500">
           <th class="flex flex-row items-center gap-2 w-full p-2 text-left select-none">
             <span>Key</span>
             <Icon
@@ -21,7 +21,7 @@
       </thead>
 
       <tbody>
-        <tr v-for="(key, index) in secretKeys" :key="key" class="border" :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0 }" :duration="600" :delay="100 * index">
+        <tr v-for="(key, index) in secretKeys" :key="key" v-motion class="border" :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0 }" :duration="600" :delay="100 * index">
           <td class="flex flex-row items-center justify-between relative p-2 font-bold text-muted-foreground text-sm font-mono">
             <span class="truncate max-w-[80%]">{{ key }}</span>
             <span class="button-group">
@@ -32,7 +32,7 @@
                 <Icon name="carbon:edit" size="20" class="hover:scale-md hover:text-accent transition-all duration-500" />
               </button>
               <button @click="handleDeleteSecret(key)">
-                <Icon name="carbon:delete" size="20" class="hover:scale-md hover:text-accent transition-all duration-500" />
+                <Icon name="carbon:delete" size="20" class="hover:scale-md hover:text-danger transition-all duration-500" />
               </button>
             </span>
           </td>
@@ -42,7 +42,7 @@
               <span
                 class="truncate max-w-[80%] select-none"
                 :class="[
-                  !getSecretValue(key, env) ? '' : 'bg-card px-1 rounded cursor-pointer hover:scale-sm hover:text-accent transition-all duration-500',
+                  !getSecretValue(key, env) ? '' : 'bg-card px-1 rounded cursor-pointer hover:scale-sm hover:text-primary transition-all duration-500',
                 ]" @click="copyToClipboard(getSecretValue(key, env))"
               >
                 {{ renderValue(key, env) }}

@@ -13,7 +13,7 @@
         </p>
       </header>
 
-      <div v-motion class="flex flex-row justify-between items-center gap-2" :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }" :duration="800" :delay="200">
+      <div class="flex flex-row justify-between items-center gap-2" :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }" :duration="800" :delay="200">
         <header class="button-group w-full">
           <h3 class="hidden md:block whitespace-nowrap">
             Secrets Overview
@@ -43,7 +43,7 @@
             </button>
 
             <ul v-if="isDropdownOpen" class="dropdown overflow-y-auto scroll-area text-sm">
-              <li v-for="env in environments" :key="env" class="p-2 hover:bg-muted cursor-pointer capitalize" @click="selectEnvironment(env)">
+              <li v-for="env in environments" :key="env" class="p-2 hover:bg-muted rounded cursor-pointer capitalize" @click="selectEnvironment(env)">
                 {{ env }}
               </li>
             </ul>
