@@ -1,5 +1,5 @@
 import db from "~/lib/db"
-import { getUserFromSession } from "~/lib/utils"
+import { createAuditLog, getUserFromSession, requireOrgRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -14,23 +14,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Organization name is required" })
   }
 
-  const membership = await db.userOrganizationMembership.findUnique({
-    where: {
-      userId_organizationId: {
-        userId: sessionUser.id!,
-        organizationId,
-      },
-    },
-    select: {
-      role: true,
-    },
-  })
-  if (!membership) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: not an organization member" })
-  }
-  if (membership.role !== "owner" && membership.role !== "admin") {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
-  }
+  await requireOrgRole(sessionUser.id!, organizationId, ["owner"])
 
   const updatedOrganization = await db.organization.update({
     where: { id: organizationId },
@@ -39,17 +23,14 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  await db.auditLog.create({
-    data: {
-      userId: sessionUser.id!,
-      action: "organization.update",
-      resource: `Organization:${organizationId}`,
-      metadata: {
-        newName: body.name,
-        ip: event.node.req.headers["x-forwarded-for"] || event.node.req.socket.remoteAddress,
-        userAgent: event.node.req.headers["user-agent"],
-      },
+  await createAuditLog({
+    userId: sessionUser.id!,
+    action: "organization.update",
+    resource: `Organization:${organizationId}`,
+    metadata: {
+      newName: body.name,
     },
+    req: event.node.req,
   })
 
   return { message: "Organization updated successfully", updatedOrganization }

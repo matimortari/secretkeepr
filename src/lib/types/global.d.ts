@@ -74,12 +74,13 @@ interface SecretValueType {
 }
 
 interface AuditLogType {
-  id: string
+  id?: string
   userId: string
   action: string
   resource: string
-  metadata?: any
-  createdAt: Date
+  metadata?: Record<string, any>
+  createdAt?: Date
+  req: IncomingMessage
 }
 
 interface AuditLogsResponseType {
