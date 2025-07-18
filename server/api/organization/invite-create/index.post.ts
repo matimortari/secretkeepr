@@ -35,5 +35,5 @@ export default defineEventHandler(async (event) => {
     return `${protocol}://${host}`
   }
 
-  return { message: "Invitation link created successfully", inviteLink: `${getBaseUrl(event)}/setup/invite?token=${token}` }
+  return { message: "Invitation link created successfully", inviteLink: `${getBaseUrl(event)}/setup/join-org?token=${token}` }
 })

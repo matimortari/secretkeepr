@@ -13,17 +13,42 @@ export default defineEventHandler(async (event) => {
   if (!body.userId || typeof body.userId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "User ID is required" })
   }
-  if (!body.role || !["owner", "admin", "member"].includes(body.role)) {
+  if (!body.role || !["admin", "member"].includes(body.role)) {
     throw createError({ statusCode: 400, statusMessage: "Valid role is required" })
   }
 
   await requireProjectRole(sessionUser.id!, projectId, ["owner", "admin"])
 
-  const addedUser = await db.user.findUnique({
-    where: { id: body.userId },
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: { organizationId: true },
   })
-  if (!addedUser) {
-    throw createError({ statusCode: 404, statusMessage: "User not found" })
+  if (!project) {
+    throw createError({ statusCode: 404, statusMessage: "Project not found" })
+  }
+
+  const orgMembership = await db.userOrganizationMembership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: body.userId,
+        organizationId: project.organizationId,
+      },
+    },
+  })
+  if (!orgMembership) {
+    throw createError({ statusCode: 400, statusMessage: "User is not a member of the organization this project belongs to" })
+  }
+
+  const existing = await db.projectMember.findUnique({
+    where: {
+      userId_projectId: {
+        userId: body.userId,
+        projectId,
+      },
+    },
+  })
+  if (existing) {
+    throw createError({ statusCode: 400, statusMessage: "User is already a member of the project" })
   }
 
   const newUser = await db.projectMember.create({

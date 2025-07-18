@@ -54,7 +54,8 @@ const props = defineProps<{
 const router = useRouter()
 
 async function handleLeaveOrganization() {
-  if (!props.organization?.id || !useUserStore().user?.id) {
+  const userId = useUserStore().user?.id
+  if (!props.organization?.id || !userId) {
     console.error("Missing organization or user ID")
     return
   }
@@ -62,11 +63,14 @@ async function handleLeaveOrganization() {
   if (!confirm("Are you sure you want to leave this organization?"))
     return
 
-  const result = await useOrganizationStore().leaveOrganization(props.organization.id, useUserStore().user!.id)
+  const result = await useOrganizationStore().removeOrganizationMember(userId, props.organization.id) as unknown as { message: string } | null
 
-  // TODO: check message or handle this better
   if (result?.message === "You have left the organization") {
     router.push("/setup/create-org")
+  }
+  else if (result?.message?.includes("Owners cannot leave")) {
+    // eslint-disable-next-line no-alert
+    alert("As the owner, you cannot leave the organization. Please delete it instead.")
   }
   else {
     console.error("Failed to leave organization:", result?.message || "Unknown error")

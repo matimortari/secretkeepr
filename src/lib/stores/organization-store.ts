@@ -4,8 +4,7 @@ import {
   createOrganizationService,
   deleteOrganizationService,
   getAuditLogsService,
-  leaveOrganizationService,
-  removeOrganizationMemberService,
+  removeUserFromOrganizationService,
   updateOrganizationMemberService,
   updateOrganizationService,
 } from "~/lib/services/organization-service"
@@ -109,10 +108,10 @@ export const useOrganizationStore = defineStore("organization", {
       }
     },
 
-    async updateOrganizationMember(memberId: string, role: Role) {
+    async updateOrganizationMember(memberId: string, role: Role, organizationId: string) {
       this.isLoading = true
       try {
-        const updated = await updateOrganizationMemberService(memberId, { role })
+        const updated = await updateOrganizationMemberService(memberId, { role, organizationId })
         this.members = this.members.map(m => (m.id === memberId ? updated : m))
       }
       catch (error) {
@@ -123,31 +122,14 @@ export const useOrganizationStore = defineStore("organization", {
       }
     },
 
-    async removeOrganizationMember(memberId: string) {
+    async removeOrganizationMember(memberId: string, organizationId: string) {
       this.isLoading = true
       try {
-        await removeOrganizationMemberService(memberId)
+        await removeUserFromOrganizationService(organizationId, memberId)
         this.members = this.members.filter(m => m.id !== memberId)
       }
       catch (error) {
         console.error("Failed to remove organization member", error)
-      }
-      finally {
-        this.isLoading = false
-      }
-    },
-
-    async leaveOrganization(memberId: string, organizationId: string) {
-      this.isLoading = true
-      try {
-        const result = await leaveOrganizationService(memberId, organizationId)
-        this.organizations = this.organizations.filter(org => org.id !== organizationId)
-        if (this.selectedOrganization?.id === organizationId)
-          this.selectedOrganization = null
-        return result
-      }
-      catch (error) {
-        console.error("Failed to leave organization", error)
       }
       finally {
         this.isLoading = false

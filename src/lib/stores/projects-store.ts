@@ -110,7 +110,9 @@ export const useProjectsStore = defineStore("projects", {
     async updateProjectMember(projectId: string, memberId: string, role: Role) {
       this.isLoading = true
       try {
-        const updated = await updateProjectMemberService(projectId, memberId, { role })
+        const response = await updateProjectMemberService(projectId, memberId, { role })
+        const updated = response.updatedUser
+
         if (this.currentProject?.id === projectId && this.currentProject.members) {
           this.currentProject.members = this.currentProject.members.map(m =>
             m.id === memberId ? updated : m,

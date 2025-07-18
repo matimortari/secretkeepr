@@ -18,7 +18,7 @@
     </form>
 
     <p class="min-h-6 text-sm text-muted-foreground">
-      Already have an invite? <NuxtLink to="/setup/invite" class="text-primary hover:underline">
+      Already have an invite? <NuxtLink to="/setup/join-org" class="text-primary hover:underline">
         Join an Organization.
       </NuxtLink>
     </p>

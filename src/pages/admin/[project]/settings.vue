@@ -15,7 +15,7 @@
 
       <div v-motion class="flex flex-col gap-2" :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }" :duration="800" :delay="200">
         <ProjectsProjectDetails :project="project" />
-        <ProjectsProjectDangerZone :project="project" />
+        <ProjectsProjectDangerZone v-if="currentUserId === projectOwnerId" :project="project" />
       </div>
     </div>
   </div>
@@ -23,14 +23,20 @@
 
 <script setup lang="ts">
 import { useProjectsStore } from "~/lib/stores/projects-store"
+import { useUserStore } from "~/lib/stores/user-store"
 
 const route = useRoute()
 const projectId = route.params.project as string
+const currentUserId = computed(() => useUserStore().user?.id)
 
 const { projects } = storeToRefs(useProjectsStore())
 
 const project = computed(() => {
   return projects.value.find(p => p.id === projectId) || null
+})
+
+const projectOwnerId = computed(() => {
+  return project.value?.members?.find(m => m.role === "owner")?.userId || null
 })
 
 watch(() => projectId, async (id) => {

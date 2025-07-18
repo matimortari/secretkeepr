@@ -36,7 +36,7 @@ export async function deleteOrganizationService(orgId: string): Promise<{ messag
   return await response.json()
 }
 
-export async function updateOrganizationMemberService(memberId: string, data: { role: Role }): Promise<UserOrganizationMembershipType> {
+export async function updateOrganizationMemberService(memberId: string, data: { role: Role, organizationId: string }): Promise<UserOrganizationMembershipType> {
   const response = await fetch(`/api/organization/members/${memberId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -49,26 +49,13 @@ export async function updateOrganizationMemberService(memberId: string, data: { 
   return await response.json()
 }
 
-export async function removeOrganizationMemberService(memberId: string): Promise<{ message: string, memberId: string }> {
-  const response = await fetch(`/api/organization/members/${memberId}`, {
+export async function removeUserFromOrganizationService(organizationId: string, memberId: string): Promise<{ message: string, userId: string }> {
+  const response = await fetch(`/api/organization/members/${memberId}?organizationId=${organizationId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
   if (!response.ok) {
-    throw new Error(`Failed to remove organization member: ${response.statusText}`)
-  }
-
-  return await response.json()
-}
-
-export async function leaveOrganizationService(memberId: string, organizationId: string): Promise<{ message: string, userId: string }> {
-  const response = await fetch(`/api/organization/${organizationId}/members/${memberId}`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-  })
-
-  if (!response.ok) {
-    throw new Error(`Failed to leave organization: ${response.statusText}`)
+    throw new Error(`Failed to remove user from organization: ${response.statusText}`)
   }
 
   return await response.json()

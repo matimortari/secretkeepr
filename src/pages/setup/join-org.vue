@@ -2,7 +2,7 @@
   <div v-motion class="min-h-screen flex flex-col items-center justify-center" :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }" :transition="{ duration: 1000 }">
     <header v-motion class="flex flex-col items-center text-center gap-4 p-4 border-b" :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }" :duration="600">
       <h1>
-        Accept Invite
+        Join an Organization
       </h1>
     </header>
 

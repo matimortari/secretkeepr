@@ -70,7 +70,7 @@ export async function addProjectMemberService(projectId: string, memberData: { u
   return await response.json()
 }
 
-export async function updateProjectMemberService(projectId: string, memberId: string, data: { role: string }): Promise<ProjectMemberType> {
+export async function updateProjectMemberService(projectId: string, memberId: string, data: { role: string }): Promise<{ message: string, updatedUser: ProjectMemberType }> {
   const response = await fetch(`/api/projects/${projectId}/members/${memberId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
