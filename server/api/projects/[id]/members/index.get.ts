@@ -1,5 +1,5 @@
 import db from "~/lib/db"
-import { getUserFromSession } from "~/lib/utils"
+import { getUserFromSession, requireProjectRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -9,15 +9,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Project ID is required" })
   }
 
-  const membership = await db.projectMember.findUnique({
-    where: { userId_projectId: {
-      userId: sessionUser.id!,
-      projectId,
-    } },
-  })
-  if (!membership || (membership.role !== "admin" && membership.role !== "owner")) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
-  }
+  await requireProjectRole(sessionUser.id!, projectId, ["owner", "admin", "member"])
 
   const members = await db.projectMember.findMany({
     where: { projectId },
