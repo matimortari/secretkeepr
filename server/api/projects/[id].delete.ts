@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Project ID is required" })
   }
 
-  await requireProjectRole(sessionUser.id!, projectId, ["admin", "owner"])
+  await requireProjectRole(sessionUser.id!, projectId, ["owner"])
 
   await db.project.delete({
     where: { id: projectId },

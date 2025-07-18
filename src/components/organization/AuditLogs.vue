@@ -85,7 +85,7 @@
                 <span>{{ log.userId }}</span>
               </td>
               <td class="p-2 text-muted-foreground truncate border w-1/5">
-                {{ formatDate(log.createdAt ? (log.createdAt instanceof Date ? log.createdAt.toISOString() : log.createdAt) : "") }}
+                {{ log.createdAt }}
               </td>
             </tr>
           </tbody>
@@ -125,20 +125,17 @@ const actions = [
   { value: "organization.member.role.update", label: "Organization Member Role Updated" },
 ]
 
-function getActionLabel(action: string): string {
-  const found = actions.find(a => a.value === action)
-  return found ? found.label : action
-}
+const organizationStore = useOrganizationStore()
 
-const { auditLogs, isLoading, totalPages, hasNextPage, hasPrevPage } = storeToRefs(useOrganizationStore())
-const { nextAuditLogPage: nextPage, prevAuditLogPage: prevPage } = useOrganizationStore()
-
+const { auditLogs, isLoading, totalPages, hasNextPage, hasPrevPage } = storeToRefs(organizationStore)
+const nextPage = organizationStore.nextAuditLogPage
+const prevPage = organizationStore.prevAuditLogPage
 const dateFilter = ref("")
 const userFilter = ref("")
 const actionFilter = ref("")
 
 onMounted(async () => {
-  await useOrganizationStore().getAuditLogs()
+  await organizationStore.getAuditLogs()
 })
 
 const page = computed(() => auditLogs.value.page)
@@ -159,8 +156,9 @@ const filteredLogs = computed(() => {
   })
 })
 
-function formatDate(iso: string | Date): string {
-  return new Date(iso).toLocaleString()
+function getActionLabel(action: string): string {
+  const found = actions.find(a => a.value === action)
+  return found ? found.label : action
 }
 
 function formatMetadata(metadata: Record<string, any>) {

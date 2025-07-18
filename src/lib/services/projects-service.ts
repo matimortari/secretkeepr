@@ -1,7 +1,6 @@
 export async function getProjectsService(): Promise<ProjectType[]> {
   const response = await fetch("/api/projects", {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
   })
   if (!response.ok) {
     throw new Error(`Failed to get projects: ${response.statusText}`)
@@ -9,7 +8,7 @@ export async function getProjectsService(): Promise<ProjectType[]> {
   return await response.json()
 }
 
-export async function createProjectService(data: ProjectType): Promise<ProjectType> {
+export async function createProjectService(data: CreateProjectPayload): Promise<{ message: string, newProject: ProjectType }> {
   const response = await fetch("/api/projects", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -22,7 +21,7 @@ export async function createProjectService(data: ProjectType): Promise<ProjectTy
   return await response.json()
 }
 
-export async function updateProjectService(projectId: string, data: Partial<ProjectType>): Promise<ProjectType> {
+export async function updateProjectService(projectId: string, data: CreateProjectPayload): Promise<{ message: string, updatedProject: ProjectType }> {
   const response = await fetch(`/api/projects/${projectId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -50,7 +49,6 @@ export async function deleteProjectService(projectId: string): Promise<{ message
 export async function getProjectMembersService(projectId: string): Promise<ProjectMemberType[]> {
   const response = await fetch(`/api/projects/${projectId}/members`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
   })
   if (!response.ok) {
     throw new Error(`Failed to get project members: ${response.statusText}`)
@@ -58,7 +56,7 @@ export async function getProjectMembersService(projectId: string): Promise<Proje
   return await response.json()
 }
 
-export async function addProjectMemberService(projectId: string, memberData: { userId: string, role: string }): Promise<ProjectMemberType> {
+export async function addProjectMemberService(projectId: string, memberData: CreateProjectMemberPayload): Promise<{ message: string, newMember: ProjectMemberType }> {
   const response = await fetch(`/api/projects/${projectId}/members`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -70,20 +68,20 @@ export async function addProjectMemberService(projectId: string, memberData: { u
   return await response.json()
 }
 
-export async function updateProjectMemberService(projectId: string, memberId: string, data: { role: string }): Promise<ProjectMemberType> {
+export async function updateProjectMemberService(projectId: string, memberId: string, data: CreateProjectMemberPayload): Promise<{ message: string, updatedMember: ProjectMemberType }> {
   const response = await fetch(`/api/projects/${projectId}/members/${memberId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
   if (!response.ok) {
-    throw new Error(`Failed to update project member: ${response.status}`)
+    throw new Error(`Failed to update project member role: ${response.status}`)
   }
 
   return await response.json()
 }
 
-export async function removeProjectMemberService(projectId: string, memberId: string): Promise<{ message: string, memberId: string }> {
+export async function removeProjectMemberService(projectId: string, memberId: string): Promise<{ message: string, removedMemberId: string }> {
   const response = await fetch(`/api/projects/${projectId}/members/${memberId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
