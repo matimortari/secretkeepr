@@ -51,15 +51,15 @@
             </p>
           </header>
 
-          <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-56 scroll-area">
+          <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-52 scroll-area">
             <li v-for="project in projectsFromOrg" :key="project.id" class="card flex flex-row items-center justify-between gap-2 text-sm w-full">
-              <div class="flex flex-row gap-1">
-                <span class="font-semibold truncate">{{ project.name }}</span>
-                <span class="text-xs text-muted-foreground mt-1">{{ project.description || "No description provided." }}</span>
+              <div class="flex flex-row gap-2">
+                <span class="font-semibold truncate w-40">{{ project.name }}</span>
+                <span class="text-xs text-muted-foreground mt-1 truncate max-w-52">{{ project.description || "No description provided." }}</span>
               </div>
 
               <div class="flex flex-row items-center gap-2">
-                <NuxtLink :to="`/projects/${project.id}`" class="btn">
+                <NuxtLink :to="`/admin/${project.id}`" class="btn">
                   <Icon name="ph:eye-bold" size="15" />
                 </NuxtLink>
                 <button class="btn" @click="project.id && handleDeleteProject(project.id)">
@@ -80,18 +80,18 @@
             </p>
           </header>
 
-          <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-56 scroll-area">
+          <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-52 scroll-area">
             <li v-for="user in usersWithRoles" :key="user.id" class="card flex flex-row items-center justify-between gap-2 text-sm w-full">
-              <div class="flex flex-col gap-1">
+              <div class="flex flex-col gap-1 max-w-52">
                 <span class="font-semibold truncate">{{ user.name }}</span>
                 <span class="text-xs capitalize">
                   Role: {{ Array.isArray(user.role) ? user.role.join(", ") : user.role }}
                 </span>
               </div>
 
-              <div class="flex flex-col gap-1 text-muted-foreground">
-                <span class="text-xs">{{ user.id }}</span>
-                <span class="text-xs">{{ user.email }}</span>
+              <div class="flex flex-col gap-1 text-muted-foreground max-w-52">
+                <span class="text-xs truncate">{{ user.id }}</span>
+                <span class="text-xs truncate">{{ user.email }}</span>
               </div>
 
               <div v-if="user.role !== 'owner'" class="flex flex-row items-center gap-2">
@@ -149,10 +149,6 @@ const props = defineProps<{
   organization: OrganizationType | null
 }>()
 
-const emit = defineEmits<{
-  (e: "refresh"): void
-}>()
-
 const form = ref({
   name: props.organization?.name || "",
 })
@@ -203,7 +199,7 @@ const usersWithRoles = computed<{ name: string, id: string, email: string, role:
 async function handleUpdateMemberRole(memberId: string, newRole: Role) {
   try {
     await useOrganizationStore().updateOrganizationMember(memberId, newRole)
-    emit("refresh")
+    await useUserStore().getUser()
   }
   catch (error) {
     console.error("Failed to update member role", error)
@@ -216,7 +212,7 @@ async function handleRemoveMember(memberId: string) {
     return
   try {
     await useOrganizationStore().removeOrganizationMember(memberId)
-    emit("refresh")
+    await useUserStore().getUser()
   }
   catch (error) {
     console.error("Failed to remove member", error)
@@ -242,7 +238,7 @@ async function handleSubmit() {
     await useOrganizationStore().updateOrganization(props.organization.id, {
       name: form.value.name,
     })
-    await useUserStore().getUser() // TODO: check this behavior
+    await useUserStore().getUser()
   }
   catch (error) {
     console.error("Failed to update organization:", error)
