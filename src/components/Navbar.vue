@@ -19,13 +19,13 @@
           </button>
 
           <ul v-if="isDropdownOpen" class="dropdown overflow-y-auto scroll-area">
-            <li v-for="org in organizations" :key="org.id" class="p-2 hover:bg-muted cursor-pointer truncate" role="option" @click="selectOrganization(org)">
+            <li v-for="org in organizations" :key="org.id" class="p-2 hover:bg-muted rounded cursor-pointer truncate" role="option" @click="selectOrganization(org)">
               {{ org.name }}
             </li>
-            <li class="p-2 hover:bg-muted truncate group" role="option">
+            <li class="p-2 hover:bg-muted rounded truncate group" role="option">
               <NuxtLink to="/setup/create-org" class="flex flex-row items-center gap-2">
-                <span class="text-primary group-hover:text-muted-foreground">Create New</span>
-                <Icon name="ph:plus-bold" size="20" class="text-primary group-hover:text-muted-foreground" />
+                <span class="text-accent group-hover:text-muted-foreground font-semibold">Create New</span>
+                <Icon name="ph:plus-bold" size="20" class="text-accent group-hover:text-muted-foreground" />
               </NuxtLink>
             </li>
           </ul>
@@ -48,6 +48,9 @@
       <button class="btn" @click="toggleTheme">
         <Icon :name="themeIcon" size="20" />
       </button>
+      <button class="btn md:hidden" @click="$emit('toggleSidebar')">
+        <Icon :name="props.isSidebarOpen ? 'ph:x' : 'ph:list'" size="20" />
+      </button>
     </div>
   </nav>
 </template>
@@ -58,6 +61,11 @@ import { useUserStore } from "~/lib/stores/user-store"
 const props = defineProps<{
   organizations: OrganizationType[]
   modelValue: OrganizationType | null
+  isSidebarOpen: boolean
+}>()
+
+defineEmits<{
+  (e: "toggleSidebar"): void
 }>()
 
 const route = useRoute()
