@@ -17,7 +17,7 @@
 
         <button class="btn-primary" @click="openDialog()">
           <span>Add New Project</span>
-          <Icon name="ph:plus-bold" />
+          <Icon name="ph:plus-bold" size="20" />
         </button>
       </div>
 

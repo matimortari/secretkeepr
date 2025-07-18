@@ -1,6 +1,6 @@
 <template>
   <div v-motion class="min-h-screen flex flex-col items-center justify-center" :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }" :transition="{ duration: 1000 }">
-    <header v-motion class="flex flex-col items-center text-center gap-4 p-12 border-b" :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }" :duration="600">
+    <header v-motion class="flex flex-col items-center text-center gap-4 p-4 border-b" :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }" :duration="600">
       <h1>
         Accept Invite
       </h1>
@@ -17,11 +17,11 @@
       </button>
     </form>
 
-    <p v-if="error" class="my-4 min-h-6 text-sm text-danger">
-      {{ error }}
-    </p>
-    <p v-else-if="success" class="my-4 min-h-6 text-sm text-success">
-      Invitation accepted! Redirecting...
+    <p class="min-h-6 text-sm">
+      <span v-if="error" class="text-danger">{{ error }}</span>
+      <span v-else-if="success" class="text-success">
+        Invitation accepted! Redirecting...
+      </span>
     </p>
   </div>
 </template>

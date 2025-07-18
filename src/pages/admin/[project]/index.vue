@@ -8,17 +8,17 @@
         <h2>
           {{ project?.name }}
         </h2>
-        <p v-motion class="text-muted-foreground text-sm mt-2" :initial="{ opacity: 0, x: -10 }" :enter="{ opacity: 1, x: 0 }" :duration="800">
+        <p v-motion class="hidden md:block text-muted-foreground text-sm mt-2" :initial="{ opacity: 0, x: -10 }" :enter="{ opacity: 1, x: 0 }" :duration="800">
           {{ project?.description || "No description provided." }}
         </p>
       </header>
 
       <div v-motion class="flex flex-row justify-between items-center gap-2" :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }" :duration="800" :delay="200">
         <header class="button-group w-full">
-          <h3>
+          <h3 class="hidden md:block whitespace-nowrap">
             Secrets Overview
           </h3>
-          <div class="relative flex-1">
+          <div class="relative w-full">
             <span class="absolute inset-y-0 left-0 flex flex-row items-center pl-4 text-muted-foreground">
               <Icon name="ph:magnifying-glass-bold" size="20" />
             </span>
@@ -32,13 +32,13 @@
             <Icon name="ph:plus-bold" size="20" />
           </button>
           <button class="btn-secondary" @click="openDialog('env')">
-            <span>Import .env File</span>
+            <span class="hidden md:block">Import .env File</span>
             <Icon name="ph:upload-bold" size="20" />
           </button>
 
           <div ref="dropdownRef" class="relative">
             <button class="btn" @click="isDropdownOpen = !isDropdownOpen">
-              <span>{{ selectedEnvironmentLabel || "Export" }}</span>
+              <span class="hidden md:block">{{ selectedEnvironmentLabel || "Export" }}</span>
               <Icon name="ph:download-bold" size="20" />
             </button>
 
