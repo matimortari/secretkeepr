@@ -56,6 +56,12 @@ const props = defineProps<{
   organization: OrganizationType | null
 }>()
 
+const navLinks = [
+  { href: "/admin/projects", icon: "ph:folder-open", label: "Projects" },
+  { href: "/admin/organization", icon: "ph:building-office", label: "Organization" },
+  { href: "/admin/preferences", icon: "ph:user-gear", label: "Preferences" },
+]
+
 const { projects, isLoading } = storeToRefs(useProjectsStore())
 
 const isDialogOpen = ref(false)
@@ -89,10 +95,4 @@ async function handleCreateProject(project: ProjectType) {
     console.error("Failed to create project:", error)
   }
 }
-
-const navLinks = [
-  { href: "/admin/projects", icon: "ph:folder-open", label: "Projects" },
-  { href: "/admin/organization", icon: "ph:building-office", label: "Organization" },
-  { href: "/admin/preferences", icon: "ph:user-gear", label: "Preferences" },
-]
 </script>

@@ -51,27 +51,46 @@
       </nav>
     </section>
 
-    <section class="py-2">
+    <section class="py-2 w-full">
       <Spinner v-if="isLoading" />
       <div v-else-if="filteredLogs.length === 0" class="text-muted-foreground text-center my-4">
         No audit logs found.
       </div>
 
-      <ul v-else class="grid grid-cols-1 md:grid-cols-3 gap-2 overflow-y-auto max-h-[50vh] scroll-area">
-        <li v-for="log in filteredLogs" :key="log.id" class="card">
-          <p class="font-semibold">
-            {{ log.action }}
-          </p>
-          <p class="flex flex-col gap-2 text-sm text-muted-foreground">
-            <span>{{ formatMetadata(log.metadata) }}</span>
-            <span>{{ log.resource }}</span>
-          </p>
-          <p class="flex flex-row items-center justify-between text-sm text-muted-foreground">
-            <span>User: {{ log.userId }}</span>
-            <span>{{ formatDate(log.createdAt instanceof Date ? log.createdAt.toISOString() : log.createdAt) }}</span>
-          </p>
-        </li>
-      </ul>
+      <div v-else class="overflow-auto max-h-[50vh] scroll-area">
+        <table class="w-full table-fixed border rounded-sm overflow-hidden">
+          <thead>
+            <tr class="bg-muted font-semibold text-sm">
+              <th v-for="header in headers" :key="header.value" class="p-2 text-left select-none border w-1/5">
+                <div class="flex flex-row items-center gap-2">
+                  <Icon :name="header.icon" size="15" class="mr-1" />
+                  <span>{{ header.label }}</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="log in filteredLogs" :key="log.id" class="text-sm">
+              <td class="p-2 font-medium border truncate w-1/5">
+                {{ log.action }}
+              </td>
+              <td class="p-2 text-muted-foreground truncate border w-1/5">
+                {{ log.resource }}
+              </td>
+              <td class="p-2 text-muted-foreground truncate border w-1/5">
+                {{ formatMetadata(log.metadata) }}
+              </td>
+              <td class="p-2 text-muted-foreground truncate border w-1/5">
+                <span>{{ log.userId }}</span>
+              </td>
+              <td class="p-2 text-muted-foreground truncate border w-1/5">
+                {{ formatDate(log.createdAt instanceof Date ? log.createdAt.toISOString() : log.createdAt) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
   </div>
 </template>
@@ -82,6 +101,14 @@ import { useOrganizationStore } from "~/lib/stores/organization-store"
 const props = defineProps<{
   logs: AuditLogType[]
 }>()
+
+const headers = [
+  { value: "action", label: "Action", icon: "ph:clock-bold" },
+  { value: "resource", label: "Resource", icon: "ph:table-bold" },
+  { value: "metadata", label: "Metadata", icon: "ph:info-bold" },
+  { value: "userId", label: "User ID", icon: "ph:user-bold" },
+  { value: "createdAt", label: "Timestamp", icon: "ph:calendar-bold" },
+]
 
 const actions = [
   { value: "secret.create", label: "Secret Created" },

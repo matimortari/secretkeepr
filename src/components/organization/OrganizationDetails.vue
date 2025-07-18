@@ -51,24 +51,21 @@
             </p>
           </header>
 
-          <ul class="flex flex-row items-start gap-2 overflow-x-auto scroll-area">
-            <li
-              v-for="project in projectsFromOrg"
-              :key="project.id"
-              class="card relative min-w-[200px] h-[150px] overflow-hidden"
-            >
-              <h6 class="truncate">
-                {{ project.name }}
-              </h6>
-              <p class="text-sm text-muted-foreground break-words">
-                {{ project.description || "No description provided." }}
-              </p>
-              <button
-                class="absolute top-2 right-2 text-danger"
-                @click="project.id && handleDeleteProject(project.id)"
-              >
-                <Icon name="ph:trash-bold" />
-              </button>
+          <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-56 scroll-area">
+            <li v-for="project in projectsFromOrg" :key="project.id" class="card flex flex-row items-center justify-between gap-2 text-sm w-full">
+              <div class="flex flex-row gap-1">
+                <span class="font-semibold truncate">{{ project.name }}</span>
+                <span class="text-xs text-muted-foreground mt-1">{{ project.description || "No description provided." }}</span>
+              </div>
+
+              <div class="flex flex-row items-center gap-2">
+                <NuxtLink :to="`/projects/${project.id}`" class="btn">
+                  <Icon name="ph:eye-bold" size="15" />
+                </NuxtLink>
+                <button class="btn" @click="project.id && handleDeleteProject(project.id)">
+                  <Icon name="ph:trash-bold" size="15" />
+                </button>
+              </div>
             </li>
           </ul>
         </section>
@@ -84,13 +81,9 @@
           </header>
 
           <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-56 scroll-area">
-            <li
-              v-for="user in usersWithRoles"
-              :key="user.id"
-              class="card flex flex-row items-center justify-between gap-2 text-sm w-full"
-            >
+            <li v-for="user in usersWithRoles" :key="user.id" class="card flex flex-row items-center justify-between gap-2 text-sm w-full">
               <div class="flex flex-col gap-1">
-                <span class="font-semibold">{{ user.name }}</span>
+                <span class="font-semibold truncate">{{ user.name }}</span>
                 <span class="text-xs capitalize">
                   Role: {{ Array.isArray(user.role) ? user.role.join(", ") : user.role }}
                 </span>
@@ -101,20 +94,18 @@
                 <span class="text-xs">{{ user.email }}</span>
               </div>
 
-              <div v-if="user.role !== 'owner'" class="button-group">
+              <div v-if="user.role !== 'owner'" class="flex flex-row items-center gap-2">
                 <select v-model="userRoles[user.id ?? '']" class="min-w-[100px]">
                   <option v-for="role in assignableRoles" :key="role.value" :value="role.value">
                     {{ role.label }}
                   </option>
                 </select>
-                <div class="flex flex-row items-center gap-1">
-                  <button class="btn" @click="() => handleUpdateMemberRole(user.id, userRoles[user.id]!)">
-                    <Icon name="ph:check-bold" size="20" />
-                  </button>
-                  <button class="btn" @click="user.id && handleRemoveMember(user.id)">
-                    <Icon name="ph:x-bold" size="20" />
-                  </button>
-                </div>
+                <button class="btn" @click="() => handleUpdateMemberRole(user.id, userRoles[user.id]!)">
+                  <Icon name="ph:check-bold" size="15" />
+                </button>
+                <button class="btn" @click="user.id && handleRemoveMember(user.id)">
+                  <Icon name="ph:x-bold" size="15" />
+                </button>
               </div>
             </li>
           </ul>
