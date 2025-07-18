@@ -1,5 +1,5 @@
 import db from "~/lib/db"
-import { getUserFromSession } from "~/lib/utils"
+import { createAuditLog, getUserFromSession, requireOrgRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -14,17 +14,9 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
-  const actingMembership = await db.userOrganizationMembership.findUnique({
-    where: {
-      userId_organizationId: {
-        userId: sessionUser.id!,
-        organizationId,
-      },
-    },
-  })
-  if (!actingMembership) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: not an organization member" })
-  }
+  const isSelf = sessionUser.id === userId
+
+  const actingMembership = await requireOrgRole(sessionUser.id!, organizationId, ["owner"])
 
   const targetMembership = await db.userOrganizationMembership.findUnique({
     where: {
@@ -38,12 +30,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Target user not in this organization" })
   }
 
-  const isSelf = sessionUser.id === userId
-  if (!isSelf && actingMembership.role !== "owner" && actingMembership.role !== "admin") {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
-  }
-
-  // If self-removal and last owner, block user from leaving
+  // If self-removal and last owner, prevent user from leaving
   if (isSelf && actingMembership.role === "owner") {
     const otherOwners = await db.userOrganizationMembership.findMany({
       where: {
@@ -71,17 +58,16 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  await db.auditLog.create({
-    data: {
-      userId: sessionUser.id!,
-      action: isSelf ? "organization.member.leave" : "organization.member.remove",
-      resource: `User:${userId}`,
-      metadata: {
-        organizationId,
-        ip: event.node.req.headers["x-forwarded-for"] || event.node.req.socket.remoteAddress,
-        userAgent: event.node.req.headers["user-agent"],
-      },
+  await createAuditLog({
+    userId: sessionUser.id!,
+    action: isSelf ? "organization.member.leave" : "organization.member.remove",
+    resource: `User:${userId}`,
+    metadata: {
+      organizationId,
+      removedUserId: userId,
+      actingUserRole: actingMembership.role,
     },
+    req: event.node.req,
   })
 
   return {

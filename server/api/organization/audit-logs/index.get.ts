@@ -1,5 +1,5 @@
 import db from "~/lib/db"
-import { getUserFromSession } from "~/lib/utils"
+import { getUserFromSession, requireOrgRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -13,11 +13,25 @@ export default defineEventHandler(async (event) => {
     where: { userId: sessionUser.id },
     select: { organizationId: true },
   })
-  if (memberships.length === 0) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: not part of any organization" })
+
+  const orgRoles = await Promise.all(memberships.map(async ({ organizationId }) => {
+    try {
+      const membership = await requireOrgRole(sessionUser.id!, organizationId, ["owner", "admin", "member"])
+      return { organizationId, role: membership.role }
+    }
+    catch {
+      return null
+    }
+  }))
+
+  const validOrgRoles = orgRoles.filter(Boolean) as { organizationId: string, role: string }[]
+
+  if (validOrgRoles.length === 0) {
+    throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
   }
 
-  const organizationIds = memberships.map(m => m.organizationId)
+  const ownerOrgIds = validOrgRoles.filter(r => r.role === "owner").map(r => r.organizationId)
+  const adminOrgIds = validOrgRoles.filter(r => r.role === "admin").map(r => r.organizationId)
 
   const projectMemberships = await db.projectMember.findMany({
     where: { userId: sessionUser.id },
@@ -27,7 +41,8 @@ export default defineEventHandler(async (event) => {
 
   const logsWhere = {
     OR: [
-      { resource: { in: organizationIds.map(id => `Organization:${id}`) } },
+      { resource: { in: ownerOrgIds.map(id => `Organization:${id}`) } },
+      { resource: { in: adminOrgIds.map(id => `Organization:${id}`) } },
       { resource: { in: projectResourceIds } },
     ],
   }
@@ -39,9 +54,7 @@ export default defineEventHandler(async (event) => {
       skip,
       take: limitNum,
     }),
-    db.auditLog.count({
-      where: logsWhere,
-    }),
+    db.auditLog.count({ where: logsWhere }),
   ])
 
   return {

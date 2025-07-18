@@ -1,5 +1,5 @@
 import db from "~/lib/db"
-import { getUserFromSession } from "~/lib/utils"
+import { createAuditLog, getUserFromSession, requireProjectRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -14,20 +14,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Project name is required" })
   }
 
-  const membership = await db.projectMember.findUnique({
-    where: {
-      userId_projectId: {
-        userId: sessionUser.id!,
-        projectId,
-      },
-    },
-  })
-  if (!membership) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: not a project member" })
-  }
-  if (membership.role !== "admin" && membership.role !== "owner") {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
-  }
+  await requireProjectRole(sessionUser.id!, projectId, ["admin", "owner"])
 
   const updatedProject = await db.project.update({
     where: { id: projectId },
@@ -37,18 +24,15 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  await db.auditLog.create({
-    data: {
-      userId: sessionUser.id!,
-      action: "project.update",
-      resource: `Project:${projectId}`,
-      metadata: {
-        newName: body.name,
-        newDescription: body.description || null,
-        ip: event.node.req.headers["x-forwarded-for"] || event.node.req.socket.remoteAddress,
-        userAgent: event.node.req.headers["user-agent"],
-      },
+  await createAuditLog({
+    userId: sessionUser.id!,
+    action: "project.update",
+    resource: `Project:${projectId}`,
+    metadata: {
+      newName: body.name,
+      newDescription: body.description || null,
     },
+    req: event.node.req,
   })
 
   return { message: "Project updated successfully", updatedProject }
