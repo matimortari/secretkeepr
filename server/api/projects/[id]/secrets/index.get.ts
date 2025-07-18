@@ -1,6 +1,6 @@
 import db from "~/lib/db"
 import { decrypt } from "~/lib/encryption"
-import { getUserFromSession } from "~/lib/utils"
+import { getUserFromSession, requireProjectRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -10,17 +10,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Project ID is required" })
   }
 
-  const membership = await db.projectMember.findUnique({
-    where: {
-      userId_projectId: {
-        userId: sessionUser.id!,
-        projectId,
-      },
-    },
-  })
-  if (!membership) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: not a project member" })
-  }
+  await requireProjectRole(sessionUser.id!, projectId, ["admin", "owner", "member"])
 
   const project = await db.project.findUnique({
     where: { id: projectId },

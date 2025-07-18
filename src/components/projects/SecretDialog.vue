@@ -3,7 +3,11 @@
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-2">
         <label for="key" class="text-sm font-medium ">Key</label>
-        <input id="key" v-model="form.key" type="text" class="w-full" required>
+        <input
+          id="key" v-model="form.key"
+          type="text" class="w-full"
+          required
+        >
       </div>
 
       <div v-for="env in environments" :key="env" class="flex flex-col items-start gap-2">

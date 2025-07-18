@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "organization ID is required" })
   }
 
-  await requireOrgRole(sessionUser.id!, body.organizationId, ["owner", "admin"])
+  await requireOrgRole(sessionUser.id!, body.organizationId, ["owner"])
 
   const newProject = await db.project.create({
     data: {

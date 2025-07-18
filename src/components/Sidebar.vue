@@ -1,6 +1,7 @@
 <template>
   <aside
-    class="fixed md:static top-0 left-0 h-full md:h-auto w-64 md:w-52 bg-muted p-4 border-r rounded-br-xl transition-transform duration-300 z-40" :class="[
+    class="fixed md:static top-0 left-0 h-full md:h-auto w-64 md:w-52 bg-muted p-4 border-r rounded-br-xl transition-transform duration-300 z-40"
+    :class="[
       isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
     ]"
   >
@@ -12,7 +13,8 @@
       </header>
 
       <NuxtLink
-        v-for="link in navLinks" :key="link.href" :to="link.href"
+        v-for="link in navLinks" :key="link.href"
+        :to="link.href"
         class="flex flex-row items-center gap-4 text-sm hover:scale-sm hover:text-muted-foreground transition-all duration-500"
       >
         <Icon :name="link.icon" size="30" />
@@ -23,12 +25,17 @@
         <h6>
           Projects
         </h6>
-        <Icon name="ph:plus-bold" size="25" role="button" class="hover:scale-sm hover:text-accent transition-all duration-500" @click="openDialog()" />
+        <Icon
+          name="ph:plus-bold" size="25"
+          role="button" class="hover:scale-sm hover:text-accent transition-all duration-500"
+          @click="openDialog()"
+        />
       </header>
 
       <div class="flex flex-col gap-1 max-h-52 overflow-y-auto w-full scroll-area border-y">
         <NuxtLink
-          v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.id}`"
+          v-for="project in projectsFromOrg" :key="project.id"
+          :to="`/admin/${project.id}`"
           class="font-medium text-sm hover:underline transition-all duration-500"
         >
           <span class="truncate">{{ project.name }}</span>
@@ -63,7 +70,9 @@ const navLinks = [
   { href: "/admin/preferences", icon: "ph:user-gear", label: "Preferences" },
 ]
 
-const { projects } = storeToRefs(useProjectsStore())
+const projectsStore = useProjectsStore()
+
+const { projects } = storeToRefs(projectsStore)
 
 const isDialogOpen = ref(false)
 
@@ -84,15 +93,15 @@ function closeDialog() {
 
 async function handleCreateProject(project: ProjectType) {
   try {
-    await useProjectsStore().createProject({
+    await projectsStore.createProject({
       name: project.name,
       description: project.description ?? null,
       organizationId: project.organizationId,
     })
-    await useProjectsStore().getProjects()
+    await projectsStore.getProjects()
     closeDialog()
   }
-  catch (error) {
+  catch (error: any) {
     console.error("Failed to create project:", error)
   }
 }
