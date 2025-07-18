@@ -1,5 +1,5 @@
 import db from "~/lib/db"
-import { getUserFromSession } from "~/lib/utils"
+import { createAuditLog, getUserFromSession, requireOrgRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -19,38 +19,25 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Valid role is required" })
   }
 
-  const membership = await db.userOrganizationMembership.findUnique({
-    where: {
-      userId_organizationId: {
-        userId: sessionUser.id!,
-        organizationId,
-      },
-    },
-  })
-  if (!membership) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: not an organization member" })
-  }
+  const currentMembership = await requireOrgRole(sessionUser.id!, organizationId, ["owner", "admin"])
 
   const targetMembership = await db.userOrganizationMembership.findUnique({
     where: {
       userId_organizationId: {
         userId,
-        organizationId: membership.organizationId,
+        organizationId,
       },
     },
   })
   if (!targetMembership) {
     throw createError({ statusCode: 404, statusMessage: "Target user not in this organization" })
   }
-  if (membership.role !== "owner" && membership.role !== "admin") {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
-  }
 
   // Prevent demoting the last owner
   if (targetMembership.role === "owner" && body.role !== "owner") {
     const ownerCount = await db.userOrganizationMembership.count({
       where: {
-        organizationId: membership.organizationId,
+        organizationId,
         role: "owner",
       },
     })
@@ -58,15 +45,15 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, statusMessage: "Cannot demote the last remaining owner" })
     }
   }
-  if (userId === sessionUser.id && membership.role !== "owner") {
-    throw createError({ statusCode: 403, statusMessage: "You cannot change your own role unless you are an owner" })
+  if (userId === sessionUser.id && currentMembership.role !== "owner") {
+    throw createError({ statusCode: 403, statusMessage: "Access denied: only owners can change their own role" })
   }
 
   const updatedMembership = await db.userOrganizationMembership.update({
     where: {
       userId_organizationId: {
-        userId: userId!,
-        organizationId: membership.organizationId,
+        userId,
+        organizationId,
       },
     },
     data: {
@@ -74,17 +61,14 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  await db.auditLog.create({
-    data: {
-      userId: sessionUser.id!,
-      action: "organization.member.role.update",
-      resource: `User:${userId}`,
-      metadata: {
-        role: body.role,
-        ip: event.node.req.headers["x-forwarded-for"] || event.node.req.socket.remoteAddress,
-        userAgent: event.node.req.headers["user-agent"],
-      },
+  await createAuditLog({
+    userId: sessionUser.id!,
+    action: "organization.member.role.update",
+    resource: `User:${userId}`,
+    metadata: {
+      role: body.role,
     },
+    req: event.node.req,
   })
 
   return { message: "User organization role updated", updatedMembership }

@@ -73,19 +73,19 @@
           <tbody>
             <tr v-for="log in filteredLogs" :key="log.id" class="text-sm">
               <td class="p-2 font-medium border truncate w-1/5">
-                {{ log.action }}
+                {{ getActionLabel(log.action) }}
               </td>
               <td class="p-2 text-muted-foreground truncate border w-1/5">
                 {{ log.resource }}
               </td>
               <td class="p-2 text-muted-foreground truncate border w-1/5">
-                {{ formatMetadata(log.metadata) }}
+                {{ formatMetadata(log.metadata ?? {}) }}
               </td>
               <td class="p-2 text-muted-foreground truncate border w-1/5">
                 <span>{{ log.userId }}</span>
               </td>
               <td class="p-2 text-muted-foreground truncate border w-1/5">
-                {{ formatDate(log.createdAt instanceof Date ? log.createdAt.toISOString() : log.createdAt) }}
+                {{ formatDate(log.createdAt ? (log.createdAt instanceof Date ? log.createdAt.toISOString() : log.createdAt) : "") }}
               </td>
             </tr>
           </tbody>
@@ -117,7 +117,18 @@ const actions = [
   { value: "project.create", label: "Project Created" },
   { value: "project.update", label: "Project Updated" },
   { value: "project.delete", label: "Project Deleted" },
+  { value: "project.member.add", label: "Project Member Added" },
+  { value: "project.member.remove", label: "Project Member Removed" },
+  { value: "organization.update", label: "Organization Updated" },
+  { value: "organization.member.leave", label: "Organization Member Left" },
+  { value: "organization.member.remove", label: "Organization Member Removed" },
+  { value: "organization.member.role.update", label: "Organization Member Role Updated" },
 ]
+
+function getActionLabel(action: string): string {
+  const found = actions.find(a => a.value === action)
+  return found ? found.label : action
+}
 
 const { auditLogs, isLoading, totalPages, hasNextPage, hasPrevPage } = storeToRefs(useOrganizationStore())
 const { nextAuditLogPage: nextPage, prevAuditLogPage: prevPage } = useOrganizationStore()
@@ -140,7 +151,7 @@ const users = computed(() => {
 const filteredLogs = computed(() => {
   return props.logs.filter((log) => {
     const matchesDate = dateFilter.value
-      ? new Date(log.createdAt).toISOString().slice(0, 10) === dateFilter.value
+      ? log.createdAt && new Date(log.createdAt).toISOString().slice(0, 10) === dateFilter.value
       : true
     const matchesUser = userFilter.value ? log.userId === userFilter.value : true
     const matchesAction = actionFilter.value ? log.action === actionFilter.value : true
@@ -153,12 +164,22 @@ function formatDate(iso: string | Date): string {
 }
 
 function formatMetadata(metadata: Record<string, any>) {
+  if (!metadata)
+    return ""
+
   if (metadata.secretKey)
-    return metadata.secretKey
+    return `Secret: ${metadata.secretKey}`
   if (metadata.projectName)
-    return metadata.projectName
+    return `Project: ${metadata.projectName}`
   if (metadata.description)
-    return metadata.description
+    return `Description: ${metadata.description}`
+  if (metadata.addedUserId)
+    return `Added User: ${metadata.addedUserId}, Role: ${metadata.addedUserRole}`
+  if (metadata.removedUserId)
+    return `Removed User: ${metadata.removedUserId}`
+  if (metadata.role)
+    return `Role: ${metadata.role}`
+
   return JSON.stringify(metadata)
 }
 </script>

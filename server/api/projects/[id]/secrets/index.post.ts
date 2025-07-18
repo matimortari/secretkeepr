@@ -1,6 +1,6 @@
 import db from "~/lib/db"
 import { encrypt } from "~/lib/encryption"
-import { getUserFromSession } from "~/lib/utils"
+import { createAuditLog, getUserFromSession, requireProjectRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -31,23 +31,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const membership = await db.projectMember.findUnique({
-    where: {
-      userId_projectId: {
-        userId: sessionUser.id!,
-        projectId,
-      },
-    },
-    select: {
-      role: true,
-    },
-  })
-  if (!membership) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: not a project member" })
-  }
-  if (membership.role !== "admin" && membership.role !== "owner") {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
-  }
+  await requireProjectRole(sessionUser.id!, projectId, ["admin", "owner"])
 
   const filteredValues = body.values.filter((v: { environment: Environment, value: string }) => v.value.trim() !== "")
   if (filteredValues.length === 0) {
@@ -71,19 +55,16 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  await db.auditLog.create({
-    data: {
-      userId: sessionUser.id!,
-      action: "secret.create",
-      resource: `Project:${projectId}`,
-      metadata: {
-        secretKey: body.key,
-        description: body.description || null,
-        environments: filteredValues.map((v: { environment: Environment }) => v.environment),
-        ip: event.node.req.headers["x-forwarded-for"] || event.node.req.socket.remoteAddress,
-        userAgent: event.node.req.headers["user-agent"],
-      },
+  await createAuditLog({
+    userId: sessionUser.id!,
+    action: "secret.create",
+    resource: `Project:${projectId}`,
+    metadata: {
+      secretKey: body.key,
+      description: body.description || null,
+      environments: filteredValues.map((v: { environment: Environment }) => v.environment),
     },
+    req: event.node.req,
   })
 
   return { message: "Secret created successfully", newSecret }

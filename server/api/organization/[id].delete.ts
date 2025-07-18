@@ -1,5 +1,5 @@
 import db from "~/lib/db"
-import { getUserFromSession } from "~/lib/utils"
+import { getUserFromSession, requireOrgRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -9,23 +9,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
-  const membership = await db.userOrganizationMembership.findUnique({
-    where: {
-      userId_organizationId: {
-        userId: sessionUser.id!,
-        organizationId,
-      },
-    },
-    select: {
-      role: true,
-    },
-  })
-  if (!membership) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: not an organization member" })
-  }
-  if (membership.role !== "owner" && membership.role !== "admin") {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
-  }
+  await requireOrgRole(sessionUser.id!, organizationId, ["owner"])
 
   await db.userOrganizationMembership.deleteMany({
     where: { organizationId },
