@@ -1,43 +1,43 @@
 <template>
-  <aside v-motion class="w-52 bg-muted p-4 border-r rounded-br-xl hidden md:block" :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }" :duration="800" :delay="200">
-    <nav class="md:items-start md:justify-start md:flex-col md:flex gap-4">
+  <aside
+    class="fixed md:static top-0 left-0 h-full md:h-auto w-64 md:w-52 bg-muted p-4 border-r rounded-br-xl transition-transform duration-300 z-40" :class="[
+      isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+    ]"
+  >
+    <nav class="flex flex-col gap-4">
       <header class="uppercase flex flex-row items-center gap-2">
-        <h5>
+        <h6>
           Overview
-        </h5>
+        </h6>
       </header>
 
       <NuxtLink
         v-for="link in navLinks" :key="link.href" :to="link.href"
-        class="flex flex-row items-center gap-4 text-foreground text-sm hover:scale-sm hover:text-muted-foreground transition-all"
+        class="flex flex-row items-center gap-4 text-sm hover:scale-sm hover:text-muted-foreground transition-all duration-500"
       >
         <Icon :name="link.icon" size="30" />
         <span class="text-muted-foreground font-semibold">{{ link.label }}</span>
       </NuxtLink>
 
       <header class="uppercase flex flex-row items-center gap-2">
-        <h5>
+        <h6>
           Projects
-        </h5>
-        <Icon name="ph:plus-bold" size="25" role="button" class="cursor-pointer hover:scale-sm hover:text-primary transition-all" @click="openDialog()" />
+        </h6>
+        <Icon name="ph:plus-bold" size="25" role="button" class="hover:scale-sm hover:text-accent transition-all duration-500" @click="openDialog()" />
       </header>
 
-      <p v-if="isLoading" class="text-muted-foreground text-center">
-        Loading projects...
-      </p>
-
-      <div v-else class="flex flex-col gap-2 max-h-52 overflow-y-auto w-full scroll-area">
+      <div class="flex flex-col gap-1 max-h-52 overflow-y-auto w-full scroll-area border-y">
         <NuxtLink
           v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.id}`"
-          class="flex text-foreground text-sm hover:text-muted-foreground hover:underline transition-all"
+          class="font-medium text-sm hover:underline transition-all duration-500"
         >
-          <span>{{ project.name }}</span>
+          <span class="truncate">{{ project.name }}</span>
         </NuxtLink>
       </div>
 
       <a href="https://github.com/matimortari/secretkeepr" class="flex flex-row items-center gap-4 group">
-        <Icon name="simple-icons:github" size="25" class="group-hover:scale-sm group-hover:text-accent transition-all" />
-        <span class="text-sm text-muted-foreground group-hover:underline">Support This Project</span>
+        <Icon name="simple-icons:github" size="25" class="group-hover:scale-sm group-hover:text-accent transition-all duration-500" />
+        <span class="font-semibold text-sm text-muted-foreground group-hover:underline">Support This Project</span>
       </a>
     </nav>
   </aside>
@@ -54,6 +54,7 @@ import { useProjectsStore } from "~/lib/stores/projects-store"
 
 const props = defineProps<{
   organization: OrganizationType | null
+  isOpen: boolean
 }>()
 
 const navLinks = [
@@ -62,7 +63,7 @@ const navLinks = [
   { href: "/admin/preferences", icon: "ph:user-gear", label: "Preferences" },
 ]
 
-const { projects, isLoading } = storeToRefs(useProjectsStore())
+const { projects } = storeToRefs(useProjectsStore())
 
 const isDialogOpen = ref(false)
 

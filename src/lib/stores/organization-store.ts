@@ -50,7 +50,6 @@ export const useOrganizationStore = defineStore("organization", {
       }
     },
 
-    // TODO: implement
     getSelectedOrganization() {
       const id = localStorage.getItem("active_org_id")
       if (id) {
