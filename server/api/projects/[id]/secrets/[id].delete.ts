@@ -1,5 +1,5 @@
 import db from "~/lib/db"
-import { getUserFromSession } from "~/lib/utils"
+import { createAuditLog, getUserFromSession, requireProjectRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -17,40 +17,21 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Secret not found" })
   }
 
-  const membership = await db.projectMember.findUnique({
-    where: {
-      userId_projectId: {
-        userId: sessionUser.id!,
-        projectId: secret.projectId,
-      },
-    },
-    select: {
-      role: true,
-    },
-  })
-  if (!membership) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: not a project member" })
-  }
-  if (membership.role !== "admin" && membership.role !== "owner") {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
-  }
+  await requireProjectRole(sessionUser.id!, secret.projectId, ["admin", "owner"])
 
   await db.secret.delete({
     where: { id: secretId },
   })
 
-  await db.auditLog.create({
-    data: {
-      userId: sessionUser.id!,
-      action: "secret.delete",
-      resource: `Secret:${secretId}`,
-      metadata: {
-        secretKey: secret.key,
-        projectId: secret.projectId,
-        ip: event.node.req.headers["x-forwarded-for"] || event.node.req.socket.remoteAddress,
-        userAgent: event.node.req.headers["user-agent"],
-      },
+  await createAuditLog({
+    userId: sessionUser.id!,
+    action: "secret.delete",
+    resource: `Secret:${secretId}`,
+    metadata: {
+      secretKey: secret.key,
+      projectId: secret.projectId,
     },
+    req: event.node.req,
   })
 
   return { message: "Secret deleted successfully", secretId }

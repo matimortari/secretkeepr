@@ -1,6 +1,6 @@
 import db from "~/lib/db"
 import { encrypt } from "~/lib/encryption"
-import { getUserFromSession } from "~/lib/utils"
+import { createAuditLog, getUserFromSession, requireProjectRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -21,15 +21,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Secret values must be an array" })
   }
 
-  if (body.values) {
-    for (const val of body.values) {
-      if (
-        typeof val.environment !== "string"
-        || !["development", "staging", "production"].includes(val.environment)
-        || typeof val.value !== "string"
-      ) {
-        throw createError({ statusCode: 400, statusMessage: "Invalid secret value entry" })
-      }
+  for (const val of body.values) {
+    if (
+      typeof val.environment !== "string"
+      || !["development", "staging", "production"].includes(val.environment)
+      || typeof val.value !== "string"
+    ) {
+      throw createError({ statusCode: 400, statusMessage: "Invalid secret value entry" })
     }
   }
 
@@ -41,23 +39,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Secret not found" })
   }
 
-  const membership = await db.projectMember.findUnique({
-    where: {
-      userId_projectId: {
-        userId: sessionUser.id!,
-        projectId: secret.projectId,
-      },
-    },
-    select: {
-      role: true,
-    },
-  })
-  if (!membership) {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: not a project member" })
-  }
-  if (membership.role !== "admin" && membership.role !== "owner") {
-    throw createError({ statusCode: 403, statusMessage: "Access denied: insufficient permissions" })
-  }
+  await requireProjectRole(sessionUser.id!, secret.projectId, ["admin", "owner"])
 
   const updatedSecret = await db.secret.update({
     where: { id: secretId },
@@ -66,14 +48,11 @@ export default defineEventHandler(async (event) => {
       description: typeof body.description === "string" ? body.description : secret.description,
     },
   })
-
   if (body.values) {
-    await db.secretValue.deleteMany({
-      where: { secretId },
-    })
+    await db.secretValue.deleteMany({ where: { secretId } })
 
     await db.secretValue.createMany({
-      data: body.values.map((v: { environment: string, value: string }) => ({
+      data: body.values.map((v: { environment: Environment, value: string }) => ({
         secretId,
         environment: v.environment,
         value: encrypt(v.value),
@@ -82,19 +61,16 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  await db.auditLog.create({
-    data: {
-      userId: sessionUser.id!,
-      action: "secret.update",
-      resource: `Secret:${secretId}`,
-      metadata: {
-        updatedKey: body.key || secret.key,
-        updatedDescription: body.description || secret.description,
-        environments: body.values ? body.values.map((v: { environment: string }) => v.environment) : [],
-        ip: event.node.req.headers["x-forwarded-for"] || event.node.req.socket.remoteAddress,
-        userAgent: event.node.req.headers["user-agent"],
-      },
+  await createAuditLog({
+    userId: sessionUser.id!,
+    action: "secret.update",
+    resource: `Secret:${secretId}`,
+    metadata: {
+      updatedKey: body.key || secret.key,
+      updatedDescription: body.description || secret.description,
+      environments: body.values ? body.values.map((v: { environment: Environment }) => v.environment) : [],
     },
+    req: event.node.req,
   })
 
   return { message: "Secret updated successfully", updatedSecret }
