@@ -52,13 +52,13 @@
           </header>
 
           <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-52 scroll-area">
-            <li v-for="project in projectsFromOrg" :key="project.id" class="card flex flex-row items-center justify-between gap-2 text-sm w-full">
-              <div class="flex flex-row gap-2">
-                <span class="font-semibold truncate w-40">{{ project.name }}</span>
-                <span class="text-xs text-muted-foreground mt-1 truncate max-w-52">{{ project.description || "No description provided." }}</span>
+            <li v-for="project in projectsFromOrg" :key="project.id" class="card flex flex-row items-center justify-between gap-2 text-sm w-full min-w-0">
+              <div class="flex flex-col gap-1 md:w-2/3 min-w-0">
+                <span class="font-semibold truncate w-full md:w-40 min-w-0">{{ project.name }}</span>
+                <span class="text-xs text-muted-foreground truncate max-w-full md:max-w-52 min-w-0">{{ project.description || "No description provided." }}</span>
               </div>
 
-              <div class="flex flex-row items-center gap-2">
+              <div class="flex flex-row items-center gap-1 md:w-1/3 justify-end">
                 <NuxtLink :to="`/admin/${project.id}`" class="btn">
                   <Icon name="ph:eye-bold" size="15" />
                 </NuxtLink>
@@ -84,26 +84,27 @@
           </header>
 
           <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-52 scroll-area">
-            <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card flex flex-row items-center justify-between gap-2 text-sm w-full">
-              <div class="flex flex-col gap-1 max-w-52">
-                <span class="font-semibold truncate">{{ orgUser.name }}</span>
-                <span class="text-xs capitalize">
+            <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card flex flex-row items-center justify-between gap-2 text-sm w-full min-w-0">
+              <div class="flex flex-col gap-1 md:w-2/3 min-w-0">
+                <span class="font-semibold truncate w-full md:w-40 min-w-0">
+                  {{ orgUser.name }}
+                </span>
+                <span class="text-xs capitalize truncate max-w-full md:max-w-52 min-w-0">
                   Role: {{ Array.isArray(orgUser.role) ? orgUser.role.join(", ") : orgUser.role }}
                 </span>
               </div>
 
-              <div class="flex flex-col gap-1 text-muted-foreground max-w-52">
+              <div class="flex flex-col gap-1 text-muted-foreground md:w-1/3 min-w-0 max-w-full">
                 <span class="text-xs truncate">{{ orgUser.id }}</span>
                 <span class="text-xs truncate">{{ orgUser.email }}</span>
               </div>
 
-              <div v-if="orgUser.role !== 'owner' && ['owner'].includes(currentUserRole)" class="flex flex-row items-center gap-2 justify-between">
+              <div v-if="orgUser.role !== 'owner' && ['owner'].includes(currentUserRole)" class="flex flex-row items-center gap-1 justify-end">
                 <select v-model="userRoles[orgUser.id ?? '']" class="min-w-[100px]">
                   <option v-for="role in assignableRoles" :key="role.value" :value="role.value">
                     {{ role.label }}
                   </option>
                 </select>
-
                 <button class="btn" @click="orgUser.id && handleUpdateMemberRole(orgUser.id, userRoles[orgUser.id])">
                   <Icon name="ph:check-bold" size="15" />
                 </button>
@@ -117,8 +118,8 @@
       </div>
     </div>
 
-    <section class="flex flex-col md:flex-row md:items-center md:justify-between px-2 pb-2">
-      <header class="flex flex-col items-center text-center md:items-start md:text-start gap-1">
+    <section class="flex flex-col md:flex-row md:items-center md:justify-between p-2 gap-2">
+      <header class="flex flex-col items-center text-center md:items-start md:text-start">
         <h5>
           Invite Members
         </h5>
@@ -127,7 +128,7 @@
         </p>
       </header>
 
-      <div class="flex flex-row-reverse items-center gap-2">
+      <div class="flex flex-col md:flex-row-reverse items-center gap-2">
         <button class="btn-primary" @click="handleCreateInvite">
           <Icon name="ph:link" size="20" />
           <span>Create Invite Link</span>
