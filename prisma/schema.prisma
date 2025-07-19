@@ -40,6 +40,7 @@ model Organization {
   memberships UserOrganizationMembership[]
   projects    Project[]
   invitations Invitation[]
+  AuditLog    AuditLog[]
 }
 
 model UserOrganizationMembership {
@@ -117,15 +118,18 @@ model SecretValue {
 }
 
 model AuditLog {
-  id        String   @id @default(cuid())
-  userId    String
-  action    String
-  resource  String
-  metadata  Json?
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String       @id @default(cuid())
+  userId         String
+  organizationId String
+  action         String
+  resource       String
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+  @@index([organizationId])
 }
 
 model Invitation {
