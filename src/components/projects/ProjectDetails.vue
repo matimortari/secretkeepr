@@ -1,99 +1,119 @@
 <template>
-  <div class="flex flex-col gap-4 border-b pb-4">
-    <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
-      <h4>
-        Project Details
-      </h4>
-      <p class="text-sm text-muted-foreground">
-        Manage project details and settings.
-      </p>
-    </header>
+  <div class="flex flex-col gap-2 border-b">
+    <div class="flex flex-col md:flex-row gap-2 border-b">
+      <div class="md:w-1/2 flex flex-col gap-2">
+        <section class="flex flex-col gap-2">
+          <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
+            <h4>
+              Project Details
+            </h4>
+            <p class="text-sm text-muted-foreground">
+              Manage project details and settings.
+            </p>
+          </header>
 
-    <form class="flex flex-col gap-2 p-2 md:w-1/2" @submit.prevent="handleSubmit">
-      <label class="text-sm font-medium" for="projectName">Project Name</label>
-      <input
-        id="projectName" v-model="form.name"
-        type="text" placeholder="Enter project name"
-        required
-      >
+          <form class="flex flex-col gap-2 p-2" @submit.prevent="handleSubmit">
+            <label class="text-sm font-medium" for="projectName">Project Name</label>
+            <input
+              id="projectName" v-model="form.name"
+              type="text" placeholder="Enter project name"
+              required
+            >
 
-      <label class="text-sm font-medium" for="projectDescription">Project Description</label>
-      <textarea
-        id="projectDescription" v-model="form.description"
-        placeholder="Enter project description" rows="3"
-        class="resize-none scroll-area"
-      />
+            <label class="text-sm font-medium" for="projectDescription">Project Description</label>
+            <textarea
+              id="projectDescription" v-model="form.description"
+              placeholder="Enter project description" rows="3"
+              class="resize-none scroll-area"
+            />
 
-      <label class="text-sm font-medium" for="projectId">Project ID</label>
-      <input
-        id="projectId" :value="form.id ?? ''"
-        type="text" class="bg-muted cursor-not-allowed"
-        readonly
-      >
+            <label class="text-sm font-medium" for="projectId">Project ID</label>
+            <input
+              id="projectId" :value="form.id ?? ''"
+              type="text" class="bg-muted cursor-not-allowed"
+              readonly
+            >
 
-      <p v-if="errorMsg" class="text-sm text-danger">
-        {{ errorMsg }}
-      </p>
+            <p v-if="errorMsg" class="text-sm text-danger">
+              {{ errorMsg }}
+            </p>
 
-      <button class="btn-primary self-start" type="submit">
-        <Icon name="ph:check-circle" size="20" />
-        <span>Save Changes</span>
-      </button>
-    </form>
-
-    <div v-if="isOwner || isAdmin" class="flex flex-col gap-4 mt-4">
-      <h4 class="text-base font-semibold">
-        Project Members
-      </h4>
-
-      <ul class="flex flex-col gap-2 max-h-64 overflow-y-auto scroll-area">
-        <li v-for="member in projectMembers" :key="member.userId" class="card flex flex-row items-center justify-between gap-4 p-2">
-          <div class="flex flex-col max-w-40">
-            <span class="font-semibold truncate">{{ member.user?.name }}</span>
-            <span class="text-xs text-muted-foreground truncate">{{ member.user?.email }}</span>
-          </div>
-
-          <div v-if="member.userId !== currentUserId" class="flex items-center gap-2">
-            <select v-model="member.role" class="min-w-[100px] capitalize" :disabled="!isOwner || member.role === 'owner'">
-              <option v-for="role in assignableRoles" :key="role" :value="role" class="capitalize">
-                {{ role }}
-              </option>
-            </select>
-
-            <button class="btn" @click="handleUpdateRole(member.userId, member.role)">
-              <Icon name="ph:check-bold" size="15" />
+            <button class="btn-primary self-start" type="submit">
+              <Icon name="ph:check-circle" size="20" />
+              <span>Save Changes</span>
             </button>
-            <button v-if="isOwner && member.role !== 'owner'" class="btn" @click="handleRemoveMember(member.userId)">
-              <Icon name="ph:x" size="15" />
-            </button>
-          </div>
-        </li>
-      </ul>
+          </form>
+        </section>
+      </div>
 
-      <div class="flex flex-col gap-2 border-t pt-4">
-        <h5 class="font-medium text-sm">
+      <div v-if="isOwner || isAdmin" class="md:w-1/2 flex flex-col gap-2">
+        <section class="flex flex-col gap-2">
+          <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
+            <h4>
+              Project Members
+            </h4>
+            <p class="text-sm text-muted-foreground">
+              Manage project members and their roles.
+            </p>
+          </header>
+
+          <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-52 scroll-area">
+            <li v-for="member in projectMembers" :key="member.userId" class="card flex flex-row items-center justify-between gap-2 text-sm w-full min-w-0">
+              <div class="flex flex-col gap-1 md:w-2/3 min-w-0">
+                <span class="font-semibold truncate w-full md:w-40 min-w-0">{{ member.user?.name }}</span>
+                <span class="text-xs text-muted-foreground truncate max-w-full md:max-w-52 min-w-0">{{ member.user?.email }}</span>
+              </div>
+
+              <div v-if="member.userId !== currentUserId" class="flex flex-row items-center gap-1 md:w-1/3 justify-end">
+                <select v-model="member.role" class="min-w-[100px] capitalize" :disabled="!isOwner || member.role === 'owner'">
+                  <option v-for="role in assignableRoles" :key="role" :value="role" class="capitalize">
+                    {{ role }}
+                  </option>
+                </select>
+
+                <button class="btn" @click="handleUpdateRole(member.userId, member.role)">
+                  <Icon name="ph:check-bold" size="15" />
+                </button>
+                <button v-if="isOwner && member.role !== 'owner'" class="btn" @click="handleRemoveMember(member.userId)">
+                  <Icon name="ph:x" size="15" />
+                </button>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <section v-if="isOwner || isAdmin" class="flex flex-col md:flex-row md:items-center md:justify-between p-2 gap-2">
+      <header class="flex flex-col items-center text-center md:items-start md:text-start">
+        <h5>
           Add New Member
         </h5>
+        <p class="text-sm text-muted-foreground">
+          Invite users to join this project.
+        </p>
+      </header>
 
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+      <div class="flex flex-col sm:flex-row items-center gap-2">
+        <div class="flex flex-row items-center gap-2">
           <input v-model="newMemberId" type="text" placeholder="User ID">
           <select v-model="selectedNewMemberRole" class="min-w-[120px]">
             <option v-for="role in assignableRoles" :key="role" :value="role">
               {{ role }}
             </option>
           </select>
-
-          <button class="btn-primary" :disabled="!newMemberId.trim()" @click.prevent="handleAddMember">
-            <Icon name="ph:plus-circle" size="20" />
-            <span>Add</span>
-          </button>
         </div>
 
-        <p v-if="memberErrorMsg" class="text-sm text-danger mt-1">
-          {{ memberErrorMsg }}
-        </p>
+        <button class="btn-primary" @click.prevent="handleAddMember">
+          <Icon name="ph:plus-circle-bold" size="20" />
+          <span>Add</span>
+        </button>
       </div>
-    </div>
+
+      <p v-if="memberErrorMsg" class="text-sm text-danger my-2">
+        {{ memberErrorMsg }}
+      </p>
+    </section>
   </div>
 </template>
 

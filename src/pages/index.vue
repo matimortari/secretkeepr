@@ -32,7 +32,7 @@
     >
       <div>
         <svg
-          xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 size-12 text-primary"
+          xmlns="http://www.w3.org/2000/svg" class="mx-auto size-12 text-primary"
           fill="none" viewBox="0 0 24 24"
           stroke="currentColor" stroke-width="2"
         >
@@ -50,7 +50,7 @@
 
       <div>
         <svg
-          xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 size-12 text-primary"
+          xmlns="http://www.w3.org/2000/svg" class="mx-auto size-12 text-primary"
           fill="none" viewBox="0 0 24 24"
           stroke="currentColor" stroke-width="2"
         >
@@ -66,7 +66,7 @@
 
       <div>
         <svg
-          xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 size-12 text-primary"
+          xmlns="http://www.w3.org/2000/svg" class="mx-auto size-12 text-primary"
           fill="none" viewBox="0 0 24 24"
           stroke="currentColor" stroke-width="2"
         >
