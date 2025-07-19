@@ -135,7 +135,9 @@ const userFilter = ref("")
 const actionFilter = ref("")
 
 onMounted(async () => {
-  await organizationStore.getAuditLogs()
+  if (organizationStore.selectedOrganization?.id) {
+    await organizationStore.getAuditLogs(organizationStore.selectedOrganization.id)
+  }
 })
 
 const page = computed(() => auditLogs.value.page)
