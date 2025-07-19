@@ -11,12 +11,21 @@ export default defineEventHandler(async (event) => {
 
   await requireProjectRole(sessionUser.id!, projectId, ["owner"])
 
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: { organizationId: true },
+  })
+  if (!project) {
+    throw createError({ statusCode: 404, statusMessage: "Project not found" })
+  }
+
   await db.project.delete({
     where: { id: projectId },
   })
 
   await createAuditLog({
     userId: sessionUser.id!,
+    organizationId: project.organizationId,
     action: "project.delete",
     resource: `Project:${projectId}`,
     metadata: {},

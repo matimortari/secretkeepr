@@ -38,6 +38,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "At least one secret value is required" })
   }
 
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: { organizationId: true },
+  })
+  if (!project) {
+    throw createError({ statusCode: 404, statusMessage: "Project not found" })
+  }
+
   const newSecret = await db.secret.create({
     data: {
       key: body.key,
@@ -57,6 +65,7 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
+    organizationId: project.organizationId,
     action: "secret.create",
     resource: `Project:${projectId}`,
     metadata: {

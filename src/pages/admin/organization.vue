@@ -41,7 +41,13 @@ const logs = computed(() => organizationStore.auditLogs.logs)
 onMounted(async () => {
   await userStore.getUser()
   if (organization.value?.id) {
-    await organizationStore.getAuditLogs()
+    await organizationStore.getAuditLogs(organization.value.id)
+  }
+})
+
+watch(() => organization.value?.id, async (newId) => {
+  if (newId) {
+    await organizationStore.getAuditLogs(newId)
   }
 })
 

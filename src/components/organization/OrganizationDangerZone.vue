@@ -90,9 +90,14 @@ async function handleDeleteOrganization() {
 
   try {
     const result = await organizationStore.deleteOrganization(props.organization.id)
-
-    if (result?.message === "Organization deleted successfully" && !userStore.user?.memberships?.length) {
-      router.push("/setup/create-org")
+    if (result?.message === "Organization deleted successfully") {
+      await userStore.getUser()
+      if (!userStore.user?.memberships?.length) {
+        router.push("/setup/create-org")
+      }
+      else {
+        router.push("/admin/projects")
+      }
     }
     else {
       errorMsg.value = result?.message || "Failed to delete organization."

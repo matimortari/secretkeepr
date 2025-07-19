@@ -30,6 +30,7 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
+    organizationId: body.organizationId,
     action: "project.create",
     resource: `Project:${newProject.id}`,
     metadata: {
