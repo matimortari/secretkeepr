@@ -86,8 +86,8 @@ export async function acceptOrganizationInviteService(token: string): Promise<{ 
   return await response.json()
 }
 
-export async function getAuditLogsService(page: number = 1, limit: number = 20): Promise<AuditLogsResponse> {
-  const response = await fetch(`/api/organization/audit-logs?page=${page}&limit=${limit}`, {
+export async function getAuditLogsService(organizationId: string, page: number = 1, limit: number = 20): Promise<AuditLogsResponse> {
+  const response = await fetch(`/api/organization/audit-logs?organizationId=${organizationId}&page=${page}&limit=${limit}`, {
     method: "GET",
   })
   if (!response.ok) {

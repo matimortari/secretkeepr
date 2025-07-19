@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
   if (!isSelfRemoval) {
     await createAuditLog({
       userId: sessionUser.id!,
+      organizationId,
       action: "organization.member.remove",
       resource: `User:${memberId}`,
       metadata: {

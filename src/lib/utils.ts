@@ -14,7 +14,7 @@ export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
 // Check if the user has a specific role in an organization
 export async function requireOrgRole(userId: string, organizationId: string, roles: string[]) {
   const membership = await db.userOrganizationMembership.findUnique({
-    where: { userId_organizationId: { userId, organizationId: organizationId } },
+    where: { userId_organizationId: { userId, organizationId } },
     select: { role: true },
   })
   if (!membership) {
@@ -45,13 +45,14 @@ export async function requireProjectRole(userId: string, projectId: string, role
 }
 
 // Handle audit logging for actions performed by users
-export async function createAuditLog({ userId, action, resource, metadata = {}, req }: AuditLogType) {
-  const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0].trim() || req.socket.remoteAddress || null
-  const userAgent = req.headers["user-agent"] || null
+export async function createAuditLog({ userId, organizationId, action, resource, metadata = {}, req }: AuditLogType) {
+  const ip = (req?.headers?.["x-forwarded-for"] as string)?.split(",")[0].trim() || req?.socket?.remoteAddress || null
+  const userAgent = req?.headers?.["user-agent"] || null
 
   await db.auditLog.create({
     data: {
       userId,
+      organizationId,
       action,
       resource,
       metadata: {

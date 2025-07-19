@@ -186,11 +186,11 @@ export const useOrganizationStore = defineStore("organization", {
       }
     },
 
-    async getAuditLogs(page = 1, limit = 15) {
+    async getAuditLogs(organizationId: string, page = 1, limit = 15) {
       this.isLoading = true
       this.auditLogs.error = null
       try {
-        const response = await getAuditLogsService(page, limit)
+        const response = await getAuditLogsService(organizationId, page, limit)
         this.auditLogs.logs = response.logs
         this.auditLogs.page = response.page
         this.auditLogs.limit = response.limit
@@ -210,14 +210,14 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async nextAuditLogPage() {
-      if (this.hasNextPage) {
-        await this.getAuditLogs(this.auditLogs.page + 1, this.auditLogs.limit)
+      if (this.hasNextPage && this.selectedOrganization) {
+        await this.getAuditLogs(this.selectedOrganization.id, this.auditLogs.page + 1, this.auditLogs.limit)
       }
     },
 
     async prevAuditLogPage() {
-      if (this.hasPrevPage) {
-        await this.getAuditLogs(this.auditLogs.page - 1, this.auditLogs.limit)
+      if (this.hasPrevPage && this.selectedOrganization) {
+        await this.getAuditLogs(this.selectedOrganization.id, this.auditLogs.page - 1, this.auditLogs.limit)
       }
     },
   },
