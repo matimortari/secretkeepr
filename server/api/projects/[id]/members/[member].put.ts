@@ -24,6 +24,14 @@ export default defineEventHandler(async (event) => {
 
   await requireProjectRole(sessionUser.id!, projectId, ["owner", "admin"])
 
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: { organizationId: true },
+  })
+  if (!project) {
+    throw createError({ statusCode: 404, statusMessage: "Project not found" })
+  }
+
   const updatedUser = await db.projectMember.update({
     where: {
       userId_projectId: {
@@ -46,6 +54,7 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
+    organizationId: project.organizationId,
     action: "project.member.role.update",
     resource: `Project:${projectId}`,
     metadata: {

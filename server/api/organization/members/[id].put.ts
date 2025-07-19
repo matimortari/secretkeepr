@@ -63,6 +63,7 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
+    organizationId,
     action: "organization.member.role.update",
     resource: `User:${userId}`,
     metadata: {
