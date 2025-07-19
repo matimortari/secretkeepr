@@ -1,53 +1,61 @@
 <template>
-  <aside
-    class="fixed md:static top-0 left-0 h-full md:h-auto w-64 md:w-52 bg-muted p-4 border-r rounded-br-xl transition-transform duration-300 z-40"
-    :class="[
-      isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
-    ]"
-  >
-    <nav class="flex flex-col gap-4">
-      <header class="uppercase flex flex-row items-center gap-2">
-        <h6>
-          Overview
-        </h6>
-      </header>
+  <div>
+    <div v-if="isOpen" class="fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity duration-300" />
 
-      <NuxtLink
-        v-for="link in navLinks" :key="link.href"
-        :to="link.href"
-        class="flex flex-row items-center gap-4 text-sm hover:scale-sm hover:text-muted-foreground transition-all duration-500"
-      >
-        <Icon :name="link.icon" size="30" />
-        <span class="text-muted-foreground font-semibold">{{ link.label }}</span>
-      </NuxtLink>
+    <aside
+      class="fixed md:static top-0 left-0 h-full md:h-auto min-h-screen w-64 md:w-52 bg-muted p-4 border-r rounded-br-xl transition-transform duration-300 z-40"
+      :class="[
+        isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+      ]"
+    >
+      <nav class="flex flex-col gap-4">
+        <header class="uppercase flex flex-row items-center gap-2">
+          <h6>Overview</h6>
+        </header>
 
-      <header class="uppercase flex flex-row items-center gap-2">
-        <h6>
-          Projects
-        </h6>
-        <Icon
-          name="ph:plus-bold" size="25"
-          role="button" class="hover:scale-sm hover:text-accent transition-all duration-500"
-          @click="openDialog()"
-        />
-      </header>
-
-      <div class="flex flex-col gap-1 max-h-52 overflow-y-auto w-full scroll-area border-y">
         <NuxtLink
-          v-for="project in projectsFromOrg" :key="project.id"
-          :to="`/admin/${project.id}`"
-          class="font-medium text-sm hover:underline transition-all duration-500"
+          v-for="link in navLinks"
+          :key="link.href"
+          :to="link.href"
+          class="flex flex-row items-center gap-4 text-sm hover:scale-sm hover:text-muted-foreground transition-all duration-500"
         >
-          <span class="truncate">{{ project.name }}</span>
+          <Icon :name="link.icon" size="30" />
+          <span class="text-muted-foreground font-semibold">{{ link.label }}</span>
         </NuxtLink>
-      </div>
 
-      <a href="https://github.com/matimortari/secretkeepr" class="flex flex-row items-center gap-4 group">
-        <Icon name="simple-icons:github" size="25" class="group-hover:scale-sm group-hover:text-accent transition-all duration-500" />
-        <span class="font-semibold text-sm text-muted-foreground group-hover:underline">Support This Project</span>
-      </a>
-    </nav>
-  </aside>
+        <header class="uppercase flex flex-row items-center gap-2">
+          <h6>Projects</h6>
+          <Icon
+            name="ph:plus-bold"
+            size="25"
+            role="button"
+            class="hover:scale-sm hover:text-accent transition-all duration-500"
+            @click="openDialog()"
+          />
+        </header>
+
+        <div class="flex flex-col gap-1 max-h-52 overflow-y-auto w-full scroll-area border-y">
+          <NuxtLink
+            v-for="project in projectsFromOrg"
+            :key="project.id"
+            :to="`/admin/${project.id}`"
+            class="font-medium text-sm hover:underline transition-all duration-500 w-full truncate"
+          >
+            <span class="block truncate w-full min-w-0 text-ellipsis overflow-hidden whitespace-nowrap">
+              {{ project.name }}
+            </span>
+          </NuxtLink>
+        </div>
+
+        <a href="https://github.com/matimortari/secretkeepr" class="flex flex-row items-center gap-4 group">
+          <Icon name="simple-icons:github" size="25" class="group-hover:scale-sm group-hover:text-accent transition-all duration-500" />
+          <span class="font-semibold text-sm text-muted-foreground group-hover:underline">
+            Support This Project
+          </span>
+        </a>
+      </nav>
+    </aside>
+  </div>
 
   <ProjectsProjectDialog
     :is-open="isDialogOpen"
@@ -95,7 +103,7 @@ async function handleCreateProject(project: ProjectType) {
   try {
     await projectsStore.createProject({
       name: project.name,
-      description: project.description ?? null,
+      description: project.description ?? undefined,
       organizationId: project.organizationId,
     })
     await projectsStore.getProjects()

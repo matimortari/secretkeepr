@@ -9,45 +9,40 @@
       </p>
     </header>
 
-    <section class="flex flex-col md:flex-row items-center justify-between gap-2 p-2">
-      <div class="flex flex-col md:flex-row items-center gap-2">
-        <label class="text-sm font-medium">Filter by Date</label>
-        <input v-model="dateFilter" type="date">
-
-        <label class="text-sm font-medium">Filter by User</label>
-        <select v-model="userFilter">
-          <option value="">
-            All Users
-          </option>
-          <option v-for="user in users" :key="user" :value="user">
-            {{ user }}
-          </option>
-        </select>
-
-        <label class="text-sm font-medium">Filter by Action</label>
-        <select v-model="actionFilter">
-          <option value="">
-            All Actions
-          </option>
-          <option v-for="action in actions" :key="action.value" :value="action.value">
-            {{ action.label }}
-          </option>
-        </select>
+    <section class="flex flex-col md:flex-row items-center justify-between gap-4 p-2">
+      <div class="flex flex-col md:flex-row items-center gap-2 w-full md:w-auto">
+        <label class="flex flex-col text-sm font-medium w-full md:w-auto gap-2">
+          <span>Filter by Date</span>
+          <input v-model="dateFilter" type="date" class="w-full md:w-auto">
+        </label>
+        <label class="flex flex-col text-sm font-medium w-full md:w-auto gap-2">
+          <span>Filter by User</span>
+          <select v-model="userFilter" class="w-full md:w-auto">
+            <option value="">All Users</option>
+            <option v-for="user in users" :key="user" :value="user">{{ user }}</option>
+          </select>
+        </label>
+        <label class="flex flex-col text-sm font-medium w-full md:w-auto gap-2">
+          <span>Filter by Action</span>
+          <select v-model="actionFilter" class="w-full md:w-auto">
+            <option value="">All Actions</option>
+            <option v-for="action in actions" :key="action.value" :value="action.value">
+              {{ action.label }}
+            </option>
+          </select>
+        </label>
       </div>
 
-      <nav class="flex flex-col md:flex-row items-center gap-2">
-        <div v-if="totalPages > 0" class="flex flex-row items-center gap-4">
-          <button class="btn-secondary disabled:opacity-80 w-20" :disabled="!hasPrevPage" @click="prevPage">
-            <Icon name="ph:arrow-left" size="20" />
-            <span>Previous</span>
-          </button>
-          <span class="text-sm text-muted-foreground">Page {{ page }} of {{ totalPages }}</span>
-          <button class="btn-secondary disabled:opacity-80 w-20" :disabled="!hasNextPage" @click="nextPage">
-            <span>Next</span>
-            <Icon name="ph:arrow-right" size="20" />
-          </button>
-        </div>
-        <span v-else class="text-sm text-muted-foreground">-</span>
+      <nav v-if="totalPages > 0" class="flex flex-row items-center justify-center w-full md:w-auto gap-4 md:mt-8">
+        <button class="btn-secondary disabled:opacity-80" :disabled="!hasPrevPage" @click="prevPage">
+          <Icon name="ph:arrow-left" size="20" />
+        </button>
+        <span class="text-sm text-muted-foreground whitespace-nowrap">
+          Page {{ page }} of {{ totalPages }}
+        </span>
+        <button class="btn-secondary disabled:opacity-80" :disabled="!hasNextPage" @click="nextPage">
+          <Icon name="ph:arrow-right" size="20" />
+        </button>
       </nav>
     </section>
 
@@ -57,11 +52,11 @@
         No audit logs found.
       </div>
 
-      <div v-else class="overflow-auto max-h-[50vh] scroll-area">
-        <table class="w-full table-fixed border rounded-sm overflow-hidden">
+      <div v-else class="w-full overflow-auto max-h-[50vh] scroll-area">
+        <table class="table-fixed md:w-full border rounded-sm md:overflow-hidden">
           <thead>
             <tr class="bg-muted font-semibold text-sm transition-all duration-500">
-              <th v-for="header in headers" :key="header.value" class="p-2 text-left select-none border w-1/5">
+              <th v-for="header in headers" :key="header.value" class="p-2 text-left select-none border md:w-1/5">
                 <div class="flex flex-row items-center gap-2">
                   <Icon :name="header.icon" size="15" class="mr-1" />
                   <span>{{ header.label }}</span>
@@ -72,19 +67,19 @@
 
           <tbody>
             <tr v-for="log in filteredLogs" :key="log.id" class="text-sm">
-              <td class="p-2 font-medium border truncate w-1/5">
+              <td class="p-2 font-semibold border truncate md:w-1/5">
                 {{ getActionLabel(log.action) }}
               </td>
-              <td class="p-2 text-muted-foreground truncate border w-1/5">
+              <td class="p-2 text-muted-foreground truncate border md:w-1/5">
                 {{ log.resource }}
               </td>
-              <td class="p-2 text-muted-foreground truncate border w-1/5">
+              <td class="p-2 text-muted-foreground truncate border md:w-1/5">
                 {{ formatMetadata(log.metadata ?? {}) }}
               </td>
-              <td class="p-2 text-muted-foreground truncate border w-1/5">
+              <td class="p-2 text-muted-foreground truncate border md:w-1/5">
                 <span>{{ log.userId }}</span>
               </td>
-              <td class="p-2 text-muted-foreground truncate border w-1/5">
+              <td class="p-2 text-muted-foreground truncate border md:w-1/5">
                 {{ log.createdAt }}
               </td>
             </tr>

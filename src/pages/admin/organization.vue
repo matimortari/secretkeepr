@@ -16,7 +16,7 @@
       </header>
 
       <div
-        v-motion class="flex flex-col gap-8"
+        v-motion class="flex flex-col gap-2"
         :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
         :duration="800" :delay="200"
       >
