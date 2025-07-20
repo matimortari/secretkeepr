@@ -7,18 +7,18 @@ import db from "~/lib/db"
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
-      id?: string
-      name?: string
-      image?: string
-      email?: string
-      memberships?: {
+      id: string
+      name: string
+      image: string
+      email: string
+      memberships: {
+        role: Role
         organization: {
           id: string
           name: string
           createdAt: Date
           updatedAt: Date
         }
-        role: Role
       }[]
       projects?: { id: string, name: string, role: Role }[]
     }
@@ -72,13 +72,10 @@ export default NuxtAuthHandler({
 
         let user = existingAccount?.user
         if (!user) {
-          user = await db.user.findUnique({ where: { email } }) ?? undefined
-        }
-        if (!user) {
           user = await db.user.create({
             data: {
               email,
-              name: profile.name ?? "",
+              name: profile.name,
               image: getProfilePicture(profile, provider),
               accounts: {
                 create: {
@@ -89,7 +86,6 @@ export default NuxtAuthHandler({
             },
           })
         }
-
         else {
           const linkedAccount = await db.account.findUnique({
             where: {
@@ -124,8 +120,8 @@ export default NuxtAuthHandler({
         where: { id: token.userId },
         select: {
           id: true,
-          name: true,
           email: true,
+          name: true,
           image: true,
           memberships: {
             select: {
@@ -162,8 +158,8 @@ export default NuxtAuthHandler({
         ...session,
         user: {
           id: user.id,
-          name: user.name,
           email: user.email,
+          name: user.name,
           image: user.image,
           memberships: user.memberships,
           projects: memberships.map(m => ({
