@@ -18,13 +18,10 @@ export const useProjectsStore = defineStore("projects", {
   }),
 
   actions: {
-    clearError() {
-      this.error = null
-    },
 
     async getProjects() {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         this.projects = await getProjectsService()
       }
@@ -39,7 +36,7 @@ export const useProjectsStore = defineStore("projects", {
 
     async createProject(data: { name: string, description?: string, organizationId: string }) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const payload = {
           ...data,
@@ -61,7 +58,7 @@ export const useProjectsStore = defineStore("projects", {
 
     async deleteProject(id: string) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         await deleteProjectService(id)
         this.projects = this.projects.filter(p => p.id !== id)
@@ -79,7 +76,7 @@ export const useProjectsStore = defineStore("projects", {
 
     async updateProject(id: string, updatedData: Partial<ProjectType> & { name: string }) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const payload = {
           ...updatedData,
@@ -102,7 +99,7 @@ export const useProjectsStore = defineStore("projects", {
 
     async getProjectMembers(projectId: string) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const members = await getProjectMembersService(projectId)
         if (this.currentProject?.id === projectId) {
@@ -120,7 +117,7 @@ export const useProjectsStore = defineStore("projects", {
 
     async addProjectMember(projectId: string, memberData: { userId: string, role: Role }) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const member = await addProjectMemberService(projectId, memberData)
         if (this.currentProject?.id === projectId) {
@@ -139,7 +136,7 @@ export const useProjectsStore = defineStore("projects", {
 
     async updateProjectMember(projectId: string, memberId: string, role: Role) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const response = await updateProjectMemberService(projectId, memberId, { role })
         const updated = response.updatedMember
@@ -161,7 +158,7 @@ export const useProjectsStore = defineStore("projects", {
 
     async removeProjectMember(projectId: string, memberId: string) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         await removeProjectMemberService(projectId, memberId)
         if (this.currentProject?.id === projectId && this.currentProject.members) {

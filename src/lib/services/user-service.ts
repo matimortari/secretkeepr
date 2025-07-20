@@ -3,19 +3,7 @@ export async function getUserService(): Promise<UserType> {
     method: "GET",
   })
   if (!response.ok) {
-    throw new Error(`Failed to get user: ${response.statusText}`)
-  }
-
-  return await response.json()
-}
-
-export async function deleteUserService(): Promise<{ message: string }> {
-  const response = await fetch("/api/user", {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-  })
-  if (!response.ok) {
-    throw new Error(`Failed to delete user: ${response.statusText}`)
+    throw new Error(`Failed to get user data: ${response.statusText}`)
   }
 
   return await response.json()
@@ -29,6 +17,18 @@ export async function updateUserService(data: UpdateUserPayload): Promise<{ mess
   })
   if (!response.ok) {
     throw new Error(`Failed to update user: ${response.statusText}`)
+  }
+
+  return await response.json()
+}
+
+export async function deleteUserService(): Promise<{ message: string }> {
+  const response = await fetch("/api/user", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to delete user: ${response.statusText}`)
   }
 
   return await response.json()

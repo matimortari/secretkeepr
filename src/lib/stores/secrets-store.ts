@@ -13,13 +13,9 @@ export const useSecretsStore = defineStore("secrets", {
   }),
 
   actions: {
-    clearError() {
-      this.error = null
-    },
-
     async getSecretsByProject(projectId: string) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const response = await getProjectSecretsService(projectId)
         this.secrets = Array.isArray(response.secrets) ? response.secrets : []
@@ -45,7 +41,7 @@ export const useSecretsStore = defineStore("secrets", {
       },
     ) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const response = await createSecretService(projectId, secretData)
         const newSecret = response.newSecret ?? response
@@ -71,7 +67,7 @@ export const useSecretsStore = defineStore("secrets", {
       }>,
     ) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const payload: any = { ...data }
         if (payload.key === undefined) {
@@ -96,7 +92,7 @@ export const useSecretsStore = defineStore("secrets", {
 
     async deleteSecret(projectId: string, secretId: string) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         await deleteSecretService(projectId, secretId)
         this.secrets = this.secrets.filter(secret => secret.id !== secretId)

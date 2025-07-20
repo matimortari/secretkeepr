@@ -39,10 +39,6 @@ export const useOrganizationStore = defineStore("organization", {
   },
 
   actions: {
-    clearError() {
-      this.error = null
-      this.auditLogs.error = null
-    },
 
     setSelectedOrganization(id: string) {
       const found = this.organizations.find(org => org.id === id)
@@ -63,7 +59,7 @@ export const useOrganizationStore = defineStore("organization", {
 
     async createOrganization(data: { name: string }) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const response = await createOrganizationService(data)
         const newOrg = response.newOrganization
@@ -82,7 +78,7 @@ export const useOrganizationStore = defineStore("organization", {
 
     async updateOrganization(id: string, data: Partial<OrganizationType>) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const response = await updateOrganizationService(id, data as CreateOrganizationPayload)
         const updated = response.updatedOrganization
@@ -104,7 +100,7 @@ export const useOrganizationStore = defineStore("organization", {
 
     async deleteOrganization(id: string) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const result = await deleteOrganizationService(id)
         this.organizations = this.organizations.filter(org => org.id !== id)
@@ -123,7 +119,7 @@ export const useOrganizationStore = defineStore("organization", {
 
     async updateOrganizationMember(memberId: string, role: Role, organizationId: string) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const updated = await updateOrganizationMemberService(memberId, { role, organizationId })
         this.members = this.members.map(m => (m.id === memberId ? updated : m))
@@ -140,7 +136,7 @@ export const useOrganizationStore = defineStore("organization", {
 
     async removeOrganizationMember(memberId: string, organizationId: string) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         await removeUserFromOrganizationService(organizationId, memberId)
         this.members = this.members.filter(m => m.id !== memberId)
@@ -156,7 +152,7 @@ export const useOrganizationStore = defineStore("organization", {
 
     async createInviteLink() {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         const { inviteLink } = await createOrganizationInviteService()
         this.inviteLink = inviteLink
@@ -173,7 +169,7 @@ export const useOrganizationStore = defineStore("organization", {
 
     async acceptInvite(token: string) {
       this.isLoading = true
-      this.clearError()
+      this.error = null
       try {
         return await acceptOrganizationInviteService(token)
       }
