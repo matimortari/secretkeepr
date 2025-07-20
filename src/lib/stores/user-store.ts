@@ -38,7 +38,6 @@ export const useUserStore = defineStore("user", {
         this.error = "No user loaded"
         return
       }
-
       this.isLoading = true
       this.error = null
       try {
@@ -76,10 +75,6 @@ export const useUserStore = defineStore("user", {
     setSelectedOrganization(org: OrganizationType) {
       this.selectedOrganization = org
       localStorage.setItem("active_org_id", org.id)
-    },
-
-    clearError() {
-      this.error = null
     },
   },
 })
