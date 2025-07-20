@@ -1,7 +1,7 @@
 <template>
   <Dialog :is-open="isOpen" :title="dialogTitle" @update:is-open="emit('close')">
-    <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
-      <div class="flex flex-col items-start gap-2">
+    <form class="flex flex-col gap-2" @submit.prevent="handleSubmit">
+      <div class="flex flex-col items-start gap-1">
         <label for="name" class="text-sm font-medium">Project Name</label>
         <input
           id="name" v-model="form.name"
@@ -10,7 +10,7 @@
         >
       </div>
 
-      <div class="flex flex-col items-start gap-2">
+      <div class="flex flex-col items-start gap-1">
         <label for="description" class="text-sm font-medium">Description</label>
         <input id="description" v-model="form.description" type="text" class="w-full">
       </div>
@@ -21,7 +21,7 @@
         </span>
       </div>
 
-      <footer class="button-group justify-end">
+      <footer class="navigation-group justify-end">
         <button class="hover:underline" type="button" @click="emit('close')">
           Cancel
         </button>

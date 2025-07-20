@@ -3,7 +3,7 @@
     <table class="table-auto md:table-fixed w-full border rounded-sm overflow-hidden">
       <thead>
         <tr class="bg-muted font-semibold text-sm border transition-all duration-500">
-          <th class="flex flex-row items-center gap-2 w-full p-2 text-left select-none">
+          <th class="navigation-group w-full p-2 text-left select-none">
             <span>Key</span>
             <Icon
               name="ph:arrow-down-bold"
@@ -22,21 +22,28 @@
 
       <tbody>
         <tr
-          v-for="(key, index) in secretKeys" :key="key"
+          v-for="(secret, index) in sortedSecrets" :key="secret.key"
           v-motion class="border"
           :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0 }"
           :duration="600" :delay="100 * index"
         >
           <td class="flex flex-row items-center justify-between relative p-2 font-bold text-muted-foreground text-sm font-mono">
-            <span class="truncate max-w-[80%]">{{ key }}</span>
-            <span class="button-group">
-              <button @click="toggleVisibility(key)">
-                <Icon :name="visibleKeys[key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md hover:text-accent transition-all duration-500" />
+            <div class="flex flex-row items-center gap-2 max-w-[80%]">
+              <span class="truncate">{{ secret.key }}</span>
+              <Icon
+                v-if="secret.description" name="carbon:information-square"
+                :title="secret.description ?? undefined" size="15"
+                class="hover:scale-md flex-shrink-0 cursor-pointer transition-all duration-500"
+              />
+            </div>
+            <span class="navigation-group">
+              <button @click="toggleVisibility(secret.key)">
+                <Icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md hover:text-accent transition-all duration-500" />
               </button>
-              <button @click="updateSecret(key)">
+              <button @click="updateSecret(secret.key)">
                 <Icon name="carbon:edit" size="20" class="hover:scale-md hover:text-accent transition-all duration-500" />
               </button>
-              <button @click="handleDeleteSecret(key)">
+              <button @click="handleDeleteSecret(secret.key)">
                 <Icon name="carbon:delete" size="20" class="hover:scale-md hover:text-danger transition-all duration-500" />
               </button>
             </span>
@@ -47,13 +54,13 @@
               <span
                 class="truncate max-w-[80%] select-none"
                 :class="[
-                  !getSecretValue(key, env) ? '' : 'bg-card px-1 rounded cursor-pointer hover:scale-sm hover:text-primary transition-all duration-500',
-                ]" @click="copyToClipboard(getSecretValue(key, env))"
+                  !getSecretValue(secret.key, env) ? '' : 'bg-card px-1 rounded cursor-pointer hover:scale-sm hover:text-primary transition-all duration-500',
+                ]" @click="copyToClipboard(getSecretValue(secret.key, env))"
               >
-                {{ renderValue(key, env) }}
+                {{ renderValue(secret.key, env) }}
               </span>
 
-              <button @click="copyToClipboard(getSecretValue(key, env))">
+              <button @click="copyToClipboard(getSecretValue(secret.key, env))">
                 <Icon name="carbon:copy" size="20" class="hover:scale-md hover:text-accent transition-all duration-500" />
               </button>
             </div>
@@ -84,12 +91,11 @@ const sort = ref<{ key: string, direction: "asc" | "desc" }>({
   direction: "asc",
 })
 
-const secretKeys = computed(() => {
-  const keys = props.secrets.map(secret => secret.key)
-  return keys.sort((a, b) => {
+const sortedSecrets = computed(() => {
+  return [...props.secrets].sort((a, b) => {
     if (sort.value.direction === "asc")
-      return a.localeCompare(b)
-    else return b.localeCompare(a)
+      return a.key.localeCompare(b.key)
+    else return b.key.localeCompare(a.key)
   })
 })
 

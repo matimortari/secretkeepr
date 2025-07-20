@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-2 border-b">
+  <div class="flex flex-col gap-2">
     <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
       <h4>
         Danger Zone
@@ -9,7 +9,7 @@
       </p>
     </header>
 
-    <section class="flex flex-col md:flex-row md:items-center md:justify-between p-2 gap-2 border-b">
+    <section class="flex flex-col md:navigation-group md:justify-between p-2 border-b">
       <header class="flex flex-col gap-1 items-center text-center md:items-start md:text-start">
         <h5>
           Leave Organization
@@ -25,7 +25,7 @@
       </button>
     </section>
 
-    <section class="flex flex-col md:flex-row md:items-center md:justify-between p-2 gap-2">
+    <section class="flex flex-col md:navigation-group md:justify-between p-2 border-b">
       <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start">
         <h5>
           Delete Organization

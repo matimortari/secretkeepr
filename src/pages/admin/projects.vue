@@ -4,38 +4,38 @@
     :initial="{ opacity: 0 }" :enter="{ opacity: 1 }"
     :duration="800"
   >
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
       <header
-        v-motion class="flex flex-row items-center gap-4 border-b pb-2"
+        v-motion class="navigation-group border-b pb-2 flex-nowrap"
         :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
         :duration="800" :delay="200"
       >
-        <h2>
+        <h2 class="whitespace-nowrap flex-shrink-0">
           My Projects
         </h2>
-      </header>
 
-      <div
-        v-motion class="flex flex-row justify-between items-center gap-2"
-        :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
-        :duration="800" :delay="200"
-      >
-        <div class="relative w-full">
-          <span class="absolute inset-y-0 left-0 flex flex-row items-center pl-4 text-muted-foreground">
-            <Icon name="ph:magnifying-glass-bold" size="20" />
-          </span>
-          <input
-            id="search" v-model="searchQuery"
-            type="text" placeholder="Search by project name..."
-            class="w-full pl-10"
-          >
+        <div
+          v-motion class="navigation-group w-full flex-1"
+          :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
+          :duration="800" :delay="200"
+        >
+          <div class="relative w-full flex-1">
+            <span class="absolute inset-y-0 left-0 flex flex-row items-center pl-4 text-muted-foreground">
+              <Icon name="ph:magnifying-glass-bold" size="20" />
+            </span>
+            <input
+              id="search" v-model="searchQuery"
+              type="text" placeholder="Search projects..."
+              class="w-full pl-10"
+            >
+          </div>
+
+          <button class="btn-primary" @click="openDialog()">
+            <span class="hidden md:inline">Add New Project</span>
+            <Icon name="ph:plus-bold" size="20" />
+          </button>
         </div>
-
-        <button class="btn-primary" @click="openDialog()">
-          <span>Add New Project</span>
-          <Icon name="ph:plus-bold" size="20" />
-        </button>
-      </div>
+      </header>
 
       <div v-if="isLoading" class="flex items-center justify-center h-[80vh]">
         <Spinner />
@@ -85,12 +85,11 @@ const userStore = useUserStore()
 const projectsStore = useProjectsStore()
 
 const { projects, isLoading } = storeToRefs(projectsStore)
+const selectedProject = ref<ProjectType | null>(null)
+const searchQuery = ref("")
+const isDialogOpen = ref(false)
 
 const organizationId = computed(() => userStore.selectedOrganization?.id || "")
-
-const searchQuery = ref("")
-const selectedProject = ref<ProjectType | null>(null)
-const isDialogOpen = ref(false)
 
 const filteredProjects = computed(() => {
   return projects.value.filter(project =>
@@ -118,7 +117,7 @@ async function handleCreateProject(project: ProjectType) {
   try {
     await projectsStore.createProject({
       name: project.name,
-      description: project.description ?? null,
+      description: project.description ?? undefined,
       organizationId: project.organizationId,
     })
     await projectsStore.getProjects()

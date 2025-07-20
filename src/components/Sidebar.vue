@@ -9,45 +9,45 @@
       ]"
     >
       <nav class="flex flex-col gap-4">
-        <header class="uppercase flex flex-row items-center gap-2">
-          <h6>Overview</h6>
-        </header>
+        <h6>
+          Overview
+        </h6>
 
         <NuxtLink
           v-for="link in navLinks"
           :key="link.href"
           :to="link.href"
-          class="flex flex-row items-center gap-4 text-sm hover:scale-sm hover:text-muted-foreground transition-all duration-500"
+          class="navigation-group text-sm text-muted-foreground font-semibold hover:scale-sm transition-all duration-500"
         >
           <Icon :name="link.icon" size="30" />
-          <span class="text-muted-foreground font-semibold">{{ link.label }}</span>
+          <span>{{ link.label }}</span>
         </NuxtLink>
 
-        <header class="uppercase flex flex-row items-center gap-2">
-          <h6>Projects</h6>
+        <div class="navigation-group justify-between">
+          <h6>
+            Projects
+          </h6>
           <Icon
             name="ph:plus-bold"
             size="25"
             role="button"
-            class="hover:scale-sm hover:text-accent transition-all duration-500"
+            class="hover:scale-md hover:text-accent transition-all duration-500"
             @click="openDialog()"
           />
-        </header>
+        </div>
 
         <div class="flex flex-col gap-1 max-h-52 overflow-y-auto w-full scroll-area border-y">
           <NuxtLink
             v-for="project in projectsFromOrg"
             :key="project.id"
             :to="`/admin/${project.id}`"
-            class="font-medium text-sm hover:underline transition-all duration-500 w-full truncate"
+            class="font-medium text-sm truncate w-full"
           >
-            <span class="block truncate w-full min-w-0 text-ellipsis overflow-hidden whitespace-nowrap">
-              {{ project.name }}
-            </span>
+            {{ project.name }}
           </NuxtLink>
         </div>
 
-        <a href="https://github.com/matimortari/secretkeepr" class="flex flex-row items-center gap-4 group">
+        <a href="https://github.com/matimortari/secretkeepr" class="navigation-group group">
           <Icon name="simple-icons:github" size="25" class="group-hover:scale-sm group-hover:text-accent transition-all duration-500" />
           <span class="font-semibold text-sm text-muted-foreground group-hover:underline">
             Support This Project
