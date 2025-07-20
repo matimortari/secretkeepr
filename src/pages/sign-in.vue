@@ -27,7 +27,7 @@
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
       :duration="600"
     >
-      <div class="button-group">
+      <div class="navigation-group">
         <button class="btn" @click="signIn('google', { callbackUrl: '/admin/projects' })">
           <Icon name="simple-icons:google" size="25" />
           <span>Sign In with Google</span>

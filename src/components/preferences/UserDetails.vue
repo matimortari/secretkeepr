@@ -29,7 +29,7 @@
         readonly
       >
 
-      <p class="flex flex-col md:flex-row gap-2 text-sm">
+      <p class="flex flex-col md:navigation-group text-sm">
         Joined On <span class="text-muted-foreground">{{ formattedJoinedDate }}</span>
       </p>
 
