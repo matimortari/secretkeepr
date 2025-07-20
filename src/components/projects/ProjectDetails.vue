@@ -64,7 +64,7 @@
                 <span class="text-xs text-muted-foreground truncate max-w-full md:max-w-52 min-w-0">{{ member.user?.email }}</span>
               </div>
 
-              <div v-if="member.userId !== currentUserId" class="flex flex-row items-center gap-1 md:w-1/3 justify-end">
+              <div v-if="member.userId !== currentUserId" class="navigation-group md:w-1/3 justify-end">
                 <select v-model="member.role" class="min-w-[100px] capitalize" :disabled="!isOwner || member.role === 'owner'">
                   <option v-for="role in assignableRoles" :key="role" :value="role" class="capitalize">
                     {{ role }}
@@ -94,8 +94,8 @@
         </p>
       </header>
 
-      <div class="flex flex-col sm:flex-row items-center gap-2">
-        <div class="flex flex-row items-center gap-2">
+      <div class="flex flex-col sm:navigation-group">
+        <div class="navigation-group">
           <input v-model="newMemberId" type="text" placeholder="User ID">
           <select v-model="selectedNewMemberRole" class="min-w-[120px]">
             <option v-for="role in assignableRoles" :key="role" :value="role">

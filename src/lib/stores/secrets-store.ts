@@ -42,8 +42,13 @@ export const useSecretsStore = defineStore("secrets", {
     ) {
       this.isLoading = true
       this.error = null
+
       try {
-        const response = await createSecretService(projectId, secretData)
+        const payload: any = { ...secretData }
+        if (payload.key === undefined) {
+          throw new Error("Secret key is required for update")
+        }
+        const response = await createSecretService(projectId, payload)
         const newSecret = response.newSecret ?? response
         this.secrets.push(newSecret)
         return newSecret

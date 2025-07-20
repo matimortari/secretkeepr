@@ -6,51 +6,29 @@
   >
     <div class="flex flex-col gap-2">
       <header
-        v-motion class="flex flex-row items-center gap-4 border-b pb-2"
+        v-motion class="navigation-group justify-between border-b pb-2 flex-nowrap"
         :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
         :duration="800" :delay="200"
       >
-        <NuxtLink to="/admin/projects">
-          <Icon name="ph:arrow-left-bold" size="25" class="text-muted-foreground hover:text-accent md:mt-2" />
-        </NuxtLink>
-        <h2>
-          {{ project?.name }}
-        </h2>
-        <p
-          v-motion class="hidden md:block text-muted-foreground text-sm mt-2"
-          :initial="{ opacity: 0, x: -10 }" :enter="{ opacity: 1, x: 0 }"
-          :duration="800"
+        <div class="navigation-group shrink-0">
+          <NuxtLink to="/admin/projects">
+            <Icon name="ph:arrow-left-bold" size="25" class="text-muted-foreground hover:text-accent md:mt-2" />
+          </NuxtLink>
+          <h2 class="truncate max-w-lg">
+            {{ project?.name }}
+          </h2>
+        </div>
+
+        <div
+          v-motion class="navigation-group overflow-hidden"
+          :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
+          :duration="800" :delay="200"
         >
-          {{ project?.description || "No description provided." }}
-        </p>
-      </header>
-
-      <div
-        class="flex flex-row justify-between items-center gap-2" :initial="{ opacity: 0, x: -20 }"
-        :enter="{ opacity: 1, x: 0 }" :duration="800"
-        :delay="200"
-      >
-        <header class="button-group w-full">
-          <h3 class="hidden md:block whitespace-nowrap">
-            Secrets Overview
-          </h3>
-          <div class="relative w-full">
-            <span class="absolute inset-y-0 left-0 flex flex-row items-center pl-4 text-muted-foreground">
-              <Icon name="ph:magnifying-glass-bold" size="20" />
-            </span>
-            <input
-              id="search" v-model="searchQuery"
-              type="text" placeholder="Search secrets..."
-              class="w-full pl-10"
-            >
-          </div>
-        </header>
-
-        <div class="flex flex-row items-center gap-2">
           <button class="btn-primary" @click="openDialog('secret')">
-            <span>Add New Secret</span>
+            <span class="hidden md:inline">Add New Secret</span>
             <Icon name="ph:plus-bold" size="20" />
           </button>
+
           <button class="btn-secondary" @click="openDialog('env')">
             <span class="hidden md:block">Import .env File</span>
             <Icon name="ph:upload-bold" size="20" />
@@ -62,20 +40,22 @@
               <Icon name="ph:download-bold" size="20" />
             </button>
 
-            <ul v-if="isDropdownOpen" class="dropdown overflow-y-auto scroll-area text-sm">
-              <li v-for="env in environments" :key="env" class="p-2 hover:bg-muted rounded cursor-pointer capitalize" @click="selectEnvironment(env)">
-                {{ env }}
-              </li>
-            </ul>
+            <Transition name="dropdown" mode="out-in">
+              <ul v-if="isDropdownOpen" class="dropdown overflow-y-auto scroll-area text-sm">
+                <li v-for="env in environments" :key="env" class="p-2 hover:bg-muted rounded cursor-pointer capitalize" @click="selectEnvironment(env)">
+                  {{ env }}
+                </li>
+              </ul>
+            </Transition>
           </div>
 
           <NuxtLink v-if="project?.id" :to="`/admin/${project.id}/settings`" class="btn">
             <Icon name="ph:gear-bold" size="20" />
           </NuxtLink>
         </div>
-      </div>
+      </header>
 
-      <ProjectsSecretsTable :secrets="filteredSecrets" :project-id="project?.id ?? ''" @edit="secret => openDialog('secret', secret)" />
+      <ProjectsSecretsTable :secrets="secrets" :project-id="project?.id ?? ''" @edit="secret => openDialog('secret', secret)" />
 
       <ProjectsSecretDialog
         :is-open="isSecretDialogOpen"
@@ -85,8 +65,8 @@
         @save="handleSaveSecret"
       />
 
-      <ProjectsImportFromEnvDialog
-        :is-open="isImportFromEnvDialogOpen"
+      <ProjectsSecretImportDialog
+        :is-open="isSecretImportDialogOpen"
         :project-id="project?.id ?? ''"
         :existing-secrets="secrets"
         @close="closeDialog"
@@ -106,11 +86,10 @@ const { project, secrets } = useProjectSecrets(route.params.project as string)
 const projectsStore = useProjectsStore()
 const secretsStore = useSecretsStore()
 
-const searchQuery = ref("")
 const selectedSecret = ref<SecretType | null>(null)
 const activeDialog = ref<"secret" | "env" | null>(null)
 const isSecretDialogOpen = computed(() => activeDialog.value === "secret")
-const isImportFromEnvDialogOpen = computed(() => activeDialog.value === "env")
+const isSecretImportDialogOpen = computed(() => activeDialog.value === "env")
 const selectedEnvironment = ref("")
 const environments = ["development", "staging", "production"]
 const dropdownRef = ref<HTMLElement | null>(null)
@@ -127,10 +106,6 @@ function selectEnvironment(env: string) {
   isDropdownOpen.value = false
   handleExportToEnv()
 }
-
-const filteredSecrets = computed(() =>
-  secrets.value.filter(secret => secret.key.toLowerCase().includes(searchQuery.value.toLowerCase())),
-)
 
 function openDialog(type: "secret" | "env", secret?: SecretType) {
   selectedSecret.value = type === "secret" ? secret || null : null
@@ -208,12 +183,14 @@ async function handleSaveSecret(secret: SecretType) {
     if (secret.id) {
       await secretsStore.updateSecret(projectId, secret.id, {
         key: secret.key,
+        description: secret.description ?? "",
         values: secret.values ?? [],
       })
     }
     else {
       await secretsStore.createSecret(projectId, {
         key: secret.key,
+        description: secret.description ?? "",
         values: secret.values ?? [],
       })
     }
@@ -259,3 +236,20 @@ definePageMeta({
   },
 })
 </script>
+
+<style scoped>
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(0.25rem);
+}
+.dropdown-enter-to,
+.dropdown-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>

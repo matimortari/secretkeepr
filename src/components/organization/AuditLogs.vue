@@ -9,8 +9,8 @@
       </p>
     </header>
 
-    <section class="flex flex-col md:flex-row items-center justify-between gap-4 p-2">
-      <div class="flex flex-col md:flex-row items-center gap-2 w-full md:w-auto">
+    <section class="flex flex-col md:navigation-group md:justify-between p-2">
+      <div class="flex flex-col md:navigation-group w-full md:w-auto">
         <label class="flex flex-col text-sm font-medium w-full md:w-auto gap-2">
           <span>Filter by Date</span>
           <input v-model="dateFilter" type="date" class="w-full md:w-auto">
@@ -57,7 +57,7 @@
           <thead>
             <tr class="bg-muted font-semibold text-sm transition-all duration-500">
               <th v-for="header in headers" :key="header.value" class="p-2 text-left select-none border md:w-1/5">
-                <div class="flex flex-row items-center gap-2">
+                <div class="navigation-group">
                   <Icon :name="header.icon" size="15" class="mr-1" />
                   <span>{{ header.label }}</span>
                 </div>

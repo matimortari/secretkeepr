@@ -52,13 +52,13 @@
           </header>
 
           <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-52 scroll-area">
-            <li v-for="project in projectsFromOrg" :key="project.id" class="card flex flex-row items-center justify-between gap-2 text-sm w-full min-w-0">
+            <li v-for="project in projectsFromOrg" :key="project.id" class="card navigation-group justify-between text-sm w-full min-w-0">
               <div class="flex flex-col gap-1 md:w-2/3 min-w-0">
                 <span class="font-semibold truncate w-full md:w-40 min-w-0">{{ project.name }}</span>
                 <span class="text-xs text-muted-foreground truncate max-w-full md:max-w-52 min-w-0">{{ project.description || "No description provided." }}</span>
               </div>
 
-              <div class="flex flex-row items-center gap-1 md:w-1/3 justify-end">
+              <div class="navigation-group md:w-1/3 justify-end">
                 <NuxtLink :to="`/admin/${project.id}`" class="btn">
                   <Icon name="ph:eye-bold" size="15" />
                 </NuxtLink>
@@ -84,7 +84,7 @@
           </header>
 
           <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-52 scroll-area">
-            <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card flex flex-row items-center justify-between gap-2 text-sm w-full min-w-0">
+            <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card navigation-group justify-between text-sm w-full min-w-0">
               <div class="flex flex-col gap-1 md:w-2/3 min-w-0">
                 <span class="font-semibold truncate w-full md:w-40 min-w-0">
                   {{ orgUser.name }}
@@ -99,7 +99,7 @@
                 <span class="text-xs truncate">{{ orgUser.email }}</span>
               </div>
 
-              <div v-if="orgUser.role !== 'owner' && ['owner'].includes(currentUserRole)" class="flex flex-row items-center gap-1 justify-end">
+              <div v-if="orgUser.role !== 'owner' && ['owner'].includes(currentUserRole)" class="navigation-group justify-end">
                 <select v-model="userRoles[orgUser.id ?? '']" class="min-w-[100px]">
                   <option v-for="role in assignableRoles" :key="role.value" :value="role.value">
                     {{ role.label }}
@@ -118,7 +118,7 @@
       </div>
     </div>
 
-    <section class="flex flex-col md:flex-row md:items-center md:justify-between p-2 gap-2">
+    <section class="flex flex-col md:navigation-group md:justify-between p-2">
       <header class="flex flex-col items-center text-center md:items-start md:text-start">
         <h5>
           Invite Members
@@ -136,8 +136,8 @@
 
         <div v-if="inviteLink" class="relative">
           <input type="text" :value="inviteLink" readonly class="pr-10">
-          <button class="absolute inset-y-0 right-0 flex flex-row items-center pr-2 text-muted-foreground" type="button" @click="copyInviteLink">
-            <Icon name="ph:copy" size="20" />
+          <button class="absolute inset-y-0 right-0 flex flex-row items-center pr-2 text-muted-foreground">
+            <Icon name="ph:copy" size="20" @click="copyInviteLink" />
           </button>
         </div>
       </div>
