@@ -1,6 +1,6 @@
 <template>
-  <nav class="flex flex-row items-center justify-between gap-2 p-4 border-b-2">
-    <div class="flex flex-row items-center gap-2">
+  <nav class="navigation-group justify-between p-4 border-b-2">
+    <div class="navigation-group">
       <NuxtLink to="/">
         <img
           src="/logo.png" alt="Logo"
@@ -9,50 +9,50 @@
         >
       </NuxtLink>
 
-      <div class="flex flex-row items-center gap-2 text-sm">
-        <div class="hidden md:flex flex-row items-center gap-2 text-muted-foreground">
+      <div class="navigation-group text-sm">
+        <div class="hidden md:navigation-group text-muted-foreground">
           <span>/</span>
           <span>{{ user?.name }}</span>
           <span>/</span>
         </div>
 
         <div ref="dropdownRef" class="relative">
-          <button class="flex items-center gap-2 truncate hover:underline" @click="isDropdownOpen = !isDropdownOpen">
+          <button class="navigation-group truncate hover:underline" @click="isDropdownOpen = !isDropdownOpen">
             <span class="text-muted-foreground">{{ selectedOrganization?.name || 'Select Organization' }}</span>
-            <Icon name="ph:caret-down" size="20" />
+            <Icon name="ph:caret-down-bold" size="20" class="hover:scale-md hover:text-accent transition-all duration-500" />
           </button>
 
-          <ul v-if="isDropdownOpen" class="dropdown overflow-y-auto scroll-area">
-            <li
-              v-for="org in organizations" :key="org.id"
-              class="p-2 hover:bg-muted rounded cursor-pointer truncate" role="option"
-              @click="selectOrganization(org)"
-            >
-              {{ org.name }}
-            </li>
-            <li class="p-2 hover:bg-muted rounded truncate group" role="option">
-              <NuxtLink to="/setup/create-org" class="flex flex-row items-center gap-2">
-                <span class="text-accent group-hover:text-muted-foreground font-semibold">Create New</span>
-                <Icon name="ph:plus-bold" size="20" class="text-accent group-hover:text-muted-foreground" />
-              </NuxtLink>
-            </li>
-          </ul>
+          <Transition name="dropdown" mode="out-in">
+            <ul v-if="isDropdownOpen" class="dropdown overflow-y-auto scroll-area">
+              <li
+                v-for="org in organizations" :key="org.id"
+                class="p-2 hover:bg-muted rounded cursor-pointer truncate" role="option"
+                @click="selectOrganization(org)"
+              >
+                {{ org.name }}
+              </li>
+              <li class="p-2 hover:bg-muted rounded truncate group" role="option">
+                <NuxtLink to="/setup/create-org" class="navigation-group">
+                  <span class="text-accent group-hover:text-muted-foreground font-semibold">Create New</span>
+                  <Icon name="ph:plus-bold" size="20" class="text-accent group-hover:text-muted-foreground" />
+                </NuxtLink>
+              </li>
+            </ul>
+          </Transition>
         </div>
 
-        <div class="hidden md:flex flex-row items-center gap-2 text-muted-foreground">
+        <div class="hidden md:navigation-group text-muted-foreground">
           <span>/</span>
           <span class="capitalize">{{ currentPage }}</span>
         </div>
       </div>
     </div>
 
-    <div class="flex flex-row items-center gap-2">
-      <button v-if="user" class="btn" @click="() => signOut({ callbackUrl: '/' })">
-        Sign Out
+    <div class="navigation-group">
+      <button class="btn" @click="() => signOut({ callbackUrl: '/' })">
+        <Icon name="ph:sign-out-bold" size="20" />
+        <span>Sign Out</span>
       </button>
-      <NuxtLink v-else to="/sign-in" class="btn">
-        Sign In
-      </NuxtLink>
       <button class="btn" @click="toggleTheme">
         <Icon :name="themeIcon" size="20" />
       </button>
@@ -116,3 +116,20 @@ function selectOrganization(org: OrganizationType) {
   window.location.reload()
 }
 </script>
+
+<style scoped>
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(0.25rem);
+}
+.dropdown-enter-to,
+.dropdown-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>

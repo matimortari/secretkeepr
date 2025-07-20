@@ -1,7 +1,7 @@
 <template>
   <div>
-    <header class="flex flex-row items-center justify-between gap-2 p-4 border-b-2">
-      <div class="flex flex-row items-center gap-2">
+    <header class="navigation-group justify-between p-4 border-b-2">
+      <div class="navigation-group">
         <NuxtLink to="/">
           <img
             src="/logo.png" alt="Logo"
@@ -9,14 +9,15 @@
             class="flex-shrink-0"
           >
         </NuxtLink>
-        <p class="flex flex-row items-center gap-2 text-muted-foreground text-sm">
+        <p class="navigation-group text-muted-foreground text-sm">
           Please sign in to use all features.
         </p>
       </div>
 
-      <div class="flex flex-row items-center gap-2">
+      <div class="navigation-group">
         <NuxtLink to="/sign-in" class="btn">
-          Sign In
+          <Icon name="ph:sign-in-bold" size="20" />
+          <span>Sign In</span>
         </NuxtLink>
         <button class="btn" @click="toggleTheme">
           <Icon :name="themeIcon" size="20" />

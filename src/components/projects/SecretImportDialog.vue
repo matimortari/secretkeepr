@@ -1,10 +1,10 @@
 <template>
   <Dialog :is-open="isOpen" title="Import from .env" @update:is-open="emit('close')">
-    <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
+    <form class="flex flex-col gap-2" @submit.prevent="handleSubmit">
       <textarea v-model="envText" rows="10" class="resize-none font-mono scroll-area" placeholder="Paste your .env content here..." />
 
-      <div class="button-group">
-        <label class="text-sm font-medium w-36">Environment</label>
+      <div class="flex flex-col items-start gap-1">
+        <label class="text-sm font-medium">Environment</label>
         <select v-model="selectedEnv" class="w-full capitalize">
           <option v-for="env in environments" :key="env" :value="env" class="capitalize">
             {{ env }}
@@ -18,7 +18,7 @@
         </span>
       </div>
 
-      <footer class="button-group justify-end">
+      <footer class="navigation-group justify-end">
         <button class="hover:underline" type="button" @click="emit('close')">
           Cancel
         </button>
