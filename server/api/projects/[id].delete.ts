@@ -3,8 +3,8 @@ import { createAuditLog, getUserFromSession, requireProjectRole } from "~/lib/ut
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
-  const projectId = event.context.params?.id
 
+  const projectId = event.context.params?.id
   if (!projectId || typeof projectId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Project ID is required" })
   }
@@ -27,8 +27,10 @@ export default defineEventHandler(async (event) => {
     userId: sessionUser.id!,
     organizationId: project.organizationId,
     action: "project.delete",
-    resource: `Project:${projectId}`,
-    metadata: {},
+    resource: `Project: ${projectId}`,
+    metadata: {
+      id: projectId,
+    },
     req: event.node.req,
   })
 
