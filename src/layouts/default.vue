@@ -6,7 +6,7 @@
           <img
             src="/logo.png" alt="Logo"
             width="40" height="40"
-            class="flex-shrink-0"
+            class="hover:scale-md flex-shrink-0 transition-all duration-500"
           >
         </NuxtLink>
         <p class="navigation-group text-sm text-muted-foreground">
@@ -15,13 +15,13 @@
       </div>
 
       <div class="navigation-group">
-        <NuxtLink to="/sign-in" class="btn">
-          <Icon name="ph:sign-in-bold" size="20" />
-          <span>Sign In</span>
-        </NuxtLink>
         <button class="btn" @click="toggleTheme">
           <Icon :name="themeIcon" size="20" />
         </button>
+        <NuxtLink to="/sign-in" class="btn">
+          <Icon name="ph:sign-in-bold" size="20" />
+          <span class="hidden md:inline">Sign In</span>
+        </NuxtLink>
       </div>
     </header>
 

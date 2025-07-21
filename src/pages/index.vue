@@ -19,72 +19,89 @@
       >
         SecretKeepR is a secrets manager designed to help users and organizations securely manage and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
       </p>
-
       <NuxtLink to="/sign-in" class="btn-primary">
-        Get Started
+        <span>Get Started</span>
+        <Icon name="ph:arrow-right-bold" size="20" />
       </NuxtLink>
     </div>
 
     <section
       id="features" v-motion
       :initial="{ opacity: 0, y: 30, scale: 0.9 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
-      :transition="{ delay: 0.5, duration: 1000 }" class="grid max-w-4xl grid-cols-1 gap-8 py-12 text-center md:grid-cols-3"
+      :transition="{ delay: 0.5, duration: 1000 }" class="grid max-w-4xl grid-cols-1 gap-8 border-b py-12 text-center md:grid-cols-3"
     >
-      <div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg" class="mx-auto size-12 text-primary"
-          fill="none" viewBox="0 0 24 24"
-          stroke="currentColor" stroke-width="2"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 1.104-.448 2-1 2s-1-.896-1-2 .448-2 1-2 1 .896 1 2z" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M7 10v-2a5 5 0 1110 0v2" />
-        </svg>
-        <h4>
-          End-to-End Encryption
-        </h4>
+      <div v-for="(feature, index) in features" :key="index" class="flex flex-col items-center gap-4">
+        <Icon :name="feature.icon" class="text-primary" size="50" />
+        <h3 class="whitespace-nowrap">
+          {{ feature.title }}
+        </h3>
         <p class="tracking-tight text-muted-foreground">
-          Your secrets are encrypted at rest and never exposed beyond the UI.
-        </p>
-      </div>
-
-      <div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg" class="mx-auto size-12 text-primary"
-          fill="none" viewBox="0 0 24 24"
-          stroke="currentColor" stroke-width="2"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18M7 6h10M7 18h10" />
-        </svg>
-        <h4>
-          Role-Based Access Control
-        </h4>
-        <p class="tracking-tight text-muted-foreground">
-          Manage who can view and edit secrets with fine-grained permissions.
-        </p>
-      </div>
-
-      <div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg" class="mx-auto size-12 text-primary"
-          fill="none" viewBox="0 0 24 24"
-          stroke="currentColor" stroke-width="2"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2z" />
-        </svg>
-        <h4>
-          Audit Logs
-        </h4>
-        <p class="tracking-tight text-muted-foreground">
-          Track sensitive operations like secret changes and organization updates.
+          {{ feature.description }}
         </p>
       </div>
     </section>
+
+    <div class="flex flex-col items-center gap-12 p-12 text-center">
+      <h2>
+        How to Use SecretKeepR
+      </h2>
+
+      <div class="grid grid-cols-1 gap-4 text-center md:grid-cols-5">
+        <div v-for="(step, index) in howToUseSteps" :key="index" class="flex flex-col items-center gap-1">
+          <h4 class="whitespace-nowrap">
+            {{ index + 1 }}. {{ step.title }}
+          </h4>
+          <p class="tracking-tight text-muted-foreground">
+            {{ step.description }}
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+const features = [
+  {
+    title: "End-to-End Encryption",
+    description: "Your secrets are encrypted at rest and never exposed beyond the UI.",
+    icon: "dinkie-icons:lock",
+  },
+  {
+    title: "Role-Based Access Control",
+    description: "Manage who can view and edit secrets with fine-grained permissions.",
+    icon: "dinkie-icons:entry",
+  },
+  {
+    title: "Audit Logs",
+    description: "Track sensitive operations like secret changes and organization updates.",
+    icon: "dinkie-icons:right-magnifying-glass",
+  },
+]
+
+const howToUseSteps = [
+  {
+    title: "Sign In",
+    description: "Use GitHub or Google to get started securely.",
+  },
+  {
+    title: "Create an Organization",
+    description: "Set up your organization to manage projects and users.",
+  },
+  {
+    title: "Create a Project",
+    description: "Group secrets by project to keep things organized.",
+  },
+  {
+    title: "Add Secrets",
+    description: "Store and encrypt your environment variables.",
+  },
+  {
+    title: "Invite Teammates",
+    description: "Assign roles and collaborate securely via the invite system.",
+  },
+]
+
 useHead({
   title: "SecretKeepR – Securely Manage Your Environment Variables",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app" }, { rel: "icon", href: "/favicon.ico" }],

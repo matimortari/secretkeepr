@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div v-if="isOpen" class="fixed inset-0 z-30 bg-black/50 transition-opacity duration-300 md:hidden" />
-
+    <div
+      v-if="isOpen"
+      class="fixed inset-0 z-30 bg-black/50 transition-opacity duration-300 md:hidden"
+      @click="$emit('update:isOpen', false)"
+    />
     <aside
       class="fixed left-0 top-0 z-40 h-full min-h-screen w-64 rounded-br-xl border-r bg-muted p-4 transition-transform duration-300 md:static md:h-auto md:w-52"
       :class="[
@@ -70,6 +73,10 @@ import { useProjectsStore } from "~/lib/stores/projects-store"
 const props = defineProps<{
   organization: OrganizationType | null
   isOpen: boolean
+}>()
+
+defineEmits<{
+  (e: "update:isOpen", value: boolean): void
 }>()
 
 const navLinks = [

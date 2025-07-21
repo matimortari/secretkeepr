@@ -5,7 +5,7 @@
         <img
           src="/logo.png" alt="Logo"
           width="40" height="40"
-          class="flex-shrink-0"
+          class="hover:scale-md flex-shrink-0 transition-all duration-500"
         >
       </NuxtLink>
 
@@ -49,15 +49,15 @@
     </div>
 
     <div class="navigation-group">
-      <button class="btn" @click="() => signOut({ callbackUrl: '/' })">
-        <Icon name="ph:sign-out-bold" size="20" />
-        <span>Sign Out</span>
+      <button class="btn md:hidden" @click="$emit('toggleSidebar')">
+        <Icon :name="props.isSidebarOpen ? 'ph:x' : 'ph:list'" size="20" />
       </button>
       <button class="btn" @click="toggleTheme">
         <Icon :name="themeIcon" size="20" />
       </button>
-      <button class="btn md:hidden" @click="$emit('toggleSidebar')">
-        <Icon :name="props.isSidebarOpen ? 'ph:x' : 'ph:list'" size="20" />
+      <button class="btn" @click="() => signOut({ callbackUrl: '/' })">
+        <Icon name="ph:sign-out-bold" size="20" />
+        <span class="hidden md:inline">Sign Out</span>
       </button>
     </div>
   </nav>
