@@ -1,25 +1,25 @@
 <template>
   <NuxtLink :to="`/admin/${project.id}`">
-    <div class="card relative h-[180px] w-full overflow-hidden border-2 hover:border-secondary group">
-      <div class="flex flex-col gap-2 p-2 h-full">
+    <div class="card group relative h-[180px] w-full overflow-hidden border-2 hover:border-secondary">
+      <div class="flex h-full flex-col gap-2 p-2">
         <h4 class="truncate">
           {{ project.name }}
         </h4>
-        <p class="text-sm text-muted-foreground line-clamp-3">
+        <p class="line-clamp-3 text-sm text-muted-foreground">
           {{ project.description || 'No description provided.' }}
         </p>
       </div>
 
-      <div class="absolute bottom-4 left-4 navigation-group text-muted-foreground">
-        <Icon name="ph:key-bold" size="20" class="group-hover:text-secondary group-hover:scale-sm transition-all duration-500" />
-        <span class="font-medium group-hover:text-secondary group-hover:scale-sm transition-all duration-500">{{ totalProjectSecrets }}</span>
+      <div class="navigation-group absolute bottom-4 left-4 text-muted-foreground">
+        <Icon name="ph:key-bold" size="20" class="group-hover:scale-sm transition-all duration-500 group-hover:text-secondary" />
+        <span class="group-hover:scale-sm font-medium transition-all duration-500 group-hover:text-secondary">{{ totalProjectSecrets }}</span>
 
-        <NuxtLink :to="`/admin/${project.id}/settings`" class="group-hover:text-secondary group-hover:scale-sm transition-all duration-500">
-          <Icon name="ph:gear-bold" size="20" class="mt-1 ml-2" />
+        <NuxtLink :to="`/admin/${project.id}/settings`" class="group-hover:scale-sm transition-all duration-500 group-hover:text-secondary">
+          <Icon name="ph:gear-bold" size="20" class="ml-2 mt-1" />
         </NuxtLink>
       </div>
 
-      <Icon name="ph:arrow-right-bold" size="35" class="absolute bottom-4 right-4 text-muted-foreground group-hover:scale-sm group-hover:text-secondary transition-all duration-500" />
+      <Icon name="ph:arrow-right-bold" size="35" class="group-hover:scale-sm absolute bottom-4 right-4 text-muted-foreground transition-all duration-500 group-hover:text-secondary" />
     </div>
   </NuxtLink>
 </template>

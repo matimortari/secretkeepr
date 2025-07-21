@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div v-if="isOpen" class="fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity duration-300" />
+    <div v-if="isOpen" class="fixed inset-0 z-30 bg-black/50 transition-opacity duration-300 md:hidden" />
 
     <aside
-      class="fixed md:static top-0 left-0 h-full md:h-auto min-h-screen w-64 md:w-52 bg-muted p-4 border-r rounded-br-xl transition-transform duration-300 z-40"
+      class="fixed left-0 top-0 z-40 h-full min-h-screen w-64 rounded-br-xl border-r bg-muted p-4 transition-transform duration-300 md:static md:h-auto md:w-52"
       :class="[
         isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
       ]"
@@ -17,7 +17,7 @@
           v-for="link in navLinks"
           :key="link.href"
           :to="link.href"
-          class="navigation-group text-sm text-muted-foreground font-semibold hover:scale-sm transition-all duration-500"
+          class="navigation-group hover:scale-sm text-sm font-semibold text-muted-foreground transition-all duration-500"
         >
           <Icon :name="link.icon" size="30" />
           <span>{{ link.label }}</span>
@@ -31,25 +31,25 @@
             name="ph:plus-bold"
             size="25"
             role="button"
-            class="hover:scale-md hover:text-accent transition-all duration-500"
+            class="hover:scale-md transition-all duration-500 hover:text-accent"
             @click="openDialog()"
           />
         </div>
 
-        <div class="flex flex-col gap-1 max-h-52 overflow-y-auto w-full scroll-area border-y">
+        <div class="scroll-area flex max-h-52 w-full flex-col gap-1 overflow-y-auto border-y">
           <NuxtLink
             v-for="project in projectsFromOrg"
             :key="project.id"
             :to="`/admin/${project.id}`"
-            class="font-medium text-sm truncate w-full"
+            class="w-full truncate text-sm font-medium"
           >
             {{ project.name }}
           </NuxtLink>
         </div>
 
         <a href="https://github.com/matimortari/secretkeepr" class="navigation-group group">
-          <Icon name="simple-icons:github" size="25" class="group-hover:scale-sm group-hover:text-accent transition-all duration-500" />
-          <span class="font-semibold text-sm text-muted-foreground group-hover:underline">
+          <Icon name="simple-icons:github" size="25" class="group-hover:scale-sm transition-all duration-500 group-hover:text-accent" />
+          <span class="text-sm font-semibold text-muted-foreground group-hover:underline">
             Support This Project
           </span>
         </a>

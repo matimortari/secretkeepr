@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header class="navigation-group justify-between p-4 border-b-2">
+    <header class="navigation-group justify-between border-b-2 p-4">
       <div class="navigation-group">
         <NuxtLink to="/">
           <img
@@ -9,7 +9,7 @@
             class="flex-shrink-0"
           >
         </NuxtLink>
-        <p class="navigation-group text-muted-foreground text-sm">
+        <p class="navigation-group text-sm text-muted-foreground">
           Please sign in to use all features.
         </p>
       </div>
@@ -25,7 +25,7 @@
       </div>
     </header>
 
-    <main class="min-h-screen p-4 bg-gradient-to-br from-background to-muted">
+    <main class="min-h-screen bg-gradient-to-br from-background to-muted p-4">
       <slot />
     </main>
 
