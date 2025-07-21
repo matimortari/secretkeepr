@@ -5,21 +5,13 @@
     :duration="800"
   >
     <div class="flex flex-col gap-2">
-      <header
-        v-motion class="navigation-group flex-nowrap border-b pb-2"
-        :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
-        :duration="800" :delay="200"
-      >
+      <header class="navigation-group flex-nowrap justify-between border-b pb-2">
         <h2 class="flex-shrink-0 whitespace-nowrap">
           My Projects
         </h2>
 
-        <div
-          v-motion class="navigation-group w-full flex-1"
-          :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
-          :duration="800" :delay="200"
-        >
-          <div class="relative w-full flex-1">
+        <div class="navigation-group w-full flex-1 justify-end">
+          <div class="relative hidden w-full flex-1 md:block">
             <span class="absolute inset-y-0 left-0 flex flex-row items-center pl-4 text-muted-foreground">
               <Icon name="ph:magnifying-glass-bold" size="20" />
             </span>

@@ -5,25 +5,17 @@
     :duration="800"
   >
     <div class="flex flex-col gap-2">
-      <header
-        v-motion class="navigation-group flex-nowrap justify-between border-b pb-2"
-        :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
-        :duration="800" :delay="200"
-      >
-        <div class="navigation-group shrink-0">
+      <header class="navigation-group flex-nowrap justify-between border-b pb-2">
+        <div class="navigation-group flex-shrink-0">
           <NuxtLink to="/admin/projects">
-            <Icon name="ph:arrow-left-bold" size="25" class="text-muted-foreground hover:text-accent md:mt-2" />
+            <Icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
           </NuxtLink>
           <h2 class="max-w-lg truncate">
             {{ project?.name }}
           </h2>
         </div>
 
-        <div
-          v-motion class="navigation-group overflow-hidden"
-          :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
-          :duration="800" :delay="200"
-        >
+        <div class="navigation-group">
           <button class="btn-primary" @click="openDialog('secret')">
             <span class="hidden md:inline">Add New Secret</span>
             <Icon name="ph:plus-bold" size="20" />
