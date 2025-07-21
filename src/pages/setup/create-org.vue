@@ -1,11 +1,11 @@
 <template>
   <div
-    v-motion class="min-h-screen flex flex-col items-center justify-center"
+    v-motion class="flex min-h-screen flex-col items-center justify-center"
     :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
     :transition="{ duration: 1000 }"
   >
     <header
-      v-motion class="flex flex-col items-center text-center gap-4 p-4 border-b"
+      v-motion class="flex flex-col items-center gap-4 border-b p-4 text-center"
       :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
       :duration="600"
     >
@@ -14,11 +14,11 @@
       </h1>
     </header>
 
-    <p class="text-sm p-4">
+    <p class="p-4 text-sm">
       To get started, please create an organization name with at least 3 characters.
     </p>
 
-    <form class="flex flex-col items-center gap-2 p-4 w-[90%]" @submit.prevent="handleCreateOrganization">
+    <form class="flex w-[90%] flex-col items-center gap-2 p-4" @submit.prevent="handleCreateOrganization">
       <input
         v-model="localOrganization.name" placeholder="Organization Name"
         class="w-full" type="text"

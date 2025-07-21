@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-center gap-4">
-    <div class="size-20 border-t-4 animate-spin-outer flex items-center justify-center border-t-primary rounded-full">
-      <div class="size-16 border-t-4 animate-spin-inner flex items-center justify-center border-t-secondary rounded-full" />
+    <div class="animate-spin-outer flex size-20 items-center justify-center rounded-full border-t-4 border-t-primary">
+      <div class="animate-spin-inner flex size-16 items-center justify-center rounded-full border-t-4 border-t-secondary" />
     </div>
   </div>
 </template>

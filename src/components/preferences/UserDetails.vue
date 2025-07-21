@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-2 border-b">
-    <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
+    <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
       <h4>
         User Information
       </h4>
@@ -14,22 +14,22 @@
       <input v-model="form.name" type="text" placeholder="Enter your name">
 
       <label class="text-sm font-medium">Email</label>
-      <input :value="user?.email" type="email" class="bg-muted cursor-not-allowed" readonly>
+      <input :value="user?.email" type="email" class="cursor-not-allowed bg-muted" readonly>
 
       <label class="text-sm font-medium">User ID</label>
-      <input :value="user?.id" type="text" class="bg-muted cursor-not-allowed" readonly>
+      <input :value="user?.id" type="text" class="cursor-not-allowed bg-muted" readonly>
 
       <label class="text-sm font-medium">Active Organization</label>
-      <input :value="selectedOrganization?.name" class="bg-muted cursor-not-allowed" readonly>
+      <input :value="selectedOrganization?.name" class="cursor-not-allowed bg-muted" readonly>
 
       <label class="text-sm font-medium">Active Organization Role</label>
       <input
         :value="currentMembership?.role"
-        class="bg-muted cursor-not-allowed capitalize"
+        class="cursor-not-allowed bg-muted capitalize"
         readonly
       >
 
-      <p class="flex flex-col md:navigation-group text-sm">
+      <p class="md:navigation-group flex flex-col text-sm">
         Joined On <span class="text-muted-foreground">{{ formattedJoinedDate }}</span>
       </p>
 

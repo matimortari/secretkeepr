@@ -1,20 +1,20 @@
 <template>
-  <div class="overflow-x-auto scroll-area">
-    <table class="table-auto md:table-fixed w-full border rounded-sm overflow-hidden">
+  <div class="scroll-area overflow-x-auto">
+    <table class="w-full table-auto overflow-hidden rounded-sm border md:table-fixed">
       <thead>
-        <tr class="bg-muted font-semibold text-sm border transition-all duration-500">
-          <th class="navigation-group w-full p-2 text-left select-none">
+        <tr class="border bg-muted text-sm font-semibold transition-all duration-500">
+          <th class="navigation-group w-full select-none p-2 text-left">
             <span>Key</span>
             <Icon
               name="ph:arrow-down-bold"
               size="15"
-              class="hover:scale-sm hover:text-primary transition-all duration-500"
+              class="hover:scale-sm transition-all duration-500 hover:text-primary"
               :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'"
               role="button"
               @click="toggleSort"
             />
           </th>
-          <th v-for="env in environments" :key="env" class="w-40 p-2 text-left capitalize border">
+          <th v-for="env in environments" :key="env" class="w-40 border p-2 text-left capitalize">
             <span>{{ env }}</span>
           </th>
         </tr>
@@ -27,8 +27,8 @@
           :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0 }"
           :duration="600" :delay="100 * index"
         >
-          <td class="flex flex-row items-center justify-between relative p-2 font-bold text-muted-foreground text-sm font-mono">
-            <div class="flex flex-row items-center gap-2 max-w-[80%]">
+          <td class="relative flex flex-row items-center justify-between p-2 font-mono text-sm font-bold text-muted-foreground">
+            <div class="flex max-w-[80%] flex-row items-center gap-2">
               <span class="truncate">{{ secret.key }}</span>
               <Icon
                 v-if="secret.description" name="carbon:information-square"
@@ -38,30 +38,30 @@
             </div>
             <span class="navigation-group">
               <button @click="toggleVisibility(secret.key)">
-                <Icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md hover:text-accent transition-all duration-500" />
+                <Icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md transition-all duration-500 hover:text-accent" />
               </button>
               <button @click="updateSecret(secret.key)">
-                <Icon name="carbon:edit" size="20" class="hover:scale-md hover:text-accent transition-all duration-500" />
+                <Icon name="carbon:edit" size="20" class="hover:scale-md transition-all duration-500 hover:text-accent" />
               </button>
               <button @click="handleDeleteSecret(secret.key)">
-                <Icon name="carbon:delete" size="20" class="hover:scale-md hover:text-danger transition-all duration-500" />
+                <Icon name="carbon:delete" size="20" class="hover:scale-md transition-all duration-500 hover:text-danger" />
               </button>
             </span>
           </td>
 
-          <td v-for="env in environments" :key="env" class="p-2 border text-muted-foreground text-sm font-mono">
+          <td v-for="env in environments" :key="env" class="border p-2 font-mono text-sm text-muted-foreground">
             <div class="flex flex-row items-center justify-between">
               <span
-                class="truncate max-w-[80%] select-none"
+                class="max-w-[80%] select-none truncate"
                 :class="[
-                  !getSecretValue(secret.key, env) ? '' : 'bg-card px-1 rounded cursor-pointer hover:scale-sm hover:text-primary transition-all duration-500',
+                  !getSecretValue(secret.key, env) ? '' : 'hover:scale-sm cursor-pointer rounded bg-card px-1 transition-all duration-500 hover:text-primary',
                 ]" @click="copyToClipboard(getSecretValue(secret.key, env))"
               >
                 {{ renderValue(secret.key, env) }}
               </span>
 
               <button @click="copyToClipboard(getSecretValue(secret.key, env))">
-                <Icon name="carbon:copy" size="20" class="hover:scale-md hover:text-accent transition-all duration-500" />
+                <Icon name="carbon:copy" size="20" class="hover:scale-md transition-all duration-500 hover:text-accent" />
               </button>
             </div>
           </td>

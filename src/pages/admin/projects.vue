@@ -6,11 +6,11 @@
   >
     <div class="flex flex-col gap-2">
       <header
-        v-motion class="navigation-group border-b pb-2 flex-nowrap"
+        v-motion class="navigation-group flex-nowrap border-b pb-2"
         :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
         :duration="800" :delay="200"
       >
-        <h2 class="whitespace-nowrap flex-shrink-0">
+        <h2 class="flex-shrink-0 whitespace-nowrap">
           My Projects
         </h2>
 
@@ -37,14 +37,14 @@
         </div>
       </header>
 
-      <div v-if="isLoading" class="flex items-center justify-center h-[80vh]">
+      <div v-if="isLoading" class="flex h-[80vh] items-center justify-center">
         <Spinner />
       </div>
-      <p v-if="!filteredProjects.length && !isLoading" class="text-muted-foreground text-center h-[80vh] my-8">
+      <p v-if="!filteredProjects.length && !isLoading" class="my-8 h-[80vh] text-center text-muted-foreground">
         No projects found. Create a new project to get started.
       </p>
 
-      <ul v-else class="grid md:grid-cols-3 gap-4 max-h-[80vh] overflow-y-auto scroll-area">
+      <ul v-else class="scroll-area grid max-h-[80vh] gap-4 overflow-y-auto md:grid-cols-3">
         <li
           v-for="(project, index) in filteredProjects" :key="project.id"
           v-motion :initial="{ opacity: 0, y: 20 }"
@@ -59,11 +59,11 @@
           :delay="20 * filteredProjects.length"
         >
           <button
-            class="h-[180px] w-full flex flex-col items-center justify-center gap-4 border-2 border-dashed card bg-transparent text-muted-foreground hover:text-secondary hover:border-secondary transition-all duration-500 group"
+            class="card group flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 border-dashed bg-transparent text-muted-foreground transition-all duration-500 hover:border-secondary hover:text-secondary"
             @click="openDialog()"
           >
-            <Icon name="ph:plus" size="50" class="group-hover:scale-md group-hover:text-secondary transition-all duration-500" />
-            <span class="font-semibold group-hover:scale-sm group-hover:text-secondary transition-all duration-500">Add New Project</span>
+            <Icon name="ph:plus" size="50" class="group-hover:scale-md transition-all duration-500 group-hover:text-secondary" />
+            <span class="group-hover:scale-sm font-semibold transition-all duration-500 group-hover:text-secondary">Add New Project</span>
           </button>
         </li>
       </ul>
