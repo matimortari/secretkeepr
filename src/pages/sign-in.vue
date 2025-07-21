@@ -5,7 +5,7 @@
     :transition="{ duration: 1000 }"
   >
     <header
-      v-motion class="flex flex-col items-center gap-4 border-b p-12 text-center"
+      v-motion class="flex flex-col items-center gap-4 border-b p-8 text-center"
       :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
       :duration="600"
     >
@@ -23,7 +23,7 @@
     </header>
 
     <div
-      v-motion class="flex flex-col items-center gap-4 p-12 text-center"
+      v-motion class="flex flex-col items-center gap-4 p-8 text-center"
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
       :duration="600"
     >

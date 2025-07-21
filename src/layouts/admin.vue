@@ -14,7 +14,7 @@
       />
 
       <div class="flex flex-1">
-        <Sidebar :organization="activeOrganization" :is-open="isSidebarOpen" />
+        <Sidebar :organization="activeOrganization" :is-open="isSidebarOpen" @update:is-open="isSidebarOpen = $event" />
         <main class="relative flex-1 overflow-x-hidden p-8">
           <slot :active-organization="activeOrganization" />
         </main>

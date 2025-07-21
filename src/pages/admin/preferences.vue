@@ -5,21 +5,13 @@
     :duration="800"
   >
     <div class="flex flex-col gap-4">
-      <header
-        v-motion class="navigation-group border-b pb-2"
-        :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
-        :duration="800" :delay="200"
-      >
+      <header class="navigation-group border-b pb-2">
         <h2>
           Preferences
         </h2>
       </header>
 
-      <div
-        v-motion class="flex flex-col gap-2"
-        :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
-        :duration="800" :delay="200"
-      >
+      <div class="flex flex-col gap-2">
         <PreferencesUserDetails :user="user" />
         <PreferencesDangerZone />
       </div>
