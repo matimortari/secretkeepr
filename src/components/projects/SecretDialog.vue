@@ -31,7 +31,7 @@
         <button class="hover:underline" type="button" @click="emit('close')">
           Cancel
         </button>
-        <button class="btn-primary w-16" type="submit" :disabled="hasErrors">
+        <button class="btn-success w-16" type="submit" :disabled="hasErrors">
           Save
         </button>
       </footer>

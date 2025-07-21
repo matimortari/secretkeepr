@@ -22,7 +22,7 @@
         <button class="hover:underline" type="button" @click="emit('close')">
           Cancel
         </button>
-        <button class="btn-primary" type="submit" :disabled="hasErrors">
+        <button class="btn-success" type="submit" :disabled="hasErrors">
           Import Secrets
         </button>
       </footer>
