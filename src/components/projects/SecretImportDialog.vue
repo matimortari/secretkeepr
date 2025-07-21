@@ -1,7 +1,7 @@
 <template>
   <Dialog :is-open="isOpen" title="Import from .env" @update:is-open="emit('close')">
     <form class="flex flex-col gap-2" @submit.prevent="handleSubmit">
-      <textarea v-model="envText" rows="10" class="resize-none font-mono scroll-area" placeholder="Paste your .env content here..." />
+      <textarea v-model="envText" rows="10" class="scroll-area resize-none font-mono" placeholder="Paste your .env content here..." />
 
       <div class="flex flex-col items-start gap-1">
         <label class="text-sm font-medium">Environment</label>
@@ -12,7 +12,7 @@
         </select>
       </div>
 
-      <div v-if="hasErrors" class="flex flex-col gap-2 text-center max-w-sm">
+      <div v-if="hasErrors" class="flex max-w-sm flex-col gap-2 text-center">
         <span v-for="(msg, key) in formErrors" :key="key" class="text-danger-foreground">
           {{ msg }}
         </span>

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-2 border-b">
-    <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
+    <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
       <h4>
         Audit Logs
       </h4>
@@ -9,20 +9,20 @@
       </p>
     </header>
 
-    <section class="flex flex-col md:navigation-group md:justify-between p-2">
-      <div class="flex flex-col md:navigation-group w-full md:w-auto">
-        <label class="flex flex-col text-sm font-medium w-full md:w-auto gap-2">
+    <section class="md:navigation-group flex flex-col p-2 md:justify-between">
+      <div class="md:navigation-group flex w-full flex-col md:w-auto">
+        <label class="flex w-full flex-col gap-2 text-sm font-medium md:w-auto">
           <span>Filter by Date</span>
           <input v-model="dateFilter" type="date" class="w-full md:w-auto">
         </label>
-        <label class="flex flex-col text-sm font-medium w-full md:w-auto gap-2">
+        <label class="flex w-full flex-col gap-2 text-sm font-medium md:w-auto">
           <span>Filter by User</span>
           <select v-model="userFilter" class="w-full md:w-auto">
             <option value="">All Users</option>
             <option v-for="user in users" :key="user" :value="user">{{ user }}</option>
           </select>
         </label>
-        <label class="flex flex-col text-sm font-medium w-full md:w-auto gap-2">
+        <label class="flex w-full flex-col gap-2 text-sm font-medium md:w-auto">
           <span>Filter by Action</span>
           <select v-model="actionFilter" class="w-full md:w-auto">
             <option value="">All Actions</option>
@@ -33,11 +33,11 @@
         </label>
       </div>
 
-      <nav v-if="totalPages > 0" class="flex flex-row items-center justify-center w-full md:w-auto gap-4 md:mt-8">
+      <nav v-if="totalPages > 0" class="flex w-full flex-row items-center justify-center gap-4 md:mt-8 md:w-auto">
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasPrevPage" @click="prevPage">
           <Icon name="ph:arrow-left" size="20" />
         </button>
-        <span class="text-sm text-muted-foreground whitespace-nowrap">
+        <span class="whitespace-nowrap text-sm text-muted-foreground">
           Page {{ page }} of {{ totalPages }}
         </span>
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasNextPage" @click="nextPage">
@@ -46,17 +46,17 @@
       </nav>
     </section>
 
-    <section class="py-2 w-full">
+    <section class="w-full py-2">
       <Spinner v-if="isLoading" />
-      <div v-else-if="filteredLogs.length === 0" class="text-muted-foreground text-center my-4">
+      <div v-else-if="filteredLogs.length === 0" class="my-4 text-center text-muted-foreground">
         No audit logs found.
       </div>
 
-      <div v-else class="w-full overflow-auto max-h-[50vh] scroll-area">
-        <table class="table-fixed md:w-full border rounded-sm md:overflow-hidden">
+      <div v-else class="scroll-area max-h-[50vh] w-full overflow-auto">
+        <table class="table-fixed rounded-sm border md:w-full md:overflow-hidden">
           <thead>
-            <tr class="bg-muted font-semibold text-sm transition-all duration-500">
-              <th v-for="header in headers" :key="header.value" class="p-2 text-left select-none border md:w-1/5">
+            <tr class="bg-muted text-sm font-semibold transition-all duration-500">
+              <th v-for="header in headers" :key="header.value" class="select-none border p-2 text-left md:w-1/5">
                 <div class="navigation-group">
                   <Icon :name="header.icon" size="15" class="mr-1" />
                   <span>{{ header.label }}</span>
@@ -67,19 +67,19 @@
 
           <tbody>
             <tr v-for="log in filteredLogs" :key="log.id" class="text-sm">
-              <td class="p-2 font-semibold border truncate md:w-1/5">
+              <td class="truncate border p-2 font-semibold md:w-1/5">
                 {{ getActionLabel(log.action) }}
               </td>
-              <td class="p-2 text-muted-foreground truncate border md:w-1/5">
+              <td class="truncate border p-2 text-muted-foreground md:w-1/5">
                 {{ log.resource }}
               </td>
-              <td class="p-2 text-muted-foreground truncate border md:w-1/5">
+              <td class="truncate border p-2 text-muted-foreground md:w-1/5">
                 {{ formatMetadata(log.metadata ?? {}) }}
               </td>
-              <td class="p-2 text-muted-foreground truncate border md:w-1/5">
+              <td class="truncate border p-2 text-muted-foreground md:w-1/5">
                 <span>{{ log.userId }}</span>
               </td>
-              <td class="p-2 text-muted-foreground truncate border md:w-1/5">
+              <td class="truncate border p-2 text-muted-foreground md:w-1/5">
                 {{ log.createdAt }}
               </td>
             </tr>

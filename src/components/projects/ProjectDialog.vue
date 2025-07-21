@@ -15,7 +15,7 @@
         <input id="description" v-model="form.description" type="text" class="w-full">
       </div>
 
-      <div v-if="hasErrors" class="flex flex-col gap-2 text-center max-w-sm">
+      <div v-if="hasErrors" class="flex max-w-sm flex-col gap-2 text-center">
         <span v-for="(msg, key) in formErrors" :key="key" class="text-danger-foreground">
           {{ msg }}
         </span>
