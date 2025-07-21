@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 import db from "~/lib/db"
-import { getUserFromSession, requireOrgRole } from "~/lib/utils"
+import { createAuditLog, getUserFromSession, requireOrgRole } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     data: {
       token,
       organizationId: membership.organizationId,
-      role: "member",
+      role: membership.role,
       expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000),
     },
   })
@@ -34,6 +34,17 @@ export default defineEventHandler(async (event) => {
     const host = event.req.headers.host
     return `${protocol}://${host}`
   }
+
+  await createAuditLog({
+    userId: sessionUser.id!,
+    organizationId: membership.organizationId,
+    action: "organization.invite.create",
+    resource: `Organization: ${membership.organizationId}`,
+    metadata: {
+      createdBy: sessionUser.id!,
+      selectedRole: membership.role,
+    },
+  })
 
   return { message: "Invitation link created successfully", inviteLink: `${getBaseUrl(event)}/setup/join-org?token=${token}` }
 })

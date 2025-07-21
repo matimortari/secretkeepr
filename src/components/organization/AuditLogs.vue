@@ -31,9 +31,13 @@
             </option>
           </select>
         </label>
+        <label class="flex items-center gap-2 text-sm">
+          <input v-model="showSensitiveData" type="checkbox">
+          <span>Show sensitive data</span>
+        </label>
       </div>
 
-      <nav v-if="totalPages > 0" class="flex w-full flex-row items-center justify-center gap-4 md:mt-8 md:w-auto">
+      <nav v-if="totalPages > 0" class="flex w-full flex-row items-center justify-center gap-4 md:w-auto">
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasPrevPage" @click="prevPage">
           <Icon name="ph:arrow-left" size="20" />
         </button>
@@ -42,6 +46,10 @@
         </span>
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasNextPage" @click="nextPage">
           <Icon name="ph:arrow-right" size="20" />
+        </button>
+
+        <button class="btn-danger" :disabled="isLoading || filteredLogs.length === 0" @click="handleDeleteLogs">
+          Delete Audit Logs
         </button>
       </nav>
     </section>
@@ -56,7 +64,7 @@
         <table class="table-fixed rounded-sm border md:w-full md:overflow-hidden">
           <thead>
             <tr class="bg-muted text-sm font-semibold transition-all duration-500">
-              <th v-for="header in headers" :key="header.value" class="select-none border p-2 text-left md:w-1/5">
+              <th v-for="header in headers" :key="header.value" class="select-none border p-2 text-left" :style="{ width: header.width }">
                 <div class="navigation-group">
                   <Icon :name="header.icon" size="15" class="mr-1" />
                   <span>{{ header.label }}</span>
@@ -67,20 +75,20 @@
 
           <tbody>
             <tr v-for="log in filteredLogs" :key="log.id" class="text-sm">
-              <td class="truncate border p-2 font-semibold md:w-1/5">
+              <td class="truncate border p-2 font-semibold" :title="getActionLabel(log.action)" :style="{ width: headers[0].width }">
                 {{ getActionLabel(log.action) }}
               </td>
-              <td class="truncate border p-2 text-muted-foreground md:w-1/5">
+              <td class="truncate border p-2 text-muted-foreground" :title="log.resource" :style="{ width: headers[1].width }">
                 {{ log.resource }}
               </td>
-              <td class="truncate border p-2 text-muted-foreground md:w-1/5">
+              <td class="truncate border p-2 text-muted-foreground" :title="formatMetadata(log.metadata ?? {})" :style="{ width: headers[2].width }">
                 {{ formatMetadata(log.metadata ?? {}) }}
               </td>
-              <td class="truncate border p-2 text-muted-foreground md:w-1/5">
+              <td class="truncate border p-2 text-muted-foreground" :title="log.userId" :style="{ width: headers[3].width }">
                 <span>{{ log.userId }}</span>
               </td>
-              <td class="truncate border p-2 text-muted-foreground md:w-1/5">
-                {{ log.createdAt }}
+              <td class="truncate border p-2 text-muted-foreground" :title="formatDate(log.createdAt)" :style="{ width: headers[4].width }">
+                {{ formatDate(log.createdAt) }}
               </td>
             </tr>
           </tbody>
@@ -98,26 +106,30 @@ const props = defineProps<{
 }>()
 
 const headers = [
-  { value: "action", label: "Action", icon: "ph:clock-bold" },
-  { value: "resource", label: "Resource", icon: "ph:table-bold" },
-  { value: "metadata", label: "Metadata", icon: "ph:info-bold" },
-  { value: "userId", label: "User ID", icon: "ph:user-bold" },
-  { value: "createdAt", label: "Timestamp", icon: "ph:calendar-bold" },
+  { value: "action", label: "Action", icon: "ph:clock-bold", width: "10%" },
+  { value: "resource", label: "Resource", icon: "ph:table-bold", width: "20%" },
+  { value: "metadata", label: "Metadata", icon: "ph:info-bold", width: "35%" },
+  { value: "userId", label: "User ID", icon: "ph:user-bold", width: "20%" },
+  { value: "createdAt", label: "Timestamp", icon: "ph:calendar-bold", width: "15%" },
 ]
 
 const actions = [
-  { value: "secret.create", label: "Secret Created" },
-  { value: "secret.update", label: "Secret Updated" },
-  { value: "secret.delete", label: "Secret Deleted" },
+  { value: "organization.create", label: "Organization Created" },
+  { value: "organization.update", label: "Organization Updated" },
+  { value: "organization.invite.create", label: "Organization Invite Created" },
+  { value: "organization.invite.accept", label: "Organization Invite Accepted" },
+  { value: "organization.member.update", label: "Organization Member Role Updated" },
+  { value: "organization.member.remove", label: "Organization Member Removed" },
+  { value: "organization.member.leave", label: "Organization Member Left" },
   { value: "project.create", label: "Project Created" },
   { value: "project.update", label: "Project Updated" },
   { value: "project.delete", label: "Project Deleted" },
   { value: "project.member.add", label: "Project Member Added" },
+  { value: "project.member.update", label: "Project Member Role Updated" },
   { value: "project.member.remove", label: "Project Member Removed" },
-  { value: "organization.update", label: "Organization Updated" },
-  { value: "organization.member.leave", label: "Organization Member Left" },
-  { value: "organization.member.remove", label: "Organization Member Removed" },
-  { value: "organization.member.role.update", label: "Organization Member Role Updated" },
+  { value: "secret.create", label: "Secret Created" },
+  { value: "secret.update", label: "Secret Updated" },
+  { value: "secret.delete", label: "Secret Deleted" },
 ]
 
 const organizationStore = useOrganizationStore()
@@ -128,6 +140,7 @@ const prevPage = organizationStore.prevAuditLogPage
 const dateFilter = ref("")
 const userFilter = ref("")
 const actionFilter = ref("")
+const showSensitiveData = ref(false)
 
 onMounted(async () => {
   if (organizationStore.selectedOrganization?.id) {
@@ -150,31 +163,123 @@ const filteredLogs = computed(() => {
     const matchesUser = userFilter.value ? log.userId === userFilter.value : true
     const matchesAction = actionFilter.value ? log.action === actionFilter.value : true
     return matchesDate && matchesUser && matchesAction
+  }).map((log) => {
+    if (!showSensitiveData.value) {
+      const sanitizedMetadata = { ...log.metadata }
+      delete sanitizedMetadata.ip
+      delete sanitizedMetadata.userAgent
+      return { ...log, metadata: sanitizedMetadata }
+    }
+    return log
   })
 })
+
+async function handleDeleteLogs() {
+  if (!organizationStore.selectedOrganization?.id)
+    return
+  if (!confirm("Are you sure you want to delete all filtered audit logs? This action cannot be undone.")) {
+    return
+  }
+
+  const filters = {
+    organizationId: organizationStore.selectedOrganization.id,
+    action: actionFilter.value || undefined,
+    beforeDate: dateFilter.value || undefined,
+    createdBySelfOnly: userFilter.value === "self",
+    protectedActions: [],
+  }
+
+  try {
+    await organizationStore.deleteAuditLogs(filters)
+  }
+  catch (error: any) {
+    alert(`Failed to delete audit logs: ${error?.message || error}`)
+  }
+}
 
 function getActionLabel(action: string): string {
   const found = actions.find(a => a.value === action)
   return found ? found.label : action
 }
 
+function formatDate(date?: string | Date): string {
+  if (!date)
+    return "—"
+
+  const d = typeof date === "string" ? new Date(date) : date
+
+  return d.toLocaleString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  })
+}
+
 function formatMetadata(metadata: Record<string, any>) {
-  if (!metadata)
+  if (!metadata || Object.keys(metadata).length === 0)
     return ""
 
-  if (metadata.secretKey)
-    return `Secret: ${metadata.secretKey}`
-  if (metadata.projectName)
-    return `Project: ${metadata.projectName}`
-  if (metadata.description)
-    return `Description: ${metadata.description}`
-  if (metadata.addedUserId)
-    return `Added User: ${metadata.addedUserId}, Role: ${metadata.addedUserRole}`
-  if (metadata.removedUserId)
-    return `Removed User: ${metadata.removedUserId}`
-  if (metadata.role)
-    return `Role: ${metadata.role}`
+  const lines: string[] = []
 
-  return JSON.stringify(metadata)
+  const maskSecret = (value: string) => {
+    if (!value || value.length < 12)
+      return value
+    return `${value.slice(0, 6)}...${value.slice(-4)}`
+  }
+
+  if (metadata.secretKey) {
+    lines.push(`Secret: ${metadata.secretKey}`)
+  }
+  if (metadata.projectName) {
+    lines.push(`Project: ${metadata.projectName}`)
+  }
+  if (metadata.name) {
+    lines.push(`Name: ${metadata.name}`)
+  }
+  if (metadata.description) {
+    lines.push(`Description: ${metadata.description}`)
+  }
+  if (metadata.ip) {
+    lines.push(`IP: ${metadata.ip}`)
+  }
+  if (metadata.userAgent) {
+    lines.push(`Agent: ${metadata.userAgent}`)
+  }
+
+  if (metadata.key) {
+    lines.push(`Key: ${maskSecret(metadata.key)}`)
+  }
+
+  if (Array.isArray(metadata.values)) {
+    metadata.values.forEach((item: any, index: number) => {
+      if (item.value && item.environment) {
+        lines.push(`Val${index + 1}: ${maskSecret(item.value)} (${item.environment})`)
+      }
+    })
+  }
+
+  if (metadata.addedUserId) {
+    lines.push(`Added User: ${metadata.addedUserId}, Role: ${metadata.addedUserRole || "N/A"}`)
+  }
+  if (metadata.removedUserId) {
+    lines.push(`Removed User: ${metadata.removedUserId}`)
+  }
+  if (metadata.role) {
+    lines.push(`Role: ${metadata.role}`)
+  }
+
+  if (lines.length === 0) {
+    try {
+      return JSON.stringify(metadata, null, 2)
+    }
+    catch {
+      return String(metadata)
+    }
+  }
+
+  return lines.join(", ")
 }
 </script>
