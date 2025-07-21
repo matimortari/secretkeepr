@@ -54,17 +54,21 @@ export default defineEventHandler(async (event) => {
         })),
       },
     },
+    include: { values: true },
   })
 
   await createAuditLog({
     userId: sessionUser.id!,
     organizationId: secret.project.organizationId,
     action: "secret.update",
-    resource: `Secret:${secretId}`,
+    resource: `Secret: ${secretId}`,
     metadata: {
-      updatedKey: body.key || secret.key,
-      updatedDescription: body.description || secret.description,
-      environments: body.values.map((v: { environment: Environment }) => v.environment),
+      key: updatedSecret.key,
+      description: updatedSecret.description || null,
+      values: updatedSecret.values.map(v => ({
+        environment: v.environment,
+        value: v.value,
+      })),
     },
     req: event.node.req,
   })

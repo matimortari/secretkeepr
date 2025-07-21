@@ -67,11 +67,14 @@ export default defineEventHandler(async (event) => {
     userId: sessionUser.id!,
     organizationId: project.organizationId,
     action: "secret.create",
-    resource: `Project:${projectId}`,
+    resource: `Project: ${projectId}`,
     metadata: {
-      secretKey: body.key,
-      description: body.description || null,
-      environments: filteredValues.map((v: { environment: Environment }) => v.environment),
+      key: newSecret.key,
+      description: newSecret.description || null,
+      values: newSecret.values.map(v => ({
+        environment: v.environment,
+        value: v.value,
+      })),
     },
     req: event.node.req,
   })

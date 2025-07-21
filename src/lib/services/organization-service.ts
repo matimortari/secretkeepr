@@ -96,3 +96,16 @@ export async function getAuditLogsService(organizationId: string, page: number =
 
   return await response.json()
 }
+
+export async function deleteAuditLogsService(data: DeleteAuditLogsPayload): Promise<{ message: string, deletedCount: number }> {
+  const response = await fetch("/api/organization/audit-logs", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to delete audit logs: ${response.statusText}`)
+  }
+
+  return await response.json()
+}

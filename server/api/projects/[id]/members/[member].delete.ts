@@ -40,9 +40,9 @@ export default defineEventHandler(async (event) => {
     userId: sessionUser.id!,
     organizationId: project.organizationId,
     action: "project.member.remove",
-    resource: `Project:${projectId}`,
+    resource: `Project: ${projectId}`,
     metadata: {
-      removedUserId: userId,
+      id: userId,
     },
     req: event.node.req,
   })
