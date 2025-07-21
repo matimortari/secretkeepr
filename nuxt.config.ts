@@ -34,6 +34,8 @@ export default defineNuxtConfig({
   googleFonts: {
     families: {
       Roboto: true,
+      Goldman: true,
+      Silkscreen: true,
       JetBrainsMono: true,
     },
     display: "swap",

@@ -6,7 +6,7 @@
       @click="$emit('update:isOpen', false)"
     />
     <aside
-      class="fixed left-0 top-0 z-40 h-full min-h-screen w-64 rounded-br-xl border-r bg-muted p-4 transition-transform duration-300 md:static md:h-auto md:w-52"
+      class="fixed left-0 top-0 z-40 h-full min-h-screen w-64 rounded-br-xl border-r bg-popover p-4 transition-transform duration-300 md:static md:h-auto md:w-52"
       :class="[
         isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
       ]"
@@ -39,7 +39,7 @@
           />
         </div>
 
-        <div class="scroll-area flex max-h-52 w-full flex-col gap-1 overflow-y-auto border-y">
+        <div class="scroll-area card flex max-h-52 w-full flex-col gap-2 overflow-y-auto bg-muted">
           <NuxtLink
             v-for="project in projectsFromOrg"
             :key="project.id"

@@ -3,6 +3,8 @@ export default {
   theme: {
     fontFamily: {
       sans: ["Roboto"],
+      goldman: ["Goldman", "sans-serif"],
+      silkscreen: ["Silkscreen", "sans-serif"],
       mono: ["JetBrains Mono", "monospace"],
     },
     extend: {

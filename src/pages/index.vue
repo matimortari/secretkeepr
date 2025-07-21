@@ -1,57 +1,75 @@
 <template>
   <div
-    v-motion class="flex min-h-screen flex-col items-center"
+    v-motion class="flex min-h-screen flex-col items-center text-center"
     :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
-    :transition="{ duration: 1000 }"
+    :transition="{ duration: 800 }"
   >
-    <div
-      v-motion class="flex flex-col items-center gap-4 border-b p-12 text-center"
+    <section
+      v-motion class="flex flex-col items-center gap-8 p-16"
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
       :duration="600"
     >
-      <h1>
+      <h1
+        v-motion class="font-goldman"
+        :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
+        :transition="{ duration: 800, delay: 0.3 }"
+      >
         Securely Manage Your Environment Variables
       </h1>
       <p
-        v-motion class="max-w-xl"
+        v-motion class="max-w-xl leading-5"
         :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
-        :transition="{ delay: 0.3, duration: 1000 }"
+        :transition="{ duration: 800, delay: 0.3 }"
       >
         SecretKeepR is a secrets manager designed to help users and organizations securely manage and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
       </p>
-      <NuxtLink to="/sign-in" class="btn-primary">
+      <NuxtLink to="/sign-in" class="btn-primary rounded-full">
         <span>Get Started</span>
         <Icon name="ph:arrow-right-bold" size="20" />
       </NuxtLink>
-    </div>
+    </section>
 
     <section
       id="features" v-motion
-      :initial="{ opacity: 0, y: 30, scale: 0.9 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
-      :transition="{ delay: 0.5, duration: 1000 }" class="grid max-w-4xl grid-cols-1 gap-8 border-b py-12 text-center md:grid-cols-3"
+      :initial="{ opacity: 0, y: 40, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
+      :transition="{ duration: 800, delay: 0.5 }" class="grid grid-cols-1 gap-12 border-y p-16 text-center md:grid-cols-3"
     >
-      <div v-for="(feature, index) in features" :key="index" class="flex flex-col items-center gap-4">
-        <Icon :name="feature.icon" class="text-primary" size="50" />
-        <h3 class="whitespace-nowrap">
+      <div
+        v-for="(feature, index) in features" :key="index"
+        v-motion class="flex flex-col items-center gap-4"
+        :initial="{ opacity: 0, y: -40 }" :visible="{ opacity: 1, y: 0 }"
+        :transition="{ duration: 800, delay: index * 0.8 }"
+      >
+        <Icon :name="feature.icon" class="text-primary" size="60" />
+        <h3 class="font-silkscreen tracking-tight md:whitespace-nowrap">
           {{ feature.title }}
         </h3>
-        <p class="tracking-tight text-muted-foreground">
+        <p class="max-w-xs leading-5 tracking-tight text-muted-foreground">
           {{ feature.description }}
         </p>
       </div>
     </section>
 
-    <div class="flex flex-col items-center gap-12 p-12 text-center">
+    <div
+      v-motion class="flex flex-col items-center gap-16 p-16 text-center"
+      :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
+      :transition="{ duration: 800, delay: 0.5 }"
+    >
       <h2>
-        How to Use SecretKeepR
+        Getting Started
       </h2>
 
       <div class="grid grid-cols-1 gap-4 text-center md:grid-cols-5">
-        <div v-for="(step, index) in howToUseSteps" :key="index" class="flex flex-col items-center gap-1">
-          <h4 class="whitespace-nowrap">
+        <div
+          v-for="(step, index) in howToUseSteps" :key="index"
+          v-motion class="flex flex-col items-center gap-1"
+          :initial="{ opacity: 0, y: -40 }" :visible="{ opacity: 1, y: 0 }"
+          :transition="{ duration: 800, delay: index * 0.4 }"
+        >
+          <h5 class="whitespace-nowrap">
             {{ index + 1 }}. {{ step.title }}
-          </h4>
-          <p class="tracking-tight text-muted-foreground">
+          </h5>
+          <p class="max-w-xs leading-5 tracking-tight text-muted-foreground">
             {{ step.description }}
           </p>
         </div>
