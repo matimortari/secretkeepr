@@ -6,7 +6,7 @@
   >
     <div class="flex flex-col gap-2">
       <header
-        v-motion class="navigation-group justify-between border-b pb-2 flex-nowrap"
+        v-motion class="navigation-group flex-nowrap justify-between border-b pb-2"
         :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
         :duration="800" :delay="200"
       >
@@ -14,7 +14,7 @@
           <NuxtLink to="/admin/projects">
             <Icon name="ph:arrow-left-bold" size="25" class="text-muted-foreground hover:text-accent md:mt-2" />
           </NuxtLink>
-          <h2 class="truncate max-w-lg">
+          <h2 class="max-w-lg truncate">
             {{ project?.name }}
           </h2>
         </div>
@@ -41,8 +41,8 @@
             </button>
 
             <Transition name="dropdown" mode="out-in">
-              <ul v-if="isDropdownOpen" class="dropdown overflow-y-auto scroll-area text-sm">
-                <li v-for="env in environments" :key="env" class="p-2 hover:bg-muted rounded cursor-pointer capitalize" @click="selectEnvironment(env)">
+              <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm">
+                <li v-for="env in environments" :key="env" class="cursor-pointer rounded p-2 capitalize hover:bg-muted" @click="selectEnvironment(env)">
                   {{ env }}
                 </li>
               </ul>
