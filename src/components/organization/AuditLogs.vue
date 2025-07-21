@@ -11,33 +11,31 @@
 
     <section class="md:navigation-group flex flex-col p-2 md:justify-between">
       <div class="md:navigation-group flex w-full flex-col md:w-auto">
-        <label class="flex w-full flex-col gap-2 text-sm font-medium md:w-auto">
-          <span>Filter by Date</span>
-          <input v-model="dateFilter" type="date" class="w-full md:w-auto">
-        </label>
-        <label class="flex w-full flex-col gap-2 text-sm font-medium md:w-auto">
-          <span>Filter by User</span>
-          <select v-model="userFilter" class="w-full md:w-auto">
-            <option value="">All Users</option>
-            <option v-for="user in users" :key="user" :value="user">{{ user }}</option>
-          </select>
-        </label>
-        <label class="flex w-full flex-col gap-2 text-sm font-medium md:w-auto">
-          <span>Filter by Action</span>
-          <select v-model="actionFilter" class="w-full md:w-auto">
-            <option value="">All Actions</option>
-            <option v-for="action in actions" :key="action.value" :value="action.value">
-              {{ action.label }}
-            </option>
-          </select>
-        </label>
+        <input v-model="dateFilter" type="date" class="w-full md:w-auto">
+        <select v-model="userFilter" class="w-full md:w-auto">
+          <option value="">
+            All Users
+          </option>
+          <option v-for="user in users" :key="user" :value="user">
+            {{ user }}
+          </option>
+        </select>
+        <select v-model="actionFilter" class="w-full md:w-auto">
+          <option value="">
+            All Actions
+          </option>
+          <option v-for="action in actions" :key="action.value" :value="action.value">
+            {{ action.label }}
+          </option>
+        </select>
+
         <label class="flex items-center gap-2 text-sm">
-          <input v-model="showSensitiveData" type="checkbox">
+          <input v-model="showSensitiveData" type="checkbox" class="appearance-none rounded border border-muted bg-transparent p-2 checked:bg-secondary focus:outline-none">
           <span>Show sensitive data</span>
         </label>
       </div>
 
-      <nav v-if="totalPages > 0" class="flex w-full flex-row items-center justify-center gap-4 md:w-auto">
+      <nav v-if="totalPages > 0" class="navigation-group w-full md:w-auto">
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasPrevPage" @click="prevPage">
           <Icon name="ph:arrow-left" size="20" />
         </button>
@@ -49,7 +47,7 @@
         </button>
 
         <button class="btn-danger" :disabled="isLoading || filteredLogs.length === 0" @click="handleDeleteLogs">
-          Delete Audit Logs
+          <Icon name="ph:trash-bold" size="20" />
         </button>
       </nav>
     </section>
