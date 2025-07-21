@@ -6,7 +6,7 @@
   >
     <div class="flex flex-col gap-2">
       <header
-        v-motion class="navigation-group justify-between border-b pb-2 flex-nowrap"
+        v-motion class="navigation-group flex-nowrap justify-between border-b pb-2"
         :initial="{ opacity: 0, x: -20 }" :enter="{ opacity: 1, x: 0 }"
         :duration="800" :delay="200"
       >
@@ -14,13 +14,13 @@
           <NuxtLink :to="`/admin/${project?.id}`">
             <Icon name="ph:arrow-left-bold" size="25" class="text-muted-foreground hover:text-accent md:mt-2" />
           </NuxtLink>
-          <h2 class="truncate max-w-lg">
+          <h2 class="max-w-lg truncate">
             {{ project?.name }}
           </h2>
         </div>
 
         <p
-          v-motion class="text-muted-foreground text-xs max-w-lg line-clamp-2 tracking-tight leading-4"
+          v-motion class="line-clamp-2 max-w-lg text-xs leading-4 tracking-tight text-muted-foreground"
           :initial="{ opacity: 0, x: -10 }" :enter="{ opacity: 1, x: 0 }"
           :duration="800"
         >

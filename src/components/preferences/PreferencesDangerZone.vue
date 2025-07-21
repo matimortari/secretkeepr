@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-2">
-    <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
+    <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
       <h4>
         Danger Zone
       </h4>
@@ -9,8 +9,8 @@
       </p>
     </header>
 
-    <section class="flex flex-col md:navigation-group md:justify-between p-2 border-b">
-      <header class="flex flex-col gap-1 items-center text-center md:items-start md:text-start">
+    <section class="md:navigation-group flex flex-col border-b p-2 md:justify-between">
+      <header class="flex flex-col items-center gap-1 text-center md:items-start md:text-start">
         <h5>
           Delete Account
         </h5>
@@ -25,7 +25,7 @@
       </button>
     </section>
 
-    <p v-if="errorMsg" class="text-sm text-danger px-2">
+    <p v-if="errorMsg" class="px-2 text-sm text-danger">
       {{ errorMsg }}
     </p>
   </div>

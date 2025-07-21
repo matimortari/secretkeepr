@@ -15,7 +15,7 @@
 
       <div class="flex flex-1">
         <Sidebar :organization="activeOrganization" :is-open="isSidebarOpen" />
-        <main class="flex-1 overflow-x-hidden relative p-8">
+        <main class="relative flex-1 overflow-x-hidden p-8">
           <slot :active-organization="activeOrganization" />
         </main>
       </div>

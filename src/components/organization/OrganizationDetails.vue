@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-2 border-b">
-    <div class="flex flex-col md:flex-row gap-2 border-b">
-      <div class="md:w-1/2 flex flex-col gap-2">
+    <div class="flex flex-col gap-2 border-b md:flex-row">
+      <div class="flex flex-col gap-2 md:w-1/2">
         <section class="flex flex-col gap-2">
-          <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
+          <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
             <h4>
               Organization Details
             </h4>
@@ -17,13 +17,13 @@
             <input v-model="form.name" type="text" placeholder="Enter organization name">
 
             <label class="text-sm font-medium">Organization ID</label>
-            <input :value="organization?.id ?? ''" type="text" class="bg-muted cursor-not-allowed" readonly>
+            <input :value="organization?.id ?? ''" type="text" class="cursor-not-allowed bg-muted" readonly>
 
             <label class="text-sm font-medium">Created At</label>
-            <input :value="organization?.createdAt" type="text" class="bg-muted cursor-not-allowed" readonly>
+            <input :value="organization?.createdAt" type="text" class="cursor-not-allowed bg-muted" readonly>
 
             <label class="text-sm font-medium">Last Updated</label>
-            <input :value="organization?.updatedAt" type="text" class="bg-muted cursor-not-allowed" readonly>
+            <input :value="organization?.updatedAt" type="text" class="cursor-not-allowed bg-muted" readonly>
 
             <label class="text-sm font-medium">Default User Role</label>
             <select v-model="defaultRole">
@@ -40,9 +40,9 @@
         </section>
       </div>
 
-      <div class="md:w-1/2 flex flex-col gap-2">
+      <div class="flex flex-col gap-2 md:w-1/2">
         <section class="flex flex-col gap-2">
-          <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
+          <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
             <h4>
               Projects
             </h4>
@@ -51,14 +51,14 @@
             </p>
           </header>
 
-          <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-52 scroll-area">
-            <li v-for="project in projectsFromOrg" :key="project.id" class="card navigation-group justify-between text-sm w-full min-w-0">
-              <div class="flex flex-col gap-1 md:w-2/3 min-w-0">
-                <span class="font-semibold truncate w-full md:w-40 min-w-0">{{ project.name }}</span>
-                <span class="text-xs text-muted-foreground truncate max-w-full md:max-w-52 min-w-0">{{ project.description || "No description provided." }}</span>
+          <ul class="scroll-area flex max-h-52 flex-col items-start gap-2 overflow-y-auto">
+            <li v-for="project in projectsFromOrg" :key="project.id" class="card navigation-group w-full min-w-0 justify-between text-sm">
+              <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
+                <span class="w-full min-w-0 truncate font-semibold md:w-40">{{ project.name }}</span>
+                <span class="min-w-0 max-w-full truncate text-xs text-muted-foreground md:max-w-52">{{ project.description || "No description provided." }}</span>
               </div>
 
-              <div class="navigation-group md:w-1/3 justify-end">
+              <div class="navigation-group justify-end md:w-1/3">
                 <NuxtLink :to="`/admin/${project.id}`" class="btn">
                   <Icon name="ph:eye-bold" size="15" />
                 </NuxtLink>
@@ -74,7 +74,7 @@
         </section>
 
         <section class="flex flex-col gap-2">
-          <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
+          <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
             <h4>
               Current Users
             </h4>
@@ -83,20 +83,20 @@
             </p>
           </header>
 
-          <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-52 scroll-area">
-            <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card navigation-group justify-between text-sm w-full min-w-0">
-              <div class="flex flex-col gap-1 md:w-2/3 min-w-0">
-                <span class="font-semibold truncate w-full md:w-40 min-w-0">
+          <ul class="scroll-area flex max-h-52 flex-col items-start gap-2 overflow-y-auto">
+            <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card navigation-group w-full min-w-0 justify-between text-sm">
+              <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
+                <span class="w-full min-w-0 truncate font-semibold md:w-40">
                   {{ orgUser.name }}
                 </span>
-                <span class="text-xs capitalize truncate max-w-full md:max-w-52 min-w-0">
+                <span class="min-w-0 max-w-full truncate text-xs capitalize md:max-w-52">
                   Role: {{ Array.isArray(orgUser.role) ? orgUser.role.join(", ") : orgUser.role }}
                 </span>
               </div>
 
-              <div class="flex flex-col gap-1 text-muted-foreground md:w-1/3 min-w-0 max-w-full">
-                <span class="text-xs truncate">{{ orgUser.id }}</span>
-                <span class="text-xs truncate">{{ orgUser.email }}</span>
+              <div class="flex min-w-0 max-w-full flex-col gap-1 text-muted-foreground md:w-1/3">
+                <span class="truncate text-xs">{{ orgUser.id }}</span>
+                <span class="truncate text-xs">{{ orgUser.email }}</span>
               </div>
 
               <div v-if="orgUser.role !== 'owner' && ['owner'].includes(currentUserRole)" class="navigation-group justify-end">
@@ -118,7 +118,7 @@
       </div>
     </div>
 
-    <section class="flex flex-col md:navigation-group md:justify-between p-2">
+    <section class="md:navigation-group flex flex-col p-2 md:justify-between">
       <header class="flex flex-col items-center text-center md:items-start md:text-start">
         <h5>
           Invite Members
@@ -128,7 +128,7 @@
         </p>
       </header>
 
-      <div class="flex flex-col md:flex-row-reverse items-center gap-2">
+      <div class="flex flex-col items-center gap-2 md:flex-row-reverse">
         <button class="btn-primary" @click="handleCreateInvite">
           <Icon name="ph:link" size="20" />
           <span>Create Invite Link</span>

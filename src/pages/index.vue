@@ -1,11 +1,11 @@
 <template>
   <div
-    v-motion class="min-h-screen flex flex-col items-center"
+    v-motion class="flex min-h-screen flex-col items-center"
     :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
     :transition="{ duration: 1000 }"
   >
     <div
-      v-motion class="flex flex-col items-center text-center gap-4 p-12 border-b"
+      v-motion class="flex flex-col items-center gap-4 border-b p-12 text-center"
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
       :duration="600"
     >
@@ -28,7 +28,7 @@
     <section
       id="features" v-motion
       :initial="{ opacity: 0, y: 30, scale: 0.9 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
-      :transition="{ delay: 0.5, duration: 1000 }" class="py-12 max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
+      :transition="{ delay: 0.5, duration: 1000 }" class="grid max-w-4xl grid-cols-1 gap-8 py-12 text-center md:grid-cols-3"
     >
       <div>
         <svg
@@ -43,7 +43,7 @@
         <h4>
           End-to-End Encryption
         </h4>
-        <p class="text-muted-foreground tracking-tight">
+        <p class="tracking-tight text-muted-foreground">
           Your secrets are encrypted at rest and never exposed beyond the UI.
         </p>
       </div>
@@ -59,7 +59,7 @@
         <h4>
           Role-Based Access Control
         </h4>
-        <p class="text-muted-foreground tracking-tight">
+        <p class="tracking-tight text-muted-foreground">
           Manage who can view and edit secrets with fine-grained permissions.
         </p>
       </div>
@@ -76,7 +76,7 @@
         <h4>
           Audit Logs
         </h4>
-        <p class="text-muted-foreground tracking-tight">
+        <p class="tracking-tight text-muted-foreground">
           Track sensitive operations like secret changes and organization updates.
         </p>
       </div>

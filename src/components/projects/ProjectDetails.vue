@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-2 border-b">
-    <div class="flex flex-col md:flex-row gap-2 border-b">
-      <div class="md:w-1/2 flex flex-col gap-2">
+    <div class="flex flex-col gap-2 border-b md:flex-row">
+      <div class="flex flex-col gap-2 md:w-1/2">
         <section class="flex flex-col gap-2">
-          <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
+          <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
             <h4>
               Project Details
             </h4>
@@ -24,13 +24,13 @@
             <textarea
               id="projectDescription" v-model="form.description"
               placeholder="Enter project description" rows="3"
-              class="resize-none scroll-area"
+              class="scroll-area resize-none"
             />
 
             <label class="text-sm font-medium" for="projectId">Project ID</label>
             <input
               id="projectId" :value="form.id ?? ''"
-              type="text" class="bg-muted cursor-not-allowed"
+              type="text" class="cursor-not-allowed bg-muted"
               readonly
             >
 
@@ -46,9 +46,9 @@
         </section>
       </div>
 
-      <div v-if="isOwner || isAdmin" class="md:w-1/2 flex flex-col gap-2">
+      <div v-if="isOwner || isAdmin" class="flex flex-col gap-2 md:w-1/2">
         <section class="flex flex-col gap-2">
-          <header class="flex flex-col items-center text-center gap-1 md:items-start md:text-start border-b pb-2">
+          <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
             <h4>
               Project Members
             </h4>
@@ -57,14 +57,14 @@
             </p>
           </header>
 
-          <ul class="flex flex-col items-start gap-2 overflow-y-auto max-h-52 scroll-area">
-            <li v-for="member in projectMembers" :key="member.userId" class="card flex flex-row items-center justify-between gap-2 text-sm w-full min-w-0">
-              <div class="flex flex-col gap-1 md:w-2/3 min-w-0">
-                <span class="font-semibold truncate w-full md:w-40 min-w-0">{{ member.user?.name }}</span>
-                <span class="text-xs text-muted-foreground truncate max-w-full md:max-w-52 min-w-0">{{ member.user?.email }}</span>
+          <ul class="scroll-area flex max-h-52 flex-col items-start gap-2 overflow-y-auto">
+            <li v-for="member in projectMembers" :key="member.userId" class="card flex w-full min-w-0 flex-row items-center justify-between gap-2 text-sm">
+              <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
+                <span class="w-full min-w-0 truncate font-semibold md:w-40">{{ member.user?.name }}</span>
+                <span class="min-w-0 max-w-full truncate text-xs text-muted-foreground md:max-w-52">{{ member.user?.email }}</span>
               </div>
 
-              <div v-if="member.userId !== currentUserId" class="navigation-group md:w-1/3 justify-end">
+              <div v-if="member.userId !== currentUserId" class="navigation-group justify-end md:w-1/3">
                 <select v-model="member.role" class="min-w-[100px] capitalize" :disabled="!isOwner || member.role === 'owner'">
                   <option v-for="role in assignableRoles" :key="role" :value="role" class="capitalize">
                     {{ role }}
@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <section v-if="isOwner || isAdmin" class="flex flex-col md:flex-row md:items-center md:justify-between p-2 gap-2">
+    <section v-if="isOwner || isAdmin" class="flex flex-col gap-2 p-2 md:flex-row md:items-center md:justify-between">
       <header class="flex flex-col items-center text-center md:items-start md:text-start">
         <h5>
           Add New Member
@@ -94,7 +94,7 @@
         </p>
       </header>
 
-      <div class="flex flex-col sm:navigation-group">
+      <div class="sm:navigation-group flex flex-col">
         <div class="navigation-group">
           <input v-model="newMemberId" type="text" placeholder="User ID">
           <select v-model="selectedNewMemberRole" class="min-w-[120px]">
@@ -110,7 +110,7 @@
         </button>
       </div>
 
-      <p v-if="memberErrorMsg" class="text-sm text-danger my-2">
+      <p v-if="memberErrorMsg" class="my-2 text-sm text-danger">
         {{ memberErrorMsg }}
       </p>
     </section>
