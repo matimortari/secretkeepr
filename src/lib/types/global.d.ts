@@ -91,6 +91,14 @@ interface AuditLogsResponse {
   total: number
 }
 
+interface DeleteAuditLogsPayload {
+  organizationId: string
+  action?: string
+  beforeDate?: string
+  createdBySelfOnly?: boolean
+  protectedActions?: string[]
+}
+
 interface UpdateUserPayload {
   name?: string
   image?: string | null

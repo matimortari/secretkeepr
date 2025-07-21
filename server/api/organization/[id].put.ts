@@ -27,9 +27,9 @@ export default defineEventHandler(async (event) => {
     userId: sessionUser.id!,
     organizationId,
     action: "organization.update",
-    resource: `Organization:${organizationId}`,
+    resource: `Organization: ${organizationId}`,
     metadata: {
-      newName: body.name,
+      name: updatedOrganization.name,
     },
     req: event.node.req,
   })

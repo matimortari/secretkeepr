@@ -11,7 +11,10 @@ export default defineEventHandler(async (event) => {
 
   const secret = await db.secret.findUnique({
     where: { id: secretId },
-    include: { project: true },
+    include: {
+      project: true,
+      values: true,
+    },
   })
   if (!secret) {
     throw createError({ statusCode: 404, statusMessage: "Secret not found" })
@@ -27,10 +30,15 @@ export default defineEventHandler(async (event) => {
     userId: sessionUser.id!,
     organizationId: secret.project.organizationId,
     action: "secret.delete",
-    resource: `Secret:${secretId}`,
+    resource: `Secret: ${secretId}`,
     metadata: {
-      secretKey: secret.key,
+      id: secretId,
       projectId: secret.projectId,
+      key: secret.key,
+      values: secret.values.map(v => ({
+        environment: v.environment,
+        value: v.value,
+      })),
     },
     req: event.node.req,
   })
