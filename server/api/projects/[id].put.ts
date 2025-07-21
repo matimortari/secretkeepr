@@ -36,10 +36,10 @@ export default defineEventHandler(async (event) => {
     userId: sessionUser.id!,
     organizationId: project.organizationId,
     action: "project.update",
-    resource: `Project:${projectId}`,
+    resource: `Project: ${projectId}`,
     metadata: {
-      newName: body.name,
-      newDescription: body.description || null,
+      newName: updatedProject.name,
+      newDescription: updatedProject.description || null,
     },
     req: event.node.req,
   })

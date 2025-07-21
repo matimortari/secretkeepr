@@ -1,5 +1,5 @@
 import db from "~/lib/db"
-import { getUserFromSession } from "~/lib/utils"
+import { createAuditLog, getUserFromSession } from "~/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -40,6 +40,17 @@ export default defineEventHandler(async (event) => {
   await db.invitation.update({
     where: { id: invite.id },
     data: { usedAt: new Date() },
+  })
+
+  await createAuditLog({
+    userId: sessionUser.id!,
+    organizationId: invite.organizationId,
+    action: "organization.invite.accept",
+    resource: `Organization: ${invite.organizationId}`,
+    metadata: {
+      acceptedBy: sessionUser.id!,
+      selectedRole: invite.role,
+    },
   })
 
   return { message: "Invitation accepted successfully", organization: invite.organization }

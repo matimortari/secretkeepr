@@ -2,6 +2,7 @@ import {
   acceptOrganizationInviteService,
   createOrganizationInviteService,
   createOrganizationService,
+  deleteAuditLogsService,
   deleteOrganizationService,
   getAuditLogsService,
   removeUserFromOrganizationService,
@@ -199,6 +200,30 @@ export const useOrganizationStore = defineStore("organization", {
         this.auditLogs.limit = 15
         this.auditLogs.total = 0
         this.auditLogs.error = error?.message || "Failed to get audit logs"
+      }
+      finally {
+        this.isLoading = false
+      }
+    },
+    async deleteAuditLogs(filters: {
+      organizationId: string
+      action?: string
+      beforeDate?: string
+      createdBySelfOnly?: boolean
+      protectedActions?: string[]
+    }) {
+      this.isLoading = true
+      this.auditLogs.error = null
+      try {
+        const response = await deleteAuditLogsService(filters)
+        if (this.selectedOrganization) {
+          await this.getAuditLogs(this.selectedOrganization.id, this.auditLogs.page, this.auditLogs.limit)
+        }
+        return response
+      }
+      catch (error: any) {
+        console.error("Failed to delete audit logs", error)
+        this.auditLogs.error = error?.message || "Failed to delete audit logs"
       }
       finally {
         this.isLoading = false
