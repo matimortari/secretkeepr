@@ -4,63 +4,63 @@
 
 @layer base {
   html.dark {
-    --background: #0e1012;
-    --foreground: #f1f1f1;
+    --background: #0a0b0c;
+    --foreground: #e9e9e9;
 
-    --card: #191a1c;
-    --card-foreground: #f1f1f1;
+    --card: #171819;
+    --card-foreground: #e9e9e9;
 
-    --popover: #1e1f22;
-    --popover-foreground: #f1f1f1;
+    --popover: #1a1c1d;
+    --popover-foreground: #e9e9e9;
 
     --primary: #e0ed34;
-    --primary-foreground: #0f0f0f;
+    --primary-foreground: #222222;
 
-    --secondary: #2c4969;
-    --secondary-foreground: #f1f1f1;
+    --secondary: #294360;
+    --secondary-foreground: #e9e9e9;
 
-    --muted: #28292b;
-    --muted-foreground: #9b9b9b;
+    --muted: #282828;
+    --muted-foreground: #8a8a8a;
 
-    --danger: #ed3c50;
-    --danger-foreground: #f1f1f1;
+    --danger: #f02424;
+    --danger-foreground: #e9e9e9;
 
-    --success: #42b883;
-    --success-foreground: #f1f1f1;
+    --success: #307045;
+    --success-foreground: #e9e9e9;
 
-    --accent: #389a80;
-    --border: #3b3b3b;
-    --input: #353535;
+    --accent: #2d6455;
+    --border: #333333;
+    --input: #151515;
   }
 
   html.light {
     --background: #f1f1f1;
-    --foreground: #0f0f0f;
+    --foreground: #222222;
 
-    --card: #e7e4e4;
-    --card-foreground: #0f0f0f;
+    --card: #e9e9e9;
+    --card-foreground: #222222;
 
-    --popover: #e7e4e4;
-    --popover-foreground: #0f0f0f;
+    --popover: #e9e9e9;
+    --popover-foreground: #222222;
 
     --primary: #e0ed34;
-    --primary-foreground: #0f0f0f;
+    --primary-foreground: #222222;
 
     --secondary: #2c4969;
-    --secondary-foreground: #f1f1f1;
+    --secondary-foreground: #e9e9e9;
 
     --muted: #e1e1e1;
-    --muted-foreground: #707070;
+    --muted-foreground: #686868;
 
-    --danger: #ed3c50;
-    --danger-foreground: #0f0f0f;
+    --danger: #f02424;
+    --danger-foreground: #e9e9e9;
 
-    --success: #42b883;
-    --success-foreground: #0f0f0f;
+    --success: #307045;
+    --success-foreground: #e9e9e9;
 
     --accent: #3d76b6;
-    --border: #bebebe;
-    --input: #e5e7eb;
+    --border: #cccccc;
+    --input: #e3dfdf;
   }
 
   * {

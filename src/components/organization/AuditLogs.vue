@@ -37,13 +37,13 @@
 
       <nav v-if="totalPages > 0" class="navigation-group w-full md:w-auto">
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasPrevPage" @click="prevPage">
-          <Icon name="ph:arrow-left" size="20" />
+          <Icon name="ph:arrow-left-bold" size="20" />
         </button>
         <span class="whitespace-nowrap text-sm text-muted-foreground">
           Page {{ page }} of {{ totalPages }}
         </span>
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasNextPage" @click="nextPage">
-          <Icon name="ph:arrow-right" size="20" />
+          <Icon name="ph:arrow-right-bold" size="20" />
         </button>
 
         <button class="btn-danger" :disabled="isLoading || filteredLogs.length === 0" @click="handleDeleteLogs">
