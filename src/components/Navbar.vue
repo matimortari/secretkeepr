@@ -5,7 +5,7 @@
         <img
           src="/logo.png" alt="Logo"
           width="40" height="40"
-          class="hover:scale-md flex-shrink-0 transition-all duration-500"
+          class="hover:scale-md flex-shrink-0 transition-all"
         >
       </NuxtLink>
 
@@ -19,7 +19,7 @@
         <div ref="dropdownRef" class="relative">
           <button class="navigation-group truncate hover:underline" @click="isDropdownOpen = !isDropdownOpen">
             <span class="text-muted-foreground">{{ selectedOrganization?.name || 'Select Organization' }}</span>
-            <Icon name="ph:caret-down-bold" size="20" class="hover:scale-md transition-all duration-500 hover:text-accent" />
+            <Icon name="ph:caret-down-bold" size="20" class="hover:scale-md transition-all hover:text-accent" />
           </button>
 
           <Transition name="dropdown" mode="out-in">

@@ -40,7 +40,6 @@ export const useOrganizationStore = defineStore("organization", {
   },
 
   actions: {
-
     setSelectedOrganization(id: string) {
       const found = this.organizations.find(org => org.id === id)
       if (found) {

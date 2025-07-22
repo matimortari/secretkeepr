@@ -1,6 +1,6 @@
 <template>
   <Dialog :is-open="isOpen" title="Import from .env" @update:is-open="emit('close')">
-    <form class="flex flex-col gap-2" @submit.prevent="handleSubmit">
+    <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <textarea v-model="envText" rows="10" class="scroll-area resize-none font-mono" placeholder="Paste your .env content here..." />
 
       <div class="flex flex-col items-start gap-1">
@@ -19,7 +19,7 @@
       </div>
 
       <footer class="navigation-group justify-end">
-        <button class="hover:underline" type="button" @click="emit('close')">
+        <button class="font-semibold hover:underline" type="button" @click="emit('close')">
           Cancel
         </button>
         <button class="btn-success" type="submit" :disabled="hasErrors">

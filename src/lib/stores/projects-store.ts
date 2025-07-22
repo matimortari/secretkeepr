@@ -18,7 +18,6 @@ export const useProjectsStore = defineStore("projects", {
   }),
 
   actions: {
-
     async getProjects() {
       this.isLoading = true
       this.error = null

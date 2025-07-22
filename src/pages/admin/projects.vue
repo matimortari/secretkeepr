@@ -51,11 +51,11 @@
           :delay="20 * filteredProjects.length"
         >
           <button
-            class="card group flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 border-dashed bg-transparent text-muted-foreground transition-all duration-500 hover:border-secondary hover:text-secondary"
+            class="card group flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 border-dashed bg-transparent text-muted-foreground transition-all hover:border-secondary hover:text-secondary"
             @click="openDialog()"
           >
-            <Icon name="ph:plus" size="50" class="group-hover:scale-md transition-all duration-500 group-hover:text-secondary" />
-            <span class="group-hover:scale-sm font-semibold transition-all duration-500 group-hover:text-secondary">Add New Project</span>
+            <Icon name="ph:plus" size="50" class="group-hover:scale-md transition-all group-hover:text-secondary" />
+            <span class="group-hover:scale-sm font-semibold transition-all group-hover:text-secondary">Add New Project</span>
           </button>
         </li>
       </ul>
