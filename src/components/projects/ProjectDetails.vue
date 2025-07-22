@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-col gap-2 border-b">
-    <div class="flex flex-col gap-2 border-b md:flex-row">
+  <div class="flex flex-col border-b">
+    <div class="flex flex-col gap-2 border-b md:flex-row md:gap-8">
       <div class="flex flex-col gap-2 md:w-1/2">
-        <section class="flex flex-col gap-2">
+        <section class="flex flex-col">
           <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
             <h4>
               Project Details
@@ -38,7 +38,7 @@
               {{ errorMsg }}
             </p>
 
-            <button class="btn-primary self-start" type="submit">
+            <button class="btn-primary md:self-start" type="submit">
               <Icon name="ph:check-circle" size="20" />
               <span>Save Changes</span>
             </button>
@@ -47,7 +47,7 @@
       </div>
 
       <div v-if="isOwner || isAdmin" class="flex flex-col gap-2 md:w-1/2">
-        <section class="flex flex-col gap-2">
+        <section class="flex flex-col">
           <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
             <h4>
               Project Members
@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <section v-if="isOwner || isAdmin" class="flex flex-col gap-2 p-2 md:flex-row md:items-center md:justify-between">
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col gap-2 p-2 md:justify-between">
       <header class="flex flex-col items-center text-center md:items-start md:text-start">
         <h5>
           Add New Member
@@ -94,15 +94,13 @@
         </p>
       </header>
 
-      <div class="sm:navigation-group flex flex-col">
-        <div class="navigation-group">
-          <input v-model="newMemberId" type="text" placeholder="User ID">
-          <select v-model="selectedNewMemberRole" class="min-w-[120px]">
-            <option v-for="role in assignableRoles" :key="role" :value="role">
-              {{ role }}
-            </option>
-          </select>
-        </div>
+      <div class="md:navigation-group flex flex-col gap-2">
+        <input v-model="newMemberId" type="text" placeholder="User ID">
+        <select v-model="selectedNewMemberRole" class="min-w-[120px]">
+          <option v-for="role in assignableRoles" :key="role" :value="role">
+            {{ role }}
+          </option>
+        </select>
 
         <button class="btn-primary" @click.prevent="handleAddMember">
           <Icon name="ph:plus-circle-bold" size="20" />

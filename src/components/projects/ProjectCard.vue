@@ -11,15 +11,15 @@
       </div>
 
       <div class="navigation-group absolute bottom-4 left-4 text-muted-foreground">
-        <Icon name="ph:key-bold" size="20" class="group-hover:scale-sm transition-all duration-500 group-hover:text-secondary" />
-        <span class="group-hover:scale-sm font-medium transition-all duration-500 group-hover:text-secondary">{{ totalProjectSecrets }}</span>
+        <Icon name="ph:key-bold" size="20" class="group-hover:scale-sm transition-all group-hover:text-secondary" />
+        <span class="group-hover:scale-sm font-medium transition-all group-hover:text-secondary">{{ totalProjectSecrets }}</span>
 
-        <NuxtLink :to="`/admin/${project.id}/settings`" class="group-hover:scale-sm transition-all duration-500 group-hover:text-secondary">
+        <NuxtLink :to="`/admin/${project.id}/settings`" class="group-hover:scale-sm transition-all group-hover:text-secondary">
           <Icon name="ph:gear-bold" size="20" class="ml-2 mt-1" />
         </NuxtLink>
       </div>
 
-      <Icon name="ph:arrow-right-bold" size="35" class="group-hover:scale-sm absolute bottom-4 right-4 text-muted-foreground transition-all duration-500 group-hover:text-secondary" />
+      <Icon name="ph:arrow-right-bold" size="35" class="group-hover:scale-sm absolute bottom-4 right-4 text-muted-foreground transition-all group-hover:text-secondary" />
     </div>
   </NuxtLink>
 </template>

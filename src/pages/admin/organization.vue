@@ -11,7 +11,7 @@
         </h2>
       </header>
 
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-8">
         <OrganizationDetails :organization="organization" />
         <OrganizationAuditLogs :logs="logs" />
         <OrganizationDangerZone :organization="organization" />

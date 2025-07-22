@@ -2,11 +2,11 @@
   <div>
     <div
       v-if="isOpen"
-      class="fixed inset-0 z-30 bg-black/50 transition-opacity duration-300 md:hidden"
+      class="fixed inset-0 z-30 bg-black/50 transition-opacity md:hidden"
       @click="$emit('update:isOpen', false)"
     />
     <aside
-      class="fixed left-0 top-0 z-40 h-full min-h-screen w-64 rounded-br-xl border-r bg-popover p-4 transition-transform duration-300 md:static md:h-auto md:w-52"
+      class="fixed left-0 top-0 z-40 h-full min-h-screen w-64 rounded-br-xl border-r bg-popover p-4 transition-transform md:static md:h-auto md:w-52"
       :class="[
         isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
       ]"
@@ -20,7 +20,7 @@
           v-for="link in navLinks"
           :key="link.href"
           :to="link.href"
-          class="navigation-group hover:scale-sm text-sm font-semibold text-muted-foreground transition-all duration-500"
+          class="navigation-group text-sm font-semibold text-muted-foreground transition-all hover:underline"
         >
           <Icon :name="link.icon" size="30" />
           <span>{{ link.label }}</span>
@@ -34,7 +34,7 @@
             name="ph:plus-bold"
             size="25"
             role="button"
-            class="hover:scale-md transition-all duration-500 hover:text-accent"
+            class="hover:scale-md transition-all hover:text-accent"
             @click="openDialog()"
           />
         </div>
@@ -51,7 +51,7 @@
         </div>
 
         <a href="https://github.com/matimortari/secretkeepr" class="navigation-group group">
-          <Icon name="simple-icons:github" size="25" class="group-hover:scale-sm transition-all duration-500 group-hover:text-accent" />
+          <Icon name="simple-icons:github" size="25" class="group-hover:scale-sm group-hover:text-accent" />
           <span class="text-sm font-semibold text-muted-foreground group-hover:underline">
             Support This Project
           </span>
