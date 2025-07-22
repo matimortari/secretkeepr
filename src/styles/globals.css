@@ -22,11 +22,11 @@
     --muted: #282828;
     --muted-foreground: #8a8a8a;
 
-    --danger: #f02424;
-    --danger-foreground: #e9e9e9;
+    --danger: #d33737;
+    --danger-foreground: #e42525;
 
-    --success: #307045;
-    --success-foreground: #e9e9e9;
+    --success: #2b5e3c;
+    --success-foreground: #327047;
 
     --accent: #2d6455;
     --border: #333333;
@@ -52,11 +52,11 @@
     --muted: #e1e1e1;
     --muted-foreground: #686868;
 
-    --danger: #f02424;
-    --danger-foreground: #e9e9e9;
+    --danger: #d33737;
+    --danger-foreground: #e42525;
 
-    --success: #307045;
-    --success-foreground: #e9e9e9;
+    --success: #2b5e3c;
+    --success-foreground: #327047;
 
     --accent: #3d76b6;
     --border: #cccccc;
@@ -120,7 +120,9 @@
     border: 1px solid var(--border);
     border-radius: 0.25rem;
     padding: 0.5rem;
-    transition: all 0.2s ease-in-out;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
   }
 
   .popover {
@@ -128,9 +130,11 @@
     color: var(--popover-foreground);
     border: 1px solid var(--border);
     border-radius: 0.25rem;
-    padding: 2rem;
+    padding: 1rem;
     box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.4);
-    transition: all 0.2s ease-in-out;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
   }
 
   .dropdown {
@@ -157,7 +161,9 @@
     border-radius: 0.25rem;
     padding: 0.5rem;
     font-size: 0.875rem;
-    transition: all 0.2s ease-in-out;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
   }
 
   input:hover,
@@ -201,7 +207,9 @@
     white-space: nowrap;
     user-select: none;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
   }
 
   .btn:hover,
@@ -233,11 +241,11 @@
   }
   .btn-danger {
     background-color: var(--danger);
-    color: var(--danger-foreground);
+    color: var(--secondary-foreground);
   }
   .btn-success {
     background-color: var(--success);
-    color: var(--success-foreground);
+    color: var(--secondary-foreground);
   }
 }
 

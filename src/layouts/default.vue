@@ -6,7 +6,7 @@
           <img
             src="/logo.png" alt="Logo"
             width="40" height="40"
-            class="hover:scale-md flex-shrink-0 transition-all duration-500"
+            class="hover:scale-md flex-shrink-0 transition-all"
           >
         </NuxtLink>
         <p class="navigation-group text-sm text-muted-foreground">
