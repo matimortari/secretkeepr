@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-col gap-2 border-b">
-    <div class="flex flex-col gap-2 border-b md:flex-row">
+  <div class="flex flex-col border-b">
+    <div class="flex flex-col gap-2 border-b md:flex-row md:gap-8">
       <div class="flex flex-col gap-2 md:w-1/2">
-        <section class="flex flex-col gap-2">
+        <section class="flex flex-col">
           <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
             <h4>
               Organization Details
@@ -32,7 +32,7 @@
               </option>
             </select>
 
-            <button class="btn-primary self-start" type="submit">
+            <button class="btn-primary md:self-start" type="submit">
               <Icon name="ph:check-circle" size="20" />
               <span>Save Changes</span>
             </button>
@@ -41,7 +41,7 @@
       </div>
 
       <div class="flex flex-col gap-2 md:w-1/2">
-        <section class="flex flex-col gap-2">
+        <section class="flex flex-col">
           <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
             <h4>
               Projects
@@ -73,7 +73,7 @@
           </ul>
         </section>
 
-        <section class="flex flex-col gap-2">
+        <section class="flex flex-col">
           <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
             <h4>
               Current Users
@@ -118,7 +118,7 @@
       </div>
     </div>
 
-    <section class="md:navigation-group flex flex-col p-2 md:justify-between">
+    <section class="md:navigation-group flex flex-col gap-2 p-2 md:justify-between">
       <header class="flex flex-col items-center text-center md:items-start md:text-start">
         <h5>
           Invite Members
@@ -128,7 +128,7 @@
         </p>
       </header>
 
-      <div class="flex flex-col items-center gap-2 md:flex-row-reverse">
+      <div class="flex flex-col gap-2 md:flex-row-reverse">
         <button class="btn-primary" @click="handleCreateInvite">
           <Icon name="ph:link" size="20" />
           <span>Create Invite Link</span>
@@ -158,6 +158,12 @@ const form = ref({
   name: props.organization?.name || "",
 })
 
+const roles: { value: Role, label: string }[] = [
+  { value: "owner", label: "Owner" },
+  { value: "admin", label: "Admin" },
+  { value: "member", label: "Member" },
+]
+
 const projectsStore = useProjectsStore()
 const userStore = useUserStore()
 const organizationStore = useOrganizationStore()
@@ -166,16 +172,12 @@ const { projects } = storeToRefs(projectsStore)
 const { user } = storeToRefs(userStore)
 const { inviteLink } = storeToRefs(organizationStore)
 
+const defaultRole = ref<Role>("member")
+const userRoles = ref<Record<string, Role>>({})
+const assignableRoles = roles.filter(r => r.value !== "owner")
+
 const currentUserRole = computed(() => {
   return props.organization?.memberships?.find(m => m.userId === user.value?.id)?.role ?? "member"
-})
-
-watch(() => props.organization, (newOrg) => {
-  form.value.name = newOrg?.name || ""
-})
-
-onMounted(async () => {
-  await projectsStore.getProjects()
 })
 
 const projectsFromOrg = computed(() => {
@@ -185,16 +187,6 @@ const projectsFromOrg = computed(() => {
   )
 })
 
-const roles: { value: Role, label: string }[] = [
-  { value: "owner", label: "Owner" },
-  { value: "admin", label: "Admin" },
-  { value: "member", label: "Member" },
-]
-
-const defaultRole = ref<Role>("member")
-const userRoles = ref<Record<string, Role>>({})
-const assignableRoles = roles.filter(r => r.value !== "owner")
-
 const usersWithRoles = computed(() => {
   if (!props.organization?.memberships)
     return []
@@ -202,9 +194,9 @@ const usersWithRoles = computed(() => {
   return props.organization.memberships
     .filter((m): m is Required<UserOrganizationMembershipType> => !!m.user)
     .map(m => ({
-      name: m.user!.name ?? "(no name)",
+      name: m.user!.name,
       id: m.user!.id,
-      email: m.user!.email ?? "(no email)",
+      email: m.user!.email,
       role: m.role,
     }))
 })
@@ -271,6 +263,14 @@ async function handleDeleteProject(projectId: string) {
     console.error("Failed to delete project:", error)
   }
 }
+
+onMounted(async () => {
+  await projectsStore.getProjects()
+})
+
+watch(() => props.organization, (newOrg) => {
+  form.value.name = newOrg?.name || ""
+})
 
 watch(usersWithRoles, (users) => {
   const map: Record<string, Role> = {}

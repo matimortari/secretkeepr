@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-2 border-b">
+  <div class="flex flex-col border-b">
     <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
       <h4>
         User Information
@@ -37,7 +37,7 @@
         {{ errorMsg }}
       </p>
 
-      <button class="btn-primary self-start" type="submit">
+      <button class="btn-primary md:self-start" type="submit">
         <Icon name="ph:check-circle" size="20" />
         <span>Save Changes</span>
       </button>

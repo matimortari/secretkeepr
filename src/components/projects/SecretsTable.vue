@@ -2,19 +2,19 @@
   <div class="scroll-area overflow-x-auto">
     <table class="w-full table-auto overflow-hidden rounded-sm border md:table-fixed">
       <thead>
-        <tr class="border bg-muted text-sm font-semibold transition-all duration-500">
+        <tr class="border bg-muted text-sm font-semibold transition-all">
           <th class="navigation-group w-full select-none p-2 text-left">
             <span>Key</span>
             <Icon
               name="ph:arrow-down-bold"
               size="15"
-              class="hover:scale-sm transition-all duration-500 hover:text-primary"
+              class="hover:scale-sm transition-all hover:text-primary"
               :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'"
               role="button"
               @click="toggleSort"
             />
           </th>
-          <th v-for="env in environments" :key="env" class="w-40 border p-2 text-left capitalize">
+          <th v-for="env in environments" :key="env" class="border p-2 text-left capitalize md:w-1/6">
             <span>{{ env }}</span>
           </th>
         </tr>
@@ -33,18 +33,18 @@
               <Icon
                 v-if="secret.description" name="carbon:information-square"
                 :title="secret.description ?? undefined" size="15"
-                class="hover:scale-md flex-shrink-0 cursor-pointer transition-all duration-500"
+                class="hover:scale-md hidden flex-shrink-0 cursor-pointer transition-all md:inline"
               />
             </div>
             <span class="navigation-group">
               <button @click="toggleVisibility(secret.key)">
-                <Icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md transition-all duration-500 hover:text-accent" />
+                <Icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
               <button @click="updateSecret(secret.key)">
-                <Icon name="carbon:edit" size="20" class="hover:scale-md transition-all duration-500 hover:text-accent" />
+                <Icon name="carbon:edit" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
               <button @click="handleDeleteSecret(secret.key)">
-                <Icon name="carbon:delete" size="20" class="hover:scale-md transition-all duration-500 hover:text-danger" />
+                <Icon name="carbon:delete" size="20" class="hover:scale-md transition-all hover:text-danger" />
               </button>
             </span>
           </td>
@@ -54,14 +54,14 @@
               <span
                 class="max-w-[80%] select-none truncate"
                 :class="[
-                  !getSecretValue(secret.key, env) ? '' : 'hover:scale-sm cursor-pointer rounded bg-card px-1 transition-all duration-500 hover:text-primary',
+                  !getSecretValue(secret.key, env) ? '' : 'cursor-pointer rounded bg-card px-1 transition-all hover:text-primary',
                 ]" @click="copyToClipboard(getSecretValue(secret.key, env))"
               >
                 {{ renderValue(secret.key, env) }}
               </span>
 
               <button @click="copyToClipboard(getSecretValue(secret.key, env))">
-                <Icon name="carbon:copy" size="20" class="hover:scale-md transition-all duration-500 hover:text-accent" />
+                <Icon name="carbon:copy" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
             </div>
           </td>

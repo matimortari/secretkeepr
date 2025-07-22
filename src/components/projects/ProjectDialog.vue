@@ -1,6 +1,6 @@
 <template>
   <Dialog :is-open="isOpen" :title="dialogTitle" @update:is-open="emit('close')">
-    <form class="flex flex-col gap-2" @submit.prevent="handleSubmit">
+    <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-1">
         <label for="name" class="text-sm font-medium">Project Name</label>
         <input
@@ -22,7 +22,7 @@
       </div>
 
       <footer class="navigation-group justify-end">
-        <button class="hover:underline" type="button" @click="emit('close')">
+        <button class="font-semibold hover:underline" type="button" @click="emit('close')">
           Cancel
         </button>
         <button class="btn-success w-16" type="submit" :disabled="hasErrors">
