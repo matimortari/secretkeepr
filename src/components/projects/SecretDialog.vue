@@ -1,6 +1,6 @@
 <template>
   <Dialog :is-open="isOpen" :title="dialogTitle" @update:is-open="emit('close')">
-    <form class="flex flex-col gap-2" @submit.prevent="handleSubmit">
+    <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-2">
         <label for="key" class="text-sm font-medium ">Key</label>
         <input
@@ -21,14 +21,14 @@
         <input :id="env" v-model="form.values[env]" type="text" class="w-full">
       </div>
 
-      <div v-if="hasErrors" class="flex max-w-sm flex-col gap-1 text-center">
+      <div v-if="hasErrors" class="flex flex-col gap-1 text-center">
         <span v-for="(msg, key) in formErrors" :key="key" class="text-danger-foreground">
           {{ msg }}
         </span>
       </div>
 
       <footer class="navigation-group justify-end">
-        <button class="hover:underline" type="button" @click="emit('close')">
+        <button class="font-semibold hover:underline" type="button" @click="emit('close')">
           Cancel
         </button>
         <button class="btn-success w-16" type="submit" :disabled="hasErrors">

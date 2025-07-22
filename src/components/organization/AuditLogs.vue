@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-2 border-b">
+  <div class="flex flex-col border-b">
     <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
       <h4>
         Audit Logs
@@ -9,8 +9,8 @@
       </p>
     </header>
 
-    <section class="md:navigation-group flex flex-col p-2 md:justify-between">
-      <div class="md:navigation-group flex w-full flex-col md:w-auto">
+    <section class="md:navigation-group flex flex-col gap-4 p-2 md:justify-between">
+      <div class="md:navigation-group flex w-full flex-col gap-2 md:w-auto">
         <input v-model="dateFilter" type="date" class="w-full md:w-auto">
         <select v-model="userFilter" class="w-full md:w-auto">
           <option value="">
@@ -29,13 +29,13 @@
           </option>
         </select>
 
-        <label class="flex items-center gap-2 text-sm">
+        <label class="navigation-group justify-center text-sm">
           <input v-model="showSensitiveData" type="checkbox" class="appearance-none rounded border border-muted bg-transparent p-2 checked:bg-secondary focus:outline-none">
           <span>Show sensitive data</span>
         </label>
       </div>
 
-      <nav v-if="totalPages > 0" class="navigation-group w-full md:w-auto">
+      <nav v-if="totalPages > 0" class="navigation-group w-full justify-around md:w-auto">
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasPrevPage" @click="prevPage">
           <Icon name="ph:arrow-left-bold" size="20" />
         </button>
@@ -61,7 +61,7 @@
       <div v-else class="scroll-area max-h-[50vh] w-full overflow-auto">
         <table class="table-fixed rounded-sm border md:w-full md:overflow-hidden">
           <thead>
-            <tr class="bg-muted text-sm font-semibold transition-all duration-500">
+            <tr class="bg-muted text-sm font-semibold transition-all">
               <th v-for="header in headers" :key="header.value" class="select-none border p-2 text-left" :style="{ width: header.width }">
                 <div class="navigation-group">
                   <Icon :name="header.icon" size="15" class="mr-1" />

@@ -20,7 +20,7 @@
         </p>
       </header>
 
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-8">
         <ProjectsProjectDetails :project="project" />
         <ProjectsProjectDangerZone v-if="currentUserId === projectOwnerId" :project="project" />
       </div>
