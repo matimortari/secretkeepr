@@ -11,7 +11,7 @@ export async function createOrganizationService(data: CreateOrganizationPayload)
   return await response.json()
 }
 
-export async function updateOrganizationService(organizationId: string, data: CreateOrganizationPayload): Promise<{ message: string, updatedOrganization: OrganizationType }> {
+export async function updateOrganizationService(organizationId: string, data: UpdateOrganizationPayload): Promise<{ message: string, updatedOrganization: OrganizationType }> {
   const response = await fetch(`/api/organization/${organizationId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
