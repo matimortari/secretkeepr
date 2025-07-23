@@ -21,7 +21,7 @@ export async function createSecretService(projectId: string, data: CreateSecretP
   return await response.json()
 }
 
-export async function updateSecretService(projectId: string, secretId: string, data: CreateSecretPayload): Promise<{ message: string, updatedSecret: SecretType }> {
+export async function updateSecretService(projectId: string, secretId: string, data: UpdateSecretPayload): Promise<{ message: string, updatedSecret: SecretType }> {
   const response = await fetch(`/api/projects/${projectId}/secrets/${secretId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -39,7 +39,7 @@ export async function deleteSecretService(projectId: string, secretId: string): 
     headers: { "Content-Type": "application/json" },
   })
   if (!response.ok) {
-    throw new Error(`Failed to delete project service: ${response.statusText}`)
+    throw new Error(`Failed to delete project secret: ${response.statusText}`)
   }
   return await response.json()
 }
