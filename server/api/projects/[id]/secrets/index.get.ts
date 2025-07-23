@@ -1,6 +1,6 @@
-import db from "~/lib/db"
-import { decrypt } from "~/lib/encryption"
-import { getUserFromSession, requireProjectRole } from "~/lib/utils"
+import db from "~~/server/lib/db"
+import { decrypt } from "~~/server/lib/encryption"
+import { getUserFromSession, requireProjectRole } from "~~/server/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
