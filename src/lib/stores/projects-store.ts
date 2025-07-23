@@ -21,75 +21,89 @@ export const useProjectsStore = defineStore("projects", {
     async getProjects() {
       this.isLoading = true
       this.error = null
+
       try {
         this.projects = await getProjectsService()
       }
       catch (error: any) {
-        console.error("Failed to get projects", error)
-        this.error = error?.message || "Failed to get projects"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
       }
     },
 
-    async createProject(data: { name: string, description?: string, organizationId: string }) {
+    async createProject(payload: CreateProjectPayload) {
+      if (!payload.name || typeof payload.name !== "string") {
+        this.error = "Project name is required and must be a string"
+        throw new Error(this.error)
+      }
+      if (!payload.organizationId) {
+        this.error = "Organization ID is required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        const payload = {
-          ...data,
-          description: data.description === null ? undefined : data.description,
-        }
         const response = await createProjectService(payload)
-        const newProject = response.newProject
-        this.projects.push(newProject)
-        return newProject
+        this.projects.push(response.newProject)
+        return response
       }
       catch (error: any) {
-        console.error("Failed to create project", error)
-        this.error = error?.message || "Failed to create project"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
       }
     },
 
-    async deleteProject(id: string) {
+    async updateProject(payload: UpdateProjectPayload) {
+      if (!payload.name || typeof payload.name !== "string") {
+        this.error = "Project name is required and must be a string"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        await deleteProjectService(id)
-        this.projects = this.projects.filter(p => p.id !== id)
-        if (this.currentProject?.id === id)
+        const response = await updateProjectService(payload)
+        this.currentProject = response.updatedProject
+        this.projects = this.projects.map(p => (p.id === payload.id ? response.updatedProject : p))
+        return response
+      }
+      catch (error: any) {
+        this.error = error?.message
+        throw error
+      }
+      finally {
+        this.isLoading = false
+      }
+    },
+
+    async deleteProject(projectId: string) {
+      if (!projectId) {
+        this.error = "Project ID is required"
+        throw new Error(this.error)
+      }
+
+      this.isLoading = true
+      this.error = null
+
+      try {
+        const response = await deleteProjectService(projectId)
+        this.projects = this.projects.filter(p => p.id !== projectId)
+        if (this.currentProject?.id === projectId)
           this.currentProject = null
+        return response
       }
       catch (error: any) {
-        console.error("Failed to delete project", error)
-        this.error = error?.message || "Failed to delete project"
-      }
-      finally {
-        this.isLoading = false
-      }
-    },
-
-    async updateProject(id: string, updatedData: Partial<ProjectType> & { name: string }) {
-      this.isLoading = true
-      this.error = null
-      try {
-        const payload = {
-          ...updatedData,
-          description: updatedData.description === null ? undefined : updatedData.description,
-        }
-        const response = await updateProjectService(id, payload)
-        const updated = response.updatedProject
-        this.currentProject = updated
-        this.projects = this.projects.map(p => (p.id === id ? updated : p))
-        return updated
-      }
-      catch (error: any) {
-        console.error("Failed to update project", error)
-        this.error = error?.message || "Failed to update project"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
@@ -97,8 +111,14 @@ export const useProjectsStore = defineStore("projects", {
     },
 
     async getProjectMembers(projectId: string) {
+      if (!projectId) {
+        this.error = "Project ID is required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
         const members = await getProjectMembersService(projectId)
         if (this.currentProject?.id === projectId) {
@@ -106,67 +126,85 @@ export const useProjectsStore = defineStore("projects", {
         }
       }
       catch (error: any) {
-        console.error("Failed to get project members", error)
-        this.error = error?.message || "Failed to get project members"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
       }
     },
 
-    async addProjectMember(projectId: string, memberData: { userId: string, role: Role }) {
+    async addProjectMember(projectId: string, data: AddProjectMemberPayload) {
+      if (!projectId || !data.userId || !data.role) {
+        this.error = "Project ID, User ID, and Role are required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        const member = await addProjectMemberService(projectId, memberData)
+        const member = await addProjectMemberService(projectId, data)
         if (this.currentProject?.id === projectId) {
           this.currentProject.members = [...(this.currentProject.members || []), member.newMember]
         }
         return member.newMember
       }
       catch (error: any) {
-        console.error("Failed to add member", error)
-        this.error = error?.message || "Failed to add member"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
       }
     },
 
-    async updateProjectMember(projectId: string, memberId: string, role: Role) {
+    async updateProjectMember(projectId: string, userId: string, role: Role) {
+      if (!projectId || !userId || !role) {
+        this.error = "Project ID, User ID, and Role are required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        const response = await updateProjectMemberService(projectId, memberId, { role })
-        const updated = response.updatedMember
+        const response = await updateProjectMemberService(projectId, userId, { role })
         if (this.currentProject?.id === projectId && this.currentProject.members) {
           this.currentProject.members = this.currentProject.members.map(m =>
-            m.id === memberId ? updated : m,
+            m.id === userId ? response.updatedMember : m,
           )
         }
-        return updated
+        return response
       }
       catch (error: any) {
-        console.error("Failed to update member", error)
-        this.error = error?.message || "Failed to update member"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
       }
     },
 
-    async removeProjectMember(projectId: string, memberId: string) {
+    async removeProjectMember(projectId: string, userId: string) {
+      if (!projectId || !userId) {
+        this.error = "Project ID and User ID are required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        await removeProjectMemberService(projectId, memberId)
+        const response = await removeProjectMemberService(projectId, userId)
         if (this.currentProject?.id === projectId && this.currentProject.members) {
-          this.currentProject.members = this.currentProject.members.filter(m => m.id !== memberId)
+          this.currentProject.members = this.currentProject.members.filter(m => m.id !== userId)
         }
+        return response
       }
       catch (error: any) {
-        console.error("Failed to remove member", error)
-        this.error = error?.message || "Failed to remove member"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false

@@ -21,8 +21,8 @@ export async function createProjectService(data: CreateProjectPayload): Promise<
   return await response.json()
 }
 
-export async function updateProjectService(projectId: string, data: CreateProjectPayload): Promise<{ message: string, updatedProject: ProjectType }> {
-  const response = await fetch(`/api/projects/${projectId}`, {
+export async function updateProjectService(data: UpdateProjectPayload): Promise<{ message: string, updatedProject: ProjectType }> {
+  const response = await fetch(`/api/projects/${data.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -34,7 +34,7 @@ export async function updateProjectService(projectId: string, data: CreateProjec
   return await response.json()
 }
 
-export async function deleteProjectService(projectId: string): Promise<{ message: string, projectId: string }> {
+export async function deleteProjectService(projectId: string): Promise<{ message: string }> {
   const response = await fetch(`/api/projects/${projectId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
@@ -56,11 +56,11 @@ export async function getProjectMembersService(projectId: string): Promise<Proje
   return await response.json()
 }
 
-export async function addProjectMemberService(projectId: string, memberData: CreateProjectMemberPayload): Promise<{ message: string, newMember: ProjectMemberType }> {
+export async function addProjectMemberService(projectId: string, data: AddProjectMemberPayload): Promise<{ message: string, newMember: ProjectMemberType }> {
   const response = await fetch(`/api/projects/${projectId}/members`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(memberData),
+    body: JSON.stringify(data),
   })
   if (!response.ok) {
     throw new Error(`Failed to add project member: ${response.statusText}`)
@@ -68,7 +68,7 @@ export async function addProjectMemberService(projectId: string, memberData: Cre
   return await response.json()
 }
 
-export async function updateProjectMemberService(projectId: string, memberId: string, data: CreateProjectMemberPayload): Promise<{ message: string, updatedMember: ProjectMemberType }> {
+export async function updateProjectMemberService(projectId: string, memberId: string, data: { role: Role }): Promise<{ message: string, updatedMember: ProjectMemberType }> {
   const response = await fetch(`/api/projects/${projectId}/members/${memberId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
