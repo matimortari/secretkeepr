@@ -40,11 +40,11 @@ export const useOrganizationStore = defineStore("organization", {
   },
 
   actions: {
-    setSelectedOrganization(id: string) {
-      const found = this.organizations.find(org => org.id === id)
+    setSelectedOrganization(organizationId: string) {
+      const found = this.organizations.find(org => org.id === organizationId)
       if (found) {
         this.selectedOrganization = found
-        localStorage.setItem("active_org_id", id)
+        localStorage.setItem("active_org_id", organizationId)
       }
     },
 
@@ -57,60 +57,79 @@ export const useOrganizationStore = defineStore("organization", {
       }
     },
 
-    async createOrganization(data: { name: string }) {
+    async createOrganization(payload: CreateOrganizationPayload) {
+      if (!payload.name || typeof payload.name !== "string") {
+        this.error = "Organization name is required and must be a string"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        const response = await createOrganizationService(data)
-        const newOrg = response.newOrganization
-        this.organizations.push(newOrg)
-        this.selectedOrganization = newOrg
-        return newOrg
+        const response = await createOrganizationService(payload)
+        this.organizations.push(response.newOrganization)
+        return response
       }
       catch (error: any) {
-        console.error("Failed to create organization", error)
-        this.error = error?.message || "Failed to create organization"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
       }
     },
 
-    async updateOrganization(id: string, data: Partial<OrganizationType>) {
+    async updateOrganization(id: string, payload: UpdateOrganizationPayload) {
+      if (!payload.name || typeof payload.name !== "string") {
+        this.error = "Organization name is required and must be a string"
+        throw new Error(this.error)
+      }
+      if (!id) {
+        this.error = "Organization ID is required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        const response = await updateOrganizationService(id, data as CreateOrganizationPayload)
-        const updated = response.updatedOrganization
+        const response = await updateOrganizationService(id, payload)
         const index = this.organizations.findIndex(org => org.id === id)
         if (index !== -1)
-          this.organizations[index] = updated
+          this.organizations[index] = response.updatedOrganization
         if (this.selectedOrganization?.id === id)
-          this.selectedOrganization = updated
-        return updated
+          this.selectedOrganization = response.updatedOrganization
+        return response
       }
       catch (error: any) {
-        console.error("Failed to update organization", error)
-        this.error = error?.message || "Failed to update organization"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
       }
     },
 
-    async deleteOrganization(id: string) {
+    async deleteOrganization(organizationId: string) {
+      if (!organizationId) {
+        this.error = "Organization ID is required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        const result = await deleteOrganizationService(id)
-        this.organizations = this.organizations.filter(org => org.id !== id)
-        if (this.selectedOrganization?.id === id)
+        const response = await deleteOrganizationService(organizationId)
+        this.organizations = this.organizations.filter(org => org.id !== organizationId)
+        if (this.selectedOrganization?.id === organizationId)
           this.selectedOrganization = null
-        return result
+        return response
       }
       catch (error: any) {
-        console.error("Failed to delete organization", error)
-        this.error = error?.message || "Failed to delete organization"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
@@ -118,16 +137,22 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async updateOrganizationMember(memberId: string, role: Role, organizationId: string) {
+      if (!memberId || !role || !organizationId) {
+        this.error = "Member ID, role, and organization ID are required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        const updated = await updateOrganizationMemberService(memberId, { role, organizationId })
-        this.members = this.members.map(m => (m.id === memberId ? updated : m))
-        return updated
+        const response = await updateOrganizationMemberService(memberId, { role, organizationId })
+        this.members = this.members.map(m => (m.id === memberId ? response : m))
+        return response
       }
       catch (error: any) {
-        console.error("Failed to update organization member", error)
-        this.error = error?.message || "Failed to update organization member"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
@@ -135,15 +160,22 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async removeOrganizationMember(memberId: string, organizationId: string) {
+      if (!memberId || !organizationId) {
+        this.error = "Member ID and organization ID are required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        await removeUserFromOrganizationService(organizationId, memberId)
+        const response = await removeUserFromOrganizationService(organizationId, memberId)
         this.members = this.members.filter(m => m.id !== memberId)
+        return response
       }
       catch (error: any) {
-        console.error("Failed to remove organization member", error)
-        this.error = error?.message || "Failed to remove organization member"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
@@ -153,14 +185,15 @@ export const useOrganizationStore = defineStore("organization", {
     async createInviteLink() {
       this.isLoading = true
       this.error = null
+
       try {
         const { inviteLink } = await createOrganizationInviteService()
         this.inviteLink = inviteLink
         return inviteLink
       }
       catch (error: any) {
-        console.error("Failed to create invite link", error)
-        this.error = error?.message || "Failed to create invite link"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
@@ -170,12 +203,13 @@ export const useOrganizationStore = defineStore("organization", {
     async acceptInvite(token: string) {
       this.isLoading = true
       this.error = null
+
       try {
         return await acceptOrganizationInviteService(token)
       }
       catch (error: any) {
-        console.error("Failed to accept invite", error)
-        this.error = error?.message || "Failed to accept invite"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
@@ -183,8 +217,14 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async getAuditLogs(organizationId: string, page = 1, limit = 15) {
+      if (!organizationId) {
+        this.auditLogs.error = "Organization ID is required"
+        throw new Error(this.auditLogs.error)
+      }
+
       this.isLoading = true
       this.auditLogs.error = null
+
       try {
         const response = await getAuditLogsService(organizationId, page, limit)
         this.auditLogs.logs = response.logs
@@ -193,26 +233,22 @@ export const useOrganizationStore = defineStore("organization", {
         this.auditLogs.total = response.total
       }
       catch (error: any) {
-        console.error("Failed to get audit logs", error)
         this.auditLogs.logs = []
         this.auditLogs.page = 1
         this.auditLogs.limit = 15
         this.auditLogs.total = 0
-        this.auditLogs.error = error?.message || "Failed to get audit logs"
+        this.auditLogs.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
       }
     },
-    async deleteAuditLogs(filters: {
-      organizationId: string
-      action?: string
-      beforeDate?: string
-      createdBySelfOnly?: boolean
-      protectedActions?: string[]
-    }) {
+
+    async deleteAuditLogs(filters: DeleteAuditLogsPayload) {
       this.isLoading = true
       this.auditLogs.error = null
+
       try {
         const response = await deleteAuditLogsService(filters)
         if (this.selectedOrganization) {
@@ -221,8 +257,8 @@ export const useOrganizationStore = defineStore("organization", {
         return response
       }
       catch (error: any) {
-        console.error("Failed to delete audit logs", error)
-        this.auditLogs.error = error?.message || "Failed to delete audit logs"
+        this.auditLogs.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false

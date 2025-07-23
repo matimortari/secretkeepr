@@ -107,20 +107,37 @@ interface UpdateUserPayload {
 interface CreateProjectPayload {
   name: string
   description?: string
-  organizationId?: string
+  organizationId: string
+}
+
+interface UpdateProjectPayload {
+  id: string
+  name?: string
+  description?: string | null
 }
 
 interface CreateSecretPayload {
-  key?: string
-  description?: string
+  key: string
+  description?: string | null
   values: { environment: Environment, value: string }[]
 }
 
-interface CreateProjectMemberPayload {
+interface UpdateSecretPayload {
+  key?: string
+  description?: string | null
+  values?: { environment: Environment, value: string }[]
+}
+
+interface AddProjectMemberPayload {
   userId?: string
   role: Role
 }
 
 interface CreateOrganizationPayload {
   name: string
+}
+
+interface UpdateOrganizationPayload {
+  id: string
+  name?: string
 }

@@ -14,81 +14,75 @@ export const useSecretsStore = defineStore("secrets", {
 
   actions: {
     async getSecretsByProject(projectId: string) {
+      if (!projectId) {
+        this.error = "Project ID is required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
         const response = await getProjectSecretsService(projectId)
-        this.secrets = Array.isArray(response.secrets) ? response.secrets : []
+        this.secrets = response.secrets
       }
       catch (error: any) {
-        console.error("Failed to get project secrets:", error)
-        this.error = error?.message || "Failed to get project secrets"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
       }
     },
 
-    async createSecret(
-      projectId: string,
-      secretData: {
-        key: string
-        description?: string
-        values: {
-          environment: Environment
-          value: string
-        }[]
-      },
-    ) {
+    async createSecret(projectId: string, payload: CreateSecretPayload) {
+      if (!projectId || !payload.key || !Array.isArray(payload.values)) {
+        this.error = "Project ID, Secret key, and values are required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
 
       try {
-        const payload: any = { ...secretData }
-        if (payload.key === undefined) {
-          throw new Error("Secret key is required for update")
-        }
         const response = await createSecretService(projectId, payload)
-        const newSecret = response.newSecret ?? response
-        this.secrets.push(newSecret)
-        return newSecret
+        this.secrets.push(response.newSecret)
+        return response
       }
       catch (error: any) {
-        console.error("Failed to create secret:", error)
-        this.error = error?.message || "Failed to create secret"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
       }
     },
 
-    async updateSecret(
-      projectId: string,
-      secretId: string,
-      data: Partial<{
-        key: string
-        description: string
-        values: SecretValueType[]
-      }>,
-    ) {
+    async updateSecret(projectId: string, secretId: string, payload: UpdateSecretPayload) {
+      if (!projectId || !secretId) {
+        this.error = "Project ID and Secret ID are required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        const payload: any = { ...data }
-        if (payload.key === undefined) {
-          throw new Error("Secret key is required for update")
-        }
-        Object.keys(payload).forEach(k => payload[k] === undefined && delete payload[k])
-        const response = await updateSecretService(projectId, secretId, payload)
-        const updatedSecret = response.updatedSecret ?? response
-        this.secrets = this.secrets.map(secret =>
-          secret.id === secretId ? updatedSecret : secret,
-        )
-        return updatedSecret
+        const cleanedPayload = { ...payload }
+        Object.keys(cleanedPayload).forEach((k) => {
+          const typedKey = k as keyof typeof cleanedPayload
+          if (cleanedPayload[typedKey] === undefined) {
+            delete cleanedPayload[typedKey]
+          }
+        })
+
+        const response = await updateSecretService(projectId, secretId, cleanedPayload)
+        this.secrets = this.secrets.map(secret => secret.id === secretId ? response.updatedSecret : secret)
+        return response
       }
       catch (error: any) {
-        console.error("Failed to update secret:", error)
-        this.error = error?.message || "Failed to update secret"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
@@ -96,15 +90,22 @@ export const useSecretsStore = defineStore("secrets", {
     },
 
     async deleteSecret(projectId: string, secretId: string) {
+      if (!projectId || !secretId) {
+        this.error = "Project ID and Secret ID are required"
+        throw new Error(this.error)
+      }
+
       this.isLoading = true
       this.error = null
+
       try {
-        await deleteSecretService(projectId, secretId)
+        const response = await deleteSecretService(projectId, secretId)
         this.secrets = this.secrets.filter(secret => secret.id !== secretId)
+        return response
       }
       catch (error: any) {
-        console.error("Failed to delete secret:", error)
-        this.error = error?.message || "Failed to delete secret"
+        this.error = error?.message
+        throw error
       }
       finally {
         this.isLoading = false
