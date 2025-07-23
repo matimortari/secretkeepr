@@ -1,6 +1,6 @@
 import type { JsonValue } from "@prisma/client/runtime/library"
-import db from "~/lib/db"
-import { getUserFromSession, requireOrgRole } from "~/lib/utils"
+import db from "~~/server/lib/db"
+import { getUserFromSession, requireOrgRole } from "~~/server/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
