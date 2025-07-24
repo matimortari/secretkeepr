@@ -6,10 +6,45 @@ import db from "~~/server/lib/db"
 // Find user from session or throw an error if not found
 export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
   const session = await getServerSession(event)
-  if (!session?.user.id)
-    throw createError({ statusCode: 401, statusMessage: "Unauthorized" })
+  if (session?.user?.id) {
+    return session.user
+  }
 
-  return session.user
+  // If no session, try CLI token in Authorization header
+  const authHeader = event.node.req.headers.authorization
+  if (!authHeader) {
+    throw createError({ statusCode: 401, statusMessage: "Unauthorized" })
+  }
+
+  const token = authHeader.split(" ")[1]
+  if (!token) {
+    throw createError({ statusCode: 401, statusMessage: "Unauthorized" })
+  }
+
+  // Lookup user by CLI token in DB
+  const userWithToken = await db.user.findFirst({
+    where: {
+      cliTokens: {
+        some: {
+          token,
+          expiresAt: {
+            gt: new Date(),
+          },
+        },
+      },
+    },
+  })
+  if (!userWithToken) {
+    throw createError({ statusCode: 401, statusMessage: "Invalid or expired token" })
+  }
+
+  // Return user info as a "session user" object
+  return {
+    id: userWithToken.id,
+    name: userWithToken.name,
+    email: userWithToken.email,
+    image: userWithToken.image,
+  }
 }
 
 // Check if the user has a specific role in an organization
