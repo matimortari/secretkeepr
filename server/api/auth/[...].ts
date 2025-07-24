@@ -1,4 +1,5 @@
 import type { DefaultSession } from "next-auth"
+import { randomBytes } from "node:crypto"
 import { NuxtAuthHandler } from "#auth"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
@@ -21,6 +22,7 @@ declare module "next-auth" {
         }
       }[]
       projects?: { id: string, name: string, role: Role }[]
+      cliToken?: string
     }
   }
 }
@@ -28,6 +30,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     userId: string
+    cliToken?: string
   }
 }
 
@@ -106,7 +109,20 @@ export default NuxtAuthHandler({
           }
         }
 
+        // Generate new CLI token on login
+        const newCliToken = randomBytes(32).toString("hex")
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24h expiry
+
+        await db.cliToken.create({
+          data: {
+            token: newCliToken,
+            userId: user.id,
+            expiresAt,
+          },
+        })
+
         token.userId = user.id
+        token.cliToken = newCliToken
       }
 
       return token
@@ -167,6 +183,7 @@ export default NuxtAuthHandler({
             name: m.project.name,
             role: m.role,
           })),
+          cliToken: token.cliToken,
         },
       }
     },
