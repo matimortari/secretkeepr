@@ -22,6 +22,18 @@ export async function updateUserService(data: UpdateUserPayload): Promise<{ mess
   return await response.json()
 }
 
+export async function updateUserImageService(formData: FormData): Promise<{ imageUrl: string }> {
+  const response = await fetch("/api/user/image-upload", {
+    method: "POST",
+    body: formData,
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to upload image: ${response.statusText}`)
+  }
+
+  return await response.json()
+}
+
 export async function deleteUserService(): Promise<{ message: string }> {
   const response = await fetch("/api/user", {
     method: "DELETE",
