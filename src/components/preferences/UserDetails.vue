@@ -29,6 +29,14 @@
         readonly
       >
 
+      <label class="text-sm font-medium">CLI Token</label>
+      <input
+        :value="user?.cliTokens?.[0]?.token ?? 'No token available'"
+        type="text"
+        class="cursor-not-allowed bg-muted font-mono"
+        readonly
+      >
+
       <p class="md:navigation-group flex flex-col text-sm">
         Joined On <span class="text-muted-foreground">{{ formattedJoinedDate }}</span>
       </p>

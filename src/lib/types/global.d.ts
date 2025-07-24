@@ -30,6 +30,7 @@ interface UserType {
   updatedAt?: Date
   memberships: UserOrganizationMembershipType[]
   projectMemberships?: ProjectMemberType[]
+  cliTokens?: { token: string, expiresAt: Date, createdAt: Date }[]
 }
 
 interface OrganizationType {
