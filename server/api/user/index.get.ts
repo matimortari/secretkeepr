@@ -37,8 +37,16 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
+      cliTokens: {
+        select: {
+          token: true,
+          expiresAt: true,
+          createdAt: true,
+        },
+      },
     },
   })
+
   if (!user) {
     throw createError({ statusCode: 404, statusMessage: "User not found" })
   }
