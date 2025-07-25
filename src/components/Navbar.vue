@@ -1,5 +1,5 @@
 <template>
-  <nav class="navigation-group justify-between border-b-2 p-4">
+  <div class="navigation-group justify-between border-b-2 p-4">
     <div class="navigation-group">
       <NuxtLink to="/">
         <img
@@ -9,16 +9,16 @@
         >
       </NuxtLink>
 
-      <div class="navigation-group text-sm">
+      <nav class="navigation-group text-sm">
         <div class="md:navigation-group hidden text-muted-foreground">
           <span>/</span>
-          <span>{{ user?.name }}</span>
+          <span>{{ userStore.user?.name }}</span>
           <span>/</span>
         </div>
 
         <div ref="dropdownRef" class="relative">
           <button class="navigation-group truncate hover:underline" @click="isDropdownOpen = !isDropdownOpen">
-            <span class="text-muted-foreground">{{ selectedOrganization?.name || 'Select Organization' }}</span>
+            <span class="text-muted-foreground">{{ selectedOrganization?.name }}</span>
             <Icon name="ph:caret-down-bold" size="20" class="hover:scale-md transition-all hover:text-accent" />
           </button>
 
@@ -45,10 +45,10 @@
           <span>/</span>
           <span class="capitalize">{{ currentPage }}</span>
         </div>
-      </div>
+      </nav>
     </div>
 
-    <div class="navigation-group">
+    <nav class="navigation-group">
       <button class="btn md:hidden" @click="$emit('toggleSidebar')">
         <Icon :name="props.isSidebarOpen ? 'ph:x' : 'ph:list'" size="20" />
       </button>
@@ -59,8 +59,8 @@
         <Icon name="ph:sign-out-bold" size="20" />
         <span class="hidden md:inline">Sign Out</span>
       </button>
-    </div>
-  </nav>
+    </nav>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -88,14 +88,12 @@ useClickOutside(dropdownRef, () => {
   isDropdownOpen.value = false
 }, { escapeKey: true })
 
-const user = computed(() => userStore.user)
-
 const currentPage = computed(() => {
   const path = route.path.split("/").filter(Boolean)
   return path.length > 0 ? path[path.length - 1] : "home"
 })
 
-const selectedId = computed({
+const selectedOrganizationId = computed({
   get: () => userStore.selectedOrganization?.id,
   set: (newId: string) => {
     const org = props.organizations.find(o => o.id === newId)
@@ -107,7 +105,7 @@ const selectedId = computed({
 })
 
 const selectedOrganization = computed(() =>
-  props.organizations.find(o => o.id === selectedId.value),
+  props.organizations.find(o => o.id === selectedOrganizationId.value),
 )
 
 function selectOrganization(org: OrganizationType) {

@@ -1,8 +1,10 @@
 # SecretKeepR 🗝️
 
-SecretKeepR is a secrets manager designed to help users and organizations securely manage and share environment variables. It provides access controls for managing projects, users, and encrypted secrets across multiple organizations.
+SecretKeepR is a secrets manager designed to help users and organizations securely manage and share environment variables. It provides access controls for managing projects, users, and encrypted secrets across multiple organizations. It also includes a command-line interface (CLI) for easy interaction with your secrets and projects.
 
 [**Check it out!** 🔍](https://secretkeepr.vercel.app)
+
+For detailed instructions on building and using the command-line interface, see [`cli/README.md`](./cli/README.md).
 
 ## 📦 Key Features
 
@@ -12,6 +14,7 @@ SecretKeepR is a secrets manager designed to help users and organizations secure
 - **Role-Based Access Control:** Assign roles to members within organizations and control access to projects and secrets. Invite new members to your organization via the invitation system.
 - **Audit Logs:** Track sensitive operations like secret changes and organization updates.
 - **Encrypted Secrets:** Secrets are encrypted at rest and never exposed unencrypted beyond the UI.
+- **CLI Integration:** Manage secrets and projects directly from your terminal with the command-line tool for SecretKeepR.
 - **Theme Toggle:** Switch between light and dark modes to suit your preference.
 
 ## 🛠️ Stack
@@ -23,6 +26,7 @@ SecretKeepR is a secrets manager designed to help users and organizations secure
 - **TypeScript**.
 - **Tailwind CSS**.
 - **Framer Motion**.
+- **Go** with **Cobra** for CLI development.
 
 ## 📬 Contact
 

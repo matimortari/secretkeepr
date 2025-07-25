@@ -1,71 +1,67 @@
 <template>
   <div
-    v-motion class="min-h-screen"
-    :initial="{ opacity: 0 }" :enter="{ opacity: 1 }"
-    :duration="800"
+    v-motion :initial="{ opacity: 0 }"
+    :enter="{ opacity: 1 }" :transition="{ duration: 800 }"
+    class="flex flex-col gap-4"
   >
-    <div class="flex flex-col gap-2">
-      <header class="navigation-group flex-nowrap justify-between border-b pb-2">
-        <h2 class="flex-shrink-0 whitespace-nowrap">
-          My Projects
-        </h2>
+    <header class="navigation-group border-b pb-2">
+      <h2>
+        My Projects
+      </h2>
 
-        <div class="navigation-group w-full flex-1 justify-end">
-          <div class="relative hidden w-full flex-1 md:block">
-            <span class="absolute inset-y-0 left-0 flex flex-row items-center pl-4 text-muted-foreground">
-              <Icon name="ph:magnifying-glass-bold" size="20" />
-            </span>
-            <input
-              id="search" v-model="searchQuery"
-              type="text" placeholder="Search projects..."
-              class="w-full pl-10"
-            >
-          </div>
-
-          <button class="btn-primary" @click="openDialog()">
-            <span class="hidden md:inline">Add New Project</span>
-            <Icon name="ph:plus-bold" size="20" />
-          </button>
-        </div>
-      </header>
-
-      <div v-if="isLoading" class="flex h-[80vh] items-center justify-center">
-        <Spinner />
-      </div>
-      <p v-if="!filteredProjects.length && !isLoading" class="my-8 h-[80vh] text-center text-muted-foreground">
-        No projects found. Create a new project to get started.
-      </p>
-
-      <ul v-else class="scroll-area grid max-h-[80vh] gap-4 overflow-y-auto md:grid-cols-3">
-        <li
-          v-for="(project, index) in filteredProjects" :key="project.id"
-          v-motion :initial="{ opacity: 0, y: 20 }"
-          :enter="{ opacity: 1, y: 0 }" :duration="400"
-          :delay="20 * Number(index)"
-        >
-          <ProjectsProjectCard :project="project" />
-        </li>
-        <li
-          v-motion :initial="{ opacity: 0, y: 20 }"
-          :visible="{ opacity: 1, y: 0 }" :duration="400"
-          :delay="20 * filteredProjects.length"
-        >
-          <button
-            class="card group flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 border-dashed bg-transparent text-muted-foreground transition-all hover:border-secondary hover:text-secondary"
-            @click="openDialog()"
+      <nav class="navigation-group w-full flex-1 justify-end">
+        <div class="relative hidden md:block">
+          <span class="absolute inset-y-0 left-0 flex flex-row items-center pl-4 text-muted-foreground">
+            <Icon name="ph:magnifying-glass-bold" size="20" />
+          </span>
+          <input
+            id="search" v-model="searchQuery"
+            type="text" placeholder="Search projects..."
+            class="w-full pl-10"
           >
-            <Icon name="ph:plus" size="50" class="group-hover:scale-md transition-all group-hover:text-secondary" />
-            <span class="group-hover:scale-sm font-semibold transition-all group-hover:text-secondary">Add New Project</span>
-          </button>
-        </li>
-      </ul>
+        </div>
 
-      <ProjectsProjectDialog
-        :is-open="isDialogOpen"
-        @close="closeDialog"
-        @save="handleCreateProject"
-      />
-    </div>
+        <button class="btn-primary" @click="openDialog()">
+          <span class="hidden md:inline">Add New Project</span>
+          <Icon name="ph:plus-bold" size="20" />
+        </button>
+      </nav>
+    </header>
+
+    <p v-if="!filteredProjects.length" class="my-8 h-[80vh] text-center text-muted-foreground">
+      No projects found. Create a new project to get started.
+    </p>
+
+    <ul v-else class="scroll-area grid max-h-[80vh] gap-4 overflow-y-auto md:grid-cols-3">
+      <li
+        v-for="(project, index) in filteredProjects" :key="project.id"
+        v-motion :initial="{ opacity: 0, y: 20 }"
+        :enter="{ opacity: 1, y: 0 }" :transition="{ duration: 400 }"
+        :delay="20 * Number(index)"
+      >
+        <ProjectsProjectCard :project="project" />
+      </li>
+      <li
+        v-motion :initial="{ opacity: 0, y: 20 }"
+        :visible="{ opacity: 1, y: 0 }" :transition="{ duration: 400 }"
+
+        :delay="20 * filteredProjects.length"
+      >
+        <button
+          class="card group flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 border-dashed bg-transparent text-muted-foreground transition-all hover:border-secondary hover:text-secondary"
+          @click="openDialog()"
+        >
+          <Icon name="ph:plus" size="50" class="group-hover:scale-md transition-all group-hover:text-secondary" />
+          <span class="group-hover:scale-sm font-semibold transition-all group-hover:text-secondary">Add New Project</span>
+        </button>
+      </li>
+    </ul>
+
+    <ProjectsProjectDialog
+      :is-open="isDialogOpen"
+      @close="closeDialog"
+      @save="handleCreateProject"
+    />
   </div>
 </template>
 
@@ -76,7 +72,7 @@ import { useUserStore } from "~/lib/stores/user-store"
 const userStore = useUserStore()
 const projectsStore = useProjectsStore()
 
-const { projects, isLoading } = storeToRefs(projectsStore)
+const { projects } = storeToRefs(projectsStore)
 const selectedProject = ref<ProjectType | null>(null)
 const searchQuery = ref("")
 const isDialogOpen = ref(false)

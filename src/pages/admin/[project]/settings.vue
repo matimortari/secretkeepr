@@ -1,29 +1,21 @@
 <template>
   <div
-    v-motion class="min-h-screen"
-    :initial="{ opacity: 0 }" :enter="{ opacity: 1 }"
-    :duration="800"
+    v-motion :initial="{ opacity: 0 }"
+    :enter="{ opacity: 1 }" :transition="{ duration: 800 }"
+    class="flex flex-col gap-4"
   >
-    <div class="flex flex-col gap-2">
-      <header class="navigation-group flex-nowrap justify-between border-b pb-2">
-        <div class="navigation-group flex-shrink-0">
-          <NuxtLink :to="`/admin/${project?.id}`">
-            <Icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
-          </NuxtLink>
-          <h2 class="max-w-lg truncate">
-            {{ project?.name }}
-          </h2>
-        </div>
+    <header class="navigation-group border-b pb-2">
+      <NuxtLink :to="`/admin/${project?.id}`">
+        <Icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
+      </NuxtLink>
+      <h2 class="max-w-lg truncate">
+        {{ project?.name }}
+      </h2>
+    </header>
 
-        <p class="line-clamp-2 max-w-lg text-xs leading-4 tracking-tight text-muted-foreground">
-          {{ project?.description || "No description provided." }}
-        </p>
-      </header>
-
-      <div class="flex flex-col gap-8">
-        <ProjectsProjectDetails :project="project" />
-        <ProjectsProjectDangerZone v-if="currentUserId === projectOwnerId" :project="project" />
-      </div>
+    <div class="flex flex-col gap-8">
+      <ProjectsProjectDetails :project="project" />
+      <ProjectsProjectDangerZone v-if="currentUserId === projectOwnerId" :project="project" />
     </div>
   </div>
 </template>
