@@ -7,25 +7,25 @@
             <h4>
               Organization Details
             </h4>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-caption text-muted-foreground">
               Manage organization details and settings.
             </p>
           </header>
 
           <form class="flex flex-col gap-2 p-2" @submit.prevent="handleSubmit">
-            <label class="text-sm font-medium">Organization Name</label>
+            <label class="text-label">Organization Name</label>
             <input v-model="form.name" type="text" placeholder="Enter organization name">
 
-            <label class="text-sm font-medium">Organization ID</label>
+            <label class="text-label">Organization ID</label>
             <input :value="organization?.id ?? ''" type="text" class="cursor-not-allowed bg-muted" readonly>
 
-            <label class="text-sm font-medium">Created At</label>
+            <label class="text-label">Created At</label>
             <input :value="organization?.createdAt" type="text" class="cursor-not-allowed bg-muted" readonly>
 
-            <label class="text-sm font-medium">Last Updated</label>
+            <label class="text-label">Last Updated</label>
             <input :value="organization?.updatedAt" type="text" class="cursor-not-allowed bg-muted" readonly>
 
-            <label class="text-sm font-medium">Default User Role</label>
+            <label class="text-label">Default User Role</label>
             <select v-model="defaultRole">
               <option v-for="role in assignableRoles" :key="role.value" :value="role.value">
                 {{ role.label }}
@@ -46,16 +46,20 @@
             <h4>
               Projects
             </h4>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-caption text-muted-foreground">
               Manage projects associated with this organization.
             </p>
           </header>
 
           <ul class="scroll-area flex max-h-52 flex-col items-start gap-2 overflow-y-auto">
-            <li v-for="project in projectsFromOrg" :key="project.id" class="card navigation-group w-full min-w-0 justify-between text-sm">
+            <li v-for="project in projectsFromOrg" :key="project.id" class="card navigation-group text-label w-full min-w-0 justify-between">
               <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
-                <span class="w-full min-w-0 truncate font-semibold md:w-40">{{ project.name }}</span>
-                <span class="min-w-0 max-w-full truncate text-xs text-muted-foreground md:max-w-52">{{ project.description || "No description provided." }}</span>
+                <span class="w-full min-w-0 truncate font-semibold md:w-40">
+                  {{ project.name }}
+                </span>
+                <span class="min-w-0 max-w-full truncate text-xs text-muted-foreground md:max-w-52">
+                  {{ project.description || "No description provided." }}
+                </span>
               </div>
 
               <div class="navigation-group justify-end md:w-1/3">
@@ -78,18 +82,18 @@
             <h4>
               Current Users
             </h4>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-caption text-muted-foreground">
               Manage roles and permissions for organization members.
             </p>
           </header>
 
           <ul class="scroll-area flex max-h-52 flex-col items-start gap-2 overflow-y-auto">
-            <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card navigation-group w-full min-w-0 justify-between text-sm">
+            <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card navigation-group text-label w-full min-w-0 justify-between">
               <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
                 <span class="w-full min-w-0 truncate font-semibold md:w-40">
                   {{ orgUser.name }}
                 </span>
-                <span class="min-w-0 max-w-full truncate text-xs capitalize md:max-w-52">
+                <span class="min-w-0 max-w-full truncate text-xs text-muted-foreground md:max-w-52">
                   Role: {{ Array.isArray(orgUser.role) ? orgUser.role.join(", ") : orgUser.role }}
                 </span>
               </div>
@@ -123,7 +127,7 @@
         <h5>
           Invite Members
         </h5>
-        <p class="text-sm text-muted-foreground">
+        <p class="text-caption text-muted-foreground">
           Generate an invitation link to invite new users to this organization.
         </p>
       </header>
@@ -246,6 +250,7 @@ async function handleSubmit() {
 
   try {
     await organizationStore.updateOrganization(props.organization.id, {
+      id: props.organization.id,
       name: form.value.name,
     })
     await userStore.getUser()

@@ -9,7 +9,7 @@
             class="hover:scale-md flex-shrink-0 transition-all"
           >
         </NuxtLink>
-        <p class="navigation-group text-sm text-muted-foreground">
+        <p class="navigation-group text-caption text-muted-foreground">
           Please sign in to use all features.
         </p>
       </div>

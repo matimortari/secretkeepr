@@ -4,7 +4,7 @@
       <h4>
         Danger Zone
       </h4>
-      <p class="text-sm text-muted-foreground">
+      <p class="text-caption text-muted-foreground">
         Manage critical actions related to the organization.
       </p>
     </header>
@@ -14,7 +14,7 @@
         <h5>
           Leave Organization
         </h5>
-        <p class="text-sm text-danger">
+        <p class="text-caption text-danger">
           You will lose access to all resources in this organization.
         </p>
       </header>
@@ -30,7 +30,7 @@
         <h5>
           Delete Organization
         </h5>
-        <p class="text-sm text-danger">
+        <p class="text-caption text-danger">
           This action is irreversible. All data associated with the organization will be lost.
         </p>
       </header>
@@ -41,7 +41,7 @@
       </button>
     </section>
 
-    <p v-if="errorMsg" class="px-2 text-sm text-danger">
+    <p v-if="errorMsg" class="text-caption px-2 text-danger">
       {{ errorMsg }}
     </p>
   </div>

@@ -4,32 +4,32 @@
       <h4>
         User Information
       </h4>
-      <p class="text-sm text-muted-foreground">
+      <p class="text-caption text-muted-foreground">
         Manage your account information.
       </p>
     </header>
 
     <form class="flex flex-col gap-2 p-2 md:w-1/2" @submit.prevent="handleSubmit">
-      <label class="text-sm font-medium">Full Name</label>
+      <label class="text-label">Full Name</label>
       <input v-model="form.name" type="text" placeholder="Enter your name">
 
-      <label class="text-sm font-medium">Email</label>
+      <label class="text-label">Email</label>
       <input :value="user?.email" type="email" class="cursor-not-allowed bg-muted" readonly>
 
-      <label class="text-sm font-medium">User ID</label>
+      <label class="text-label">User ID</label>
       <input :value="user?.id" type="text" class="cursor-not-allowed bg-muted" readonly>
 
-      <label class="text-sm font-medium">Active Organization</label>
+      <label class="text-label">Active Organization</label>
       <input :value="selectedOrganization?.name" class="cursor-not-allowed bg-muted" readonly>
 
-      <label class="text-sm font-medium">Active Organization Role</label>
+      <label class="text-label">Active Organization Role</label>
       <input
         :value="currentMembership?.role"
         class="cursor-not-allowed bg-muted capitalize"
         readonly
       >
 
-      <label class="text-sm font-medium">CLI Token</label>
+      <label class="text-label">CLI Token</label>
       <input
         :value="user?.cliTokens?.[0]?.token ?? 'No token available'"
         type="text"
@@ -37,11 +37,11 @@
         readonly
       >
 
-      <p class="md:navigation-group flex flex-col text-sm">
+      <p class="md:navigation-group text-label flex flex-col">
         Joined On <span class="text-muted-foreground">{{ formattedJoinedDate }}</span>
       </p>
 
-      <p v-if="errorMsg" class="text-sm text-danger">
+      <p v-if="errorMsg" class="text-caption text-danger">
         {{ errorMsg }}
       </p>
 

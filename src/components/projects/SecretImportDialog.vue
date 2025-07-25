@@ -4,7 +4,7 @@
       <textarea v-model="envText" rows="10" class="scroll-area resize-none font-mono" placeholder="Paste your .env content here..." />
 
       <div class="flex flex-col items-start gap-1">
-        <label class="text-sm font-medium">Environment</label>
+        <label class="text-label">Environment</label>
         <select v-model="selectedEnv" class="w-full capitalize">
           <option v-for="env in environments" :key="env" :value="env" class="capitalize">
             {{ env }}

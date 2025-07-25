@@ -12,11 +12,10 @@
       <h1>
         Join an Organization
       </h1>
+      <p class="text-caption p-2">
+        To join an organization, please enter your invite token below.
+      </p>
     </header>
-
-    <p class="p-4 text-sm">
-      To join an organization, please enter your invite token below.
-    </p>
 
     <form class="flex w-[90%] flex-col items-center gap-2 p-4" @submit.prevent="handleAcceptInvite">
       <input
@@ -29,7 +28,7 @@
       </button>
     </form>
 
-    <p class="min-h-6 text-sm">
+    <p class="text-caption min-h-6">
       <span v-if="error" class="text-danger">{{ error }}</span>
       <span v-else-if="success" class="text-success">
         Invitation accepted! Redirecting...

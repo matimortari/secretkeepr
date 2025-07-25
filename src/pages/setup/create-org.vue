@@ -12,11 +12,10 @@
       <h1>
         Welcome to SecretKeepR
       </h1>
+      <p class="text-caption p-2">
+        To get started, please create an organization name with at least 3 characters.
+      </p>
     </header>
-
-    <p class="p-4 text-sm">
-      To get started, please create an organization name with at least 3 characters.
-    </p>
 
     <form class="flex w-[90%] flex-col items-center gap-2 p-4" @submit.prevent="handleCreateOrganization">
       <input
@@ -29,7 +28,7 @@
       </button>
     </form>
 
-    <p class="min-h-6 text-sm text-muted-foreground">
+    <p class="text-caption min-h-6 text-muted-foreground">
       Already have an invite? <NuxtLink to="/setup/join-org" class="text-primary hover:underline">
         Join an Organization.
       </NuxtLink>

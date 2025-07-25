@@ -13,7 +13,7 @@
     --popover: #1a1c1d;
     --popover-foreground: #e9e9e9;
 
-    --primary: #e0ed34;
+    --primary: #c9d247;
     --primary-foreground: #222222;
 
     --secondary: #294360;
@@ -43,7 +43,7 @@
     --popover: #e9e9e9;
     --popover-foreground: #222222;
 
-    --primary: #e0ed34;
+    --primary: #c9d247;
     --primary-foreground: #222222;
 
     --secondary: #2c4969;
@@ -111,6 +111,18 @@
     font-size: 1rem;
     line-height: 1.5rem;
     font-weight: 700;
+  }
+
+  .text-caption {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+  }
+  .text-label {
+    font-size: 0.8rem;
+    line-height: 1rem;
+    letter-spacing: 0.05em;
+    font-weight: 600;
   }
 
   /* UI components */

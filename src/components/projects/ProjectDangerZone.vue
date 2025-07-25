@@ -4,7 +4,7 @@
       <h4>
         Danger Zone
       </h4>
-      <p class="text-sm text-muted-foreground">
+      <p class="text-caption text-muted-foreground">
         Manage critical actions related to the project.
       </p>
     </header>
@@ -14,7 +14,7 @@
         <h5>
           Delete Project
         </h5>
-        <p class="text-sm text-danger">
+        <p class="text-caption text-danger">
           This action is irreversible. All data associated with this project will be lost.
         </p>
       </header>

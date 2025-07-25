@@ -2,14 +2,14 @@
   <Dialog :is-open="isOpen" :title="dialogTitle" @update:is-open="emit('close')">
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-2">
-        <label for="key" class="text-sm font-medium ">Key</label>
+        <label for="key" class="text-label">Key</label>
         <input
           id="key" v-model="form.key"
           type="text" class="w-full"
           required
         >
 
-        <label for="description" class="text-sm font-medium">Description (optional)</label>
+        <label for="description" class="text-label">Description (optional)</label>
         <input
           id="description" v-model="form.description"
           type="text" class="w-full"
@@ -17,7 +17,7 @@
       </div>
 
       <div v-for="env in environments" :key="env" class="flex flex-col items-start gap-1">
-        <label :for="env" class="text-sm font-medium capitalize">{{ env }}</label>
+        <label :for="env" class="text-label capitalize">{{ env }}</label>
         <input :id="env" v-model="form.values[env]" type="text" class="w-full">
       </div>
 

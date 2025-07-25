@@ -7,34 +7,34 @@
             <h4>
               Project Details
             </h4>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-caption text-muted-foreground">
               Manage project details and settings.
             </p>
           </header>
 
           <form class="flex flex-col gap-2 p-2" @submit.prevent="handleSubmit">
-            <label class="text-sm font-medium" for="projectName">Project Name</label>
+            <label class="text-label" for="projectName">Project Name</label>
             <input
               id="projectName" v-model="form.name"
               type="text" placeholder="Enter project name"
               required
             >
 
-            <label class="text-sm font-medium" for="projectDescription">Project Description</label>
+            <label class="text-label" for="projectDescription">Project Description</label>
             <textarea
               id="projectDescription" v-model="form.description"
               placeholder="Enter project description" rows="3"
               class="scroll-area resize-none"
             />
 
-            <label class="text-sm font-medium" for="projectId">Project ID</label>
+            <label class="text-label" for="projectId">Project ID</label>
             <input
               id="projectId" :value="form.id ?? ''"
               type="text" class="cursor-not-allowed bg-muted"
               readonly
             >
 
-            <p v-if="errorMsg" class="text-sm text-danger">
+            <p v-if="errorMsg" class="text-caption text-danger">
               {{ errorMsg }}
             </p>
 
@@ -52,13 +52,13 @@
             <h4>
               Project Members
             </h4>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-caption text-muted-foreground">
               Manage project members and their roles.
             </p>
           </header>
 
           <ul class="scroll-area flex max-h-52 flex-col items-start gap-2 overflow-y-auto">
-            <li v-for="member in projectMembers" :key="member.userId" class="card flex w-full min-w-0 flex-row items-center justify-between gap-2 text-sm">
+            <li v-for="member in projectMembers" :key="member.userId" class="card text-label flex w-full min-w-0 flex-row items-center justify-between gap-2">
               <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
                 <span class="w-full min-w-0 truncate font-semibold md:w-40">{{ member.user?.name }}</span>
                 <span class="min-w-0 max-w-full truncate text-xs text-muted-foreground md:max-w-52">{{ member.user?.email }}</span>
@@ -89,7 +89,7 @@
         <h5>
           Add New Member
         </h5>
-        <p class="text-sm text-muted-foreground">
+        <p class="text-caption text-muted-foreground">
           Invite users to join this project.
         </p>
       </header>
@@ -108,7 +108,7 @@
         </button>
       </div>
 
-      <p v-if="memberErrorMsg" class="my-2 text-sm text-danger">
+      <p v-if="memberErrorMsg" class="text-caption my-2 text-danger">
         {{ memberErrorMsg }}
       </p>
     </section>
@@ -164,7 +164,8 @@ async function handleSubmit() {
 
   errorMsg.value = ""
   try {
-    await projectsStore.updateProject(props.project.id ?? "", {
+    await projectsStore.updateProject({
+      id: props.project.id ?? "",
       name: form.value.name,
       description: form.value.description,
     })

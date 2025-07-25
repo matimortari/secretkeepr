@@ -1,13 +1,14 @@
 <template>
   <div
-    v-motion class="flex min-h-screen flex-col items-center text-center"
+    v-motion class="flex min-h-screen flex-col overflow-hidden"
     :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
     :transition="{ duration: 800 }"
   >
     <section
-      v-motion class="flex flex-col items-center gap-8 p-16"
+      id="hero"
+      v-motion class="flex flex-col items-center gap-8 p-16 text-center"
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
-      :duration="600"
+      :transition="{ duration: 800 }"
     >
       <h1
         v-motion class="font-goldman"
@@ -32,7 +33,7 @@
     <section
       id="features" v-motion
       :initial="{ opacity: 0, y: 40, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
-      :transition="{ duration: 800, delay: 0.5 }" class="grid grid-cols-1 gap-12 border-y p-16 text-center md:grid-cols-3"
+      :transition="{ duration: 800, delay: 0.5 }" class="grid grid-cols-1 gap-12 border-b p-16 text-center md:grid-cols-3"
     >
       <div
         v-for="(feature, index) in features" :key="index"
@@ -50,12 +51,13 @@
       </div>
     </section>
 
-    <div
-      v-motion class="flex flex-col items-center gap-16 p-16 text-center"
+    <section
+      id="how-to-use"
+      v-motion class="flex flex-col items-center gap-12 border-b p-16 text-center"
       :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
       :transition="{ duration: 800, delay: 0.5 }"
     >
-      <h2>
+      <h2 class="font-goldman">
         Getting Started
       </h2>
 
@@ -74,7 +76,61 @@
           </p>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section
+      id="cli"
+      v-motion
+      class="flex w-full flex-col gap-8 p-16 text-center md:text-start"
+      :initial="{ opacity: 0, y: 40 }"
+      :visible="{ opacity: 1, y: 0 }"
+      :transition="{ duration: 800, delay: 0.5 }"
+    >
+      <div class="flex flex-col items-center justify-between gap-8 md:flex-row">
+        <div class="flex-1 space-y-4">
+          <h2 class="font-goldman">
+            Command Line Interface
+          </h2>
+          <p class="max-w-lg leading-5 text-muted-foreground">
+            Manage secrets and projects directly from your terminal. Fast, secure, and open-source. Read the
+            <NuxtLink to="/cli" class="text-primary">
+              documentation
+            </NuxtLink> for more details.
+          </p>
+        </div>
+
+        <div class="relative flex w-full max-w-xl gap-4 text-start">
+          <div
+            class="flex cursor-pointer flex-row gap-4 rounded-lg bg-[#0d1117] p-4 font-mono transition-all hover:translate-x-1 hover:shadow-lg"
+            title="Copy to clipboard"
+            @click="copyToClipboard(installCommand)"
+          >
+            <span>{{ installCommand }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex w-full flex-col items-center gap-4">
+        <p class="text-muted-foreground">
+          After installing, run the following commands to get started:
+        </p>
+
+        <div
+          class="relative w-full max-w-4xl cursor-pointer rounded-lg bg-[#0d1117] p-4 text-start font-mono transition-all hover:translate-x-1 hover:shadow-lg"
+          title="Copy to clipboard"
+          @click="copyToClipboard(cliCommands.join('\n'))"
+        >
+          <span v-for="(cmd, index) in cliCommands" :key="index" class="block">
+            {{ cmd }}
+          </span>
+
+          <div class="absolute bottom-2 right-2 z-10 flex select-none items-end gap-2 font-semibold text-muted-foreground">
+            <span>Powered by Go</span>
+            <img src="/gopher.png" width="60" height="60">
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -119,6 +175,20 @@ const howToUseSteps = [
     description: "Assign roles and collaborate securely via the invite system.",
   },
 ]
+
+const installCommand = "go install github.com/matimortari/secretkeepr/cli@latest"
+
+const cliCommands = [
+  "secretkeepr login",
+  "secretkeepr create org my-org",
+  "secretkeepr create project my-project",
+  "secretkeepr add secret MY_SECRET my-secret-value",
+]
+
+function copyToClipboard(val: string) {
+  if (val)
+    navigator.clipboard.writeText(val)
+}
 
 useHead({
   title: "SecretKeepR – Securely Manage Your Environment Variables",

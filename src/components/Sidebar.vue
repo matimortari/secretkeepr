@@ -44,7 +44,7 @@
             v-for="project in projectsFromOrg"
             :key="project.id"
             :to="`/admin/${project.id}`"
-            class="w-full truncate text-sm font-medium"
+            class="text-label w-full truncate"
           >
             {{ project.name }}
           </NuxtLink>
