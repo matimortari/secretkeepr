@@ -1,70 +1,66 @@
 <template>
   <div
-    v-motion class="min-h-screen"
-    :initial="{ opacity: 0 }" :enter="{ opacity: 1 }"
-    :duration="800"
+    v-motion :initial="{ opacity: 0 }"
+    :enter="{ opacity: 1 }" :transition="{ duration: 800 }"
+    class="flex flex-col gap-4"
   >
-    <div class="flex flex-col gap-2">
-      <header class="navigation-group flex-nowrap justify-between border-b pb-2">
-        <div class="navigation-group flex-shrink-0">
-          <NuxtLink to="/admin/projects">
-            <Icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
-          </NuxtLink>
-          <h2 class="max-w-lg truncate">
-            {{ project?.name }}
-          </h2>
-        </div>
+    <header class="navigation-group border-b pb-2">
+      <NuxtLink to="/admin/projects">
+        <Icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
+      </NuxtLink>
+      <h2 class="max-w-lg truncate">
+        {{ project?.name }}
+      </h2>
 
-        <div class="navigation-group">
-          <button class="btn-primary" @click="openDialog('secret')">
-            <span class="hidden md:inline">Add New Secret</span>
-            <Icon name="ph:plus-bold" size="20" />
+      <nav class="navigation-group w-full flex-1 justify-end">
+        <button class="btn-primary" @click="openDialog('secret')">
+          <span class="hidden md:inline">Add New Secret</span>
+          <Icon name="ph:plus-bold" size="20" />
+        </button>
+
+        <button class="btn-secondary" @click="openDialog('env')">
+          <span class="hidden md:block">Import .env File</span>
+          <Icon name="ph:upload-bold" size="20" />
+        </button>
+
+        <div ref="dropdownRef" class="relative">
+          <button class="btn" @click="isDropdownOpen = !isDropdownOpen">
+            <span class="hidden md:block">{{ selectedEnvironmentLabel || "Export" }}</span>
+            <Icon name="ph:download-bold" size="20" />
           </button>
 
-          <button class="btn-secondary" @click="openDialog('env')">
-            <span class="hidden md:block">Import .env File</span>
-            <Icon name="ph:upload-bold" size="20" />
-          </button>
-
-          <div ref="dropdownRef" class="relative">
-            <button class="btn" @click="isDropdownOpen = !isDropdownOpen">
-              <span class="hidden md:block">{{ selectedEnvironmentLabel || "Export" }}</span>
-              <Icon name="ph:download-bold" size="20" />
-            </button>
-
-            <Transition name="dropdown" mode="out-in">
-              <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm">
-                <li v-for="env in environments" :key="env" class="cursor-pointer rounded p-2 capitalize hover:bg-muted" @click="selectEnvironment(env)">
-                  {{ env }}
-                </li>
-              </ul>
-            </Transition>
-          </div>
-
-          <NuxtLink v-if="project?.id" :to="`/admin/${project.id}/settings`" class="btn">
-            <Icon name="ph:gear-bold" size="20" />
-          </NuxtLink>
+          <Transition name="dropdown" mode="out-in">
+            <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm">
+              <li v-for="env in environments" :key="env" class="cursor-pointer rounded p-2 capitalize hover:bg-muted" @click="selectEnvironment(env)">
+                {{ env }}
+              </li>
+            </ul>
+          </Transition>
         </div>
-      </header>
 
-      <ProjectsSecretsTable :secrets="secrets" :project-id="project?.id ?? ''" @edit="secret => openDialog('secret', secret)" />
+        <NuxtLink v-if="project?.id" :to="`/admin/${project.id}/settings`" class="btn">
+          <Icon name="ph:gear-bold" size="20" />
+        </NuxtLink>
+      </nav>
+    </header>
 
-      <ProjectsSecretDialog
-        :is-open="isSecretDialogOpen"
-        :selected-secret="selectedSecret"
-        :project-id="project?.id ?? ''"
-        @close="closeDialog"
-        @save="handleSaveSecret"
-      />
+    <ProjectsSecretsTable :secrets="secrets" :project-id="project?.id ?? ''" @edit="secret => openDialog('secret', secret)" />
 
-      <ProjectsSecretImportDialog
-        :is-open="isSecretImportDialogOpen"
-        :project-id="project?.id ?? ''"
-        :existing-secrets="secrets"
-        @close="closeDialog"
-        @save="handleImportFromEnv"
-      />
-    </div>
+    <ProjectsSecretDialog
+      :is-open="isSecretDialogOpen"
+      :selected-secret="selectedSecret"
+      :project-id="project?.id ?? ''"
+      @close="closeDialog"
+      @save="handleSaveSecret"
+    />
+
+    <ProjectsSecretImportDialog
+      :is-open="isSecretImportDialogOpen"
+      :project-id="project?.id ?? ''"
+      :existing-secrets="secrets"
+      @close="closeDialog"
+      @save="handleImportFromEnv"
+    />
   </div>
 </template>
 

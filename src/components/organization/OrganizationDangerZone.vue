@@ -4,7 +4,7 @@
       <h4>
         Danger Zone
       </h4>
-      <p class="text-sm text-muted-foreground">
+      <p class="text-caption">
         Manage critical actions related to the organization.
       </p>
     </header>
@@ -14,15 +14,20 @@
         <h5>
           Leave Organization
         </h5>
-        <p class="text-sm text-danger">
+        <p class="text-caption text-danger-foreground">
           You will lose access to all resources in this organization.
         </p>
       </header>
 
-      <button class="btn-danger" @click="handleLeaveOrganization">
-        <Icon name="ph:sign-out-bold" size="20" />
-        <span>Leave Organization</span>
-      </button>
+      <div class="flex flex-col items-center gap-2 md:flex-row">
+        <p v-if="leaveErrorMsg" class="text-caption px-2 text-danger-foreground">
+          {{ leaveErrorMsg }}
+        </p>
+        <button class="btn-danger" @click="handleLeaveOrganization">
+          <Icon name="ph:sign-out-bold" size="20" />
+          <span>Leave Organization</span>
+        </button>
+      </div>
     </section>
 
     <section class="md:navigation-group flex flex-col gap-2 border-b p-2 md:justify-between">
@@ -30,20 +35,21 @@
         <h5>
           Delete Organization
         </h5>
-        <p class="text-sm text-danger">
+        <p class="text-caption text-danger-foreground">
           This action is irreversible. All data associated with the organization will be lost.
         </p>
       </header>
 
-      <button class="btn-danger" @click="handleDeleteOrganization">
-        <Icon name="ph:network-x-bold" size="20" />
-        <span>Delete Organization</span>
-      </button>
+      <div class="flex flex-col items-center gap-2 md:flex-row">
+        <p v-if="deleteErrorMsg" class="text-caption px-2 text-danger-foreground">
+          {{ deleteErrorMsg }}
+        </p>
+        <button class="btn-danger" @click="handleDeleteOrganization">
+          <Icon name="ph:network-x-bold" size="20" />
+          <span>Delete Organization</span>
+        </button>
+      </div>
     </section>
-
-    <p v-if="errorMsg" class="px-2 text-sm text-danger">
-      {{ errorMsg }}
-    </p>
   </div>
 </template>
 
@@ -59,12 +65,13 @@ const router = useRouter()
 const userStore = useUserStore()
 const organizationStore = useOrganizationStore()
 
-const errorMsg = ref("")
+const leaveErrorMsg = ref("")
+const deleteErrorMsg = ref("")
 
 async function handleLeaveOrganization() {
-  errorMsg.value = ""
+  leaveErrorMsg.value = ""
   if (!props.organization?.id || !userStore.user?.id) {
-    errorMsg.value = "Missing organization or user ID."
+    leaveErrorMsg.value = "Missing organization or user ID."
     return
   }
   if (!confirm("Are you sure you want to leave this organization?"))
@@ -72,7 +79,7 @@ async function handleLeaveOrganization() {
 
   await organizationStore.removeOrganizationMember(userStore.user.id, props.organization.id)
   if (organizationStore.error) {
-    errorMsg.value = organizationStore.error
+    leaveErrorMsg.value = organizationStore.error
     return
   }
 
@@ -80,9 +87,9 @@ async function handleLeaveOrganization() {
 }
 
 async function handleDeleteOrganization() {
-  errorMsg.value = ""
+  deleteErrorMsg.value = ""
   if (!props.organization?.id) {
-    errorMsg.value = "Organization ID is undefined."
+    deleteErrorMsg.value = "Organization ID is undefined."
     return
   }
   if (!confirm("Are you sure you want to delete this organization? This action cannot be undone."))
@@ -99,12 +106,9 @@ async function handleDeleteOrganization() {
         router.push("/admin/projects")
       }
     }
-    else {
-      errorMsg.value = result?.message || "Failed to delete organization."
-    }
   }
   catch (error: any) {
-    errorMsg.value = error.message || "An error occurred while deleting the organization."
+    deleteErrorMsg.value = error.message || "An error occurred while deleting the organization."
   }
 }
 </script>
