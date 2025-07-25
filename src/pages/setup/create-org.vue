@@ -1,22 +1,21 @@
 <template>
   <div
-    v-motion class="flex min-h-screen flex-col items-center justify-center"
+    v-motion class="flex flex-col items-center justify-center"
     :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
     :transition="{ duration: 1000 }"
   >
     <header
       v-motion class="flex flex-col items-center gap-4 border-b p-4 text-center"
       :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
-      :duration="600"
+      :transition="{ duration: 8000 }"
     >
       <h1>
         Welcome to SecretKeepR
       </h1>
+      <p class="text-caption">
+        To get started, please create an organization name with at least 3 characters.
+      </p>
     </header>
-
-    <p class="p-4 text-sm">
-      To get started, please create an organization name with at least 3 characters.
-    </p>
 
     <form class="flex w-[90%] flex-col items-center gap-2 p-4" @submit.prevent="handleCreateOrganization">
       <input
@@ -29,7 +28,7 @@
       </button>
     </form>
 
-    <p class="min-h-6 text-sm text-muted-foreground">
+    <p class="text-caption min-h-6">
       Already have an invite? <NuxtLink to="/setup/join-org" class="text-primary hover:underline">
         Join an Organization.
       </NuxtLink>

@@ -4,7 +4,7 @@
       <h4>
         Danger Zone
       </h4>
-      <p class="text-sm text-muted-foreground">
+      <p class="text-caption">
         Manage critical actions related to your account.
       </p>
     </header>
@@ -14,7 +14,7 @@
         <h5>
           Delete Account
         </h5>
-        <p class="text-sm text-danger">
+        <p class="text-caption text-danger-foreground">
           This action is irreversible. All your data will be lost.
         </p>
       </header>
@@ -25,7 +25,7 @@
       </button>
     </section>
 
-    <p v-if="errorMsg" class="px-2 text-sm text-danger">
+    <p v-if="errorMsg" class="text-caption px-2 text-danger-foreground">
       {{ errorMsg }}
     </p>
   </div>

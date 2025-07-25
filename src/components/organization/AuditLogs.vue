@@ -4,7 +4,7 @@
       <h4>
         Audit Logs
       </h4>
-      <p class="text-sm text-muted-foreground">
+      <p class="text-caption">
         Track changes and activities.
       </p>
     </header>
@@ -29,7 +29,7 @@
           </option>
         </select>
 
-        <label class="navigation-group justify-center text-sm">
+        <label class="navigation-group text-label justify-center">
           <input v-model="showSensitiveData" type="checkbox" class="appearance-none rounded border border-muted bg-transparent p-2 checked:bg-secondary focus:outline-none">
           <span>Show sensitive data</span>
         </label>
@@ -39,7 +39,7 @@
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasPrevPage" @click="prevPage">
           <Icon name="ph:arrow-left-bold" size="20" />
         </button>
-        <span class="whitespace-nowrap text-sm text-muted-foreground">
+        <span class="text-caption whitespace-nowrap">
           Page {{ page }} of {{ totalPages }}
         </span>
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasNextPage" @click="nextPage">
@@ -53,15 +53,17 @@
     </section>
 
     <section class="w-full py-2">
-      <Spinner v-if="isLoading" />
-      <div v-else-if="filteredLogs.length === 0" class="my-4 text-center text-muted-foreground">
+      <div v-if="isLoading" class="text-caption my-4 text-center">
+        Loading logs...
+      </div>
+      <div v-else-if="filteredLogs.length === 0" class="text-caption my-4 text-center">
         No audit logs found.
       </div>
 
       <div v-else class="scroll-area max-h-[50vh] w-full overflow-auto">
         <table class="table-fixed rounded-sm border md:w-full md:overflow-hidden">
           <thead>
-            <tr class="bg-muted text-sm font-semibold transition-all">
+            <tr class="text-caption bg-muted font-semibold">
               <th v-for="header in headers" :key="header.value" class="select-none border p-2 text-left" :style="{ width: header.width }">
                 <div class="navigation-group">
                   <Icon :name="header.icon" size="15" class="mr-1" />
@@ -72,7 +74,7 @@
           </thead>
 
           <tbody>
-            <tr v-for="log in filteredLogs" :key="log.id" class="text-sm">
+            <tr v-for="log in filteredLogs" :key="log.id" class="text-caption">
               <td class="truncate border p-2 font-semibold" :title="getActionLabel(log.action)" :style="{ width: headers[0].width }">
                 {{ getActionLabel(log.action) }}
               </td>
@@ -85,8 +87,8 @@
               <td class="truncate border p-2 text-muted-foreground" :title="log.userId" :style="{ width: headers[3].width }">
                 <span>{{ log.userId }}</span>
               </td>
-              <td class="truncate border p-2 text-muted-foreground" :title="formatDate(log.createdAt)" :style="{ width: headers[4].width }">
-                {{ formatDate(log.createdAt) }}
+              <td class="truncate border p-2 text-muted-foreground" :title="formatAuditLogDate(log.createdAt)" :style="{ width: headers[4].width }">
+                {{ formatAuditLogDate(log.createdAt) }}
               </td>
             </tr>
           </tbody>
@@ -200,7 +202,7 @@ function getActionLabel(action: string): string {
   return found ? found.label : action
 }
 
-function formatDate(date?: string | Date): string {
+function formatAuditLogDate(date?: string | Date): string {
   if (!date)
     return "—"
 

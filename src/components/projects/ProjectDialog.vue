@@ -2,7 +2,7 @@
   <Dialog :is-open="isOpen" :title="dialogTitle" @update:is-open="emit('close')">
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-1">
-        <label for="name" class="text-sm font-medium">Project Name</label>
+        <label for="name" class="text-label">Project Name</label>
         <input
           id="name" v-model="form.name"
           type="text" class="w-full"
@@ -11,21 +11,19 @@
       </div>
 
       <div class="flex flex-col items-start gap-1">
-        <label for="description" class="text-sm font-medium">Description</label>
+        <label for="description" class="text-label">Description</label>
         <input id="description" v-model="form.description" type="text" class="w-full">
       </div>
 
-      <div v-if="hasErrors" class="flex max-w-sm flex-col gap-2 text-center">
-        <span v-for="(msg, key) in formErrors" :key="key" class="text-danger-foreground">
-          {{ msg }}
-        </span>
-      </div>
+      <p v-if="errorMsg" class="text-caption p-2 text-danger-foreground">
+        {{ errorMsg }}
+      </p>
 
       <footer class="navigation-group justify-end">
         <button class="font-semibold hover:underline" type="button" @click="emit('close')">
           Cancel
         </button>
-        <button class="btn-success w-16" type="submit" :disabled="hasErrors">
+        <button class="btn-success w-16" type="submit" :disabled="!!errorMsg">
           Save
         </button>
       </footer>
@@ -54,9 +52,7 @@ const form = ref<{ name: string, description: string }>({
   description: "",
 })
 
-const formErrors = ref<{ [key: string]: string }>({})
-
-const hasErrors = computed(() => Object.keys(formErrors.value).length > 0)
+const errorMsg = ref("")
 
 watch(() => props.isOpen, (open) => {
   if (open) {
@@ -68,7 +64,7 @@ watch(() => props.isOpen, (open) => {
       form.value.name = ""
       form.value.description = ""
     }
-    formErrors.value = {}
+    errorMsg.value = ""
   }
 }, { immediate: true })
 
@@ -77,16 +73,16 @@ const dialogTitle = computed(() =>
 )
 
 async function handleSubmit() {
-  formErrors.value = {}
+  errorMsg.value = ""
   if (!form.value.name.trim()) {
-    formErrors.value.name = "Project name is required"
+    errorMsg.value = "Project name is required"
   }
 
   const { selectedOrganization } = storeToRefs(userStore)
   if (!selectedOrganization.value?.id) {
-    formErrors.value.organization = "Organization is required"
+    errorMsg.value = "Organization is required"
   }
-  if (hasErrors.value) {
+  if (errorMsg.value) {
     return
   }
 

@@ -1,5 +1,8 @@
 // Format a date string to a more readable format
-export function formatDate(dateString: Date) {
+export function formatDate(dateString: Date | undefined | null): string {
+  if (!dateString)
+    return "-"
+
   const formattedDate = new Date(dateString).toLocaleDateString("en-US", {
     year: "2-digit",
     month: "short",
