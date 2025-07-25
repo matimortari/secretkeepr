@@ -1,20 +1,18 @@
 <template>
   <div
-    v-motion class="min-h-screen"
-    :initial="{ opacity: 0 }" :enter="{ opacity: 1 }"
-    :duration="800"
+    v-motion :initial="{ opacity: 0 }"
+    :enter="{ opacity: 1 }" :transition="{ duration: 800 }"
+    class="flex flex-col gap-4"
   >
-    <div class="flex flex-col gap-4">
-      <header class="navigation-group border-b pb-2">
-        <h2>
-          Preferences
-        </h2>
-      </header>
+    <header class="border-b pb-2">
+      <h2>
+        Preferences
+      </h2>
+    </header>
 
-      <div class="flex flex-col gap-8">
-        <PreferencesUserDetails :user="user" />
-        <PreferencesDangerZone />
-      </div>
+    <div class="flex flex-col gap-4">
+      <PreferencesUserDetails :user="user" />
+      <PreferencesDangerZone />
     </div>
   </div>
 </template>
