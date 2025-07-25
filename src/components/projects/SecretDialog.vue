@@ -21,17 +21,15 @@
         <input :id="env" v-model="form.values[env]" type="text" class="w-full">
       </div>
 
-      <div v-if="hasErrors" class="flex flex-col gap-1 text-center">
-        <span v-for="(msg, key) in formErrors" :key="key" class="text-danger-foreground">
-          {{ msg }}
-        </span>
-      </div>
+      <p v-if="errorMsg" class="text-caption p-2 text-danger-foreground">
+        {{ errorMsg }}
+      </p>
 
       <footer class="navigation-group justify-end">
         <button class="font-semibold hover:underline" type="button" @click="emit('close')">
           Cancel
         </button>
-        <button class="btn-success w-16" type="submit" :disabled="hasErrors">
+        <button class="btn-success w-16" type="submit" :disabled="!!errorMsg">
           Save
         </button>
       </footer>
@@ -67,8 +65,7 @@ const form = ref<{ key: string, description: string, values: SecretFormValues }>
   },
 })
 
-const formErrors = ref<{ [key: string]: string }>({})
-const hasErrors = computed(() => Object.keys(formErrors.value).length > 0)
+const errorMsg = ref("")
 
 const dialogTitle = computed(() =>
   props.selectedSecret ? "Edit Secret" : "Create New Secret",
@@ -104,17 +101,15 @@ watch(() => props.isOpen, (open) => {
         },
       }
     }
-    formErrors.value = {}
+    errorMsg.value = ""
   }
 }, { immediate: true })
 
 function handleSubmit() {
-  formErrors.value = {}
+  errorMsg.value = ""
 
-  if (Object.keys(formErrors.value).length > 0)
-    return
   if (!form.value.key.trim()) {
-    formErrors.value.key = "Secret Key is required."
+    errorMsg.value = "Secret Key is required."
   }
 
   const valuesArray: SecretValueType[] = environments
@@ -124,7 +119,7 @@ function handleSubmit() {
     }))
     .filter(v => v.value.length > 0)
   if (valuesArray.length === 0) {
-    formErrors.value.values = "At least one secret value is required."
+    errorMsg.value = "At least one secret value is required."
   }
 
   const payload: SecretType = {

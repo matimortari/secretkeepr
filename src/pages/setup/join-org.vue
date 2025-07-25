@@ -1,18 +1,18 @@
 <template>
   <div
-    v-motion class="flex min-h-screen flex-col items-center justify-center"
+    v-motion class="flex flex-col items-center justify-center"
     :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
     :transition="{ duration: 1000 }"
   >
     <header
       v-motion class="flex flex-col items-center gap-4 border-b p-4 text-center"
       :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
-      :duration="600"
+      :transition="{ duration: 800 }"
     >
       <h1>
         Join an Organization
       </h1>
-      <p class="text-caption p-2">
+      <p class="text-caption">
         To join an organization, please enter your invite token below.
       </p>
     </header>
@@ -29,8 +29,8 @@
     </form>
 
     <p class="text-caption min-h-6">
-      <span v-if="error" class="text-danger">{{ error }}</span>
-      <span v-else-if="success" class="text-success">
+      <span v-if="error" class="text-danger-foreground">{{ error }}</span>
+      <span v-else-if="success" class="text-success-foreground">
         Invitation accepted! Redirecting...
       </span>
     </p>

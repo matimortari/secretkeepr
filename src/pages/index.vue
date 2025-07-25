@@ -1,6 +1,6 @@
 <template>
   <div
-    v-motion class="flex min-h-screen flex-col overflow-hidden"
+    v-motion class="flex flex-col overflow-hidden"
     :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
     :transition="{ duration: 800 }"
   >

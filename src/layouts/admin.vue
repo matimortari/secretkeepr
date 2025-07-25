@@ -1,30 +1,27 @@
 <template>
-  <div class="flex flex-col">
-    <div v-if="isLoading">
-      <Loading />
+  <Loading v-if="isLoading" />
+
+  <div v-show="!isLoading" class="flex flex-col">
+    <Navbar
+      :organizations="organizations"
+      :model-value="activeOrganization"
+      :is-sidebar-open="isSidebarOpen"
+      @update:model-value="onUpdateActiveOrganization"
+      @toggle-sidebar="toggleSidebar"
+    />
+
+    <div class="flex flex-1">
+      <Sidebar :organization="activeOrganization" :is-open="isSidebarOpen" @update:is-open="isSidebarOpen = $event" />
+
+      <main class="min-h-screen flex-1 overflow-x-hidden p-8">
+        <slot :active-organization="activeOrganization" />
+      </main>
     </div>
-
-    <div v-show="!isLoading" class="flex flex-col">
-      <Navbar
-        :organizations="organizations"
-        :model-value="activeOrganization"
-        :is-sidebar-open="isSidebarOpen"
-        @update:model-value="onUpdateActiveOrganization"
-        @toggle-sidebar="toggleSidebar"
-      />
-
-      <div class="flex flex-1">
-        <Sidebar :organization="activeOrganization" :is-open="isSidebarOpen" @update:is-open="isSidebarOpen = $event" />
-        <main class="relative flex-1 overflow-x-hidden p-8">
-          <slot :active-organization="activeOrganization" />
-        </main>
-      </div>
-    </div>
-
-    <footer class="py-4 text-center text-sm md:p-8">
-      <p>© {{ new Date().getFullYear() }} – SecretKeepR</p>
-    </footer>
   </div>
+
+  <footer class="py-4 text-center text-sm md:p-8">
+    <p>© {{ new Date().getFullYear() }} – SecretKeepR</p>
+  </footer>
 </template>
 
 <script setup lang="ts">

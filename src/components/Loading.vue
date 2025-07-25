@@ -8,7 +8,7 @@
 
 <style scoped>
 .progress {
-  height: 3px;
+  height: 4px;
   transition: 0.5s;
   animation: animate-loading 2s ease infinite;
 }

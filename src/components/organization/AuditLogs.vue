@@ -4,7 +4,7 @@
       <h4>
         Audit Logs
       </h4>
-      <p class="text-caption text-muted-foreground">
+      <p class="text-caption">
         Track changes and activities.
       </p>
     </header>
@@ -39,7 +39,7 @@
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasPrevPage" @click="prevPage">
           <Icon name="ph:arrow-left-bold" size="20" />
         </button>
-        <span class="text-caption whitespace-nowrap text-muted-foreground">
+        <span class="text-caption whitespace-nowrap">
           Page {{ page }} of {{ totalPages }}
         </span>
         <button class="btn-secondary disabled:opacity-80" :disabled="!hasNextPage" @click="nextPage">
@@ -53,8 +53,10 @@
     </section>
 
     <section class="w-full py-2">
-      <Spinner v-if="isLoading" />
-      <div v-else-if="filteredLogs.length === 0" class="my-4 text-center text-muted-foreground">
+      <div v-if="isLoading" class="text-caption my-4 text-center">
+        Loading logs...
+      </div>
+      <div v-else-if="filteredLogs.length === 0" class="text-caption my-4 text-center">
         No audit logs found.
       </div>
 
@@ -85,8 +87,8 @@
               <td class="truncate border p-2 text-muted-foreground" :title="log.userId" :style="{ width: headers[3].width }">
                 <span>{{ log.userId }}</span>
               </td>
-              <td class="truncate border p-2 text-muted-foreground" :title="formatDate(log.createdAt)" :style="{ width: headers[4].width }">
-                {{ formatDate(log.createdAt) }}
+              <td class="truncate border p-2 text-muted-foreground" :title="formatAuditLogDate(log.createdAt)" :style="{ width: headers[4].width }">
+                {{ formatAuditLogDate(log.createdAt) }}
               </td>
             </tr>
           </tbody>
@@ -200,7 +202,7 @@ function getActionLabel(action: string): string {
   return found ? found.label : action
 }
 
-function formatDate(date?: string | Date): string {
+function formatAuditLogDate(date?: string | Date): string {
   if (!date)
     return "—"
 

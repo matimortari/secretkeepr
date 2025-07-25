@@ -12,17 +12,15 @@
         </select>
       </div>
 
-      <div v-if="hasErrors" class="flex max-w-sm flex-col gap-2 text-center">
-        <span v-for="(msg, key) in formErrors" :key="key" class="text-danger-foreground">
-          {{ msg }}
-        </span>
-      </div>
+      <p v-if="errorMsg" class="text-caption p-2 text-danger-foreground">
+        {{ errorMsg }}
+      </p>
 
       <footer class="navigation-group justify-end">
         <button class="font-semibold hover:underline" type="button" @click="emit('close')">
           Cancel
         </button>
-        <button class="btn-success" type="submit" :disabled="hasErrors">
+        <button class="btn-success" type="submit" :disabled="!!errorMsg">
           Import Secrets
         </button>
       </footer>
@@ -46,14 +44,13 @@ const environments: Environment[] = ["development", "staging", "production"]
 const selectedEnv = ref<Environment>("development")
 const envText = ref("")
 
-const formErrors = ref<{ [key: string]: string }>({})
-const hasErrors = computed(() => Object.keys(formErrors.value).length > 0)
+const errorMsg = ref("")
 
 watch(() => props.isOpen, (open) => {
   if (open) {
     envText.value = ""
     selectedEnv.value = "development"
-    formErrors.value = {}
+    errorMsg.value = ""
   }
 })
 
@@ -78,11 +75,11 @@ function parseEnv(text: string): Record<string, string> {
 }
 
 function handleSubmit() {
-  formErrors.value = {}
+  errorMsg.value = ""
 
   const parsed = parseEnv(envText.value)
   if (Object.entries(parsed).length === 0) {
-    formErrors.value.key = "No valid secrets found in the provided content."
+    errorMsg.value = "No valid secrets found in the provided content."
     return
   }
 
@@ -99,7 +96,7 @@ function handleSubmit() {
   }
 
   if (duplicateKeys.length > 0) {
-    formErrors.value.key = `The following keys already exist in ${selectedEnv.value}: ${duplicateKeys.join(", ")}. Please remove them before importing.`
+    errorMsg.value = `The following keys already exist in ${selectedEnv.value}: ${duplicateKeys.join(", ")}.`
     return
   }
 

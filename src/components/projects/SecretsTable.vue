@@ -25,7 +25,7 @@
           v-for="(secret, index) in sortedSecrets" :key="secret.key"
           v-motion class="border"
           :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0 }"
-          :duration="600" :delay="100 * index"
+          :transition="{ duration: 600 }" :delay="100 * index"
         >
           <td class="relative flex flex-row items-center justify-between p-2 font-mono text-sm font-bold text-muted-foreground">
             <div class="flex max-w-[80%] flex-row items-center gap-2">
@@ -36,7 +36,7 @@
                 class="hover:scale-md hidden flex-shrink-0 cursor-pointer transition-all md:inline"
               />
             </div>
-            <span class="navigation-group">
+            <nav class="navigation-group">
               <button @click="toggleVisibility(secret.key)">
                 <Icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
@@ -44,9 +44,9 @@
                 <Icon name="carbon:edit" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
               <button @click="handleDeleteSecret(secret.key)">
-                <Icon name="carbon:delete" size="20" class="hover:scale-md transition-all hover:text-danger" />
+                <Icon name="carbon:delete" size="20" class="hover:scale-md transition-all hover:text-danger-foreground" />
               </button>
-            </span>
+            </nav>
           </td>
 
           <td v-for="env in environments" :key="env" class="border p-2 font-mono text-sm text-muted-foreground">
