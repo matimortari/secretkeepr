@@ -67,7 +67,7 @@ const props = defineProps<{
 }>()
 
 const userStore = useUserStore()
-const organizationStore = useOrganizationStore()
+const orgStore = useOrganizationStore()
 
 const form = ref({
   name: props.user?.name || "",
@@ -80,7 +80,7 @@ watch(() => userStore.user, (newUser) => {
   form.value.name = newUser?.name || ""
 }, { immediate: true })
 
-const selectedOrganization = computed(() => organizationStore.selectedOrganization)
+const selectedOrganization = computed(() => orgStore.selectedOrg)
 
 const currentMembership = computed(() => {
   const org = selectedOrganization.value

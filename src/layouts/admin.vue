@@ -3,18 +3,18 @@
 
   <div v-show="!isLoading" class="flex flex-col">
     <Navbar
-      :organizations="organizations"
-      :model-value="activeOrganization"
+      :orgs="orgs"
+      :model-value="activeOrg"
       :is-sidebar-open="isSidebarOpen"
-      @update:model-value="onUpdateActiveOrganization"
+      @update:model-value="onUpdateActiveOrg"
       @toggle-sidebar="toggleSidebar"
     />
 
     <div class="flex flex-1">
-      <Sidebar :organization="activeOrganization" :is-open="isSidebarOpen" @update:is-open="isSidebarOpen = $event" />
+      <Sidebar :org="activeOrg" :is-open="isSidebarOpen" @update:is-open="isSidebarOpen = $event" />
 
       <main class="min-h-screen flex-1 overflow-x-hidden p-8">
-        <slot :active-organization="activeOrganization" />
+        <slot :active-org="activeOrg" />
       </main>
     </div>
   </div>
@@ -31,7 +31,7 @@ import { useUserStore } from "~/lib/stores/user-store"
 const { data: session, status } = useAuth()
 const router = useRouter()
 const userStore = useUserStore()
-const organizationStore = useOrganizationStore()
+const orgStore = useOrganizationStore()
 
 const isLoading = ref(true)
 const isSidebarOpen = ref(false)
@@ -40,35 +40,35 @@ function toggleSidebar() {
   isSidebarOpen.value = !isSidebarOpen.value
 }
 
-const organizations = computed(() =>
+const orgs = computed(() =>
   (userStore.user?.memberships?.map(m => m.organization).filter((org): org is OrganizationType => !!org)) ?? [],
 )
 
-const activeOrganization = computed(() => organizationStore.selectedOrganization)
+const activeOrg = computed(() => orgStore.selectedOrg)
 
-function onUpdateActiveOrganization(org: OrganizationType) {
-  organizationStore.setSelectedOrganization(org.id)
-  userStore.setSelectedOrganization(org)
+function onUpdateActiveOrg(org: OrganizationType) {
+  orgStore.setSelectedOrg(org.id)
+  userStore.setSelectedOrg(org)
 }
 
-function initSelectedOrganization() {
-  organizationStore.organizations = organizations.value
+function initSelectedOrg() {
+  orgStore.orgs = orgs.value
 
   const storedId = localStorage.getItem("active_org_id")
-  const match = organizationStore.organizations.find(org => org.id === storedId)
+  const match = orgStore.orgs.find(org => org.id === storedId)
 
   if (match) {
-    organizationStore.setSelectedOrganization(match.id)
-    userStore.setSelectedOrganization(match)
+    orgStore.setSelectedOrg(match.id)
+    userStore.setSelectedOrg(match)
   }
-  else if (organizationStore.organizations.length) {
-    const firstOrg = organizationStore.organizations[0]
-    organizationStore.setSelectedOrganization(firstOrg.id)
-    userStore.setSelectedOrganization(firstOrg)
+  else if (orgStore.orgs.length) {
+    const firstOrg = orgStore.orgs[0]
+    orgStore.setSelectedOrg(firstOrg.id)
+    userStore.setSelectedOrg(firstOrg)
   }
 }
 
-watch(() => organizationStore.selectedOrganization, (org) => {
+watch(() => orgStore.selectedOrg, (org) => {
   if (org?.id) {
     localStorage.setItem("active_org_id", org.id)
   }
@@ -86,7 +86,7 @@ onMounted(async () => {
     return
   }
 
-  initSelectedOrganization()
+  initSelectedOrg()
   isLoading.value = false
 })
 </script>

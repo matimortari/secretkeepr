@@ -8,22 +8,22 @@ export default defineEventHandler(async (event) => {
   const membership = await db.userOrganizationMembership.findFirst({
     where: { userId: sessionUser.id },
     select: {
-      organizationId: true,
+      orgId: true,
       role: true,
     },
   })
-  if (!membership?.organizationId) {
+  if (!membership?.orgId) {
     throw createError({ statusCode: 403, statusMessage: "Access denied: not an organization member" })
   }
 
-  await requireOrgRole(sessionUser.id!, membership.organizationId, ["owner"])
+  await requireOrgRole(sessionUser.id!, membership.orgId, ["owner"])
 
   const token = nanoid()
 
   await db.invitation.create({
     data: {
       token,
-      organizationId: membership.organizationId,
+      orgId: membership.orgId,
       role: membership.role,
       expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000),
     },
@@ -37,9 +37,9 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
-    organizationId: membership.organizationId,
-    action: "organization.invite.create",
-    resource: `Organization: ${membership.organizationId}`,
+    orgId: membership.orgId,
+    action: "org.invite.create",
+    resource: `Organization: ${membership.orgId}`,
     metadata: {
       createdBy: sessionUser.id!,
       selectedRole: membership.role,

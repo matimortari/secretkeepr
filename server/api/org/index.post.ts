@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Organization name is required" })
   }
 
-  const newOrganization = await db.organization.create({
+  const newOrg = await db.organization.create({
     data: {
       name: body.name,
       memberships: {
@@ -23,15 +23,15 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
-    organizationId: newOrganization.id,
-    action: "organization.create",
-    resource: `Organization: ${newOrganization.id}`,
+    orgId: newOrg.id,
+    action: "org.create",
+    resource: `Organization: ${newOrg.id}`,
     metadata: {
-      id: newOrganization.id,
-      name: newOrganization.name,
+      id: newOrg.id,
+      name: newOrg.name,
     },
     req: event.node.req,
   })
 
-  return { message: "Organization created successfully", newOrganization }
+  return { message: "Organization created successfully", newOrg }
 })

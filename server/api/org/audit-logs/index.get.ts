@@ -5,8 +5,8 @@ import { getUserFromSession, requireOrgRole } from "~~/server/lib/utils"
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
 
-  const organizationId = event.context.params?.id || getQuery(event).organizationId
-  if (!organizationId || typeof organizationId !== "string") {
+  const orgId = event.context.params?.id || getQuery(event).orgId
+  if (!orgId || typeof orgId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
@@ -15,17 +15,17 @@ export default defineEventHandler(async (event) => {
   const limitNum = Math.min(Math.max(Number.parseInt(limit as string, 10), 1), 100)
   const skip = (pageNum - 1) * limitNum
 
-  await requireOrgRole(sessionUser.id!, organizationId, ["owner", "admin", "member"])
+  await requireOrgRole(sessionUser.id!, orgId, ["owner", "admin", "member"])
 
   const projectsInOrg = await db.project.findMany({
-    where: { organizationId },
+    where: { orgId },
     select: { id: true },
   })
   const projectResourceIds = projectsInOrg.map(p => `Project:${p.id}`)
 
   const logsWhere = {
     OR: [
-      { organizationId },
+      { orgId },
       { resource: { in: projectResourceIds } },
     ],
   }
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     db.auditLog.count({ where: logsWhere }),
   ])
 
-  const isPrivileged = await requireOrgRole(sessionUser.id!, organizationId, ["owner", "admin"])
+  const isPrivileged = await requireOrgRole(sessionUser.id!, orgId, ["owner", "admin"])
 
   function sanitizeMetadata(metadata: JsonValue) {
     if (metadata && typeof metadata === "object" && !Array.isArray(metadata)) {

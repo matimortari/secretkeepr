@@ -11,9 +11,9 @@
     </header>
 
     <div class="flex flex-col gap-4">
-      <OrganizationDetails :organization="organization" />
+      <OrganizationDetails :org="org" />
       <OrganizationAuditLogs :logs="logs" />
-      <OrganizationDangerZone :organization="organization" />
+      <OrganizationDangerZone :org="org" />
     </div>
   </div>
 </template>
@@ -23,21 +23,21 @@ import { useOrganizationStore } from "~/lib/stores/organization-store"
 import { useUserStore } from "~/lib/stores/user-store"
 
 const userStore = useUserStore()
-const organizationStore = useOrganizationStore()
+const orgStore = useOrganizationStore()
 
-const organization = computed(() => organizationStore.selectedOrganization)
-const logs = computed(() => organizationStore.auditLogs.logs)
+const org = computed(() => orgStore.selectedOrg)
+const logs = computed(() => orgStore.auditLogs.logs)
 
 onMounted(async () => {
   await userStore.getUser()
-  if (organization.value?.id) {
-    await organizationStore.getAuditLogs(organization.value.id)
+  if (org.value?.id) {
+    await orgStore.getAuditLogs(org.value.id)
   }
 })
 
-watch(() => organization.value?.id, async (newId) => {
+watch(() => org.value?.id, async (newId) => {
   if (newId) {
-    await organizationStore.getAuditLogs(newId)
+    await orgStore.getAuditLogs(newId)
   }
 })
 

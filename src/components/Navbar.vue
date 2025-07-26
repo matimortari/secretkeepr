@@ -18,16 +18,16 @@
 
         <div ref="dropdownRef" class="relative">
           <button class="navigation-group truncate hover:underline" @click="isDropdownOpen = !isDropdownOpen">
-            <span class="text-muted-foreground">{{ selectedOrganization?.name }}</span>
+            <span class="text-muted-foreground">{{ selectedOrg?.name }}</span>
             <Icon name="ph:caret-down-bold" size="20" class="hover:scale-md transition-all hover:text-accent" />
           </button>
 
           <Transition name="dropdown" mode="out-in">
             <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto">
               <li
-                v-for="org in organizations" :key="org.id"
+                v-for="org in orgs" :key="org.id"
                 class="cursor-pointer truncate rounded p-2 hover:bg-muted" role="option"
-                @click="selectOrganization(org)"
+                @click="selectOrg(org)"
               >
                 {{ org.name }}
               </li>
@@ -67,7 +67,7 @@
 import { useUserStore } from "~/lib/stores/user-store"
 
 const props = defineProps<{
-  organizations: OrganizationType[]
+  orgs: OrganizationType[]
   modelValue: OrganizationType | null
   isSidebarOpen: boolean
 }>()
@@ -93,23 +93,23 @@ const currentPage = computed(() => {
   return path.length > 0 ? path[path.length - 1] : "home"
 })
 
-const selectedOrganizationId = computed({
-  get: () => userStore.selectedOrganization?.id,
+const selectedOrgId = computed({
+  get: () => userStore.selectedOrg?.id,
   set: (newId: string) => {
-    const org = props.organizations.find(o => o.id === newId)
+    const org = props.orgs.find(o => o.id === newId)
     if (org) {
-      userStore.setSelectedOrganization(org)
+      userStore.setSelectedOrg(org)
       window.location.reload()
     }
   },
 })
 
-const selectedOrganization = computed(() =>
-  props.organizations.find(o => o.id === selectedOrganizationId.value),
+const selectedOrg = computed(() =>
+  props.orgs.find(o => o.id === selectedOrgId.value),
 )
 
-function selectOrganization(org: OrganizationType) {
-  userStore.setSelectedOrganization(org)
+function selectOrg(org: OrganizationType) {
+  userStore.setSelectedOrg(org)
   isDropdownOpen.value = false
   window.location.reload()
 }

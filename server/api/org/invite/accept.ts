@@ -19,9 +19,9 @@ export default defineEventHandler(async (event) => {
 
   const existingMembership = await db.userOrganizationMembership.findUnique({
     where: {
-      userId_organizationId: {
+      userId_orgId: {
         userId: sessionUser.id!,
-        organizationId: invite.organizationId,
+        orgId: invite.orgId,
       },
     },
   })
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
   await db.userOrganizationMembership.create({
     data: {
       userId: sessionUser.id!,
-      organizationId: invite.organizationId,
+      orgId: invite.orgId,
       role: invite.role,
     },
   })
@@ -44,9 +44,9 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
-    organizationId: invite.organizationId,
-    action: "organization.invite.accept",
-    resource: `Organization: ${invite.organizationId}`,
+    orgId: invite.orgId,
+    action: "org.invite.accept",
+    resource: `Organization: ${invite.orgId}`,
     metadata: {
       acceptedBy: sessionUser.id!,
       selectedRole: invite.role,

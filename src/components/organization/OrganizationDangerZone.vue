@@ -23,7 +23,7 @@
         <p v-if="leaveErrorMsg" class="text-caption px-2 text-danger-foreground">
           {{ leaveErrorMsg }}
         </p>
-        <button class="btn-danger" @click="handleLeaveOrganization">
+        <button class="btn-danger" @click="handleLeaveOrg">
           <Icon name="ph:sign-out-bold" size="20" />
           <span>Leave Organization</span>
         </button>
@@ -44,7 +44,7 @@
         <p v-if="deleteErrorMsg" class="text-caption px-2 text-danger-foreground">
           {{ deleteErrorMsg }}
         </p>
-        <button class="btn-danger" @click="handleDeleteOrganization">
+        <button class="btn-danger" @click="handleDeleteOrg">
           <Icon name="ph:network-x-bold" size="20" />
           <span>Delete Organization</span>
         </button>
@@ -58,37 +58,37 @@ import { useOrganizationStore } from "~/lib/stores/organization-store"
 import { useUserStore } from "~/lib/stores/user-store"
 
 const props = defineProps<{
-  organization: OrganizationType | null
+  org: OrganizationType | null
 }>()
 
 const router = useRouter()
 const userStore = useUserStore()
-const organizationStore = useOrganizationStore()
+const orgStore = useOrganizationStore()
 
 const leaveErrorMsg = ref("")
 const deleteErrorMsg = ref("")
 
-async function handleLeaveOrganization() {
+async function handleLeaveOrg() {
   leaveErrorMsg.value = ""
-  if (!props.organization?.id || !userStore.user?.id) {
+  if (!props.org?.id || !userStore.user?.id) {
     leaveErrorMsg.value = "Missing organization or user ID."
     return
   }
   if (!confirm("Are you sure you want to leave this organization?"))
     return
 
-  await organizationStore.removeOrganizationMember(userStore.user.id, props.organization.id)
-  if (organizationStore.error) {
-    leaveErrorMsg.value = organizationStore.error
+  await orgStore.removeOrgMember(userStore.user.id, props.org.id)
+  if (orgStore.error) {
+    leaveErrorMsg.value = orgStore.error
     return
   }
 
   router.push("/setup/create-org")
 }
 
-async function handleDeleteOrganization() {
+async function handleDeleteOrg() {
   deleteErrorMsg.value = ""
-  if (!props.organization?.id) {
+  if (!props.org?.id) {
     deleteErrorMsg.value = "Organization ID is undefined."
     return
   }
@@ -96,7 +96,7 @@ async function handleDeleteOrganization() {
     return
 
   try {
-    const result = await organizationStore.deleteOrganization(props.organization.id)
+    const result = await orgStore.deleteOrg(props.org.id)
     if (result?.message === "Organization deleted successfully") {
       await userStore.getUser()
       if (!userStore.user?.memberships?.length) {

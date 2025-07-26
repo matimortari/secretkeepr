@@ -1,5 +1,5 @@
-export async function createOrganizationService(data: CreateOrganizationPayload): Promise<{ message: string, newOrganization: OrganizationType }> {
-  const response = await fetch("/api/organization", {
+export async function createOrgService(data: CreateOrgPayload): Promise<{ message: string, newOrg: OrganizationType }> {
+  const response = await fetch("/api/org", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -11,8 +11,8 @@ export async function createOrganizationService(data: CreateOrganizationPayload)
   return await response.json()
 }
 
-export async function updateOrganizationService(organizationId: string, data: UpdateOrganizationPayload): Promise<{ message: string, updatedOrganization: OrganizationType }> {
-  const response = await fetch(`/api/organization/${organizationId}`, {
+export async function updateOrgService(orgId: string, data: UpdateOrgPayload): Promise<{ message: string, updatedOrg: OrganizationType }> {
+  const response = await fetch(`/api/org/${orgId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -24,8 +24,8 @@ export async function updateOrganizationService(organizationId: string, data: Up
   return await response.json()
 }
 
-export async function deleteOrganizationService(organizationId: string): Promise<{ message: string, organizationId: string }> {
-  const response = await fetch(`/api/organization/${organizationId}`, {
+export async function deleteOrgService(orgId: string): Promise<{ message: string, orgId: string }> {
+  const response = await fetch(`/api/org/${orgId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
@@ -36,8 +36,8 @@ export async function deleteOrganizationService(organizationId: string): Promise
   return await response.json()
 }
 
-export async function updateOrganizationMemberService(memberId: string, data: { role: Role, organizationId: string }): Promise<UserOrganizationMembershipType> {
-  const response = await fetch(`/api/organization/members/${memberId}`, {
+export async function updateOrgMemberService(memberId: string, data: { role: Role, orgId: string }): Promise<UserOrgMembershipType> {
+  const response = await fetch(`/api/org/members/${memberId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -49,8 +49,8 @@ export async function updateOrganizationMemberService(memberId: string, data: { 
   return await response.json()
 }
 
-export async function removeUserFromOrganizationService(organizationId: string, memberId: string): Promise<{ message: string, userId: string }> {
-  const response = await fetch(`/api/organization/members/${memberId}?organizationId=${organizationId}`, {
+export async function removeUserFromOrgService(orgId: string, memberId: string): Promise<{ message: string, userId: string }> {
+  const response = await fetch(`/api/org/members/${memberId}?orgId=${orgId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
@@ -61,8 +61,8 @@ export async function removeUserFromOrganizationService(organizationId: string, 
   return await response.json()
 }
 
-export async function createOrganizationInviteService(): Promise<{ inviteLink: string }> {
-  const response = await fetch("/api/organization/invite-create", {
+export async function createOrgInviteService(): Promise<{ inviteLink: string }> {
+  const response = await fetch("/api/org/invite/create", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
   })
@@ -73,8 +73,8 @@ export async function createOrganizationInviteService(): Promise<{ inviteLink: s
   return await response.json()
 }
 
-export async function acceptOrganizationInviteService(token: string): Promise<{ message: string }> {
-  const response = await fetch(`/api/organization/invite-accept`, {
+export async function acceptOrgInviteService(token: string): Promise<{ message: string }> {
+  const response = await fetch(`/api/org/invite/accept`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token }),
@@ -86,8 +86,8 @@ export async function acceptOrganizationInviteService(token: string): Promise<{ 
   return await response.json()
 }
 
-export async function getAuditLogsService(organizationId: string, page: number = 1, limit: number = 20): Promise<AuditLogsResponse> {
-  const response = await fetch(`/api/organization/audit-logs?organizationId=${organizationId}&page=${page}&limit=${limit}`, {
+export async function getAuditLogsService(orgId: string, page: number = 1, limit: number = 20): Promise<AuditLogsResponse> {
+  const response = await fetch(`/api/org/audit-logs?orgId=${orgId}&page=${page}&limit=${limit}`, {
     method: "GET",
   })
   if (!response.ok) {
@@ -98,7 +98,7 @@ export async function getAuditLogsService(organizationId: string, page: number =
 }
 
 export async function deleteAuditLogsService(data: DeleteAuditLogsPayload): Promise<{ message: string, deletedCount: number }> {
-  const response = await fetch("/api/organization/audit-logs", {
+  const response = await fetch("/api/org/audit-logs", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),

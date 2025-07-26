@@ -5,8 +5,8 @@ export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
 
   const query = getQuery(event)
-  const organizationId = query.organizationId
-  if (!organizationId || typeof organizationId !== "string") {
+  const orgId = query.orgId
+  if (!orgId || typeof orgId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Member ID is required" })
   }
 
-  const membership = await requireOrgRole(sessionUser.id!, organizationId, ["owner", "admin", "member"])
+  const membership = await requireOrgRole(sessionUser.id!, orgId, ["owner", "admin", "member"])
 
   const isSelfRemoval = sessionUser.id === memberId
   if (isSelfRemoval) {
@@ -24,14 +24,14 @@ export default defineEventHandler(async (event) => {
     }
   }
   else {
-    await requireOrgRole(sessionUser.id!, organizationId, ["owner"])
+    await requireOrgRole(sessionUser.id!, orgId, ["owner"])
   }
 
   await db.userOrganizationMembership.delete({
     where: {
-      userId_organizationId: {
+      userId_orgId: {
         userId: memberId,
-        organizationId,
+        orgId,
       },
     },
   })
@@ -39,8 +39,8 @@ export default defineEventHandler(async (event) => {
   if (!isSelfRemoval) {
     await createAuditLog({
       userId: sessionUser.id!,
-      organizationId,
-      action: "organization.member.remove",
+      orgId,
+      action: "org.member.remove",
       resource: `User: ${memberId}`,
       metadata: {
         ID: memberId,
@@ -52,8 +52,8 @@ export default defineEventHandler(async (event) => {
   if (isSelfRemoval) {
     await createAuditLog({
       userId: sessionUser.id!,
-      organizationId,
-      action: "organization.member.leave",
+      orgId,
+      action: "org.member.leave",
       resource: `User: ${memberId}`,
       metadata: {
         id: memberId,

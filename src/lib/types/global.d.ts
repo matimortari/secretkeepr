@@ -1,10 +1,10 @@
 type Environment = "development" | "staging" | "production"
 type Role = "owner" | "admin" | "member"
 
-interface UserOrganizationMembershipType {
+interface UserOrgMembershipType {
   id?: string
   userId: string
-  organizationId: string
+  orgId: string
   role: Role
   createdAt?: Date
   user?: UserType
@@ -28,7 +28,7 @@ interface UserType {
   image: string | null
   createdAt?: Date
   updatedAt?: Date
-  memberships: UserOrganizationMembershipType[]
+  memberships: UserOrgMembershipType[]
   projectMemberships?: ProjectMemberType[]
   cliTokens?: { token: string, expiresAt: Date, createdAt: Date }[]
 }
@@ -38,7 +38,7 @@ interface OrganizationType {
   name: string
   createdAt?: Date
   updatedAt?: Date
-  memberships?: UserOrganizationMembershipType[]
+  memberships?: UserOrgMembershipType[]
   projects?: ProjectType[]
 }
 
@@ -46,7 +46,7 @@ interface ProjectType {
   id?: string
   name: string
   description?: string | null
-  organizationId: string
+  orgId: string
   createdAt?: Date
   updatedAt?: Date
   organization?: OrganizationType
@@ -77,7 +77,7 @@ interface SecretValueType {
 interface AuditLogType {
   id?: string
   userId: string
-  organizationId: string
+  orgId: string
   action: string
   resource: string
   metadata?: Record<string, any>
@@ -93,7 +93,7 @@ interface AuditLogsResponse {
 }
 
 interface DeleteAuditLogsPayload {
-  organizationId: string
+  orgId: string
   action?: string
   beforeDate?: string
   createdBySelfOnly?: boolean
@@ -108,7 +108,7 @@ interface UpdateUserPayload {
 interface CreateProjectPayload {
   name: string
   description?: string
-  organizationId: string
+  orgId: string
 }
 
 interface UpdateProjectPayload {
@@ -134,11 +134,11 @@ interface AddProjectMemberPayload {
   role: Role
 }
 
-interface CreateOrganizationPayload {
+interface CreateOrgPayload {
   name: string
 }
 
-interface UpdateOrganizationPayload {
+interface UpdateOrgPayload {
   id: string
   name?: string
 }

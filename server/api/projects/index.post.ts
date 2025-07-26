@@ -8,17 +8,17 @@ export default defineEventHandler(async (event) => {
   if (!body.name || typeof body.name !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Project name is required" })
   }
-  if (!body.organizationId || typeof body.organizationId !== "string") {
+  if (!body.orgId || typeof body.orgId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "organization ID is required" })
   }
 
-  await requireOrgRole(sessionUser.id!, body.organizationId, ["owner"])
+  await requireOrgRole(sessionUser.id!, body.orgId, ["owner"])
 
   const newProject = await db.project.create({
     data: {
       name: body.name,
       description: body.description || "",
-      organizationId: body.organizationId,
+      orgId: body.orgId,
       members: {
         create: {
           userId: sessionUser.id!,
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
-    organizationId: body.organizationId,
+    orgId: body.orgId,
     action: "project.create",
     resource: `Project: ${newProject.id}`,
     metadata: {
