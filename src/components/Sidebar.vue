@@ -56,7 +56,7 @@
 import { useProjectsStore } from "~/lib/stores/projects-store"
 
 const props = defineProps<{
-  organization: OrganizationType | null
+  org: OrganizationType | null
   isOpen: boolean
 }>()
 
@@ -78,7 +78,7 @@ const isDialogOpen = ref(false)
 
 const projectsFromOrg = computed(() => {
   return projects.value.filter(project =>
-    project.organizationId === props.organization?.id
+    project.orgId === props.org?.id
     && typeof project.name === "string",
   )
 })
@@ -96,7 +96,7 @@ async function handleCreateProject(project: ProjectType) {
     await projectsStore.createProject({
       name: project.name,
       description: project.description ?? undefined,
-      organizationId: project.organizationId,
+      orgId: project.orgId,
     })
     await projectsStore.getProjects()
     closeDialog()

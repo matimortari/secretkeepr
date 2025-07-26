@@ -10,22 +10,22 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event)
-  if (!body.role || !["owner", "admin", "member"].includes(body.role)) {
+  if (!body.role || !["admin", "member"].includes(body.role)) {
     throw createError({ statusCode: 400, statusMessage: "Valid role is required" })
   }
 
-  const organizationId = body.organizationId || event.context.query.organizationId
-  if (!organizationId || typeof organizationId !== "string") {
+  const orgId = body.orgId || event.context.query.orgId
+  if (!orgId || typeof orgId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
-  const currentMembership = await requireOrgRole(sessionUser.id!, organizationId, ["owner", "admin"])
+  const currentMembership = await requireOrgRole(sessionUser.id!, orgId, ["owner", "admin"])
 
   const targetMembership = await db.userOrganizationMembership.findUnique({
     where: {
-      userId_organizationId: {
+      userId_orgId: {
         userId,
-        organizationId,
+        orgId,
       },
     },
   })
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
   if (targetMembership.role === "owner" && body.role !== "owner") {
     const ownerCount = await db.userOrganizationMembership.count({
       where: {
-        organizationId,
+        orgId,
         role: "owner",
       },
     })
@@ -51,9 +51,9 @@ export default defineEventHandler(async (event) => {
 
   const updatedMembership = await db.userOrganizationMembership.update({
     where: {
-      userId_organizationId: {
+      userId_orgId: {
         userId,
-        organizationId,
+        orgId,
       },
     },
     data: {
@@ -63,8 +63,8 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
-    organizationId,
-    action: "organization.member.update",
+    orgId,
+    action: "org.member.update",
     resource: `User: ${userId}`,
     metadata: {
       role: updatedMembership.role,

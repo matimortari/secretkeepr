@@ -39,7 +39,7 @@ export const useProjectsStore = defineStore("projects", {
         this.error = "Project name is required and must be a string"
         throw new Error(this.error)
       }
-      if (!payload.organizationId) {
+      if (!payload.orgId) {
         this.error = "Organization ID is required"
         throw new Error(this.error)
       }

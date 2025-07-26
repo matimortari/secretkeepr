@@ -78,8 +78,8 @@ async function handleSubmit() {
     errorMsg.value = "Project name is required"
   }
 
-  const { selectedOrganization } = storeToRefs(userStore)
-  if (!selectedOrganization.value?.id) {
+  const { selectedOrg } = storeToRefs(userStore)
+  if (!selectedOrg.value?.id) {
     errorMsg.value = "Organization is required"
   }
   if (errorMsg.value) {
@@ -90,7 +90,7 @@ async function handleSubmit() {
     id: props.selectedProject?.id,
     name: form.value.name.trim(),
     description: form.value.description.trim(),
-    organizationId: selectedOrganization.value?.id ?? "",
+    orgId: selectedOrg.value?.id ?? "",
   }
 
   emit("save", payload)

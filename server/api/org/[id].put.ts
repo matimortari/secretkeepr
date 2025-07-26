@@ -4,8 +4,8 @@ import { createAuditLog, getUserFromSession, requireOrgRole } from "~~/server/li
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
 
-  const organizationId = event.context.params?.id
-  if (!organizationId || typeof organizationId !== "string") {
+  const orgId = event.context.params?.id
+  if (!orgId || typeof orgId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
@@ -14,10 +14,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Organization name is required" })
   }
 
-  await requireOrgRole(sessionUser.id!, organizationId, ["owner"])
+  await requireOrgRole(sessionUser.id!, orgId, ["owner"])
 
-  const updatedOrganization = await db.organization.update({
-    where: { id: organizationId },
+  const updatedOrg = await db.organization.update({
+    where: { id: orgId },
     data: {
       name: body.name,
     },
@@ -25,14 +25,14 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
-    organizationId,
-    action: "organization.update",
-    resource: `Organization: ${organizationId}`,
+    orgId,
+    action: "org.update",
+    resource: `Organization: ${orgId}`,
     metadata: {
-      name: updatedOrganization.name,
+      name: updatedOrg.name,
     },
     req: event.node.req,
   })
 
-  return { message: "Organization updated successfully", updatedOrganization }
+  return { message: "Organization updated successfully", updatedOrg }
 })

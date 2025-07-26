@@ -17,9 +17,9 @@
       </p>
     </header>
 
-    <form class="flex w-[90%] flex-col items-center gap-2 p-4" @submit.prevent="handleCreateOrganization">
+    <form class="flex w-[90%] flex-col items-center gap-2 p-4" @submit.prevent="handleCreateOrg">
       <input
-        v-model="localOrganization.name" placeholder="Organization Name"
+        v-model="localOrg.name" placeholder="Organization Name"
         class="w-full" type="text"
         required autofocus
       >
@@ -42,19 +42,19 @@ import { useUserStore } from "~/lib/stores/user-store"
 
 const router = useRouter()
 const userStore = useUserStore()
-const organizationStore = useOrganizationStore()
+const orgStore = useOrganizationStore()
 
-const localOrganization = ref({
+const localOrg = ref({
   name: "",
 })
 
-async function handleCreateOrganization() {
-  if (!localOrganization.value.name)
+async function handleCreateOrg() {
+  if (!localOrg.value.name)
     return
 
   try {
-    await organizationStore.createOrganization(localOrganization.value)
-    localOrganization.value.name = ""
+    await orgStore.createOrg(localOrg.value)
+    localOrg.value.name = ""
     await userStore.getUser()
     router.push("/admin/projects")
   }

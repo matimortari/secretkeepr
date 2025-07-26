@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { acceptOrganizationInviteService } from "~/lib/services/organization-service"
+import { acceptOrgInviteService } from "~/lib/services/organization-service"
 
 const route = useRoute()
 const token = route.query.token as string
@@ -53,7 +53,7 @@ async function handleAcceptInvite() {
   }
 
   try {
-    await acceptOrganizationInviteService(token)
+    await acceptOrgInviteService(token)
     success.value = true
     setTimeout(() => router.push("/admin/projects"), 2000)
   }

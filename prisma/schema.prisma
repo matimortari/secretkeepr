@@ -57,15 +57,15 @@ model Organization {
 }
 
 model UserOrganizationMembership {
-  id             String       @id @default(cuid())
-  userId         String
-  organizationId String
-  role           Role         @default(member)
-  createdAt      DateTime     @default(now())
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  id           String       @id @default(cuid())
+  userId       String
+  orgId        String
+  role         Role         @default(member)
+  createdAt    DateTime     @default(now())
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, organizationId])
+  @@unique([userId, orgId])
 }
 
 model ProjectMember {
@@ -81,15 +81,15 @@ model ProjectMember {
 }
 
 model Project {
-  id             String          @id @default(cuid())
-  name           String
-  description    String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  organizationId String
-  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  secrets        Secret[]
-  members        ProjectMember[]
+  id           String          @id @default(cuid())
+  name         String
+  description  String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  orgId        String
+  organization Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  secrets      Secret[]
+  members      ProjectMember[]
 }
 
 model Secret {
@@ -118,31 +118,31 @@ model SecretValue {
 }
 
 model AuditLog {
-  id             String       @id @default(cuid())
-  userId         String
-  organizationId String
-  action         String
-  resource       String
-  metadata       Json?
-  createdAt      DateTime     @default(now())
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  id           String       @id @default(cuid())
+  userId       String
+  orgId        String
+  action       String
+  resource     String
+  metadata     Json?
+  createdAt    DateTime     @default(now())
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
-  @@index([organizationId])
+  @@index([orgId])
 }
 
 model Invitation {
-  id             String       @id @default(cuid())
-  token          String       @unique
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  organizationId String
-  role           Role
-  expiresAt      DateTime
-  createdAt      DateTime     @default(now())
-  usedAt         DateTime?
+  id           String       @id @default(cuid())
+  token        String       @unique
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  orgId        String
+  role         Role
+  expiresAt    DateTime
+  createdAt    DateTime     @default(now())
+  usedAt       DateTime?
 
-  @@index([organizationId])
+  @@index([orgId])
 }
 
 model CliToken {

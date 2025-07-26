@@ -3,7 +3,7 @@ import { deleteUserService, getUserService, updateUserImageService, updateUserSe
 export const useUserStore = defineStore("user", {
   state: () => ({
     user: null as UserType | null,
-    selectedOrganization: null as OrganizationType | null,
+    selectedOrg: null as OrganizationType | null,
     isLoading: false,
     error: null as string | null,
   }),
@@ -17,9 +17,9 @@ export const useUserStore = defineStore("user", {
         this.user = await getUserService()
 
         const matchedOrg = this.user?.memberships?.find(m => m.organization?.id === localStorage.getItem("active_org_id"))?.organization
-        this.selectedOrganization = matchedOrg || this.user?.memberships?.[0]?.organization || null
-        if (this.selectedOrganization) {
-          localStorage.setItem("active_org_id", this.selectedOrganization.id)
+        this.selectedOrg = matchedOrg || this.user?.memberships?.[0]?.organization || null
+        if (this.selectedOrg) {
+          localStorage.setItem("active_org_id", this.selectedOrg.id)
         }
       }
       catch (error: any) {
@@ -84,7 +84,7 @@ export const useUserStore = defineStore("user", {
       try {
         const response = await deleteUserService()
         this.user = null
-        this.selectedOrganization = null
+        this.selectedOrg = null
         localStorage.removeItem("active_org_id")
         return response
       }
@@ -97,8 +97,8 @@ export const useUserStore = defineStore("user", {
       }
     },
 
-    setSelectedOrganization(org: OrganizationType) {
-      this.selectedOrganization = org
+    setSelectedOrg(org: OrganizationType) {
+      this.selectedOrg = org
       localStorage.setItem("active_org_id", org.id)
     },
   },

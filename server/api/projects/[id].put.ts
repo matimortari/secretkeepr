@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
   const project = await db.project.findUnique({
     where: { id: projectId },
-    select: { organizationId: true },
+    select: { orgId: true },
   })
   if (!project) {
     throw createError({ statusCode: 404, statusMessage: "Project not found" })
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
-    organizationId: project.organizationId,
+    orgId: project.orgId,
     action: "project.update",
     resource: `Project: ${projectId}`,
     metadata: {
