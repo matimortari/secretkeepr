@@ -114,13 +114,13 @@ const headers = [
 ]
 
 const actions = [
-  { value: "organization.create", label: "Organization Created" },
-  { value: "organization.update", label: "Organization Updated" },
-  { value: "organization.invite.create", label: "Organization Invite Created" },
-  { value: "organization.invite.accept", label: "Organization Invite Accepted" },
-  { value: "organization.member.update", label: "Organization Member Role Updated" },
-  { value: "organization.member.remove", label: "Organization Member Removed" },
-  { value: "organization.member.leave", label: "Organization Member Left" },
+  { value: "org.create", label: "Organization Created" },
+  { value: "org.update", label: "Organization Updated" },
+  { value: "org.invite.create", label: "Organization Invite Created" },
+  { value: "org.invite.accept", label: "Organization Invite Accepted" },
+  { value: "org.member.update", label: "Organization Member Role Updated" },
+  { value: "org.member.remove", label: "Organization Member Removed" },
+  { value: "org.member.leave", label: "Organization Member Left" },
   { value: "project.create", label: "Project Created" },
   { value: "project.update", label: "Project Updated" },
   { value: "project.delete", label: "Project Deleted" },
@@ -132,19 +132,19 @@ const actions = [
   { value: "secret.delete", label: "Secret Deleted" },
 ]
 
-const organizationStore = useOrganizationStore()
+const orgStore = useOrganizationStore()
 
-const { auditLogs, isLoading, totalPages, hasNextPage, hasPrevPage } = storeToRefs(organizationStore)
-const nextPage = organizationStore.nextAuditLogPage
-const prevPage = organizationStore.prevAuditLogPage
+const { auditLogs, isLoading, totalPages, hasNextPage, hasPrevPage } = storeToRefs(orgStore)
+const nextPage = orgStore.nextAuditLogPage
+const prevPage = orgStore.prevAuditLogPage
 const dateFilter = ref("")
 const userFilter = ref("")
 const actionFilter = ref("")
 const showSensitiveData = ref(false)
 
 onMounted(async () => {
-  if (organizationStore.selectedOrganization?.id) {
-    await organizationStore.getAuditLogs(organizationStore.selectedOrganization.id)
+  if (orgStore.selectedOrg?.id) {
+    await orgStore.getAuditLogs(orgStore.selectedOrg.id)
   }
 })
 
@@ -175,14 +175,14 @@ const filteredLogs = computed(() => {
 })
 
 async function handleDeleteLogs() {
-  if (!organizationStore.selectedOrganization?.id)
+  if (!orgStore.selectedOrg?.id)
     return
   if (!confirm("Are you sure you want to delete all filtered audit logs? This action cannot be undone.")) {
     return
   }
 
   const filters = {
-    organizationId: organizationStore.selectedOrganization.id,
+    orgId: orgStore.selectedOrg.id,
     action: actionFilter.value || undefined,
     beforeDate: dateFilter.value || undefined,
     createdBySelfOnly: userFilter.value === "self",
@@ -190,7 +190,7 @@ async function handleDeleteLogs() {
   }
 
   try {
-    await organizationStore.deleteAuditLogs(filters)
+    await orgStore.deleteAuditLogs(filters)
   }
   catch (error: any) {
     alert(`Failed to delete audit logs: ${error?.message || error}`)

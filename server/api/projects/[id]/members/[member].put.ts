@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event)
-  if (!body.role || !["owner", "admin", "member"].includes(body.role)) {
+  if (!body.role || !["admin", "member"].includes(body.role)) {
     throw createError({ statusCode: 400, statusMessage: "Valid role is required" })
   }
 
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
   const project = await db.project.findUnique({
     where: { id: projectId },
-    select: { organizationId: true },
+    select: { orgId: true },
   })
   if (!project) {
     throw createError({ statusCode: 404, statusMessage: "Project not found" })
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
 
   await createAuditLog({
     userId: sessionUser.id!,
-    organizationId: project.organizationId,
+    orgId: project.orgId,
     action: "project.member.update",
     resource: `Project: ${projectId}`,
     metadata: {

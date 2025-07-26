@@ -77,11 +77,11 @@ const selectedProject = ref<ProjectType | null>(null)
 const searchQuery = ref("")
 const isDialogOpen = ref(false)
 
-const organizationId = computed(() => userStore.selectedOrganization?.id || "")
+const orgId = computed(() => userStore.selectedOrg?.id || "")
 
 const filteredProjects = computed(() => {
   return projects.value.filter(project =>
-    project.organizationId === organizationId.value
+    project.orgId === orgId.value
     && typeof project.name === "string"
     && project.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
@@ -106,7 +106,7 @@ async function handleCreateProject(project: ProjectType) {
     await projectsStore.createProject({
       name: project.name,
       description: project.description ?? undefined,
-      organizationId: project.organizationId,
+      orgId: project.orgId,
     })
     await projectsStore.getProjects()
     closeDialog()

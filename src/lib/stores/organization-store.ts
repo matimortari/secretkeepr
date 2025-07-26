@@ -1,20 +1,20 @@
 import {
-  acceptOrganizationInviteService,
-  createOrganizationInviteService,
-  createOrganizationService,
+  acceptOrgInviteService,
+  createOrgInviteService,
+  createOrgService,
   deleteAuditLogsService,
-  deleteOrganizationService,
+  deleteOrgService,
   getAuditLogsService,
-  removeUserFromOrganizationService,
-  updateOrganizationMemberService,
-  updateOrganizationService,
+  removeUserFromOrgService,
+  updateOrgMemberService,
+  updateOrgService,
 } from "~/lib/services/organization-service"
 
 export const useOrganizationStore = defineStore("organization", {
   state: () => ({
-    organizations: [] as OrganizationType[],
-    selectedOrganization: null as OrganizationType | null,
-    members: [] as UserOrganizationMembershipType[],
+    orgs: [] as OrganizationType[],
+    selectedOrg: null as OrganizationType | null,
+    members: [] as UserOrgMembershipType[],
     inviteLink: null as string | null,
     auditLogs: {
       logs: [] as AuditLogType[],
@@ -40,24 +40,24 @@ export const useOrganizationStore = defineStore("organization", {
   },
 
   actions: {
-    setSelectedOrganization(organizationId: string) {
-      const found = this.organizations.find(org => org.id === organizationId)
+    setSelectedOrg(orgId: string) {
+      const found = this.orgs.find(org => org.id === orgId)
       if (found) {
-        this.selectedOrganization = found
-        localStorage.setItem("active_org_id", organizationId)
+        this.selectedOrg = found
+        localStorage.setItem("active_org_id", orgId)
       }
     },
 
-    getSelectedOrganization() {
+    getSelectedOrg() {
       const id = localStorage.getItem("active_org_id")
       if (id) {
-        const org = this.organizations.find(o => o.id === id)
+        const org = this.orgs.find(o => o.id === id)
         if (org)
-          this.selectedOrganization = org
+          this.selectedOrg = org
       }
     },
 
-    async createOrganization(payload: CreateOrganizationPayload) {
+    async createOrg(payload: CreateOrgPayload) {
       if (!payload.name || typeof payload.name !== "string") {
         this.error = "Organization name is required and must be a string"
         throw new Error(this.error)
@@ -67,8 +67,8 @@ export const useOrganizationStore = defineStore("organization", {
       this.error = null
 
       try {
-        const response = await createOrganizationService(payload)
-        this.organizations.push(response.newOrganization)
+        const response = await createOrgService(payload)
+        this.orgs.push(response.newOrg)
         return response
       }
       catch (error: any) {
@@ -80,7 +80,7 @@ export const useOrganizationStore = defineStore("organization", {
       }
     },
 
-    async updateOrganization(id: string, payload: UpdateOrganizationPayload) {
+    async updateOrg(id: string, payload: UpdateOrgPayload) {
       if (!payload.name || typeof payload.name !== "string") {
         this.error = "Organization name is required and must be a string"
         throw new Error(this.error)
@@ -94,12 +94,12 @@ export const useOrganizationStore = defineStore("organization", {
       this.error = null
 
       try {
-        const response = await updateOrganizationService(id, payload)
-        const index = this.organizations.findIndex(org => org.id === id)
+        const response = await updateOrgService(id, payload)
+        const index = this.orgs.findIndex(org => org.id === id)
         if (index !== -1)
-          this.organizations[index] = response.updatedOrganization
-        if (this.selectedOrganization?.id === id)
-          this.selectedOrganization = response.updatedOrganization
+          this.orgs[index] = response.updatedOrg
+        if (this.selectedOrg?.id === id)
+          this.selectedOrg = response.updatedOrg
         return response
       }
       catch (error: any) {
@@ -111,8 +111,8 @@ export const useOrganizationStore = defineStore("organization", {
       }
     },
 
-    async deleteOrganization(organizationId: string) {
-      if (!organizationId) {
+    async deleteOrg(orgId: string) {
+      if (!orgId) {
         this.error = "Organization ID is required"
         throw new Error(this.error)
       }
@@ -121,10 +121,10 @@ export const useOrganizationStore = defineStore("organization", {
       this.error = null
 
       try {
-        const response = await deleteOrganizationService(organizationId)
-        this.organizations = this.organizations.filter(org => org.id !== organizationId)
-        if (this.selectedOrganization?.id === organizationId)
-          this.selectedOrganization = null
+        const response = await deleteOrgService(orgId)
+        this.orgs = this.orgs.filter(org => org.id !== orgId)
+        if (this.selectedOrg?.id === orgId)
+          this.selectedOrg = null
         return response
       }
       catch (error: any) {
@@ -136,8 +136,8 @@ export const useOrganizationStore = defineStore("organization", {
       }
     },
 
-    async updateOrganizationMember(memberId: string, role: Role, organizationId: string) {
-      if (!memberId || !role || !organizationId) {
+    async updateOrgMember(memberId: string, role: Role, orgId: string) {
+      if (!memberId || !role || !orgId) {
         this.error = "Member ID, role, and organization ID are required"
         throw new Error(this.error)
       }
@@ -146,7 +146,7 @@ export const useOrganizationStore = defineStore("organization", {
       this.error = null
 
       try {
-        const response = await updateOrganizationMemberService(memberId, { role, organizationId })
+        const response = await updateOrgMemberService(memberId, { role, orgId })
         this.members = this.members.map(m => (m.id === memberId ? response : m))
         return response
       }
@@ -159,8 +159,8 @@ export const useOrganizationStore = defineStore("organization", {
       }
     },
 
-    async removeOrganizationMember(memberId: string, organizationId: string) {
-      if (!memberId || !organizationId) {
+    async removeOrgMember(memberId: string, orgId: string) {
+      if (!memberId || !orgId) {
         this.error = "Member ID and organization ID are required"
         throw new Error(this.error)
       }
@@ -169,7 +169,7 @@ export const useOrganizationStore = defineStore("organization", {
       this.error = null
 
       try {
-        const response = await removeUserFromOrganizationService(organizationId, memberId)
+        const response = await removeUserFromOrgService(orgId, memberId)
         this.members = this.members.filter(m => m.id !== memberId)
         return response
       }
@@ -187,7 +187,7 @@ export const useOrganizationStore = defineStore("organization", {
       this.error = null
 
       try {
-        const { inviteLink } = await createOrganizationInviteService()
+        const { inviteLink } = await createOrgInviteService()
         this.inviteLink = inviteLink
         return inviteLink
       }
@@ -205,7 +205,7 @@ export const useOrganizationStore = defineStore("organization", {
       this.error = null
 
       try {
-        return await acceptOrganizationInviteService(token)
+        return await acceptOrgInviteService(token)
       }
       catch (error: any) {
         this.error = error?.message
@@ -216,8 +216,8 @@ export const useOrganizationStore = defineStore("organization", {
       }
     },
 
-    async getAuditLogs(organizationId: string, page = 1, limit = 15) {
-      if (!organizationId) {
+    async getAuditLogs(orgId: string, page = 1, limit = 15) {
+      if (!orgId) {
         this.auditLogs.error = "Organization ID is required"
         throw new Error(this.auditLogs.error)
       }
@@ -226,7 +226,7 @@ export const useOrganizationStore = defineStore("organization", {
       this.auditLogs.error = null
 
       try {
-        const response = await getAuditLogsService(organizationId, page, limit)
+        const response = await getAuditLogsService(orgId, page, limit)
         this.auditLogs.logs = response.logs
         this.auditLogs.page = response.page
         this.auditLogs.limit = response.limit
@@ -251,8 +251,8 @@ export const useOrganizationStore = defineStore("organization", {
 
       try {
         const response = await deleteAuditLogsService(filters)
-        if (this.selectedOrganization) {
-          await this.getAuditLogs(this.selectedOrganization.id, this.auditLogs.page, this.auditLogs.limit)
+        if (this.selectedOrg) {
+          await this.getAuditLogs(this.selectedOrg.id, this.auditLogs.page, this.auditLogs.limit)
         }
         return response
       }
@@ -266,14 +266,14 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async nextAuditLogPage() {
-      if (this.hasNextPage && this.selectedOrganization) {
-        await this.getAuditLogs(this.selectedOrganization.id, this.auditLogs.page + 1, this.auditLogs.limit)
+      if (this.hasNextPage && this.selectedOrg) {
+        await this.getAuditLogs(this.selectedOrg.id, this.auditLogs.page + 1, this.auditLogs.limit)
       }
     },
 
     async prevAuditLogPage() {
-      if (this.hasPrevPage && this.selectedOrganization) {
-        await this.getAuditLogs(this.selectedOrganization.id, this.auditLogs.page - 1, this.auditLogs.limit)
+      if (this.hasPrevPage && this.selectedOrg) {
+        await this.getAuditLogs(this.selectedOrg.id, this.auditLogs.page - 1, this.auditLogs.limit)
       }
     },
   },
