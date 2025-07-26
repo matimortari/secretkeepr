@@ -4,20 +4,20 @@ import { getUserFromSession, requireOrgRole } from "~~/server/lib/utils"
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
 
-  const organizationId = event.context.params?.id
-  if (!organizationId || typeof organizationId !== "string") {
+  const orgId = event.context.params?.id
+  if (!orgId || typeof orgId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
-  await requireOrgRole(sessionUser.id!, organizationId, ["owner"])
+  await requireOrgRole(sessionUser.id!, orgId, ["owner"])
 
   await db.userOrganizationMembership.deleteMany({
-    where: { organizationId },
+    where: { orgId },
   })
 
   await db.organization.delete({
-    where: { id: organizationId },
+    where: { id: orgId },
   })
 
-  return { message: "Organization deleted successfully", organizationId }
+  return { message: "Organization deleted successfully", orgId }
 })

@@ -7,20 +7,20 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
   const {
-    organizationId,
+    orgId,
     action,
     beforeDate,
     createdBySelfOnly = false,
-    protectedActions = ["organization.create"],
+    protectedActions = ["org.create"],
   } = body
-  if (!organizationId || typeof organizationId !== "string") {
+  if (!orgId || typeof orgId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
-  await requireOrgRole(sessionUser.id, organizationId, ["owner", "admin"])
+  await requireOrgRole(sessionUser.id, orgId, ["owner", "admin"])
 
   const whereClause: any = {
-    organizationId,
+    orgId,
     action: action ? { equals: action } : undefined,
     createdAt: beforeDate ? { lt: new Date(beforeDate) } : undefined,
     userId: createdBySelfOnly ? sessionUser.id : undefined,

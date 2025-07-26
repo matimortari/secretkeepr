@@ -15,9 +15,9 @@
           <label class="text-label">Organization Name</label>
           <input v-model="form.name" type="text" placeholder="Enter organization name">
 
-          <span class="text-label" for="organizationId">Organization ID: <span class="text-muted-foreground">{{ organization?.id }}</span></span>
-          <span class="text-label" for="createdAt">Created At: <span class="text-muted-foreground">{{ formatDate(organization?.createdAt) }}</span></span>
-          <span class="text-label" for="updatedAt">Last Updated: <span class="text-muted-foreground">{{ formatDate(organization?.updatedAt) }}</span></span>
+          <span class="text-label" for="orgId">Organization ID: <span class="text-muted-foreground">{{ org?.id }}</span></span>
+          <span class="text-label" for="createdAt">Created At: <span class="text-muted-foreground">{{ formatDate(org?.createdAt) }}</span></span>
+          <span class="text-label" for="updatedAt">Last Updated: <span class="text-muted-foreground">{{ formatDate(org?.updatedAt) }}</span></span>
 
           <button class="btn-primary md:self-start" type="submit" :disabled="!isOwner">
             <Icon name="ph:check-circle" size="20" />
@@ -142,12 +142,12 @@ import { useUserStore } from "~/lib/stores/user-store"
 import { formatDate } from "~/lib/utils"
 
 const props = defineProps<{
-  organization: OrganizationType | null
+  org: OrganizationType | null
 }>()
 
 const projectsStore = useProjectsStore()
 const userStore = useUserStore()
-const organizationStore = useOrganizationStore()
+const orgStore = useOrganizationStore()
 
 const roles: { value: Role, label: string }[] = [
   { value: "owner", label: "Owner" },
@@ -156,7 +156,7 @@ const roles: { value: Role, label: string }[] = [
 ]
 
 const form = ref({
-  name: props.organization?.name || "",
+  name: props.org?.name || "",
 })
 
 const userRoles = ref<Record<string, Role>>({})
@@ -164,10 +164,10 @@ const assignableRoles = roles.filter(r => r.value !== "owner")
 
 const { projects } = storeToRefs(projectsStore)
 const { user } = storeToRefs(userStore)
-const { inviteLink } = storeToRefs(organizationStore)
+const { inviteLink } = storeToRefs(orgStore)
 
 const currentUserRole = computed(() => {
-  return props.organization?.memberships?.find(m => m.userId === user.value?.id)?.role ?? "member"
+  return props.org?.memberships?.find(m => m.userId === user.value?.id)?.role ?? "member"
 })
 
 const isOwner = computed(() => currentUserRole.value === "owner")
@@ -175,17 +175,17 @@ const isAdmin = computed(() => currentUserRole.value === "admin")
 
 const projectsFromOrg = computed(() => {
   return projects.value.filter(project =>
-    project.organizationId === props.organization?.id
+    project.orgId === props.org?.id
     && typeof project.name === "string",
   )
 })
 
 const usersWithRoles = computed(() => {
-  if (!props.organization?.memberships)
+  if (!props.org?.memberships)
     return []
 
-  return props.organization.memberships
-    .filter((m): m is Required<UserOrganizationMembershipType> => !!m.user)
+  return props.org.memberships
+    .filter((m): m is Required<UserOrgMembershipType> => !!m.user)
     .map(m => ({
       name: m.user!.name,
       id: m.user!.id,
@@ -195,10 +195,10 @@ const usersWithRoles = computed(() => {
 })
 
 async function handleUpdateMemberRole(memberId: string, newRole: Role) {
-  if (!props.organization?.id)
+  if (!props.org?.id)
     return
   try {
-    await organizationStore.updateOrganizationMember(memberId, newRole, props.organization.id)
+    await orgStore.updateOrgMember(memberId, newRole, props.org.id)
     await userStore.getUser()
   }
   catch (error: any) {
@@ -209,12 +209,12 @@ async function handleUpdateMemberRole(memberId: string, newRole: Role) {
 async function handleRemoveMember(memberId: string) {
   if (!confirm("Are you sure you want to remove this member?"))
     return
-  if (!props.organization?.id) {
+  if (!props.org?.id) {
     console.error("Organization ID is missing")
     return
   }
   try {
-    await organizationStore.removeOrganizationMember(memberId, props.organization.id)
+    await orgStore.removeOrgMember(memberId, props.org.id)
     await userStore.getUser()
   }
   catch (error: any) {
@@ -223,23 +223,23 @@ async function handleRemoveMember(memberId: string) {
 }
 
 function handleCreateInvite() {
-  organizationStore.createInviteLink()
+  orgStore.createInviteLink()
 }
 
 function copyInviteLink() {
-  const link = organizationStore.inviteLink
+  const link = orgStore.inviteLink
   if (link) {
     navigator.clipboard.writeText(link)
   }
 }
 
 async function handleSubmit() {
-  if (!props.organization)
+  if (!props.org)
     return
 
   try {
-    await organizationStore.updateOrganization(props.organization.id, {
-      id: props.organization.id,
+    await orgStore.updateOrg(props.org.id, {
+      id: props.org.id,
       name: form.value.name,
     })
     await userStore.getUser()
@@ -262,7 +262,7 @@ onMounted(async () => {
   await projectsStore.getProjects()
 })
 
-watch(() => props.organization, (newOrg) => {
+watch(() => props.org, (newOrg) => {
   form.value.name = newOrg?.name || ""
 })
 
