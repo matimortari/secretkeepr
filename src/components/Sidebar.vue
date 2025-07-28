@@ -20,11 +20,11 @@
         size="25"
         role="button"
         class="transition-all hover:scale-105 hover:text-accent"
-        @click="toggleDialog(true)"
+        @click="isDialogOpen = true"
       />
     </div>
-    <nav v-if="projectsFromOrg.length" class="scroll-area flex flex-col gap-2 overflow-y-auto border-b py-4 text-sm font-semibold text-muted-foreground">
-      <NuxtLink v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.id}`" class="truncate text-sm font-medium text-muted-foreground hover:underline">
+    <nav v-if="projectsFromOrg.length" class="scroll-area flex flex-col gap-2 overflow-y-auto border-b py-4">
+      <NuxtLink v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.id}`" class="truncate text-sm text-muted-foreground hover:underline">
         - {{ project.name }}
       </NuxtLink>
     </nav>
@@ -39,7 +39,7 @@
 
   <ProjectsProjectDialog
     :is-open="isDialogOpen"
-    @close="toggleDialog(false)"
+    @close="isDialogOpen = false"
     @save="handleCreateProject"
   />
 </template>
@@ -61,7 +61,6 @@ const navLinks = [
 ]
 
 const projectsStore = useProjectsStore()
-
 const { projects } = storeToRefs(projectsStore)
 const isDialogOpen = ref(false)
 
@@ -71,10 +70,6 @@ const projectsFromOrg = computed(() =>
   ),
 )
 
-function toggleDialog(open?: boolean) {
-  isDialogOpen.value = open ?? !isDialogOpen.value
-}
-
 async function handleCreateProject(project: ProjectType) {
   try {
     await projectsStore.createProject({
@@ -83,10 +78,15 @@ async function handleCreateProject(project: ProjectType) {
       orgId: project.orgId,
     })
     await projectsStore.getProjects()
-    toggleDialog(false)
+    isDialogOpen.value = false
   }
   catch (error: any) {
     console.error("Failed to create project:", error)
   }
 }
+
+watch(isDialogOpen, (val) => {
+  if (val)
+    projectsStore.error = null
+})
 </script>

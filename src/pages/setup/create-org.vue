@@ -7,7 +7,7 @@
     <header
       v-motion class="flex flex-col items-center gap-4 border-b p-4 text-center"
       :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
-      :transition="{ duration: 8000 }"
+      :transition="{ duration: 800 }"
     >
       <h1>Welcome to SecretKeepR</h1>
       <p class="text-caption">
@@ -26,7 +26,7 @@
       </button>
     </form>
 
-    <p class="text-caption flex min-h-6 flex-col items-center gap-2">
+    <p class="text-caption flex min-h-4 flex-col items-center gap-2">
       <span v-if="orgStore.error" class="text-danger-foreground">{{ orgStore.error }}</span>
       <span> Already have an invite? <NuxtLink to="/setup/join-org" class="text-primary hover:underline">
         Join an Organization.
@@ -43,7 +43,6 @@ import { useUserStore } from "~/lib/stores/user-store"
 const router = useRouter()
 const userStore = useUserStore()
 const orgStore = useOrganizationStore()
-
 const localOrg = ref({
   name: "",
 })
@@ -55,9 +54,6 @@ async function handleCreateOrg() {
     return
   }
 
-  if (!localOrg.value.name)
-    return
-
   try {
     await orgStore.createOrg(localOrg.value)
     localOrg.value.name = ""
@@ -66,6 +62,7 @@ async function handleCreateOrg() {
   }
   catch (error: any) {
     console.error("Failed to create organization:", error)
+    orgStore.error = error.message || "Failed to create organization."
   }
 }
 

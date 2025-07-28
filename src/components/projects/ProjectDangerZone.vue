@@ -41,14 +41,12 @@ const projectsStore = useProjectsStore()
 
 async function handleDeleteProject() {
   projectsStore.error = null
+  if (!props.project?.id)
+    return
   if (!confirm("Are you sure you want to delete this project?"))
     return
 
   try {
-    if (!props.project?.id) {
-      console.error("Project ID is undefined.")
-      return
-    }
     await projectsStore.deleteProject(props.project.id)
     router.push("/admin/projects")
   }

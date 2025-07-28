@@ -19,7 +19,6 @@
 import { useUserStore } from "~/lib/stores/user-store"
 
 const userStore = useUserStore()
-
 const { user } = storeToRefs(userStore)
 
 onMounted(async () => {

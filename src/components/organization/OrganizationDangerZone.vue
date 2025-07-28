@@ -50,7 +50,6 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router"
 import { useOrganizationStore } from "~/lib/stores/organization-store"
 import { useUserStore } from "~/lib/stores/user-store"
 
@@ -61,7 +60,6 @@ const props = defineProps<{
 const router = useRouter()
 const userStore = useUserStore()
 const orgStore = useOrganizationStore()
-
 const leaveOrgError = ref<string | null>(null)
 const deleteOrgError = ref<string | null>(null)
 

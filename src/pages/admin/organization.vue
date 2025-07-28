@@ -18,26 +18,16 @@
 
 <script setup lang="ts">
 import { useOrganizationStore } from "~/lib/stores/organization-store"
-import { useUserStore } from "~/lib/stores/user-store"
 
-const userStore = useUserStore()
 const orgStore = useOrganizationStore()
 
 const org = computed(() => orgStore.selectedOrg)
 const logs = computed(() => orgStore.auditLogs.logs)
 
-onMounted(async () => {
-  await userStore.getUser()
-  if (org.value?.id) {
-    await orgStore.getAuditLogs(org.value.id)
-  }
-})
-
-watch(() => org.value?.id, async (newId) => {
-  if (newId) {
-    await orgStore.getAuditLogs(newId)
-  }
-})
+watch(() => org.value?.id, async (id) => {
+  if (id)
+    await orgStore.getAuditLogs(id)
+}, { immediate: true })
 
 useHead({
   title: "Organization – SecretKeepR",

@@ -19,7 +19,7 @@
           >
         </div>
 
-        <button class="btn-primary" @click="openDialog()">
+        <button class="btn-primary" @click="isDialogOpen = true">
           <span class="hidden md:inline">Add New Project</span>
           <Icon name="ph:plus-bold" size="20" />
         </button>
@@ -47,7 +47,7 @@
       >
         <button
           class="card group flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 border-dashed bg-transparent text-muted-foreground transition-all hover:border-secondary hover:text-secondary"
-          @click="openDialog()"
+          @click="isDialogOpen = true"
         >
           <Icon name="ph:plus" size="50" class="group-hover:scale-md transition-all group-hover:text-secondary" />
           <span class="group-hover:scale-sm font-semibold transition-all group-hover:text-secondary">Add New Project</span>
@@ -57,7 +57,7 @@
 
     <ProjectsProjectDialog
       :is-open="isDialogOpen"
-      @close="closeDialog"
+      @close="isDialogOpen = false"
       @save="handleCreateProject"
     />
   </div>
@@ -69,9 +69,7 @@ import { useUserStore } from "~/lib/stores/user-store"
 
 const userStore = useUserStore()
 const projectsStore = useProjectsStore()
-
 const { projects } = storeToRefs(projectsStore)
-const selectedProject = ref<ProjectType | null>(null)
 const searchQuery = ref("")
 const isDialogOpen = ref(false)
 
@@ -85,20 +83,6 @@ const filteredProjects = computed(() => {
   )
 })
 
-function openDialog(project?: ProjectType) {
-  selectedProject.value = project || null
-  isDialogOpen.value = true
-}
-
-function closeDialog() {
-  isDialogOpen.value = false
-  selectedProject.value = null
-}
-
-onMounted(async () => {
-  await projectsStore.getProjects()
-})
-
 async function handleCreateProject(project: ProjectType) {
   try {
     await projectsStore.createProject({
@@ -107,12 +91,21 @@ async function handleCreateProject(project: ProjectType) {
       orgId: project.orgId,
     })
     await projectsStore.getProjects()
-    closeDialog()
+    isDialogOpen.value = false
   }
   catch (error: any) {
     console.error("Failed to create project:", error)
   }
 }
+
+onMounted(async () => {
+  await projectsStore.getProjects()
+})
+
+watch(isDialogOpen, (val) => {
+  if (val)
+    projectsStore.error = null
+})
 
 useHead({
   title: "Projects – SecretKeepR",

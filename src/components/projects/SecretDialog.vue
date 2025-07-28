@@ -1,5 +1,5 @@
 <template>
-  <Dialog :is-open="isOpen" :title="dialogTitle" @update:is-open="emit('close')">
+  <Dialog :is-open="isOpen" :title="props.selectedSecret ? 'Edit Secret' : 'Create New Secret'" @update:is-open="emit('close')">
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-2">
         <label for="key" class="text-label">Key</label>
@@ -48,13 +48,8 @@ const emit = defineEmits<{
 
 const environments: Environment[] = ["development", "staging", "production"]
 
-type SecretFormValues = {
-  [K in Environment]: string
-}
-
 const secretStore = useSecretsStore()
-
-const form = ref<{ key: string, description: string, values: SecretFormValues }>({
+const form = ref<{ key: string, description: string, values: Record<Environment, string> }>({
   key: "",
   description: "",
   values: {
@@ -64,14 +59,38 @@ const form = ref<{ key: string, description: string, values: SecretFormValues }>
   },
 })
 
-const dialogTitle = computed(() =>
-  props.selectedSecret ? "Edit Secret" : "Create New Secret",
-)
+function handleSubmit() {
+  secretStore.error = null
+  if (!form.value.key.trim()) {
+    secretStore.error = "Secret key is required"
+    return
+  }
+
+  const valuesArray: SecretValueType[] = environments.map(env => ({
+    environment: env,
+    value: form.value.values[env].trim(),
+  }))
+    .filter(v => v.value.length > 0)
+  if (valuesArray.length === 0) {
+    secretStore.error = "At least one value is required"
+    return
+  }
+
+  const payload: SecretType = {
+    key: form.value.key.trim(),
+    description: form.value.description.trim(),
+    values: valuesArray,
+    ...(props.selectedSecret?.id ? { id: props.selectedSecret.id } : {}),
+  }
+
+  emit("save", payload)
+  emit("close")
+}
 
 watch(() => props.isOpen, (open) => {
   if (open) {
     if (props.selectedSecret) {
-      const mappedValues: SecretFormValues = {
+      const mappedValues: Record<Environment, string> = {
         development: "",
         staging: "",
         production: "",
@@ -98,35 +117,7 @@ watch(() => props.isOpen, (open) => {
         },
       }
     }
-    secretStore.error = ""
+    secretStore.error = null
   }
 }, { immediate: true })
-
-function handleSubmit() {
-  secretStore.error = ""
-  if (!form.value.key.trim()) {
-    secretStore.error = "Secret key is required."
-    return
-  }
-
-  const valuesArray: SecretValueType[] = environments.map(env => ({
-    environment: env,
-    value: form.value.values[env].trim(),
-  }))
-    .filter(v => v.value.length > 0)
-  if (valuesArray.length === 0) {
-    secretStore.error = "At least one environment value is required."
-    return
-  }
-
-  const payload: SecretType = {
-    key: form.value.key.trim(),
-    description: form.value.description.trim(),
-    values: valuesArray,
-    ...(props.selectedSecret?.id ? { id: props.selectedSecret.id } : {}),
-  }
-
-  emit("save", payload)
-  emit("close")
-}
 </script>
