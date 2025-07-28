@@ -9,9 +9,7 @@
       :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
       :transition="{ duration: 8000 }"
     >
-      <h1>
-        Welcome to SecretKeepR
-      </h1>
+      <h1>Welcome to SecretKeepR</h1>
       <p class="text-caption">
         To get started, please create an organization name with at least 3 characters.
       </p>
@@ -21,17 +19,19 @@
       <input
         v-model="localOrg.name" placeholder="Organization Name"
         class="w-full" type="text"
-        required autofocus
+        autofocus
       >
       <button class="btn-primary w-full" type="submit">
         Create Organization
       </button>
     </form>
 
-    <p class="text-caption min-h-6">
-      Already have an invite? <NuxtLink to="/setup/join-org" class="text-primary hover:underline">
+    <p class="text-caption flex min-h-6 flex-col items-center gap-2">
+      <span v-if="orgStore.error" class="text-danger-foreground">{{ orgStore.error }}</span>
+      <span> Already have an invite? <NuxtLink to="/setup/join-org" class="text-primary hover:underline">
         Join an Organization.
       </NuxtLink>
+      </span>
     </p>
   </div>
 </template>
@@ -49,6 +49,12 @@ const localOrg = ref({
 })
 
 async function handleCreateOrg() {
+  orgStore.error = null
+  if (!localOrg.value || !localOrg.value.name || localOrg.value.name.length < 3) {
+    orgStore.error = "Organization name must be at least 3 characters long."
+    return
+  }
+
   if (!localOrg.value.name)
     return
 

@@ -5,9 +5,7 @@
     class="flex flex-col gap-4"
   >
     <header class="border-b pb-2">
-      <h2>
-        Organization
-      </h2>
+      <h2>Organization</h2>
     </header>
 
     <div class="flex flex-col gap-4">

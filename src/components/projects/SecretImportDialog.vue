@@ -12,23 +12,27 @@
         </select>
       </div>
 
-      <p v-if="errorMsg" class="text-caption p-2 text-danger-foreground">
-        {{ errorMsg }}
-      </p>
+      <footer class="flex flex-row items-center justify-between">
+        <p class="text-caption text-danger-foreground">
+          {{ secretStore.error || " " }}
+        </p>
 
-      <footer class="navigation-group justify-end">
-        <button class="font-semibold hover:underline" type="button" @click="emit('close')">
-          Cancel
-        </button>
-        <button class="btn-success" type="submit" :disabled="!!errorMsg">
-          Import Secrets
-        </button>
+        <div class="navigation-group">
+          <button class="font-semibold hover:underline" type="button" @click="emit('close')">
+            Cancel
+          </button>
+          <button class="btn-success" type="submit" :disabled="!!secretStore.error">
+            Import
+          </button>
+        </div>
       </footer>
     </form>
   </Dialog>
 </template>
 
 <script setup lang="ts">
+import { useSecretsStore } from "~/lib/stores/secrets-store"
+
 const props = defineProps<{
   isOpen: boolean
   projectId: string
@@ -40,17 +44,16 @@ const emit = defineEmits<{
   (e: "save", secrets: SecretType[]): void
 }>()
 
+const secretStore = useSecretsStore()
+const envText = ref("")
 const environments: Environment[] = ["development", "staging", "production"]
 const selectedEnv = ref<Environment>("development")
-const envText = ref("")
-
-const errorMsg = ref("")
 
 watch(() => props.isOpen, (open) => {
   if (open) {
     envText.value = ""
     selectedEnv.value = "development"
-    errorMsg.value = ""
+    secretStore.error = ""
   }
 })
 
@@ -75,11 +78,11 @@ function parseEnv(text: string): Record<string, string> {
 }
 
 function handleSubmit() {
-  errorMsg.value = ""
+  secretStore.error = ""
 
   const parsed = parseEnv(envText.value)
   if (Object.entries(parsed).length === 0) {
-    errorMsg.value = "No valid secrets found in the provided content."
+    secretStore.error = "No valid key-value pairs found."
     return
   }
 
@@ -96,7 +99,7 @@ function handleSubmit() {
   }
 
   if (duplicateKeys.length > 0) {
-    errorMsg.value = `The following keys already exist in ${selectedEnv.value}: ${duplicateKeys.join(", ")}.`
+    secretStore.error = `The following keys already exist: ${duplicateKeys.join(", ")}`
     return
   }
 

@@ -9,9 +9,7 @@
       :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
       :transition="{ duration: 800 }"
     >
-      <h1>
-        Join an Organization
-      </h1>
+      <h1>Join an Organization</h1>
       <p class="text-caption">
         To join an organization, please enter your invite token below.
       </p>
@@ -21,40 +19,42 @@
       <input
         v-model="token" placeholder="Invite Token"
         class="w-full" type="text"
-        required autofocus
+        autofocus
       >
       <button class="btn-primary w-full" type="submit">
         Accept Invite
       </button>
     </form>
 
-    <p class="text-caption min-h-6">
-      <span v-if="error" class="text-danger-foreground">{{ error }}</span>
-      <span v-else-if="success" class="text-success-foreground">
-        Invitation accepted! Redirecting...
+    <p class="text-caption flex min-h-6 flex-col items-center gap-2">
+      <span v-if="orgStore.error" class="text-danger-foreground">{{ orgStore.error }}</span>
+      <span v-else-if="joinOrgSuccess" class="text-success-foreground">
+        {{ joinOrgSuccess }}
       </span>
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { acceptOrgInviteService } from "~/lib/services/organization-service"
+import { useOrganizationStore } from "~/lib/stores/organization-store"
 
 const route = useRoute()
-const token = route.query.token as string
 const router = useRouter()
+const token = ref(route.query.token as string || "")
 
-const error = ref<string | null>(null)
-const success = ref(false)
+const orgStore = useOrganizationStore()
+const joinOrgSuccess = ref("")
 
 async function handleAcceptInvite() {
-  if (!token) {
+  orgStore.error = null
+  joinOrgSuccess.value = ""
+
+  if (!token.value)
     return
-  }
 
   try {
-    await acceptOrgInviteService(token)
-    success.value = true
+    await orgStore.acceptInvite(token.value)
+    joinOrgSuccess.value = "Invitation accepted! Redirecting..."
     setTimeout(() => router.push("/admin/projects"), 2000)
   }
   catch (error: any) {

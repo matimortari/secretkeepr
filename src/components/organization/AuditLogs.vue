@@ -1,9 +1,7 @@
 <template>
   <div class="flex flex-col border-b">
     <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
-      <h4>
-        Audit Logs
-      </h4>
+      <h4>Audit Logs</h4>
       <p class="text-caption">
         Track changes and activities.
       </p>
@@ -63,10 +61,10 @@
       <div v-else class="scroll-area max-h-[50vh] w-full overflow-auto">
         <table class="table-fixed rounded-sm border md:w-full md:overflow-hidden">
           <thead>
-            <tr class="text-caption bg-muted font-semibold">
-              <th v-for="header in headers" :key="header.value" class="select-none border p-2 text-left" :style="{ width: header.width }">
+            <tr class="border bg-muted text-sm font-semibold transition-all">
+              <th v-for="header in headers" :key="header.value" class="w-full border p-2" :style="{ width: header.width }">
                 <div class="navigation-group">
-                  <Icon :name="header.icon" size="15" class="mr-1" />
+                  <Icon :name="header.icon" size="20" />
                   <span>{{ header.label }}</span>
                 </div>
               </th>
@@ -78,16 +76,16 @@
               <td class="truncate border p-2 font-semibold" :title="getActionLabel(log.action)" :style="{ width: headers[0].width }">
                 {{ getActionLabel(log.action) }}
               </td>
-              <td class="truncate border p-2 text-muted-foreground" :title="log.resource" :style="{ width: headers[1].width }">
+              <td class="truncate border p-2" :title="log.resource" :style="{ width: headers[1].width }">
                 {{ log.resource }}
               </td>
-              <td class="truncate border p-2 text-muted-foreground" :title="formatMetadata(log.metadata ?? {})" :style="{ width: headers[2].width }">
+              <td class="truncate border p-2" :title="formatMetadata(log.metadata ?? {})" :style="{ width: headers[2].width }">
                 {{ formatMetadata(log.metadata ?? {}) }}
               </td>
-              <td class="truncate border p-2 text-muted-foreground" :title="log.userId" :style="{ width: headers[3].width }">
+              <td class="truncate border p-2" :title="log.userId" :style="{ width: headers[3].width }">
                 <span>{{ log.userId }}</span>
               </td>
-              <td class="truncate border p-2 text-muted-foreground" :title="formatAuditLogDate(log.createdAt)" :style="{ width: headers[4].width }">
+              <td class="truncate border p-2" :title="formatAuditLogDate(log.createdAt)" :style="{ width: headers[4].width }">
                 {{ formatAuditLogDate(log.createdAt) }}
               </td>
             </tr>
