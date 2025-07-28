@@ -1,9 +1,9 @@
 <template>
   <div class="scroll-area overflow-x-auto">
-    <table class="w-full table-auto overflow-hidden rounded-sm border md:table-fixed">
+    <table class="table-fixed rounded-sm border md:w-full md:overflow-hidden">
       <thead>
         <tr class="border bg-muted text-sm font-semibold transition-all">
-          <th class="navigation-group w-full select-none p-2 text-left">
+          <th class="navigation-group w-full p-2 text-left">
             <span>Key</span>
             <Icon
               name="ph:arrow-down-bold"

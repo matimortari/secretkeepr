@@ -3,9 +3,7 @@
     <div class="flex flex-col gap-2 border-b md:flex-row md:gap-8">
       <section class="flex flex-col gap-2 md:w-1/2">
         <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
-          <h4>
-            Project Details
-          </h4>
+          <h4>Project Details</h4>
           <p class="text-caption">
             Manage project details and settings.
           </p>
@@ -13,11 +11,7 @@
 
         <form class="flex flex-col gap-2 p-2" @submit.prevent="handleSubmit">
           <label class="text-label" for="projectName">Project Name</label>
-          <input
-            id="projectName" v-model="form.name"
-            type="text" placeholder="Enter project name"
-            required
-          >
+          <input id="projectName" v-model="form.name" type="text" placeholder="Enter project name">
 
           <span class="text-label" for="projectId">Project ID: <span class="text-muted-foreground">{{ form.id }}</span></span>
 
@@ -28,22 +22,22 @@
             class="scroll-area resize-none"
           />
 
-          <p v-if="projectErrorMsg" class="text-caption text-danger-foreground">
-            {{ projectErrorMsg }}
-          </p>
+          <div class="flex flex-col gap-2 md:flex-row md:items-center">
+            <button class="btn-primary md:self-start" type="submit" :disabled="!isOwner && !isAdmin">
+              <Icon name="ph:check-circle" size="20" />
+              <span>Save Changes</span>
+            </button>
 
-          <button class="btn-primary md:self-start" type="submit" :disabled="!isOwner && !isAdmin">
-            <Icon name="ph:check-circle" size="20" />
-            <span>Save Changes</span>
-          </button>
+            <p v-if="projectsStore.error" class="text-sm text-danger-foreground">
+              {{ projectsStore.error }}
+            </p>
+          </div>
         </form>
       </section>
 
       <section v-if="isOwner || isAdmin" class="flex flex-col gap-2 md:w-1/2">
         <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
-          <h4>
-            Project Members
-          </h4>
+          <h4>Project Members</h4>
           <p class="text-caption">
             Manage project members and their roles.
           </p>
@@ -58,11 +52,11 @@
 
             <nav v-if="member.userId !== currentUserId" class="navigation-group justify-end md:w-1/3">
               <select v-model="member.role" class="min-w-[100px] capitalize" :disabled="!isOwner || member.role === 'owner'">
-                <option v-for="role in assignableRoles" :key="role" :value="role" class="capitalize">
-                  {{ role }}
+                <option v-for="role in roles" :key="role.value" :value="role.value" class="capitalize">
+                  {{ role.label }}
                 </option>
               </select>
-              <button class="btn" @click="handleUpdateRole(member.userId, member.role)">
+              <button class="btn" @click="handleUpdateMemberRole(member.userId, member.role)">
                 <Icon name="ph:check-bold" size="15" />
               </button>
               <button v-if="isOwner && member.role !== 'owner'" class="btn" @click="handleRemoveMember(member.userId)">
@@ -76,31 +70,32 @@
 
     <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col gap-2 p-2 md:justify-between">
       <header class="flex flex-col items-center text-center md:items-start md:text-start">
-        <h5>
-          Add New Member
-        </h5>
+        <h5>Add New Member</h5>
         <p class="text-caption">
           Invite users to join this project.
         </p>
       </header>
 
       <nav class="md:navigation-group flex flex-col gap-2">
+        <p v-if="addMemberError" class="text-caption my-2 text-danger-foreground">
+          {{ addMemberError }}
+        </p>
+        <p v-if="addMemberSuccess" class="text-caption my-2 text-success-foreground">
+          {{ addMemberSuccess }}
+        </p>
+
         <input v-model="newMemberId" type="text" placeholder="User ID">
         <select v-model="selectedNewMemberRole" class="min-w-[120px]">
-          <option v-for="role in assignableRoles" :key="role" :value="role">
-            {{ role }}
+          <option v-for="role in roles" :key="role.value" :value="role.value">
+            {{ role.label }}
           </option>
         </select>
 
         <button class="btn-primary" @click.prevent="handleAddMember">
           <Icon name="ph:plus-circle-bold" size="20" />
-          <span>Add</span>
+          <span>Add Member</span>
         </button>
       </nav>
-
-      <p v-if="memberErrorMsg" class="text-caption my-2 text-danger-foreground">
-        {{ memberErrorMsg }}
-      </p>
     </section>
   </div>
 </template>
@@ -122,11 +117,15 @@ const form = ref({
   id: props.project?.id || "",
 })
 
-const projectErrorMsg = ref("")
-const memberErrorMsg = ref("")
+const roles: { value: Role, label: string }[] = [
+  { value: "admin", label: "Admin" },
+  { value: "member", label: "Member" },
+]
+
+const addMemberError = ref("")
+const addMemberSuccess = ref("")
 const newMemberId = ref("")
-const selectedNewMemberRole = ref<Role>("member")
-const assignableRoles: Role[] = ["admin", "member"]
+const selectedNewMemberRole = ref<Role>(roles[0].value)
 
 watch(() => props.project, (newProject) => {
   form.value.name = newProject?.name || ""
@@ -144,11 +143,72 @@ const currentUserRole = computed(() => {
 const isOwner = computed(() => currentUserRole.value === "owner")
 const isAdmin = computed(() => currentUserRole.value === "admin")
 
+onMounted(() => {
+  userStore.getUser()
+})
+
+async function handleAddMember() {
+  addMemberError.value = ""
+  addMemberSuccess.value = ""
+
+  if (!props.project?.id || !newMemberId.value.trim()) {
+    addMemberError.value = "User ID is required."
+    return
+  }
+
+  try {
+    await projectsStore.addProjectMember(props.project.id, {
+      userId: newMemberId.value.trim(),
+      role: selectedNewMemberRole.value,
+    })
+    await projectsStore.getProjects()
+
+    addMemberSuccess.value = "Member added successfully."
+    newMemberId.value = ""
+    selectedNewMemberRole.value = roles[0].value
+  }
+  catch (error: any) {
+    console.error("Failed to add project member", error)
+    addMemberError.value = error?.message || "Failed to add project member."
+  }
+}
+
+async function handleUpdateMemberRole(userId: string, newRole: Role) {
+  projectsStore.error = ""
+  if (!props.project?.id)
+    return
+
+  try {
+    await projectsStore.updateProjectMember(props.project.id, userId, newRole)
+    await projectsStore.getProjects()
+  }
+  catch (error: any) {
+    console.error("Failed to update role", error)
+    projectsStore.error = error?.message || "Failed to update member role."
+  }
+}
+
+async function handleRemoveMember(userId: string) {
+  projectsStore.error = ""
+  if (!props.project?.id)
+    return
+  if (!window.confirm("Are you sure you want to remove this member?"))
+    return
+
+  try {
+    await projectsStore.removeProjectMember(props.project.id, userId)
+    await projectsStore.getProjects()
+  }
+  catch (error: any) {
+    console.error("Failed to remove member", error)
+  }
+}
+
 async function handleSubmit() {
+  projectsStore.error = ""
   if (!props.project)
     return
 
-  projectErrorMsg.value = ""
   try {
     await projectsStore.updateProject({
       id: props.project.id ?? "",
@@ -159,63 +219,6 @@ async function handleSubmit() {
   }
   catch (error: any) {
     console.error("Failed to update project", error)
-    projectErrorMsg.value = error?.message || "Failed to update project."
-  }
-}
-
-onMounted(() => {
-  userStore.getUser()
-})
-
-async function handleAddMember() {
-  memberErrorMsg.value = ""
-  if (!props.project?.id || !newMemberId.value.trim())
-    return
-
-  try {
-    await projectsStore.addProjectMember(props.project.id, {
-      userId: newMemberId.value.trim(),
-      role: selectedNewMemberRole.value,
-    })
-    await projectsStore.getProjects()
-    newMemberId.value = ""
-    selectedNewMemberRole.value = "member"
-  }
-  catch (error: any) {
-    console.error("Failed to add project member", error)
-    memberErrorMsg.value = error?.message || "Failed to add project member."
-  }
-}
-
-async function handleUpdateRole(userId: string, newRole: Role) {
-  if (!props.project?.id)
-    return
-
-  try {
-    await projectsStore.updateProjectMember(props.project.id, userId, newRole)
-    await projectsStore.getProjects()
-  }
-  catch (error: any) {
-    console.error("Failed to update role", error)
-    memberErrorMsg.value = error?.message || "Failed to update role."
-  }
-}
-
-async function handleRemoveMember(userId: string) {
-  if (!props.project?.id)
-    return
-
-  const confirmed = window.confirm("Are you sure you want to remove this member?")
-  if (!confirmed)
-    return
-
-  try {
-    await projectsStore.removeProjectMember(props.project.id, userId)
-    await projectsStore.getProjects()
-  }
-  catch (error: any) {
-    console.error("Failed to remove member", error)
-    memberErrorMsg.value = error?.message || "Failed to remove member."
   }
 }
 </script>

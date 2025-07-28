@@ -3,11 +3,7 @@
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-1">
         <label for="name" class="text-label">Project Name</label>
-        <input
-          id="name" v-model="form.name"
-          type="text" class="w-full"
-          required
-        >
+        <input id="name" v-model="form.name" type="text" class="w-full">
       </div>
 
       <div class="flex flex-col items-start gap-1">
@@ -15,23 +11,26 @@
         <input id="description" v-model="form.description" type="text" class="w-full">
       </div>
 
-      <p v-if="errorMsg" class="text-caption p-2 text-danger-foreground">
-        {{ errorMsg }}
-      </p>
+      <footer class="flex flex-row items-center justify-between">
+        <p class="text-caption text-danger-foreground">
+          {{ projectsStore.error || " " }}
+        </p>
 
-      <footer class="navigation-group justify-end">
-        <button class="font-semibold hover:underline" type="button" @click="emit('close')">
-          Cancel
-        </button>
-        <button class="btn-success w-16" type="submit" :disabled="!!errorMsg">
-          Save
-        </button>
+        <nav class="navigation-group">
+          <button class="font-semibold hover:underline" type="button" @click="emit('close')">
+            Cancel
+          </button>
+          <button class="btn-success" type="submit" :disabled="!!projectsStore.error">
+            Save
+          </button>
+        </nav>
       </footer>
     </form>
   </Dialog>
 </template>
 
 <script setup lang="ts">
+import { useProjectsStore } from "~/lib/stores/projects-store"
 import { useUserStore } from "~/lib/stores/user-store"
 
 const props = defineProps<{
@@ -45,14 +44,14 @@ const emit = defineEmits<{
   (e: "save", payload: ProjectType): void
 }>()
 
+const projectsStore = useProjectsStore()
 const userStore = useUserStore()
 
+const { selectedOrg } = storeToRefs(userStore)
 const form = ref<{ name: string, description: string }>({
   name: "",
   description: "",
 })
-
-const errorMsg = ref("")
 
 watch(() => props.isOpen, (open) => {
   if (open) {
@@ -64,7 +63,7 @@ watch(() => props.isOpen, (open) => {
       form.value.name = ""
       form.value.description = ""
     }
-    errorMsg.value = ""
+    projectsStore.error = ""
   }
 }, { immediate: true })
 
@@ -73,16 +72,9 @@ const dialogTitle = computed(() =>
 )
 
 async function handleSubmit() {
-  errorMsg.value = ""
+  projectsStore.error = ""
   if (!form.value.name.trim()) {
-    errorMsg.value = "Project name is required"
-  }
-
-  const { selectedOrg } = storeToRefs(userStore)
-  if (!selectedOrg.value?.id) {
-    errorMsg.value = "Organization is required"
-  }
-  if (errorMsg.value) {
+    projectsStore.error = "Project name is required."
     return
   }
 

@@ -4,10 +4,8 @@ export async function createOrgService(data: CreateOrgPayload): Promise<{ messag
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to create organization: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -17,10 +15,8 @@ export async function updateOrgService(orgId: string, data: UpdateOrgPayload): P
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to update organization: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -29,10 +25,8 @@ export async function deleteOrgService(orgId: string): Promise<{ message: string
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
-  if (!response.ok) {
-    throw new Error(`Failed to delete organization: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -42,10 +36,8 @@ export async function updateOrgMemberService(memberId: string, data: { role: Rol
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to update organization member: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -54,10 +46,8 @@ export async function removeUserFromOrgService(orgId: string, memberId: string):
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
-  if (!response.ok) {
-    throw new Error(`Failed to remove user from organization: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -66,10 +56,8 @@ export async function createOrgInviteService(): Promise<{ inviteLink: string }> 
     method: "POST",
     headers: { "Content-Type": "application/json" },
   })
-  if (!response.ok) {
-    throw new Error(`Failed to create organization invite: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -79,10 +67,8 @@ export async function acceptOrgInviteService(token: string): Promise<{ message: 
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token }),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to accept organization invite: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -90,10 +76,8 @@ export async function getAuditLogsService(orgId: string, page: number = 1, limit
   const response = await fetch(`/api/org/audit-logs?orgId=${orgId}&page=${page}&limit=${limit}`, {
     method: "GET",
   })
-  if (!response.ok) {
-    throw new Error(`Failed to get audit logs for organization: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -103,9 +87,7 @@ export async function deleteAuditLogsService(data: DeleteAuditLogsPayload): Prom
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to delete audit logs: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
