@@ -1,5 +1,5 @@
 <template>
-  <Dialog :is-open="isOpen" :title="dialogTitle" @update:is-open="emit('close')">
+  <Dialog :is-open="isOpen" title="Create New Project" @update:is-open="emit('close')">
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-1">
         <label for="name" class="text-label">Project Name</label>
@@ -36,7 +36,6 @@ import { useUserStore } from "~/lib/stores/user-store"
 const props = defineProps<{
   isOpen: boolean
   selectedProject?: ProjectType
-  project?: ProjectType
 }>()
 
 const emit = defineEmits<{
@@ -46,12 +45,28 @@ const emit = defineEmits<{
 
 const projectsStore = useProjectsStore()
 const userStore = useUserStore()
-
 const { selectedOrg } = storeToRefs(userStore)
 const form = ref<{ name: string, description: string }>({
   name: "",
   description: "",
 })
+
+async function handleSubmit() {
+  projectsStore.error = null
+  if (!form.value.name.trim()) {
+    projectsStore.error = "Project name is required"
+    return
+  }
+
+  const payload: ProjectType = {
+    name: form.value.name.trim(),
+    description: form.value.description.trim(),
+    orgId: selectedOrg.value?.id ?? "",
+  }
+
+  emit("save", payload)
+  emit("close")
+}
 
 watch(() => props.isOpen, (open) => {
   if (open) {
@@ -63,29 +78,7 @@ watch(() => props.isOpen, (open) => {
       form.value.name = ""
       form.value.description = ""
     }
-    projectsStore.error = ""
+    projectsStore.error = null
   }
 }, { immediate: true })
-
-const dialogTitle = computed(() =>
-  props.project ? "Edit Project" : "Create New Project",
-)
-
-async function handleSubmit() {
-  projectsStore.error = ""
-  if (!form.value.name.trim()) {
-    projectsStore.error = "Project name is required."
-    return
-  }
-
-  const payload: ProjectType = {
-    id: props.selectedProject?.id,
-    name: form.value.name.trim(),
-    description: form.value.description.trim(),
-    orgId: selectedOrg.value?.id ?? "",
-  }
-
-  emit("save", payload)
-  emit("close")
-}
 </script>

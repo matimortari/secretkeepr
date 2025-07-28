@@ -56,6 +56,8 @@
 </template>
 
 <script setup lang="ts">
+import { copyToClipboard } from "~/lib/utils"
+
 const installCommand = "go install github.com/matimortari/secretkeepr/cli@latest"
 
 const cliCommands = [
@@ -64,11 +66,6 @@ const cliCommands = [
   "secretkeepr create project my-project",
   "secretkeepr add secret MY_SECRET my-secret-value",
 ]
-
-function copyToClipboard(val: string) {
-  if (val)
-    navigator.clipboard.writeText(val)
-}
 
 useHead({
   title: "Command-Line Interface – SecretKeepR",

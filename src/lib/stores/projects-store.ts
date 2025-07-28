@@ -18,15 +18,45 @@ export const useProjectsStore = defineStore("projects", {
   }),
 
   actions: {
+    requireProjectId(projectId: string) {
+      if (!projectId) {
+        const error = "Project ID is required"
+        this.error = error
+        throw new Error(error)
+      }
+    },
+
+    validateCreatePayload(payload: CreateProjectPayload) {
+      if (!payload.name || typeof payload.name !== "string") {
+        const error = "Project name is required"
+        this.error = error
+        throw new Error(error)
+      }
+      if (!payload.orgId) {
+        const error = "Organization ID is required"
+        this.error = error
+        throw new Error(error)
+      }
+    },
+
+    validateUpdatePayload(payload: UpdateProjectPayload) {
+      if (!payload.name || typeof payload.name !== "string") {
+        const error = "Project name is required"
+        this.error = error
+        throw new Error(error)
+      }
+    },
+
     async getProjects() {
       this.isLoading = true
       this.error = null
 
       try {
         this.projects = await getProjectsService()
+        return this.projects
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to load projects"
         throw error
       }
       finally {
@@ -35,15 +65,7 @@ export const useProjectsStore = defineStore("projects", {
     },
 
     async createProject(payload: CreateProjectPayload) {
-      if (!payload.name || typeof payload.name !== "string") {
-        this.error = "Project name is required"
-        throw new Error(this.error)
-      }
-      if (!payload.orgId) {
-        this.error = "Organization ID is required"
-        throw new Error(this.error)
-      }
-
+      this.validateCreatePayload(payload)
       this.isLoading = true
       this.error = null
 
@@ -53,7 +75,7 @@ export const useProjectsStore = defineStore("projects", {
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to create project"
         throw error
       }
       finally {
@@ -62,22 +84,20 @@ export const useProjectsStore = defineStore("projects", {
     },
 
     async updateProject(payload: UpdateProjectPayload) {
-      if (!payload.name || typeof payload.name !== "string") {
-        this.error = "Project name is required"
-        throw new Error(this.error)
-      }
-
+      this.validateUpdatePayload(payload)
       this.isLoading = true
       this.error = null
 
       try {
         const response = await updateProjectService(payload)
         this.currentProject = response.updatedProject
-        this.projects = this.projects.map(p => (p.id === payload.id ? response.updatedProject : p))
+        this.projects = this.projects.map(p =>
+          p.id === payload.id ? response.updatedProject : p,
+        )
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to update project"
         throw error
       }
       finally {
@@ -86,23 +106,20 @@ export const useProjectsStore = defineStore("projects", {
     },
 
     async deleteProject(projectId: string) {
-      if (!projectId) {
-        this.error = "Project ID is required"
-        throw new Error(this.error)
-      }
-
+      this.requireProjectId(projectId)
       this.isLoading = true
       this.error = null
 
       try {
         const response = await deleteProjectService(projectId)
         this.projects = this.projects.filter(p => p.id !== projectId)
-        if (this.currentProject?.id === projectId)
+        if (this.currentProject?.id === projectId) {
           this.currentProject = null
+        }
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to delete project"
         throw error
       }
       finally {
@@ -111,11 +128,7 @@ export const useProjectsStore = defineStore("projects", {
     },
 
     async getProjectMembers(projectId: string) {
-      if (!projectId) {
-        this.error = "Project ID is required"
-        throw new Error(this.error)
-      }
-
+      this.requireProjectId(projectId)
       this.isLoading = true
       this.error = null
 
@@ -124,9 +137,10 @@ export const useProjectsStore = defineStore("projects", {
         if (this.currentProject?.id === projectId) {
           this.currentProject.members = members
         }
+        return members
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to load project members"
         throw error
       }
       finally {
@@ -135,23 +149,27 @@ export const useProjectsStore = defineStore("projects", {
     },
 
     async addProjectMember(projectId: string, data: AddProjectMemberPayload) {
-      if (!projectId || !data.userId || !data.role) {
-        this.error = "Project ID, User ID, and Role are required"
-        throw new Error(this.error)
+      this.requireProjectId(projectId)
+      if (!data.userId || !data.role) {
+        const error = "User ID and Role are required"
+        this.error = error
+        throw new Error(error)
       }
-
       this.isLoading = true
       this.error = null
 
       try {
         const member = await addProjectMemberService(projectId, data)
         if (this.currentProject?.id === projectId) {
-          this.currentProject.members = [...(this.currentProject.members || []), member.newMember]
+          this.currentProject.members = [
+            ...(this.currentProject.members || []),
+            member.newMember,
+          ]
         }
         return member.newMember
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to add project member"
         throw error
       }
       finally {
@@ -160,11 +178,12 @@ export const useProjectsStore = defineStore("projects", {
     },
 
     async updateProjectMember(projectId: string, userId: string, role: Role) {
-      if (!projectId || !userId || !role) {
-        this.error = "Project ID, User ID, and Role are required"
-        throw new Error(this.error)
+      this.requireProjectId(projectId)
+      if (!userId || !role) {
+        const error = "User ID and Role are required"
+        this.error = error
+        throw new Error(error)
       }
-
       this.isLoading = true
       this.error = null
 
@@ -178,7 +197,7 @@ export const useProjectsStore = defineStore("projects", {
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to update project member"
         throw error
       }
       finally {
@@ -187,11 +206,12 @@ export const useProjectsStore = defineStore("projects", {
     },
 
     async removeProjectMember(projectId: string, userId: string) {
-      if (!projectId || !userId) {
-        this.error = "Project ID and User ID are required"
-        throw new Error(this.error)
+      this.requireProjectId(projectId)
+      if (!userId) {
+        const error = "User ID is required"
+        this.error = error
+        throw new Error(error)
       }
-
       this.isLoading = true
       this.error = null
 
@@ -203,7 +223,7 @@ export const useProjectsStore = defineStore("projects", {
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to remove project member"
         throw error
       }
       finally {

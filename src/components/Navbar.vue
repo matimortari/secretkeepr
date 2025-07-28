@@ -65,6 +65,7 @@
 </template>
 
 <script setup lang="ts">
+import { useOrganizationStore } from "~/lib/stores/organization-store"
 import { useUserStore } from "~/lib/stores/user-store"
 
 const props = defineProps<{
@@ -79,8 +80,8 @@ defineEmits<{
 const { themeIcon, toggleTheme } = useTheme()
 const { signOut } = useAuth()
 const route = useRoute()
+const orgStore = useOrganizationStore()
 const userStore = useUserStore()
-
 const isDropdownOpen = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)
 
@@ -93,12 +94,10 @@ const currentPage = computed(() => {
   return segments.length ? segments[segments.length - 1] : "home"
 })
 
-const selectedOrg = computed(() => {
-  return props.orgs.find(org => org.id === userStore.selectedOrg?.id) || null
-})
+const selectedOrg = computed(() => orgStore.selectedOrg)
 
 function selectOrg(org: OrganizationType) {
-  userStore.setSelectedOrg(org)
+  orgStore.setSelectedOrg(org.id)
   isDropdownOpen.value = false
   window.location.reload()
 }

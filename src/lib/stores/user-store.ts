@@ -1,4 +1,11 @@
-import { deleteUserService, getUserService, updateUserImageService, updateUserService } from "~/lib/services/user-service"
+import {
+  deleteUserService,
+  getUserService,
+  updateUserImageService,
+  updateUserService,
+} from "~/lib/services/user-service"
+
+const ACTIVE_ORG_KEY = "active_org_id"
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -9,6 +16,14 @@ export const useUserStore = defineStore("user", {
   }),
 
   actions: {
+    requireUser() {
+      if (!this.user) {
+        const error = "User not found"
+        this.error = error
+        throw new Error(error)
+      }
+    },
+
     async getUser() {
       this.isLoading = true
       this.error = null
@@ -16,14 +31,22 @@ export const useUserStore = defineStore("user", {
       try {
         this.user = await getUserService()
 
-        const matchedOrg = this.user?.memberships?.find(m => m.organization?.id === localStorage.getItem("active_org_id"))?.organization
-        this.selectedOrg = matchedOrg || this.user?.memberships?.[0]?.organization || null
+        const orgFromStorage = localStorage.getItem(ACTIVE_ORG_KEY)
+        const matchedOrg = this.user?.memberships?.find(
+          m => m.organization?.id === orgFromStorage,
+        )?.organization
+
+        this.selectedOrg
+          = matchedOrg || this.user?.memberships?.[0]?.organization || null
+
         if (this.selectedOrg) {
-          localStorage.setItem("active_org_id", this.selectedOrg.id)
+          localStorage.setItem(ACTIVE_ORG_KEY, this.selectedOrg.id)
         }
+
+        return this.user
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to fetch user"
         throw error
       }
       finally {
@@ -32,11 +55,7 @@ export const useUserStore = defineStore("user", {
     },
 
     async updateUser(updatedUser: UpdateUserPayload) {
-      if (!this.user) {
-        this.error = "No user loaded"
-        throw new Error(this.error)
-      }
-
+      this.requireUser()
       this.isLoading = true
       this.error = null
 
@@ -46,7 +65,7 @@ export const useUserStore = defineStore("user", {
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to update user"
         throw error
       }
       finally {
@@ -55,21 +74,18 @@ export const useUserStore = defineStore("user", {
     },
 
     async updateUserImage(formData: FormData) {
-      if (!this.user) {
-        this.error = "No user loaded"
-        throw new Error(this.error)
-      }
-
+      this.requireUser()
       this.isLoading = true
       this.error = null
 
       try {
         const response = await updateUserImageService(formData)
-        this.user.image = response.imageUrl
+        if (this.user)
+          this.user.image = response.imageUrl
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to update user image"
         throw error
       }
       finally {
@@ -78,6 +94,7 @@ export const useUserStore = defineStore("user", {
     },
 
     async deleteUser() {
+      this.requireUser()
       this.isLoading = true
       this.error = null
 
@@ -85,21 +102,16 @@ export const useUserStore = defineStore("user", {
         const response = await deleteUserService()
         this.user = null
         this.selectedOrg = null
-        localStorage.removeItem("active_org_id")
+        localStorage.removeItem(ACTIVE_ORG_KEY)
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to delete user"
         throw error
       }
       finally {
         this.isLoading = false
       }
-    },
-
-    setSelectedOrg(org: OrganizationType) {
-      this.selectedOrg = org
-      localStorage.setItem("active_org_id", org.id)
     },
   },
 })

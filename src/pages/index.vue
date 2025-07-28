@@ -112,6 +112,8 @@
 </template>
 
 <script setup lang="ts">
+import { copyToClipboard } from '~/lib/utils'
+
 const features = [
   {
     title: "End-to-End Encryption",
@@ -164,18 +166,12 @@ const howToUseSteps = [
 ]
 
 const installCommand = "go install github.com/matimortari/secretkeepr/cli@latest"
-
 const cliCommands = [
   "secretkeepr login",
   "secretkeepr create org my-org",
   "secretkeepr create project my-project",
   "secretkeepr add secret MY_SECRET my-secret-value",
 ]
-
-function copyToClipboard(val: string) {
-  if (val)
-    navigator.clipboard.writeText(val)
-}
 
 useHead({
   title: "SecretKeepR – Securely Manage Your Environment Variables",

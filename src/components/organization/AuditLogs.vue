@@ -9,8 +9,8 @@
 
     <section class="md:navigation-group flex flex-col gap-4 p-2 md:justify-between">
       <div class="md:navigation-group flex w-full flex-col gap-2 md:w-auto">
-        <input v-model="dateFilter" type="date" class="w-full md:w-auto">
-        <select v-model="userFilter" class="w-full md:w-auto">
+        <input v-model="filters.date" type="date" class="w-full md:w-auto">
+        <select v-model="filters.user" class="w-full md:w-auto">
           <option value="">
             All Users
           </option>
@@ -18,7 +18,7 @@
             {{ user }}
           </option>
         </select>
-        <select v-model="actionFilter" class="w-full md:w-auto">
+        <select v-model="filters.action" class="w-full md:w-auto">
           <option value="">
             All Actions
           </option>
@@ -28,19 +28,19 @@
         </select>
 
         <label class="navigation-group text-label justify-center">
-          <input v-model="showSensitiveData" type="checkbox" class="appearance-none rounded border border-muted bg-transparent p-2 checked:bg-secondary focus:outline-none">
+          <input v-model="filters.showSensitiveData" type="checkbox" class="appearance-none rounded border border-muted bg-transparent p-2 checked:bg-secondary focus:outline-none">
           <span>Show sensitive data</span>
         </label>
       </div>
 
       <nav v-if="totalPages > 0" class="navigation-group w-full justify-around md:w-auto">
-        <button class="btn-secondary disabled:opacity-80" :disabled="!hasPrevPage" @click="prevPage">
+        <button class="btn-secondary disabled:opacity-80" :disabled="!hasPrevPage" @click="orgStore.nextAuditLogPage">
           <Icon name="ph:arrow-left-bold" size="20" />
         </button>
         <span class="text-caption whitespace-nowrap">
           Page {{ page }} of {{ totalPages }}
         </span>
-        <button class="btn-secondary disabled:opacity-80" :disabled="!hasNextPage" @click="nextPage">
+        <button class="btn-secondary disabled:opacity-80" :disabled="!hasNextPage" @click="orgStore.nextAuditLogPage">
           <Icon name="ph:arrow-right-bold" size="20" />
         </button>
 
@@ -73,8 +73,8 @@
 
           <tbody>
             <tr v-for="log in filteredLogs" :key="log.id" class="text-caption">
-              <td class="truncate border p-2 font-semibold" :title="getActionLabel(log.action)" :style="{ width: headers[0].width }">
-                {{ getActionLabel(log.action) }}
+              <td class="truncate border p-2 font-semibold" :title="formatAction(log.action)" :style="{ width: headers[0].width }">
+                {{ formatAction(log.action) }}
               </td>
               <td class="truncate border p-2" :title="log.resource" :style="{ width: headers[1].width }">
                 {{ log.resource }}
@@ -85,8 +85,8 @@
               <td class="truncate border p-2" :title="log.userId" :style="{ width: headers[3].width }">
                 <span>{{ log.userId }}</span>
               </td>
-              <td class="truncate border p-2" :title="formatAuditLogDate(log.createdAt)" :style="{ width: headers[4].width }">
-                {{ formatAuditLogDate(log.createdAt) }}
+              <td class="truncate border p-2" :title="formatDate(log.createdAt)" :style="{ width: headers[4].width }">
+                {{ formatDate(log.createdAt) }}
               </td>
             </tr>
           </tbody>
@@ -131,14 +131,13 @@ const actions = [
 ]
 
 const orgStore = useOrganizationStore()
-
 const { auditLogs, isLoading, totalPages, hasNextPage, hasPrevPage } = storeToRefs(orgStore)
-const nextPage = orgStore.nextAuditLogPage
-const prevPage = orgStore.prevAuditLogPage
-const dateFilter = ref("")
-const userFilter = ref("")
-const actionFilter = ref("")
-const showSensitiveData = ref(false)
+const filters = ref({
+  date: "",
+  user: "",
+  action: "",
+  showSensitiveData: false,
+})
 
 onMounted(async () => {
   if (orgStore.selectedOrg?.id) {
@@ -147,66 +146,51 @@ onMounted(async () => {
 })
 
 const page = computed(() => auditLogs.value.page)
-
-const users = computed(() => {
-  const unique = new Set(props.logs.map(log => log.userId))
-  return Array.from(unique)
-})
+const users = computed(() => [...new Set(props.logs.map(log => log.userId))])
 
 const filteredLogs = computed(() => {
-  return props.logs.filter((log) => {
-    const matchesDate = dateFilter.value
-      ? log.createdAt && new Date(log.createdAt).toISOString().slice(0, 10) === dateFilter.value
-      : true
-    const matchesUser = userFilter.value ? log.userId === userFilter.value : true
-    const matchesAction = actionFilter.value ? log.action === actionFilter.value : true
-    return matchesDate && matchesUser && matchesAction
-  }).map((log) => {
-    if (!showSensitiveData.value) {
-      const sanitizedMetadata = { ...log.metadata }
-      delete sanitizedMetadata.ip
-      delete sanitizedMetadata.userAgent
-      return { ...log, metadata: sanitizedMetadata }
-    }
-    return log
-  })
+  return props.logs
+    .filter((log) => {
+      const dateMatch = !filters.value.date || (log.createdAt && new Date(log.createdAt).toISOString().slice(0, 10) === filters.value.date)
+      const userMatch = !filters.value.user || log.userId === filters.value.user
+      const actionMatch = !filters.value.action || log.action === filters.value.action
+      return dateMatch && userMatch && actionMatch
+    })
+    .map((log) => {
+      if (!filters.value.showSensitiveData) {
+        const { ip, userAgent, ...rest } = log.metadata || {}
+        return { ...log, metadata: rest }
+      }
+      return log
+    })
 })
 
 async function handleDeleteLogs() {
   if (!orgStore.selectedOrg?.id)
     return
-  if (!confirm("Are you sure you want to delete all filtered audit logs? This action cannot be undone.")) {
+  if (!confirm("Are you sure you want to delete all filtered audit logs? This action cannot be undone."))
     return
-  }
 
-  const filters = {
+  const deleteFilters = {
     orgId: orgStore.selectedOrg.id,
-    action: actionFilter.value || undefined,
-    beforeDate: dateFilter.value || undefined,
-    createdBySelfOnly: userFilter.value === "self",
+    action: filters.value.action || undefined,
+    beforeDate: filters.value.date || undefined,
+    createdBySelfOnly: filters.value.user === "self",
     protectedActions: [],
   }
 
   try {
-    await orgStore.deleteAuditLogs(filters)
+    await orgStore.deleteAuditLogs(deleteFilters)
   }
   catch (error: any) {
-    alert(`Failed to delete audit logs: ${error?.message || error}`)
+    console.error("Failed to delete audit logs:", error)
   }
 }
 
-function getActionLabel(action: string): string {
-  const found = actions.find(a => a.value === action)
-  return found ? found.label : action
-}
+const formatAction = (action: string) => actions.find(a => a.value === action)?.label || action
 
-function formatAuditLogDate(date?: string | Date): string {
-  if (!date)
-    return "—"
-
-  const d = typeof date === "string" ? new Date(date) : date
-
-  return d.toLocaleString("en-US", {
+function formatDate(date?: string | Date): string {
+  return new Date(date ?? "").toLocaleString("en-US", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -220,56 +204,29 @@ function formatMetadata(metadata: Record<string, any>) {
   if (!metadata || Object.keys(metadata).length === 0)
     return ""
 
-  const lines: string[] = []
+  const maskSecret = (value: string) =>
+    !value || value.length < 12 ? value : `${value.slice(0, 6)}...${value.slice(-4)}`
 
-  const maskSecret = (value: string) => {
-    if (!value || value.length < 12)
-      return value
-    return `${value.slice(0, 6)}...${value.slice(-4)}`
-  }
+  const entries = [
+    metadata.secretKey && `Secret: ${metadata.secretKey}`,
+    metadata.projectName && `Project: ${metadata.projectName}`,
+    metadata.name && `Name: ${metadata.name}`,
+    metadata.description && `Description: ${metadata.description}`,
+    metadata.ip && `IP: ${metadata.ip}`,
+    metadata.userAgent && `Agent: ${metadata.userAgent}`,
+    metadata.key && `Key: ${maskSecret(metadata.key)}`,
+    ...(Array.isArray(metadata.values)
+      ? metadata.values.map(
+          (item: any, i: number) =>
+            item.value && item.environment && `Value ${i + 1}: ${maskSecret(item.value)} (${item.environment})`,
+        )
+      : []),
+    metadata.addedUserId && `Added User: ${metadata.addedUserId}, Role: ${metadata.addedUserRole || "N/A"}`,
+    metadata.removedUserId && `Removed User: ${metadata.removedUserId}`,
+    metadata.role && `Role: ${metadata.role}`,
+  ].filter(Boolean)
 
-  if (metadata.secretKey) {
-    lines.push(`Secret: ${metadata.secretKey}`)
-  }
-  if (metadata.projectName) {
-    lines.push(`Project: ${metadata.projectName}`)
-  }
-  if (metadata.name) {
-    lines.push(`Name: ${metadata.name}`)
-  }
-  if (metadata.description) {
-    lines.push(`Description: ${metadata.description}`)
-  }
-  if (metadata.ip) {
-    lines.push(`IP: ${metadata.ip}`)
-  }
-  if (metadata.userAgent) {
-    lines.push(`Agent: ${metadata.userAgent}`)
-  }
-
-  if (metadata.key) {
-    lines.push(`Key: ${maskSecret(metadata.key)}`)
-  }
-
-  if (Array.isArray(metadata.values)) {
-    metadata.values.forEach((item: any, index: number) => {
-      if (item.value && item.environment) {
-        lines.push(`Val${index + 1}: ${maskSecret(item.value)} (${item.environment})`)
-      }
-    })
-  }
-
-  if (metadata.addedUserId) {
-    lines.push(`Added User: ${metadata.addedUserId}, Role: ${metadata.addedUserRole || "N/A"}`)
-  }
-  if (metadata.removedUserId) {
-    lines.push(`Removed User: ${metadata.removedUserId}`)
-  }
-  if (metadata.role) {
-    lines.push(`Role: ${metadata.role}`)
-  }
-
-  if (lines.length === 0) {
+  if (entries.length === 0) {
     try {
       return JSON.stringify(metadata, null, 2)
     }
@@ -277,7 +234,6 @@ function formatMetadata(metadata: Record<string, any>) {
       return String(metadata)
     }
   }
-
-  return lines.join(", ")
+  return entries.join("; ")
 }
 </script>

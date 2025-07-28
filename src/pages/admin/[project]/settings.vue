@@ -15,7 +15,7 @@
 
     <div class="flex flex-col gap-8">
       <ProjectsProjectDetails :project="project" />
-      <ProjectsProjectDangerZone v-if="currentUserId === projectOwnerId" :project="project" />
+      <ProjectsProjectDangerZone v-if="userStore.user?.id === projectOwnerId" :project="project" />
     </div>
   </div>
 </template>
@@ -28,10 +28,7 @@ const route = useRoute()
 const projectId = route.params.project as string
 const userStore = useUserStore()
 const projectsStore = useProjectsStore()
-
 const { projects } = storeToRefs(useProjectsStore())
-
-const currentUserId = computed(() => userStore.user?.id)
 
 const project = computed(() => {
   return projects.value.find(p => p.id === projectId) || null
@@ -43,18 +40,16 @@ const projectOwnerId = computed(() => {
 
 watch(() => projectId, async (id) => {
   await projectsStore.getProjects()
-
-  const projectName = projectsStore.projects?.find(p => p.id === id)
-  const titleName = projectName?.name ?? "SecretKeepR"
+  const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name
 
   useHead({
-    title: `${titleName} | Settings – SecretKeepR`,
+    title: `${projectTitle} | Settings – SecretKeepR`,
     link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}/settings` }, { rel: "icon", href: "/favicon.ico" }],
     meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
   })
 
   useSeoMeta({
-    title: `${titleName} | Settings – SecretKeepR`,
+    title: `${projectTitle} | Settings – SecretKeepR`,
     description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
   })
 }, { immediate: true })

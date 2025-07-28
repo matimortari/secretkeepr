@@ -11,7 +11,7 @@
               class="hover:scale-sm transition-all hover:text-primary"
               :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'"
               role="button"
-              @click="toggleSort"
+              @click="sort.direction = sort.direction === 'asc' ? 'desc' : 'asc'"
             />
           </th>
           <th v-for="env in environments" :key="env" class="border p-2 text-left capitalize md:w-1/6">
@@ -73,6 +73,7 @@
 
 <script setup lang="ts">
 import { useSecretsStore } from "~/lib/stores/secrets-store"
+import { copyToClipboard } from "~/lib/utils"
 
 const props = defineProps<{
   secrets: SecretType[]
@@ -82,10 +83,8 @@ const props = defineProps<{
 const emit = defineEmits(["edit", "deleted", "update"])
 
 const secretsStore = useSecretsStore()
-
 const visibleKeys = ref<Record<string, boolean>>({})
 const environments = ref(["development", "staging", "production"])
-
 const sort = ref<{ key: string, direction: "asc" | "desc" }>({
   key: "key",
   direction: "asc",
@@ -98,10 +97,6 @@ const sortedSecrets = computed(() => {
     else return b.key.localeCompare(a.key)
   })
 })
-
-function toggleSort() {
-  sort.value.direction = sort.value.direction === "asc" ? "desc" : "asc"
-}
 
 function toggleVisibility(key: string) {
   visibleKeys.value[key] = !visibleKeys.value[key]
@@ -125,11 +120,6 @@ function renderValue(key: string, env: string): string {
   return visibleKeys.value[key] ? val : "•".repeat(Math.min(val.length, 12))
 }
 
-function copyToClipboard(val: string) {
-  if (val)
-    navigator.clipboard.writeText(val)
-}
-
 function updateSecret(key: string) {
   const secret = props.secrets.find(s => s.key === key)
   if (secret)
@@ -146,6 +136,7 @@ async function handleDeleteSecret(key: string) {
   }
   catch (error: any) {
     console.error("Failed to delete secret:", error)
+    secretsStore.error = error?.message || "Failed to delete secret."
   }
 }
 </script>
