@@ -1,12 +1,13 @@
 <template>
   <div class="navigation-group justify-between border-b-2 p-4">
     <div class="navigation-group">
-      <NuxtLink to="/">
+      <NuxtLink to="/" class="hover:scale-sm flex flex-row items-center gap-2 transition-all">
         <img
           src="/logo.png" alt="Logo"
           width="40" height="40"
-          class="hover:scale-md flex-shrink-0 transition-all"
+          class="rounded-full"
         >
+        <span class="hidden text-xl font-semibold md:inline">SecretKeepR</span>
       </NuxtLink>
 
       <nav class="navigation-group text-sm">
@@ -68,7 +69,6 @@ import { useUserStore } from "~/lib/stores/user-store"
 
 const props = defineProps<{
   orgs: OrganizationType[]
-  modelValue: OrganizationType | null
   isSidebarOpen: boolean
 }>()
 
@@ -89,24 +89,13 @@ useClickOutside(dropdownRef, () => {
 }, { escapeKey: true })
 
 const currentPage = computed(() => {
-  const path = route.path.split("/").filter(Boolean)
-  return path.length > 0 ? path[path.length - 1] : "home"
+  const segments = route.path.split("/").filter(Boolean)
+  return segments.length ? segments[segments.length - 1] : "home"
 })
 
-const selectedOrgId = computed({
-  get: () => userStore.selectedOrg?.id,
-  set: (newId: string) => {
-    const org = props.orgs.find(o => o.id === newId)
-    if (org) {
-      userStore.setSelectedOrg(org)
-      window.location.reload()
-    }
-  },
+const selectedOrg = computed(() => {
+  return props.orgs.find(org => org.id === userStore.selectedOrg?.id) || null
 })
-
-const selectedOrg = computed(() =>
-  props.orgs.find(o => o.id === selectedOrgId.value),
-)
 
 function selectOrg(org: OrganizationType) {
   userStore.setSelectedOrg(org)

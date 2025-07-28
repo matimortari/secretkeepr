@@ -59,7 +59,7 @@ export const useOrganizationStore = defineStore("organization", {
 
     async createOrg(payload: CreateOrgPayload) {
       if (!payload.name || typeof payload.name !== "string") {
-        this.error = "Organization name is required and must be a string"
+        this.error = "Organization name is required"
         throw new Error(this.error)
       }
 
@@ -82,7 +82,7 @@ export const useOrganizationStore = defineStore("organization", {
 
     async updateOrg(id: string, payload: UpdateOrgPayload) {
       if (!payload.name || typeof payload.name !== "string") {
-        this.error = "Organization name is required and must be a string"
+        this.error = "Organization name is required"
         throw new Error(this.error)
       }
       if (!id) {

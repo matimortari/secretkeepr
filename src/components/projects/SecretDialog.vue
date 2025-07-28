@@ -3,17 +3,10 @@
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-2">
         <label for="key" class="text-label">Key</label>
-        <input
-          id="key" v-model="form.key"
-          type="text" class="w-full"
-          required
-        >
+        <input id="key" v-model="form.key" type="text" class="w-full">
 
         <label for="description" class="text-label">Description (optional)</label>
-        <input
-          id="description" v-model="form.description"
-          type="text" class="w-full"
-        >
+        <input id="description" v-model="form.description" type="text" class="w-full">
       </div>
 
       <div v-for="env in environments" :key="env" class="flex flex-col items-start gap-1">
@@ -21,23 +14,27 @@
         <input :id="env" v-model="form.values[env]" type="text" class="w-full">
       </div>
 
-      <p v-if="errorMsg" class="text-caption p-2 text-danger-foreground">
-        {{ errorMsg }}
-      </p>
+      <footer class="flex flex-row items-center justify-between">
+        <p class="text-caption text-danger-foreground">
+          {{ secretStore.error || " " }}
+        </p>
 
-      <footer class="navigation-group justify-end">
-        <button class="font-semibold hover:underline" type="button" @click="emit('close')">
-          Cancel
-        </button>
-        <button class="btn-success w-16" type="submit" :disabled="!!errorMsg">
-          Save
-        </button>
+        <div class="navigation-group">
+          <button class="font-semibold hover:underline" type="button" @click="emit('close')">
+            Cancel
+          </button>
+          <button class="btn-success" type="submit" :disabled="!!secretStore.error">
+            Save
+          </button>
+        </div>
       </footer>
     </form>
   </Dialog>
 </template>
 
 <script setup lang="ts">
+import { useSecretsStore } from "~/lib/stores/secrets-store"
+
 const props = defineProps<{
   isOpen: boolean
   selectedSecret?: SecretType | null
@@ -55,6 +52,8 @@ type SecretFormValues = {
   [K in Environment]: string
 }
 
+const secretStore = useSecretsStore()
+
 const form = ref<{ key: string, description: string, values: SecretFormValues }>({
   key: "",
   description: "",
@@ -64,8 +63,6 @@ const form = ref<{ key: string, description: string, values: SecretFormValues }>
     production: "",
   },
 })
-
-const errorMsg = ref("")
 
 const dialogTitle = computed(() =>
   props.selectedSecret ? "Edit Secret" : "Create New Secret",
@@ -101,25 +98,25 @@ watch(() => props.isOpen, (open) => {
         },
       }
     }
-    errorMsg.value = ""
+    secretStore.error = ""
   }
 }, { immediate: true })
 
 function handleSubmit() {
-  errorMsg.value = ""
-
+  secretStore.error = ""
   if (!form.value.key.trim()) {
-    errorMsg.value = "Secret Key is required."
+    secretStore.error = "Secret key is required."
+    return
   }
 
-  const valuesArray: SecretValueType[] = environments
-    .map(env => ({
-      environment: env,
-      value: form.value.values[env].trim(),
-    }))
+  const valuesArray: SecretValueType[] = environments.map(env => ({
+    environment: env,
+    value: form.value.values[env].trim(),
+  }))
     .filter(v => v.value.length > 0)
   if (valuesArray.length === 0) {
-    errorMsg.value = "At least one secret value is required."
+    secretStore.error = "At least one environment value is required."
+    return
   }
 
   const payload: SecretType = {

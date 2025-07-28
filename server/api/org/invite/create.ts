@@ -20,12 +20,17 @@ export default defineEventHandler(async (event) => {
 
   const token = nanoid()
 
+  const allowedInviteRoles = ["admin", "member"] as const
+  const inviteRole = allowedInviteRoles.includes(membership.role as any)
+    ? membership.role
+    : "member"
+
   await db.invitation.create({
     data: {
       token,
       orgId: membership.orgId,
-      role: membership.role,
-      expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000),
+      role: inviteRole,
+      expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000), // 12h expiration
     },
   })
 
@@ -42,7 +47,7 @@ export default defineEventHandler(async (event) => {
     resource: `Organization: ${membership.orgId}`,
     metadata: {
       createdBy: sessionUser.id!,
-      selectedRole: membership.role,
+      selectedRole: inviteRole,
     },
   })
 

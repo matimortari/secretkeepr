@@ -2,9 +2,8 @@ export async function getProjectsService(): Promise<ProjectType[]> {
   const response = await fetch("/api/projects", {
     method: "GET",
   })
-  if (!response.ok) {
-    throw new Error(`Failed to get projects: ${response.statusText}`)
-  }
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -14,10 +13,8 @@ export async function createProjectService(data: CreateProjectPayload): Promise<
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to create project: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -27,10 +24,8 @@ export async function updateProjectService(data: UpdateProjectPayload): Promise<
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to update project: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -39,10 +34,8 @@ export async function deleteProjectService(projectId: string): Promise<{ message
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
-  if (!response.ok) {
-    throw new Error(`Failed to delete project: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -50,9 +43,8 @@ export async function getProjectMembersService(projectId: string): Promise<Proje
   const response = await fetch(`/api/projects/${projectId}/members`, {
     method: "GET",
   })
-  if (!response.ok) {
-    throw new Error(`Failed to get project members: ${response.statusText}`)
-  }
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -62,9 +54,8 @@ export async function addProjectMemberService(projectId: string, data: AddProjec
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to add project member: ${response.statusText}`)
-  }
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -74,10 +65,8 @@ export async function updateProjectMemberService(projectId: string, memberId: st
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to update project member role: ${response.status}`)
-  }
-
+  if (!response.ok)
+    throw new Error(`${response.status}`)
   return await response.json()
 }
 
@@ -86,9 +75,7 @@ export async function removeProjectMemberService(projectId: string, memberId: st
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
-  if (!response.ok) {
-    throw new Error(`Failed to remove project member: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }

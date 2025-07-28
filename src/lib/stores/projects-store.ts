@@ -36,7 +36,7 @@ export const useProjectsStore = defineStore("projects", {
 
     async createProject(payload: CreateProjectPayload) {
       if (!payload.name || typeof payload.name !== "string") {
-        this.error = "Project name is required and must be a string"
+        this.error = "Project name is required"
         throw new Error(this.error)
       }
       if (!payload.orgId) {
@@ -63,7 +63,7 @@ export const useProjectsStore = defineStore("projects", {
 
     async updateProject(payload: UpdateProjectPayload) {
       if (!payload.name || typeof payload.name !== "string") {
-        this.error = "Project name is required and must be a string"
+        this.error = "Project name is required"
         throw new Error(this.error)
       }
 
