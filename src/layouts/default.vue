@@ -1,11 +1,12 @@
 <template>
   <header class="navigation-group justify-between border-b-2 p-4">
-    <NuxtLink to="/">
+    <NuxtLink to="/" class="hover:scale-sm flex flex-row items-center gap-2 transition-all">
       <img
         src="/logo.png" alt="Logo"
         width="40" height="40"
-        class="hover:scale-md flex-shrink-0 transition-all"
+        class="rounded-full"
       >
+      <span class="text-xl font-semibold">SecretKeepR</span>
     </NuxtLink>
 
     <nav class="navigation-group">
@@ -19,13 +20,11 @@
     </nav>
   </header>
 
-  <main class="min-h-screen overflow-x-hidden bg-gradient-to-br from-muted via-background to-background p-4">
+  <main class="min-h-screen overflow-hidden p-4">
     <slot />
   </main>
 
-  <footer class="py-4 text-center text-sm md:p-8">
-    <p>© {{ new Date().getFullYear() }} – SecretKeepR</p>
-  </footer>
+  <Footer />
 </template>
 
 <script setup lang="ts">

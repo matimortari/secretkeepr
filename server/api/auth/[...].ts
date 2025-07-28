@@ -109,9 +109,8 @@ export default NuxtAuthHandler({
           }
         }
 
-        // Generate new CLI token on login
-        const newCliToken = randomBytes(32).toString("hex")
-        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24h expiry
+        const newCliToken = randomBytes(16).toString("hex")
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24h expiration
 
         await db.cliToken.create({
           data: {

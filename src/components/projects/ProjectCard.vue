@@ -19,7 +19,9 @@
         </NuxtLink>
       </div>
 
-      <Icon name="ph:arrow-right-bold" size="35" class="group-hover:scale-sm absolute bottom-4 right-4 text-muted-foreground transition-all group-hover:text-secondary" />
+      <div class="absolute bottom-4 right-4 flex items-center justify-center rounded-full bg-muted p-2">
+        <Icon name="ph:arrow-right-bold" size="30" class="group-hover:scale-sm transition-all group-hover:text-secondary" />
+      </div>
     </div>
   </NuxtLink>
 </template>

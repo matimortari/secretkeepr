@@ -2,9 +2,8 @@ export async function getProjectSecretsService(projectId: string): Promise<{ sec
   const response = await fetch(`/api/projects/${projectId}/secrets`, {
     method: "GET",
   })
-  if (!response.ok) {
-    throw new Error(`Failed to get project secrets: ${response.statusText}`)
-  }
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -14,10 +13,8 @@ export async function createSecretService(projectId: string, data: CreateSecretP
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to create project secret: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -27,9 +24,8 @@ export async function updateSecretService(projectId: string, secretId: string, d
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to update project secret: ${response.statusText}`)
-  }
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -38,8 +34,7 @@ export async function deleteSecretService(projectId: string, secretId: string): 
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
-  if (!response.ok) {
-    throw new Error(`Failed to delete project secret: ${response.statusText}`)
-  }
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }

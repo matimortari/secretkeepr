@@ -2,10 +2,8 @@ export async function getUserService(): Promise<UserType> {
   const response = await fetch("/api/user", {
     method: "GET",
   })
-  if (!response.ok) {
-    throw new Error(`Failed to get user data: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -15,10 +13,8 @@ export async function updateUserService(data: UpdateUserPayload): Promise<{ mess
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!response.ok) {
-    throw new Error(`Failed to update user: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -27,10 +23,8 @@ export async function updateUserImageService(formData: FormData): Promise<{ imag
     method: "POST",
     body: formData,
   })
-  if (!response.ok) {
-    throw new Error(`Failed to upload image: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }
 
@@ -39,9 +33,7 @@ export async function deleteUserService(): Promise<{ message: string }> {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
-  if (!response.ok) {
-    throw new Error(`Failed to delete user: ${response.statusText}`)
-  }
-
+  if (!response.ok)
+    throw new Error(response.statusText)
   return await response.json()
 }

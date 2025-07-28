@@ -1,9 +1,7 @@
 <template>
   <div class="flex flex-col border-b">
     <header class="flex flex-col items-center gap-1 border-b pb-2 text-center md:items-start md:text-start">
-      <h4>
-        User Information
-      </h4>
+      <h4>User Information</h4>
       <p class="text-caption">
         Manage your account information.
       </p>
@@ -24,9 +22,7 @@
         </div>
 
         <div class="flex flex-col items-center md:w-1/2">
-          <h5>
-            Profile Image
-          </h5>
+          <h5>Profile Image</h5>
 
           <img v-if="form.image" :src="form.image" alt="Profile preview" class="size-24 rounded-full border object-cover">
           <input
@@ -44,14 +40,16 @@
       </div>
 
       <section class="md:navigation-group flex flex-col gap-2 p-2 md:flex-row md:items-center md:justify-between">
-        <p v-if="errorMsg" class="text-caption text-danger-foreground md:mb-0">
-          {{ errorMsg }}
-        </p>
+        <div class="flex flex-col gap-2 md:flex-row md:items-center">
+          <button class="btn-primary md:self-start" type="submit">
+            <Icon name="ph:check-circle" size="20" />
+            <span>Save Changes</span>
+          </button>
 
-        <button class="btn-primary md:self-start" type="submit">
-          <Icon name="ph:check-circle" size="20" />
-          <span>Save Changes</span>
-        </button>
+          <p v-if="userStore.error" class="text-caption text-danger-foreground">
+            {{ userStore.error }}
+          </p>
+        </div>
       </section>
     </form>
   </div>
@@ -74,10 +72,9 @@ const form = ref({
   image: props.user?.image || "",
 })
 
-const errorMsg = ref("")
-
 watch(() => userStore.user, (newUser) => {
   form.value.name = newUser?.name || ""
+  form.value.image = newUser?.image || ""
 }, { immediate: true })
 
 const selectedOrganization = computed(() => orgStore.selectedOrg)
@@ -101,6 +98,7 @@ async function handleImageChange(event: Event) {
   formData.append("file", file)
   formData.append("type", "avatar")
 
+  userStore.error = null
   try {
     const response = await userStore.updateUserImage(formData)
     form.value.image = response.imageUrl
@@ -117,8 +115,7 @@ async function handleSubmit() {
   if (!userStore.user)
     return
 
-  errorMsg.value = ""
-
+  userStore.error = null
   try {
     const result = await userStore.updateUser({
       name: form.value.name,
@@ -130,7 +127,6 @@ async function handleSubmit() {
   }
   catch (error: any) {
     console.error("Failed to update user data:", error)
-    errorMsg.value = error?.message || "Failed to update user data."
   }
 }
 </script>

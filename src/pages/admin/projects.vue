@@ -5,9 +5,7 @@
     class="flex flex-col gap-4"
   >
     <header class="navigation-group border-b pb-2">
-      <h2>
-        My Projects
-      </h2>
+      <h2>My Projects</h2>
 
       <nav class="navigation-group w-full flex-1 justify-end">
         <div class="relative hidden md:block">
@@ -37,7 +35,7 @@
         v-for="(project, index) in filteredProjects" :key="project.id"
         v-motion :initial="{ opacity: 0, y: 20 }"
         :enter="{ opacity: 1, y: 0 }" :transition="{ duration: 400 }"
-        :delay="20 * Number(index)"
+        :delay="20 * index"
       >
         <ProjectsProjectCard :project="project" />
       </li>

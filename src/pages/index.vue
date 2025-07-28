@@ -1,137 +1,114 @@
 <template>
-  <div
-    v-motion class="flex flex-col overflow-hidden"
-    :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
-    :transition="{ duration: 800 }"
+  <section
+    id="hero" v-motion
+    class="flex flex-col items-center gap-4 border-b p-8 text-center lg:p-12" :initial="{ opacity: 0, y: 20 }"
+    :visible="{ opacity: 1, y: 0 }" :transition="{ duration: 800 }"
   >
-    <section
-      id="hero"
-      v-motion class="flex flex-col items-center gap-8 p-16 text-center"
+    <h1 class="font-goldman">
+      Securely Manage Your Secrets
+    </h1>
+    <p
+      v-motion class="max-w-xl leading-5"
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
       :transition="{ duration: 800 }"
     >
-      <h1
-        v-motion class="font-goldman"
-        :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
-        :transition="{ duration: 800, delay: 0.3 }"
-      >
-        Securely Manage Your Environment Variables
-      </h1>
-      <p
-        v-motion class="max-w-xl leading-5"
-        :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
-        :transition="{ duration: 800, delay: 0.3 }"
-      >
-        SecretKeepR is a secrets manager designed to help users and organizations securely manage and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
-      </p>
-      <NuxtLink to="/sign-in" class="btn-primary rounded-full">
-        <span>Get Started</span>
-        <Icon name="ph:arrow-right-bold" size="20" />
-      </NuxtLink>
-    </section>
+      SecretKeepR is a secrets manager designed to help users and organizations securely manage and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
+    </p>
+    <NuxtLink to="/sign-in" class="btn-primary rounded-full">
+      <span>Get Started</span>
+      <Icon name="ph:arrow-right-bold" size="20" />
+    </NuxtLink>
+  </section>
 
-    <section
-      id="features" v-motion
-      :initial="{ opacity: 0, y: 40, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
-      :transition="{ duration: 800, delay: 0.5 }" class="grid grid-cols-1 gap-12 border-b p-16 text-center md:grid-cols-3"
-    >
+  <section id="features" class="relative gap-12 border-b p-4 text-center lg:py-12">
+    <div class="relative flex w-full">
+      <div class="animate-scroll">
+        <div v-for="(feature, index) in [...features, ...features]" :key="index" class="box-border flex min-w-[350px] max-w-sm flex-grow-0 flex-col items-center gap-2 p-8">
+          <Icon :name="feature.icon" class="text-primary" size="60" />
+          <h4 class="font-silkscreen tracking-tight md:whitespace-nowrap">
+            {{ feature.title }}
+          </h4>
+          <p class="leading-5 tracking-tight text-muted-foreground">
+            {{ feature.description }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section
+    id="how-to-use" v-motion
+    class="flex flex-col items-center gap-12 border-b p-8 text-center lg:p-20" :initial="{ opacity: 0, y: 40 }"
+    :visible="{ opacity: 1, y: 0 }" :transition="{ duration: 800 }"
+    :delay="200"
+  >
+    <h2 class="font-goldman">
+      Getting Started
+    </h2>
+
+    <div class="grid grid-cols-1 gap-4 text-center md:grid-cols-5">
       <div
-        v-for="(feature, index) in features" :key="index"
-        v-motion class="flex flex-col items-center gap-4"
+        v-for="(step, index) in howToUseSteps" :key="index"
+        v-motion class="flex flex-col items-center gap-1"
         :initial="{ opacity: 0, y: -40 }" :visible="{ opacity: 1, y: 0 }"
-        :transition="{ duration: 800, delay: index * 0.8 }"
+        :transition="{ duration: 800 }" :delay="50 * index"
       >
-        <Icon :name="feature.icon" class="text-primary" size="60" />
-        <h3 class="font-silkscreen tracking-tight md:whitespace-nowrap">
-          {{ feature.title }}
-        </h3>
+        <h5 class="whitespace-nowrap">
+          {{ index + 1 }}. {{ step.title }}
+        </h5>
         <p class="max-w-xs leading-5 tracking-tight text-muted-foreground">
-          {{ feature.description }}
+          {{ step.description }}
         </p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section
-      id="how-to-use"
-      v-motion class="flex flex-col items-center gap-12 border-b p-16 text-center"
-      :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
-      :transition="{ duration: 800, delay: 0.5 }"
-    >
-      <h2 class="font-goldman">
-        Getting Started
-      </h2>
-
-      <div class="grid grid-cols-1 gap-4 text-center md:grid-cols-5">
-        <div
-          v-for="(step, index) in howToUseSteps" :key="index"
-          v-motion class="flex flex-col items-center gap-1"
-          :initial="{ opacity: 0, y: -40 }" :visible="{ opacity: 1, y: 0 }"
-          :transition="{ duration: 800, delay: index * 0.4 }"
-        >
-          <h5 class="whitespace-nowrap">
-            {{ index + 1 }}. {{ step.title }}
-          </h5>
-          <p class="max-w-xs leading-5 tracking-tight text-muted-foreground">
-            {{ step.description }}
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section
-      id="cli"
-      v-motion
-      class="flex w-full flex-col gap-8 p-16 text-center md:text-start"
-      :initial="{ opacity: 0, y: 40 }"
-      :visible="{ opacity: 1, y: 0 }"
-      :transition="{ duration: 800, delay: 0.5 }"
-    >
-      <div class="flex flex-col items-center justify-between gap-8 md:flex-row">
-        <div class="flex-1 space-y-4">
-          <h2 class="font-goldman">
-            Command Line Interface
-          </h2>
-          <p class="max-w-lg leading-5 text-muted-foreground">
-            Manage secrets and projects directly from your terminal. Fast, secure, and open-source. Read the
-            <NuxtLink to="/cli" class="text-primary">
-              documentation
-            </NuxtLink> for more details.
-          </p>
-        </div>
-
-        <div class="relative flex w-full max-w-xl gap-4 text-start">
-          <div
-            class="flex cursor-pointer flex-row gap-4 rounded-lg bg-[#0d1117] p-4 font-mono transition-all hover:translate-x-1 hover:shadow-lg"
-            title="Copy to clipboard"
-            @click="copyToClipboard(installCommand)"
-          >
-            <span>{{ installCommand }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex w-full flex-col items-center gap-4">
-        <p class="text-muted-foreground">
-          After installing, run the following commands to get started:
+  <section
+    id="cli" v-motion
+    class="w-full flex-col gap-8 border-b text-center md:text-start lg:p-20" :initial="{ opacity: 0, y: 40 }"
+    :visible="{ opacity: 1, y: 0 }" :transition="{ duration: 800 }"
+  >
+    <div class="my-4 flex flex-col items-center justify-between gap-8 md:flex-row">
+      <div class="flex flex-col gap-4">
+        <h2 class="font-goldman">
+          Command Line Interface
+        </h2>
+        <p class="max-w-lg leading-5 text-muted-foreground">
+          Manage secrets and projects directly from your terminal. Fast, secure, and open-source. Read the
+          <NuxtLink to="/cli" class="text-primary">
+            documentation
+          </NuxtLink> for more details.
         </p>
+      </div>
 
-        <div
-          class="relative w-full max-w-4xl cursor-pointer rounded-lg bg-[#0d1117] p-4 text-start font-mono transition-all hover:translate-x-1 hover:shadow-lg"
-          title="Copy to clipboard"
-          @click="copyToClipboard(cliCommands.join('\n'))"
-        >
-          <span v-for="(cmd, index) in cliCommands" :key="index" class="block">
-            {{ cmd }}
-          </span>
+      <div class="code-block relative">
+        <span>{{ installCommand }}</span>
+        <button class="hover:scale-sm absolute right-2 top-2 text-muted-foreground transition-all" title="Copy" @click="copyToClipboard(installCommand)">
+          <Icon name="ph:copy-bold" size="20" />
+        </button>
+      </div>
+    </div>
 
-          <div class="absolute bottom-2 right-2 z-10 flex select-none items-end gap-2 font-semibold text-muted-foreground">
-            <span>Powered by Go</span>
-            <img src="/gopher.png" width="60" height="60">
-          </div>
+    <div class="flex flex-col items-center gap-4">
+      <p class="leading-5 text-muted-foreground">
+        After installing, run the following commands to get started:
+      </p>
+
+      <div class="code-block relative w-full max-w-2xl">
+        <span v-for="(command, index) in cliCommands" :key="index" class="block">
+          {{ command }}
+        </span>
+        <button class="hover:scale-sm absolute right-2 top-2 text-muted-foreground transition-all" title="Copy" @click="copyToClipboard(cliCommands.join('\n'))">
+          <Icon name="ph:copy-bold" size="20" />
+        </button>
+
+        <div class="absolute bottom-2 right-2 z-10 hidden select-none items-end gap-2 font-semibold text-muted-foreground md:flex">
+          <span>Powered by Go</span>
+          <img src="/gopher.png" width="60" height="60">
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -142,14 +119,24 @@ const features = [
     icon: "dinkie-icons:lock",
   },
   {
-    title: "Role-Based Access Control",
+    title: "Access Control",
     description: "Manage who can view and edit secrets with fine-grained permissions.",
     icon: "dinkie-icons:entry",
   },
   {
-    title: "Audit Logs",
+    title: "Audit Logging",
     description: "Track sensitive operations like secret changes and organization updates.",
     icon: "dinkie-icons:right-magnifying-glass",
+  },
+  {
+    title: "CLI Support",
+    description: "Manage secrets and projects directly from your terminal.",
+    icon: "dinkie-icons:window-browser",
+  },
+  {
+    title: "Open Source",
+    description: "Built with Go, TypeScript, and Nuxt.js. Contributions are welcome!",
+    icon: "dinkie-icons:heart-black-suit-circled",
   },
 ]
 
@@ -220,3 +207,5 @@ definePageMeta({
   },
 })
 </script>
+
+i'm trying to implement an infinite scroll in the features section, but it is stuttering at the end of the loop. How can i make it seamless? it works if i remove flex-shrink-0

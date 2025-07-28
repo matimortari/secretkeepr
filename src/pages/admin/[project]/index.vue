@@ -13,12 +13,12 @@
       </h2>
 
       <nav class="navigation-group w-full flex-1 justify-end">
-        <button class="btn-primary" @click="openDialog('secret')">
+        <button class="btn-primary" @click="toggleDialog(true, 'secret')">
           <span class="hidden md:inline">Add New Secret</span>
           <Icon name="ph:plus-bold" size="20" />
         </button>
 
-        <button class="btn-secondary" @click="openDialog('env')">
+        <button class="btn-secondary" @click="toggleDialog(true, 'env')">
           <span class="hidden md:block">Import .env File</span>
           <Icon name="ph:upload-bold" size="20" />
         </button>
@@ -31,7 +31,12 @@
 
           <Transition name="dropdown" mode="out-in">
             <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm">
-              <li v-for="env in environments" :key="env" class="cursor-pointer rounded p-2 capitalize hover:bg-muted" @click="selectEnvironment(env)">
+              <li
+                v-for="env in environments"
+                :key="env"
+                class="cursor-pointer rounded p-2 capitalize hover:bg-muted"
+                @click="() => { selectedEnvironment = env; isDropdownOpen = false; handleExportToEnv(); }"
+              >
                 {{ env }}
               </li>
             </ul>
@@ -44,21 +49,21 @@
       </nav>
     </header>
 
-    <ProjectsSecretsTable :secrets="secrets" :project-id="project?.id ?? ''" @edit="secret => openDialog('secret', secret)" />
+    <ProjectsProjectSecrets :secrets="secrets" :project-id="project?.id ?? ''" @edit="toggleDialog(true, 'secret', $event)" />
 
     <ProjectsSecretDialog
-      :is-open="isSecretDialogOpen"
+      :is-open="isDialogOpen && dialogType === 'secret'"
       :selected-secret="selectedSecret"
       :project-id="project?.id ?? ''"
-      @close="closeDialog"
+      @close="toggleDialog(false)"
       @save="handleSaveSecret"
     />
 
     <ProjectsSecretImportDialog
-      :is-open="isSecretImportDialogOpen"
+      :is-open="isDialogOpen && dialogType === 'env'"
       :project-id="project?.id ?? ''"
       :existing-secrets="secrets"
-      @close="closeDialog"
+      @close="toggleDialog(false)"
       @save="handleImportFromEnv"
     />
   </div>
@@ -74,10 +79,9 @@ const { project, secrets } = useProjectSecrets(route.params.project as string)
 const projectsStore = useProjectsStore()
 const secretsStore = useSecretsStore()
 
+const isDialogOpen = ref(false)
+const dialogType = ref<"secret" | "env" | null>(null)
 const selectedSecret = ref<SecretType | null>(null)
-const activeDialog = ref<"secret" | "env" | null>(null)
-const isSecretDialogOpen = computed(() => activeDialog.value === "secret")
-const isSecretImportDialogOpen = computed(() => activeDialog.value === "env")
 const selectedEnvironment = ref("")
 const environments = ["development", "staging", "production"]
 const dropdownRef = ref<HTMLElement | null>(null)
@@ -89,24 +93,20 @@ useClickOutside(dropdownRef, () => {
 
 const selectedEnvironmentLabel = computed(() => (selectedEnvironment.value ? selectedEnvironment.value : ""))
 
-function selectEnvironment(env: string) {
-  selectedEnvironment.value = env
-  isDropdownOpen.value = false
-  handleExportToEnv()
-}
-
-function openDialog(type: "secret" | "env", secret?: SecretType) {
-  selectedSecret.value = type === "secret" ? secret || null : null
-  activeDialog.value = type
-}
-
-function closeDialog() {
-  activeDialog.value = null
-  selectedSecret.value = null
+function toggleDialog(open: boolean, type?: "secret" | "env", secret?: SecretType) {
+  isDialogOpen.value = open
+  if (open) {
+    dialogType.value = type ?? null
+    selectedSecret.value = type === "secret" ? secret ?? null : null
+  }
+  else {
+    dialogType.value = null
+    selectedSecret.value = null
+  }
 }
 
 async function handleImportFromEnv(importedSecrets: SecretType[]) {
-  closeDialog()
+  toggleDialog(false)
   try {
     for (const secret of importedSecrets) {
       const existingSecret = secretsStore.secrets.find(s => s.key === secret.key)
@@ -166,7 +166,7 @@ async function handleExportToEnv() {
 }
 
 async function handleSaveSecret(secret: SecretType) {
-  closeDialog()
+  toggleDialog(false)
   try {
     if (secret.id) {
       await secretsStore.updateSecret(projectId, secret.id, {
