@@ -32,7 +32,7 @@ export const useOrganizationStore = defineStore("organization", {
       return Math.ceil(state.auditLogs.total / state.auditLogs.limit)
     },
     hasNextPage(state): boolean {
-      return state.auditLogs.page < Math.ceil(state.auditLogs.total / state.auditLogs.limit)
+      return state.auditLogs.page < this.totalPages
     },
     hasPrevPage(state): boolean {
       return state.auditLogs.page > 1
@@ -40,6 +40,38 @@ export const useOrganizationStore = defineStore("organization", {
   },
 
   actions: {
+    requireOrgId(orgId: string) {
+      if (!orgId) {
+        const error = "Organization ID is required"
+        this.error = error
+        throw new Error(error)
+      }
+    },
+
+    requireOrgName(name?: string) {
+      if (!name || typeof name !== "string") {
+        const error = "Organization name is required"
+        this.error = error
+        throw new Error(error)
+      }
+    },
+
+    requireMemberInfo(memberId?: string, role?: Role, orgId?: string) {
+      if (!memberId || !role || !orgId) {
+        const error = "Member ID, role, and organization ID are required"
+        this.error = error
+        throw new Error(error)
+      }
+    },
+
+    requireMemberAndOrg(memberId?: string, orgId?: string) {
+      if (!memberId || !orgId) {
+        const error = "Member ID and organization ID are required"
+        this.error = error
+        throw new Error(error)
+      }
+    },
+
     setSelectedOrg(orgId: string) {
       const found = this.orgs.find(org => org.id === orgId)
       if (found) {
@@ -58,11 +90,7 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async createOrg(payload: CreateOrgPayload) {
-      if (!payload.name || typeof payload.name !== "string") {
-        this.error = "Organization name is required"
-        throw new Error(this.error)
-      }
-
+      this.requireOrgName(payload.name)
       this.isLoading = true
       this.error = null
 
@@ -72,7 +100,7 @@ export const useOrganizationStore = defineStore("organization", {
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to create organization"
         throw error
       }
       finally {
@@ -81,15 +109,8 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async updateOrg(id: string, payload: UpdateOrgPayload) {
-      if (!payload.name || typeof payload.name !== "string") {
-        this.error = "Organization name is required"
-        throw new Error(this.error)
-      }
-      if (!id) {
-        this.error = "Organization ID is required"
-        throw new Error(this.error)
-      }
-
+      this.requireOrgId(id)
+      this.requireOrgName(payload.name)
       this.isLoading = true
       this.error = null
 
@@ -103,7 +124,7 @@ export const useOrganizationStore = defineStore("organization", {
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to update organization"
         throw error
       }
       finally {
@@ -112,11 +133,7 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async deleteOrg(orgId: string) {
-      if (!orgId) {
-        this.error = "Organization ID is required"
-        throw new Error(this.error)
-      }
-
+      this.requireOrgId(orgId)
       this.isLoading = true
       this.error = null
 
@@ -128,7 +145,7 @@ export const useOrganizationStore = defineStore("organization", {
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to delete organization"
         throw error
       }
       finally {
@@ -137,11 +154,7 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async updateOrgMember(memberId: string, role: Role, orgId: string) {
-      if (!memberId || !role || !orgId) {
-        this.error = "Member ID, role, and organization ID are required"
-        throw new Error(this.error)
-      }
-
+      this.requireMemberInfo(memberId, role, orgId)
       this.isLoading = true
       this.error = null
 
@@ -151,7 +164,7 @@ export const useOrganizationStore = defineStore("organization", {
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to update member role"
         throw error
       }
       finally {
@@ -160,11 +173,7 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async removeOrgMember(memberId: string, orgId: string) {
-      if (!memberId || !orgId) {
-        this.error = "Member ID and organization ID are required"
-        throw new Error(this.error)
-      }
-
+      this.requireMemberAndOrg(memberId, orgId)
       this.isLoading = true
       this.error = null
 
@@ -174,7 +183,7 @@ export const useOrganizationStore = defineStore("organization", {
         return response
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to remove member"
         throw error
       }
       finally {
@@ -192,7 +201,7 @@ export const useOrganizationStore = defineStore("organization", {
         return inviteLink
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to create invite link"
         throw error
       }
       finally {
@@ -208,7 +217,7 @@ export const useOrganizationStore = defineStore("organization", {
         return await acceptOrgInviteService(token)
       }
       catch (error: any) {
-        this.error = error?.message
+        this.error = error?.message || "Failed to accept invite"
         throw error
       }
       finally {
@@ -217,11 +226,7 @@ export const useOrganizationStore = defineStore("organization", {
     },
 
     async getAuditLogs(orgId: string, page = 1, limit = 15) {
-      if (!orgId) {
-        this.auditLogs.error = "Organization ID is required"
-        throw new Error(this.auditLogs.error)
-      }
-
+      this.requireOrgId(orgId)
       this.isLoading = true
       this.auditLogs.error = null
 
@@ -237,7 +242,7 @@ export const useOrganizationStore = defineStore("organization", {
         this.auditLogs.page = 1
         this.auditLogs.limit = 15
         this.auditLogs.total = 0
-        this.auditLogs.error = error?.message
+        this.auditLogs.error = error?.message || "Failed to fetch audit logs"
         throw error
       }
       finally {
@@ -257,7 +262,7 @@ export const useOrganizationStore = defineStore("organization", {
         return response
       }
       catch (error: any) {
-        this.auditLogs.error = error?.message
+        this.auditLogs.error = error?.message || "Failed to delete audit logs"
         throw error
       }
       finally {

@@ -30,7 +30,7 @@
             type="file"
             accept="image/*"
             class="cursor-pointer opacity-0"
-            @change="handleImageChange"
+            @change="handleUploadImage"
           >
           <label for="image" class="btn">
             <Icon name="ph:image-bold" size="20" />
@@ -66,16 +66,10 @@ const props = defineProps<{
 
 const userStore = useUserStore()
 const orgStore = useOrganizationStore()
-
 const form = ref({
   name: props.user?.name || "",
   image: props.user?.image || "",
 })
-
-watch(() => userStore.user, (newUser) => {
-  form.value.name = newUser?.name || ""
-  form.value.image = newUser?.image || ""
-}, { immediate: true })
 
 const selectedOrganization = computed(() => orgStore.selectedOrg)
 
@@ -88,7 +82,8 @@ const currentMembership = computed(() => {
   return user.memberships.find(m => m.organization?.id === org.id) || null
 })
 
-async function handleImageChange(event: Event) {
+async function handleUploadImage(event: Event) {
+  userStore.error = null
   const input = event.target as HTMLInputElement
   if (!input.files || input.files.length === 0)
     return
@@ -98,7 +93,6 @@ async function handleImageChange(event: Event) {
   formData.append("file", file)
   formData.append("type", "avatar")
 
-  userStore.error = null
   try {
     const response = await userStore.updateUserImage(formData)
     form.value.image = response.imageUrl
@@ -107,26 +101,34 @@ async function handleImageChange(event: Event) {
     }
   }
   catch (error: any) {
-    console.error("Image upload failed:", error)
+    console.error("Failed to upload image:", error)
+    userStore.error = error?.message || "Failed to upload image."
   }
 }
 
 async function handleSubmit() {
-  if (!userStore.user)
-    return
-
   userStore.error = null
+  if (!userStore.user?.id)
+    return
+  if (!form.value.name.trim()) {
+    userStore.error = "User name cannot be empty."
+    return
+  }
+
   try {
-    const result = await userStore.updateUser({
+    await userStore.updateUser({
       name: form.value.name,
       image: userStore.user.image ?? undefined,
     })
-    if (!result)
-      throw new Error("Update failed")
-    await userStore.getUser()
   }
   catch (error: any) {
     console.error("Failed to update user data:", error)
+    userStore.error = error?.message || "Failed to update user data."
   }
 }
+
+watch(() => userStore.user, (newUser) => {
+  form.value.name = newUser?.name || ""
+  form.value.image = newUser?.image || ""
+}, { immediate: true })
 </script>

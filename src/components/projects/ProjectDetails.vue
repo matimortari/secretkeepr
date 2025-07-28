@@ -85,7 +85,7 @@
         </p>
 
         <input v-model="newMemberId" type="text" placeholder="User ID">
-        <select v-model="selectedNewMemberRole" class="min-w-[120px]">
+        <select v-model="newMemberRole" class="min-w-[120px]">
           <option v-for="role in roles" :key="role.value" :value="role.value">
             {{ role.label }}
           </option>
@@ -108,38 +108,26 @@ const props = defineProps<{
   project: ProjectType | null
 }>()
 
+const roles: { value: Role, label: string }[] = [
+  { value: "admin", label: "Admin" },
+  { value: "member", label: "Member" },
+]
+
 const userStore = useUserStore()
 const projectsStore = useProjectsStore()
-
+const addMemberError = ref<string | null>(null)
+const addMemberSuccess = ref<string | null>(null)
+const newMemberId = ref("")
+const newMemberRole = ref<Role>(roles[0].value)
 const form = ref({
   name: props.project?.name || "",
   description: props.project?.description || "",
   id: props.project?.id || "",
 })
 
-const roles: { value: Role, label: string }[] = [
-  { value: "admin", label: "Admin" },
-  { value: "member", label: "Member" },
-]
-
-const addMemberError = ref("")
-const addMemberSuccess = ref("")
-const newMemberId = ref("")
-const selectedNewMemberRole = ref<Role>(roles[0].value)
-
-watch(() => props.project, (newProject) => {
-  form.value.name = newProject?.name || ""
-  form.value.description = newProject?.description || ""
-  form.value.id = newProject?.id || ""
-})
-
 const projectMembers = computed(() => props.project?.members || [])
 const currentUserId = computed(() => userStore.user?.id)
-
-const currentUserRole = computed(() => {
-  return projectMembers.value.find(m => m.user?.email === userStore.user?.email)?.role ?? "member"
-})
-
+const currentUserRole = computed(() => projectMembers.value.find(m => m.userId === currentUserId.value)?.role ?? "member")
 const isOwner = computed(() => currentUserRole.value === "owner")
 const isAdmin = computed(() => currentUserRole.value === "admin")
 
@@ -150,7 +138,7 @@ onMounted(() => {
 async function handleAddMember() {
   addMemberError.value = ""
   addMemberSuccess.value = ""
-
+  projectsStore.error = null
   if (!props.project?.id || !newMemberId.value.trim()) {
     addMemberError.value = "User ID is required."
     return
@@ -159,13 +147,12 @@ async function handleAddMember() {
   try {
     await projectsStore.addProjectMember(props.project.id, {
       userId: newMemberId.value.trim(),
-      role: selectedNewMemberRole.value,
+      role: newMemberRole.value,
     })
     await projectsStore.getProjects()
-
     addMemberSuccess.value = "Member added successfully."
     newMemberId.value = ""
-    selectedNewMemberRole.value = roles[0].value
+    newMemberRole.value = roles[0].value
   }
   catch (error: any) {
     console.error("Failed to add project member", error)
@@ -174,7 +161,7 @@ async function handleAddMember() {
 }
 
 async function handleUpdateMemberRole(userId: string, newRole: Role) {
-  projectsStore.error = ""
+  projectsStore.error = null
   if (!props.project?.id)
     return
 
@@ -189,10 +176,10 @@ async function handleUpdateMemberRole(userId: string, newRole: Role) {
 }
 
 async function handleRemoveMember(userId: string) {
-  projectsStore.error = ""
+  projectsStore.error = null
   if (!props.project?.id)
     return
-  if (!window.confirm("Are you sure you want to remove this member?"))
+  if (!confirm("Are you sure you want to remove this member?"))
     return
 
   try {
@@ -201,12 +188,13 @@ async function handleRemoveMember(userId: string) {
   }
   catch (error: any) {
     console.error("Failed to remove member", error)
+    projectsStore.error = error?.message || "Failed to remove project member."
   }
 }
 
 async function handleSubmit() {
-  projectsStore.error = ""
-  if (!props.project)
+  projectsStore.error = null
+  if (!props.project?.id)
     return
 
   try {
@@ -219,6 +207,13 @@ async function handleSubmit() {
   }
   catch (error: any) {
     console.error("Failed to update project", error)
+    projectsStore.error = error?.message || "Failed to update project."
   }
 }
+
+watch(() => props.project, (newProject) => {
+  form.value.name = newProject?.name || ""
+  form.value.description = newProject?.description || ""
+  form.value.id = newProject?.id || ""
+}, { immediate: true })
 </script>

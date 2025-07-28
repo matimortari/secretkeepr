@@ -26,7 +26,7 @@
       </button>
     </form>
 
-    <p class="text-caption flex min-h-6 flex-col items-center gap-2">
+    <p class="text-caption flex min-h-4 flex-col items-center gap-2">
       <span v-if="orgStore.error" class="text-danger-foreground">{{ orgStore.error }}</span>
       <span v-else-if="joinOrgSuccess" class="text-success-foreground">
         {{ joinOrgSuccess }}
@@ -40,25 +40,22 @@ import { useOrganizationStore } from "~/lib/stores/organization-store"
 
 const route = useRoute()
 const router = useRouter()
-const token = ref(route.query.token as string || "")
-
 const orgStore = useOrganizationStore()
+const token = ref(route.query.token as string || "")
 const joinOrgSuccess = ref("")
 
 async function handleAcceptInvite() {
   orgStore.error = null
   joinOrgSuccess.value = ""
 
-  if (!token.value)
-    return
-
   try {
     await orgStore.acceptInvite(token.value)
-    joinOrgSuccess.value = "Invitation accepted! Redirecting..."
+    joinOrgSuccess.value = "Invitation accepted! Redirecting."
     setTimeout(() => router.push("/admin/projects"), 2000)
   }
   catch (error: any) {
     console.error("Failed to accept invite:", error)
+    orgStore.error = error.message || "Failed to accept invite."
   }
 }
 

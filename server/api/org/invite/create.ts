@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 import db from "~~/server/lib/db"
-import { createAuditLog, getUserFromSession, requireOrgRole } from "~~/server/lib/utils"
+import { createAuditLog, getBaseUrl, getUserFromSession, requireOrgRole } from "~~/server/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -30,15 +30,9 @@ export default defineEventHandler(async (event) => {
       token,
       orgId: membership.orgId,
       role: inviteRole,
-      expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000), // 12h expiration
+      expiresAt: new Date(Date.now() + 1 * 60 * 60 * 1000), // Expires in 1 hour
     },
   })
-
-  function getBaseUrl(event: any) {
-    const protocol = event.req.headers["x-forwarded-proto"] || "http"
-    const host = event.req.headers.host
-    return `${protocol}://${host}`
-  }
 
   await createAuditLog({
     userId: sessionUser.id!,

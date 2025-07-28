@@ -11,3 +11,9 @@ export function formatDate(dateString: Date | undefined | null): string {
 
   return formattedDate.charAt(0).toLowerCase() + formattedDate.slice(1)
 }
+
+// Copy a string to the clipboard
+export function copyToClipboard(val: string) {
+  if (val)
+    navigator.clipboard.writeText(val)
+}
