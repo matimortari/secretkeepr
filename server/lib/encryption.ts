@@ -2,10 +2,10 @@ import { Buffer } from "node:buffer"
 import crypto from "node:crypto"
 
 const algorithm = "aes-256-cbc"
-const secret = process.env.SECRET_KEY
+const secret = process.env.ENCRYPTION_KEY
 
 if (!secret || secret.length < 32) {
-  throw new Error("SECRET_KEY must be set and at least 32 characters long")
+  throw new Error("ENCRYPTION_KEY must be set and at least 32 characters long")
 }
 
 const key = crypto.createHash("sha256").update(secret).digest()

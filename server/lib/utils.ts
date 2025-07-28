@@ -1,9 +1,7 @@
 import type { EventHandlerRequest, H3Event } from "h3"
-import type { IncomingMessage } from "node:http"
 import { getServerSession } from "#auth"
 import db from "~~/server/lib/db"
 
-// Find user from session or throw an error if not found
 export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
   const session = await getServerSession(event)
   if (session?.user?.id) {
@@ -38,7 +36,6 @@ export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
     throw createError({ statusCode: 401, statusMessage: "Invalid or expired token" })
   }
 
-  // Return user info as a "session user" object
   return {
     id: userWithToken.id,
     name: userWithToken.name,
@@ -47,7 +44,6 @@ export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
   }
 }
 
-// Check if the user has a specific role in an organization
 export async function requireOrgRole(userId: string, orgId: string, roles: string[]) {
   const membership = await db.userOrganizationMembership.findUnique({
     where: { userId_orgId: { userId, orgId } },
@@ -63,7 +59,6 @@ export async function requireOrgRole(userId: string, orgId: string, roles: strin
   return membership
 }
 
-// Check if the user has a specific role in a project
 export async function requireProjectRole(userId: string, projectId: string, roles: string[]) {
   const membership = await db.projectMember.findUnique({
     where: { userId_projectId: { userId, projectId } },
@@ -80,19 +75,7 @@ export async function requireProjectRole(userId: string, projectId: string, role
   return membership
 }
 
-interface AuditLogType {
-  id?: string
-  userId: string
-  orgId: string
-  action: string
-  resource: string
-  metadata?: Record<string, any>
-  createdAt?: Date
-  req?: IncomingMessage
-}
-
-// Handle audit logging for actions performed by users
-export async function createAuditLog({ userId, orgId, action, resource, metadata = {}, req }: AuditLogType) {
+export async function createAuditLog({ userId, orgId, action, resource, metadata = {}, req }: any) {
   const ip = (req?.headers?.["x-forwarded-for"] as string)?.split(",")[0].trim() || req?.socket?.remoteAddress || null
   const userAgent = req?.headers?.["user-agent"] || null
 
@@ -109,4 +92,18 @@ export async function createAuditLog({ userId, orgId, action, resource, metadata
       },
     },
   })
+}
+
+export function sanitizeMetadata(metadata: any) {
+  if (metadata && typeof metadata === "object" && !Array.isArray(metadata)) {
+    const { ip, userAgent, ...safeMetadata } = metadata as Record<string, unknown>
+    return safeMetadata
+  }
+  return metadata
+}
+
+export function getBaseUrl(event: any) {
+  const protocol = event.req.headers["x-forwarded-proto"] || "http"
+  const host = event.req.headers.host
+  return `${protocol}://${host}`
 }

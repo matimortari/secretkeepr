@@ -45,7 +45,8 @@ async function handleDeleteUser() {
     await signOut({ callbackUrl: "/" })
   }
   catch (error: any) {
-    console.error("Failed to delete user:", error)
+    console.error("Failed to delete account:", error)
+    userStore.error = error?.message || "Failed to delete account."
   }
 }
 </script>

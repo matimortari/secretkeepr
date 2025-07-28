@@ -1,6 +1,5 @@
-import type { JsonValue } from "@prisma/client/runtime/library"
 import db from "~~/server/lib/db"
-import { getUserFromSession, requireOrgRole } from "~~/server/lib/utils"
+import { getUserFromSession, requireOrgRole, sanitizeMetadata } from "~~/server/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -41,14 +40,6 @@ export default defineEventHandler(async (event) => {
   ])
 
   const isPrivileged = await requireOrgRole(sessionUser.id!, orgId, ["owner", "admin"])
-
-  function sanitizeMetadata(metadata: JsonValue) {
-    if (metadata && typeof metadata === "object" && !Array.isArray(metadata)) {
-      const { ip, userAgent, ...safeMetadata } = metadata as Record<string, unknown>
-      return safeMetadata
-    }
-    return metadata
-  }
 
   return {
     page: pageNum,

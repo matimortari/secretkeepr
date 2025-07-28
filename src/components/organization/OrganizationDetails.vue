@@ -88,7 +88,7 @@
 
               <nav v-if="orgUser.role !== 'owner' && ['owner'].includes(currentUserRole)" class="navigation-group justify-end">
                 <select v-model="userRoles[orgUser.id ?? '']" class="min-w-[100px]">
-                  <option v-for="role in assignableRoles" :key="role.value" :value="role.value">
+                  <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value" class="capitalize">
                     {{ role.label }}
                   </option>
                 </select>
@@ -146,17 +146,13 @@ const roles = [
   { value: "member", label: "Member" },
 ] satisfies { value: Role, label: string }[]
 
-const assignableRoles = roles.filter(r => r.value !== "owner")
-
 const projectsStore = useProjectsStore()
 const userStore = useUserStore()
 const orgStore = useOrganizationStore()
-
 const { projects } = storeToRefs(projectsStore)
 const { user } = storeToRefs(userStore)
-const inviteError = ref("")
+const inviteError = ref<string | null>(null)
 const inviteSuccess = ref("")
-
 const form = ref({ name: props.org?.name || "" })
 const userRoles = ref<Record<string, Role>>({})
 
@@ -184,14 +180,27 @@ const usersWithRoles = computed(() => {
   })) ?? []
 })
 
+async function handleCreateInvite() {
+  inviteError.value = ""
+  inviteSuccess.value = ""
+  try {
+    const link = await orgStore.createInviteLink()
+    navigator.clipboard.writeText(link)
+    inviteSuccess.value = "Invite link copied to clipboard!"
+  }
+  catch (error: any) {
+    inviteError.value = error?.message || "Failed to create invite link."
+    console.error("Failed to create invite link:", error)
+  }
+}
+
 async function handleUpdateMemberRole(memberId: string, newRole: Role) {
-  orgStore.error = ""
+  orgStore.error = null
   if (!props.org?.id)
     return
 
   try {
     await orgStore.updateOrgMember(memberId, newRole, props.org.id)
-    await userStore.getUser()
   }
   catch (error: any) {
     console.error("Failed to update member role:", error)
@@ -199,7 +208,7 @@ async function handleUpdateMemberRole(memberId: string, newRole: Role) {
 }
 
 async function handleRemoveMember(memberId: string) {
-  orgStore.error = ""
+  orgStore.error = null
   if (!props.org?.id)
     return
   if (!confirm("Are you sure you want to remove this member?"))
@@ -207,35 +216,15 @@ async function handleRemoveMember(memberId: string) {
 
   try {
     await orgStore.removeOrgMember(memberId, props.org.id)
-    await userStore.getUser()
   }
   catch (error: any) {
     console.error("Failed to remove member:", error)
   }
 }
 
-async function handleCreateInvite() {
-  inviteError.value = ""
-  inviteSuccess.value = ""
-  try {
-    const link = await orgStore.createInviteLink()
-    if (link) {
-      await navigator.clipboard.writeText(link)
-      inviteSuccess.value = "Invite link copied to clipboard!"
-    }
-    else {
-      inviteError.value = "Failed to generate invite link."
-    }
-  }
-  catch (error: any) {
-    inviteError.value = error?.message || "Failed to copy invite link."
-    console.error("Invite generation error:", error)
-  }
-}
-
 async function handleSubmit() {
-  orgStore.error = ""
-  if (!props.org)
+  orgStore.error = null
+  if (!props.org?.id)
     return
 
   try {

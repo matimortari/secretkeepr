@@ -13,19 +13,19 @@
       </h2>
 
       <nav class="navigation-group w-full flex-1 justify-end">
-        <button class="btn-primary" @click="toggleDialog(true, 'secret')">
+        <button class="btn-primary" @click="() => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = null }">
           <span class="hidden md:inline">Add New Secret</span>
           <Icon name="ph:plus-bold" size="20" />
         </button>
 
-        <button class="btn-secondary" @click="toggleDialog(true, 'env')">
-          <span class="hidden md:block">Import .env File</span>
+        <button class="btn-secondary" @click="() => { isDialogOpen = true; dialogType = 'env'; selectedSecret = null }">
+          <span class="hidden md:block">Import</span>
           <Icon name="ph:upload-bold" size="20" />
         </button>
 
         <div ref="dropdownRef" class="relative">
           <button class="btn" @click="isDropdownOpen = !isDropdownOpen">
-            <span class="hidden md:block">{{ selectedEnvironmentLabel || "Export" }}</span>
+            <span class="hidden md:block">Export</span>
             <Icon name="ph:download-bold" size="20" />
           </button>
 
@@ -49,13 +49,17 @@
       </nav>
     </header>
 
-    <ProjectsProjectSecrets :secrets="secrets" :project-id="project?.id ?? ''" @edit="toggleDialog(true, 'secret', $event)" />
+    <ProjectsProjectSecrets
+      :secrets="secrets"
+      :project-id="project?.id ?? ''"
+      @edit="(secret) => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = secret }"
+    />
 
     <ProjectsSecretDialog
       :is-open="isDialogOpen && dialogType === 'secret'"
       :selected-secret="selectedSecret"
       :project-id="project?.id ?? ''"
-      @close="toggleDialog(false)"
+      @close="() => { isDialogOpen = false; dialogType = null; selectedSecret = null }"
       @save="handleSaveSecret"
     />
 
@@ -63,7 +67,7 @@
       :is-open="isDialogOpen && dialogType === 'env'"
       :project-id="project?.id ?? ''"
       :existing-secrets="secrets"
-      @close="toggleDialog(false)"
+      @close="() => { isDialogOpen = false; dialogType = null; selectedSecret = null }"
       @save="handleImportFromEnv"
     />
   </div>
@@ -75,10 +79,9 @@ import { useSecretsStore } from "~/lib/stores/secrets-store"
 
 const route = useRoute()
 const projectId = route.params.project as string
-const { project, secrets } = useProjectSecrets(route.params.project as string)
+const { project, secrets } = useProjectSecrets(projectId)
 const projectsStore = useProjectsStore()
 const secretsStore = useSecretsStore()
-
 const isDialogOpen = ref(false)
 const dialogType = ref<"secret" | "env" | null>(null)
 const selectedSecret = ref<SecretType | null>(null)
@@ -91,22 +94,11 @@ useClickOutside(dropdownRef, () => {
   isDropdownOpen.value = false
 }, { escapeKey: true })
 
-const selectedEnvironmentLabel = computed(() => (selectedEnvironment.value ? selectedEnvironment.value : ""))
-
-function toggleDialog(open: boolean, type?: "secret" | "env", secret?: SecretType) {
-  isDialogOpen.value = open
-  if (open) {
-    dialogType.value = type ?? null
-    selectedSecret.value = type === "secret" ? secret ?? null : null
-  }
-  else {
-    dialogType.value = null
-    selectedSecret.value = null
-  }
-}
-
 async function handleImportFromEnv(importedSecrets: SecretType[]) {
-  toggleDialog(false)
+  isDialogOpen.value = false
+  dialogType.value = null
+  selectedSecret.value = null
+
   try {
     for (const secret of importedSecrets) {
       const existingSecret = secretsStore.secrets.find(s => s.key === secret.key)
@@ -125,7 +117,6 @@ async function handleImportFromEnv(importedSecrets: SecretType[]) {
         })
       }
     }
-
     await secretsStore.getSecretsByProject(projectId)
   }
   catch (error: any) {
@@ -166,7 +157,10 @@ async function handleExportToEnv() {
 }
 
 async function handleSaveSecret(secret: SecretType) {
-  toggleDialog(false)
+  isDialogOpen.value = false
+  dialogType.value = null
+  selectedSecret.value = null
+
   try {
     if (secret.id) {
       await secretsStore.updateSecret(projectId, secret.id, {
@@ -198,20 +192,16 @@ onMounted(async () => {
 
 watch(() => projectId, async (id) => {
   await projectsStore.getProjects()
-  await secretsStore.getSecretsByProject(id)
-
-  const newProject = projectsStore.projects?.find(p => p.id === id)
-  const titleName = newProject?.name
+  const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name
 
   useHead({
-    title: `${titleName} – SecretKeepR`,
+    title: `${projectTitle} – SecretKeepR`,
     link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}` }, { rel: "icon", href: "/favicon.ico" }],
-
     meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
   })
 
   useSeoMeta({
-    title: `${titleName} – SecretKeepR`,
+    title: `${projectTitle} – SecretKeepR`,
     description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
   })
 }, { immediate: true })

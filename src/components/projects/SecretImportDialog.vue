@@ -46,16 +46,8 @@ const emit = defineEmits<{
 
 const secretStore = useSecretsStore()
 const envText = ref("")
-const environments: Environment[] = ["development", "staging", "production"]
 const selectedEnv = ref<Environment>("development")
-
-watch(() => props.isOpen, (open) => {
-  if (open) {
-    envText.value = ""
-    selectedEnv.value = "development"
-    secretStore.error = ""
-  }
-})
+const environments: Environment[] = ["development", "staging", "production"]
 
 function parseEnv(text: string): Record<string, string> {
   const lines = text.split("\n")
@@ -78,8 +70,7 @@ function parseEnv(text: string): Record<string, string> {
 }
 
 function handleSubmit() {
-  secretStore.error = ""
-
+  secretStore.error = null
   const parsed = parseEnv(envText.value)
   if (Object.entries(parsed).length === 0) {
     secretStore.error = "No valid key-value pairs found."
@@ -87,23 +78,18 @@ function handleSubmit() {
   }
 
   const duplicateKeys: string[] = []
-
-  // Check for conflicts in the selected environment
   for (const [key] of Object.entries(parsed)) {
     const existing = props.existingSecrets.find(secret => secret.key === key)
     const existsInEnv = existing?.values?.some(v => v.environment === selectedEnv.value)
-
     if (existsInEnv) {
       duplicateKeys.push(key)
     }
   }
-
   if (duplicateKeys.length > 0) {
     secretStore.error = `The following keys already exist: ${duplicateKeys.join(", ")}`
     return
   }
 
-  // Construct payload only if no duplicate in selected environment
   const payload: SecretType[] = Object.entries(parsed).map(([key, value]) => {
     const secretId = crypto.randomUUID()
     return {
@@ -124,4 +110,12 @@ function handleSubmit() {
   emit("save", payload)
   emit("close")
 }
+
+watch(() => props.isOpen, (open) => {
+  if (open) {
+    envText.value = ""
+    selectedEnv.value = "development"
+    secretStore.error = null
+  }
+})
 </script>
