@@ -1,5 +1,8 @@
+import { getBaseUrl } from "~/lib/utils"
+
 export async function getUserService(): Promise<UserType> {
-  const response = await fetch("/api/user", {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/user`, {
     method: "GET",
   })
   if (!response.ok)
@@ -8,7 +11,8 @@ export async function getUserService(): Promise<UserType> {
 }
 
 export async function updateUserService(data: UpdateUserPayload): Promise<{ message: string, user: UserType }> {
-  const response = await fetch("/api/user", {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/user`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -19,7 +23,8 @@ export async function updateUserService(data: UpdateUserPayload): Promise<{ mess
 }
 
 export async function updateUserImageService(formData: FormData): Promise<{ imageUrl: string }> {
-  const response = await fetch("/api/user/image-upload", {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/user/image-upload`, {
     method: "POST",
     body: formData,
   })
@@ -29,7 +34,8 @@ export async function updateUserImageService(formData: FormData): Promise<{ imag
 }
 
 export async function deleteUserService(): Promise<{ message: string }> {
-  const response = await fetch("/api/user", {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/user`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })

@@ -64,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+import auth from "~/lib/middleware/auth"
 import { useProjectsStore } from "~/lib/stores/projects-store"
 import { useUserStore } from "~/lib/stores/user-store"
 
@@ -120,9 +121,6 @@ useSeoMeta({
 
 definePageMeta({
   layout: "admin",
-  auth: {
-    unauthenticatedOnly: false,
-    navigateUnauthenticatedTo: "/sign-in",
-  },
+  middleware: auth,
 })
 </script>

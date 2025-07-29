@@ -83,16 +83,17 @@ export const useProjectsStore = defineStore("projects", {
       }
     },
 
-    async updateProject(payload: UpdateProjectPayload) {
+    async updateProject(projectId: string, payload: UpdateProjectPayload) {
       this.validateUpdatePayload(payload)
+      this.requireProjectId(projectId)
       this.isLoading = true
       this.error = null
 
       try {
-        const response = await updateProjectService(payload)
+        const response = await updateProjectService(projectId, payload)
         this.currentProject = response.updatedProject
         this.projects = this.projects.map(p =>
-          p.id === payload.id ? response.updatedProject : p,
+          p.id === projectId ? response.updatedProject : p,
         )
         return response
       }
