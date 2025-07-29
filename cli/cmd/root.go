@@ -9,7 +9,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "secretkeepr",
-	Short: "SecretKeepR CLI allows you to manage your organization secrets securely from your terminal",
+	Short: "Manage your organization secrets securely from your terminal",
 }
 
 func Execute() {
