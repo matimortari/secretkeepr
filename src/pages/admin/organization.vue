@@ -17,6 +17,7 @@
 </template>
 
 <script setup lang="ts">
+import auth from "~/lib/middleware/auth"
 import { useOrganizationStore } from "~/lib/stores/organization-store"
 
 const orgStore = useOrganizationStore()
@@ -42,9 +43,6 @@ useSeoMeta({
 
 definePageMeta({
   layout: "admin",
-  auth: {
-    unauthenticatedOnly: false,
-    navigateUnauthenticatedTo: "/sign-in",
-  },
+  middleware: auth,
 })
 </script>
