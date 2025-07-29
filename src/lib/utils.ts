@@ -1,4 +1,3 @@
-// Format a date string to a more readable format
 export function formatDate(dateString: Date | undefined | null): string {
   if (!dateString)
     return "-"
@@ -12,8 +11,17 @@ export function formatDate(dateString: Date | undefined | null): string {
   return formattedDate.charAt(0).toLowerCase() + formattedDate.slice(1)
 }
 
-// Copy a string to the clipboard
 export function copyToClipboard(val: string) {
   if (val)
     navigator.clipboard.writeText(val)
+}
+
+export function getBaseUrl(): string {
+  const config = useRuntimeConfig()
+  const url = config.public.baseUrl
+  if (!url || typeof url !== "string") {
+    throw new Error("Base URL is not defined in runtime config.")
+  }
+
+  return url
 }
