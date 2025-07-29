@@ -1,14 +1,12 @@
 import type { EventHandlerRequest, H3Event } from "h3"
-import { getServerSession } from "#auth"
 import db from "~~/server/lib/db"
 
 export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
-  const session = await getServerSession(event)
+  const session = await getUserSession(event)
   if (session?.user?.id) {
     return session.user
   }
 
-  // If no session, try CLI token in Authorization header
   const authHeader = event.node.req.headers.authorization
   if (!authHeader) {
     throw createError({ statusCode: 401, statusMessage: "Unauthorized" })
@@ -19,7 +17,6 @@ export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
     throw createError({ statusCode: 401, statusMessage: "Unauthorized" })
   }
 
-  // Lookup user by CLI token in DB
   const userWithToken = await db.user.findFirst({
     where: {
       cliTokens: {
@@ -36,12 +33,7 @@ export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
     throw createError({ statusCode: 401, statusMessage: "Invalid or expired token" })
   }
 
-  return {
-    id: userWithToken.id,
-    name: userWithToken.name,
-    email: userWithToken.email,
-    image: userWithToken.image,
-  }
+  return userWithToken
 }
 
 export async function requireOrgRole(userId: string, orgId: string, roles: string[]) {
@@ -102,7 +94,7 @@ export function sanitizeMetadata(metadata: any) {
   return metadata
 }
 
-export function getBaseUrl(event: any) {
+export function getInviteBaseUrl(event: any) {
   const protocol = event.req.headers["x-forwarded-proto"] || "http"
   const host = event.req.headers.host
   return `${protocol}://${host}`

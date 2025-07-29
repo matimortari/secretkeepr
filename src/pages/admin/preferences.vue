@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+import auth from "~/lib/middleware/auth"
 import { useUserStore } from "~/lib/stores/user-store"
 
 const userStore = useUserStore()
@@ -38,9 +39,6 @@ useSeoMeta({
 
 definePageMeta({
   layout: "admin",
-  auth: {
-    unauthenticatedOnly: false,
-    navigateUnauthenticatedTo: "/sign-in",
-  },
+  middleware: auth,
 })
 </script>

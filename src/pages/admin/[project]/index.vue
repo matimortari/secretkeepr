@@ -74,6 +74,7 @@
 </template>
 
 <script setup lang="ts">
+import auth from "~/lib/middleware/auth"
 import { useProjectsStore } from "~/lib/stores/projects-store"
 import { useSecretsStore } from "~/lib/stores/secrets-store"
 
@@ -208,10 +209,7 @@ watch(() => projectId, async (id) => {
 
 definePageMeta({
   layout: "admin",
-  auth: {
-    unauthenticatedOnly: false,
-    navigateUnauthenticatedTo: "/sign-in",
-  },
+  middleware: auth,
 })
 </script>
 
