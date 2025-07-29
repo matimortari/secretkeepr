@@ -112,7 +112,6 @@ interface CreateProjectPayload {
 }
 
 interface UpdateProjectPayload {
-  id: string
   name?: string
   description?: string | null
 }

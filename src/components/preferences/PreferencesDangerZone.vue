@@ -32,8 +32,9 @@
 <script setup lang="ts">
 import { useUserStore } from "~/lib/stores/user-store"
 
-const { signOut } = useAuth()
 const userStore = useUserStore()
+const { clear } = useUserSession()
+const router = useRouter()
 
 async function handleDeleteUser() {
   userStore.error = null
@@ -42,7 +43,8 @@ async function handleDeleteUser() {
 
   try {
     await userStore.deleteUser()
-    await signOut({ callbackUrl: "/" })
+    clear()
+    await router.push("/")
   }
   catch (error: any) {
     console.error("Failed to delete account:", error)

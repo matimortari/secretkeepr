@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 import db from "~~/server/lib/db"
-import { createAuditLog, getBaseUrl, getUserFromSession, requireOrgRole } from "~~/server/lib/utils"
+import { createAuditLog, getInviteBaseUrl, getUserFromSession, requireOrgRole } from "~~/server/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -45,5 +45,5 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  return { message: "Invitation link created successfully", inviteLink: `${getBaseUrl(event)}/setup/join-org?token=${token}` }
+  return { message: "Invitation link created successfully", inviteLink: `${getInviteBaseUrl(event)}/setup/join-org?token=${token}` }
 })
