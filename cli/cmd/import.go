@@ -18,7 +18,6 @@ var (
 	importFile      string
 )
 
-// parseDotEnv reads key-value pairs from a .env file into a map.
 func parseDotEnv(filename string) (map[string]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -44,12 +43,10 @@ func parseDotEnv(filename string) (map[string]string, error) {
 
 		key := strings.TrimSpace(parts[0])
 		value := strings.Trim(strings.TrimSpace(parts[1]), `"'`)
-
 		if key != "" && value != "" {
 			secrets[key] = value
 		}
 	}
-
 	if err := scanner.Err(); err != nil {
 		return nil, err
 	}
@@ -57,7 +54,6 @@ func parseDotEnv(filename string) (map[string]string, error) {
 	return secrets, nil
 }
 
-// postSecret sends a single secret to the API for a given project and environment.
 func postSecret(token, projectID, key, environment, value string) error {
 	payload := map[string]any{
 		"key": key,
@@ -79,7 +75,6 @@ func postSecret(token, projectID, key, environment, value string) error {
 		return err
 	}
 	defer resp.Body.Close()
-
 	if resp.StatusCode != 200 && resp.StatusCode != 201 {
 		return fmt.Errorf("API returned status: %s", resp.Status)
 	}
@@ -87,7 +82,6 @@ func postSecret(token, projectID, key, environment, value string) error {
 	return nil
 }
 
-// importCmd imports secrets from a .env file into a given project/environment.
 var importCmd = &cobra.Command{
 	Use:   "import",
 	Short: "Import secrets from a local .env file into a SecretKeepR project environment",
@@ -114,7 +108,6 @@ var importCmd = &cobra.Command{
 			fmt.Printf("Failed to parse .env file: %v\n", err)
 			return
 		}
-
 		if len(secrets) == 0 {
 			fmt.Println("No secrets found in .env file.")
 			return
