@@ -203,5 +203,3 @@ definePageMeta({
   },
 })
 </script>
-
-i'm trying to implement an infinite scroll in the features section, but it is stuttering at the end of the loop. How can i make it seamless? it works if i remove flex-shrink-0
