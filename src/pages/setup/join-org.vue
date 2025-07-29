@@ -36,6 +36,7 @@
 </template>
 
 <script setup lang="ts">
+import auth from "~/lib/middleware/auth"
 import { useOrganizationStore } from "~/lib/stores/organization-store"
 
 const route = useRoute()
@@ -72,9 +73,6 @@ useSeoMeta({
 
 definePageMeta({
   layout: "fullscreen",
-  auth: {
-    unauthenticatedOnly: false,
-    navigateUnauthenticatedTo: "/sign-in",
-  },
+  middleware: auth,
 })
 </script>
