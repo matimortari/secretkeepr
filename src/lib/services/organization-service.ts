@@ -1,5 +1,8 @@
+import { getBaseUrl } from "~/lib/utils"
+
 export async function createOrgService(data: CreateOrgPayload): Promise<{ message: string, newOrg: OrganizationType }> {
-  const response = await fetch("/api/org", {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/org`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -10,7 +13,8 @@ export async function createOrgService(data: CreateOrgPayload): Promise<{ messag
 }
 
 export async function updateOrgService(orgId: string, data: UpdateOrgPayload): Promise<{ message: string, updatedOrg: OrganizationType }> {
-  const response = await fetch(`/api/org/${orgId}`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/org/${orgId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -21,7 +25,8 @@ export async function updateOrgService(orgId: string, data: UpdateOrgPayload): P
 }
 
 export async function deleteOrgService(orgId: string): Promise<{ message: string, orgId: string }> {
-  const response = await fetch(`/api/org/${orgId}`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/org/${orgId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
@@ -31,7 +36,8 @@ export async function deleteOrgService(orgId: string): Promise<{ message: string
 }
 
 export async function updateOrgMemberService(memberId: string, data: { role: Role, orgId: string }): Promise<UserOrgMembershipType> {
-  const response = await fetch(`/api/org/members/${memberId}`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/org/members/${memberId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -42,7 +48,8 @@ export async function updateOrgMemberService(memberId: string, data: { role: Rol
 }
 
 export async function removeUserFromOrgService(orgId: string, memberId: string): Promise<{ message: string, userId: string }> {
-  const response = await fetch(`/api/org/members/${memberId}?orgId=${orgId}`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/org/members/${memberId}?orgId=${orgId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
@@ -52,7 +59,8 @@ export async function removeUserFromOrgService(orgId: string, memberId: string):
 }
 
 export async function createOrgInviteService(): Promise<{ inviteLink: string }> {
-  const response = await fetch("/api/org/invite/create", {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/org/invite`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
   })
@@ -62,7 +70,8 @@ export async function createOrgInviteService(): Promise<{ inviteLink: string }> 
 }
 
 export async function acceptOrgInviteService(token: string): Promise<{ message: string }> {
-  const response = await fetch(`/api/org/invite/accept`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/org/invite/accept`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token }),
@@ -73,7 +82,8 @@ export async function acceptOrgInviteService(token: string): Promise<{ message: 
 }
 
 export async function getAuditLogsService(orgId: string, page: number = 1, limit: number = 20): Promise<AuditLogsResponse> {
-  const response = await fetch(`/api/org/audit-logs?orgId=${orgId}&page=${page}&limit=${limit}`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/org/audit-logs?orgId=${orgId}&page=${page}&limit=${limit}`, {
     method: "GET",
   })
   if (!response.ok)
@@ -82,7 +92,8 @@ export async function getAuditLogsService(orgId: string, page: number = 1, limit
 }
 
 export async function deleteAuditLogsService(data: DeleteAuditLogsPayload): Promise<{ message: string, deletedCount: number }> {
-  const response = await fetch("/api/org/audit-logs", {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/org/audit-logs`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),

@@ -56,7 +56,7 @@
       <button class="btn" @click="toggleTheme">
         <Icon :name="themeIcon" size="20" />
       </button>
-      <button class="btn" @click="() => signOut({ callbackUrl: '/' })">
+      <button class="btn" @click="clear">
         <Icon name="ph:sign-out-bold" size="20" />
         <span class="hidden md:inline">Sign Out</span>
       </button>
@@ -78,7 +78,7 @@ defineEmits<{
 }>()
 
 const { themeIcon, toggleTheme } = useTheme()
-const { signOut } = useAuth()
+const { clear } = useUserSession()
 const route = useRoute()
 const orgStore = useOrganizationStore()
 const userStore = useUserStore()

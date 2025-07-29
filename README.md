@@ -20,13 +20,13 @@ For detailed instructions on building and using the command-line interface, see 
 ## 🛠️ Stack
 
 - **Nuxt.js** with composition API.
-- **Nuxt/Auth** for authentication with Google & GitHub.
+- **OAuth** authentication with Google & GitHub.
 - **Prisma** for database management.
 - **Pinia** for global state management.
 - **TypeScript**.
 - **Tailwind CSS**.
 - **Framer Motion**.
-- **Go** with **Cobra** for CLI development.
+- **Go** and **Cobra** for CLI development.
 
 ## 📬 Contact
 

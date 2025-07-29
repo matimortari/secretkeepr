@@ -23,20 +23,31 @@
     :transition="{ duration: 600 }"
   >
     <nav class="navigation-group">
-      <button class="btn" @click="signIn('google', { callbackUrl: '/admin/projects' })">
-        <Icon name="simple-icons:google" size="25" />
-        <span>Sign In with Google</span>
-      </button>
-      <button class="btn" @click="signIn('github', { callbackUrl: '/admin/projects' })">
-        <Icon name="simple-icons:github" size="25" />
-        <span>Sign In with GitHub</span>
+      <button v-for="provider in providers" :key="provider.label" class="btn" @click="provider.click">
+        <Icon :name="provider.icon" size="25" />
+        <span>{{ provider.label }}</span>
       </button>
     </nav>
   </div>
 </template>
 
 <script setup lang="ts">
-const { signIn } = useAuth()
+const providers = [
+  {
+    label: "GitHub",
+    icon: "simple-icons:github",
+    click: async () => {
+      await navigateTo("/api/auth/github", { external: true })
+    },
+  },
+  {
+    label: "Google",
+    icon: "logos:google-icon",
+    click: async () => {
+      await navigateTo("/api/auth/google", { external: true })
+    },
+  },
+]
 
 useHead({
   title: "Sign In – SecretKeepR",
@@ -47,12 +58,5 @@ useHead({
 useSeoMeta({
   title: "Sign In – SecretKeepR",
   description: "Sign In to SecretKeepR.",
-})
-
-definePageMeta({
-  auth: {
-    unauthenticatedOnly: true,
-    navigateAuthenticatedTo: "/admin/projects",
-  },
 })
 </script>
