@@ -74,7 +74,7 @@ async function handleLeaveOrg() {
 
   try {
     await orgStore.removeOrgMember(userStore.user.id, props.org.id)
-    router.push("/setup/create-org")
+    await router.push("/setup/create-org")
   }
   catch (error: any) {
     leaveOrgError.value = error.message || "An error occurred while leaving the organization."
@@ -96,10 +96,10 @@ async function handleDeleteOrg() {
     if (result?.message === "Organization deleted successfully") {
       await userStore.getUser()
       if (!userStore.user?.memberships?.length) {
-        router.push("/setup/create-org")
+        await router.push("/setup/create-org")
       }
       else {
-        router.push("/admin/projects")
+        await router.push("/admin/projects")
       }
     }
   }

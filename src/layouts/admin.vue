@@ -18,7 +18,6 @@
 import { useOrganizationStore } from "~/lib/stores/organization-store"
 import { useUserStore } from "~/lib/stores/user-store"
 
-const { data: session, status } = useAuth()
 const router = useRouter()
 const userStore = useUserStore()
 const orgStore = useOrganizationStore()
@@ -34,18 +33,13 @@ const orgs = computed(() =>
 const activeOrg = computed(() => orgStore.selectedOrg)
 
 onMounted(async () => {
-  if (status.value !== "authenticated" || !session.value?.user) {
-    isLoading.value = false
-    return
-  }
-
   await userStore.getUser()
   if (!userStore.user?.memberships?.length) {
     return router.replace("/setup/create-org")
   }
 
   orgStore.orgs = orgs.value
-  const currentOrg = userStore.selectedOrg
+  const currentOrg = orgStore.selectedOrg
   if (currentOrg) {
     orgStore.setSelectedOrg(currentOrg.id)
   }

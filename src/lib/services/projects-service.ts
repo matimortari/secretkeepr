@@ -1,5 +1,8 @@
+import { getBaseUrl } from "~/lib/utils"
+
 export async function getProjectsService(): Promise<ProjectType[]> {
-  const response = await fetch("/api/projects", {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/projects`, {
     method: "GET",
   })
   if (!response.ok)
@@ -8,7 +11,8 @@ export async function getProjectsService(): Promise<ProjectType[]> {
 }
 
 export async function createProjectService(data: CreateProjectPayload): Promise<{ message: string, newProject: ProjectType }> {
-  const response = await fetch("/api/projects", {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/projects`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -18,8 +22,9 @@ export async function createProjectService(data: CreateProjectPayload): Promise<
   return await response.json()
 }
 
-export async function updateProjectService(data: UpdateProjectPayload): Promise<{ message: string, updatedProject: ProjectType }> {
-  const response = await fetch(`/api/projects/${data.id}`, {
+export async function updateProjectService(projectId: string, data: UpdateProjectPayload): Promise<{ message: string, updatedProject: ProjectType }> {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/projects/${projectId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -30,7 +35,8 @@ export async function updateProjectService(data: UpdateProjectPayload): Promise<
 }
 
 export async function deleteProjectService(projectId: string): Promise<{ message: string }> {
-  const response = await fetch(`/api/projects/${projectId}`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/projects/${projectId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
@@ -40,7 +46,8 @@ export async function deleteProjectService(projectId: string): Promise<{ message
 }
 
 export async function getProjectMembersService(projectId: string): Promise<ProjectMemberType[]> {
-  const response = await fetch(`/api/projects/${projectId}/members`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/projects/${projectId}/members`, {
     method: "GET",
   })
   if (!response.ok)
@@ -49,7 +56,8 @@ export async function getProjectMembersService(projectId: string): Promise<Proje
 }
 
 export async function addProjectMemberService(projectId: string, data: AddProjectMemberPayload): Promise<{ message: string, newMember: ProjectMemberType }> {
-  const response = await fetch(`/api/projects/${projectId}/members`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/projects/${projectId}/members`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -60,7 +68,8 @@ export async function addProjectMemberService(projectId: string, data: AddProjec
 }
 
 export async function updateProjectMemberService(projectId: string, memberId: string, data: { role: Role }): Promise<{ message: string, updatedMember: ProjectMemberType }> {
-  const response = await fetch(`/api/projects/${projectId}/members/${memberId}`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/projects/${projectId}/members/${memberId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -71,7 +80,8 @@ export async function updateProjectMemberService(projectId: string, memberId: st
 }
 
 export async function removeProjectMemberService(projectId: string, memberId: string): Promise<{ message: string, removedMemberId: string }> {
-  const response = await fetch(`/api/projects/${projectId}/members/${memberId}`, {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/projects/${projectId}/members/${memberId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   })
