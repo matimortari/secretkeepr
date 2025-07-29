@@ -18,14 +18,12 @@ var (
 	envToExport      string
 )
 
-// Project represents a project with its ID, name, and role.
 type Project struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 	Role string `json:"role"`
 }
 
-// Secret represents a secret with multiple environment-specific values.
 type Secret struct {
 	Key    string `json:"key"`
 	Values []struct {
@@ -34,39 +32,34 @@ type Secret struct {
 	} `json:"values"`
 }
 
-// getSecrets gets secrets for a given project using the provided token.
 func getSecrets(token, projectID string) ([]Secret, error) {
 	resp, err := api.Get(token, fmt.Sprintf("/projects/%s/secrets", projectID))
 	if err != nil {
 		return nil, fmt.Errorf("failed to get project secrets: %w", err)
 	}
 	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to get secrets: %s", resp.Status)
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("API error: %s", resp.Status)
 	}
 
 	var secretsResp struct {
 		Secrets []Secret `json:"secrets"`
 	}
-
-	err = json.NewDecoder(resp.Body).Decode(&secretsResp)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse secrets response: %w", err)
+	if err := json.NewDecoder(resp.Body).Decode(&secretsResp); err != nil {
+		return nil, fmt.Errorf("failed to parse secrets: %w", err)
 	}
 
 	return secretsResp.Secrets, nil
 }
 
-// showProjectSecrets prints all secrets and their environment-specific values for a project.
-func showProjectSecrets(token, projectID string) {
+func showProjectData(token, projectID, projectName string) {
 	secrets, err := getSecrets(token, projectID)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Failed to get project secrets:", err)
 		return
 	}
 
-	fmt.Println("Secrets for project:", projectID)
+	fmt.Println("Secrets for project:", projectName)
 	for _, secret := range secrets {
 		fmt.Printf("- %s:\n", secret.Key)
 		for _, val := range secret.Values {
@@ -75,7 +68,6 @@ func showProjectSecrets(token, projectID string) {
 	}
 }
 
-// exportSecretsToEnvFile exports secrets for a specific environment to a .env file.
 func exportSecretsToEnvFile(token, projectID, environment string) error {
 	secrets, err := getSecrets(token, projectID)
 	if err != nil {
@@ -101,10 +93,27 @@ func exportSecretsToEnvFile(token, projectID, environment string) error {
 	return nil
 }
 
-// projectsCmd lists projects and secrets, or exports the secrets for a specified project.
+func fetchProjects(token string) ([]Project, error) {
+	resp, err := api.Get(token, "/projects")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get projects: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API error: %s", resp.Status)
+	}
+
+	var projects []Project
+	if err := json.NewDecoder(resp.Body).Decode(&projects); err != nil {
+		return nil, fmt.Errorf("failed to parse projects: %w", err)
+	}
+
+	return projects, nil
+}
+
 var projectsCmd = &cobra.Command{
 	Use:   "projects",
-	Short: "List projects or show secrets for a project",
+	Short: "List projects you belong to and manage secrets",
 
 	Run: func(cmd *cobra.Command, args []string) {
 		token, err := config.LoadAuthToken()
@@ -112,8 +121,19 @@ var projectsCmd = &cobra.Command{
 			return
 		}
 
-		// If a project ID is provided for secrets, export secrets to .env file for the specified environment
+		projects, err := fetchProjects(token)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 		if secretsProjectID != "" {
+			projectName := secretsProjectID
+			for _, p := range projects {
+				if p.ID == secretsProjectID {
+					projectName = p.Name
+					break
+				}
+			}
 			if exportEnv {
 				if err := exportSecretsToEnvFile(token, secretsProjectID, envToExport); err != nil {
 					fmt.Printf("Failed to export secrets: %v\n", err)
@@ -122,30 +142,10 @@ var projectsCmd = &cobra.Command{
 				}
 				return
 			}
-			// Otherwise, just show the secrets
-			showProjectSecrets(token, secretsProjectID)
-			return
-		}
 
-		resp, err := api.Get(token, "/projects")
-		if err != nil {
-			fmt.Println("Failed to get projects:", err)
+			showProjectData(token, secretsProjectID, projectName)
 			return
 		}
-		defer resp.Body.Close()
-		if resp.StatusCode != http.StatusOK {
-			fmt.Printf("API error: %s\n", resp.Status)
-			return
-		}
-
-		// Decode JSON response into a slice of Project structs
-		var projects []Project
-		err = json.NewDecoder(resp.Body).Decode(&projects)
-		if err != nil {
-			fmt.Println("Failed to parse projects:", err)
-			return
-		}
-
 		if len(projects) == 0 {
 			fmt.Println("You don't belong to any projects.")
 			return

@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-// var BaseURL = "http://localhost:3000/api"
-var BaseURL = "https://secretkeepr.vercel.app/api"
+// "https://secretkeepr.vercel.app/api"
+var BaseURL = "http://localhost:3000/api"
 
 func buildURL(path string) string {
 	if !strings.HasPrefix(path, "/") {
