@@ -2,23 +2,21 @@
   <section
     v-motion class="flex flex-col items-center gap-8 p-12 text-center"
     :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
-    :transition="{ duration: 800 }"
+    :duration="800"
   >
     <h1
       v-motion class="font-goldman"
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
-      :transition="{ duration: 800 }"
+      :duration="800"
     >
       Command-line Interface – SecretKeepR
     </h1>
   </section>
 
   <section
-    v-motion
-    class="flex w-full flex-col gap-8 p-12 text-center md:text-start"
-    :initial="{ opacity: 0, y: 40 }"
-    :visible="{ opacity: 1, y: 0 }"
-    :transition="{ duration: 800 }"
+    v-motion class="flex w-full flex-col gap-8 p-12 text-center md:text-start"
+    :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
+    :duration="800"
   >
     <div class="flex flex-col items-center justify-between gap-8 md:flex-row">
       <div class="relative flex w-full max-w-xl gap-4 text-start">

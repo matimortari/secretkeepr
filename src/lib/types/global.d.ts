@@ -40,6 +40,7 @@ interface OrganizationType {
   updatedAt?: Date
   memberships?: UserOrgMembershipType[]
   projects?: ProjectType[]
+  auditLogs?: AuditLogType[]
 }
 
 interface ProjectType {

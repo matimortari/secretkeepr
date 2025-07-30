@@ -2,12 +2,12 @@
   <Dialog :is-open="isOpen" title="Create New Project" @update:is-open="emit('close')">
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-1">
-        <label for="name" class="text-label">Project Name</label>
+        <label for="name" class="text-sm font-semibold">Project Name</label>
         <input id="name" v-model="form.name" type="text" class="w-full">
       </div>
 
       <div class="flex flex-col items-start gap-1">
-        <label for="description" class="text-label">Description</label>
+        <label for="description" class="text-sm font-semibold">Description</label>
         <input id="description" v-model="form.description" type="text" class="w-full">
       </div>
 
@@ -20,7 +20,7 @@
           <button class="font-semibold hover:underline" type="button" @click="emit('close')">
             Cancel
           </button>
-          <button class="btn-success" type="submit" :disabled="!!projectsStore.error">
+          <button class="btn-success" type="submit">
             Save
           </button>
         </nav>
@@ -30,8 +30,8 @@
 </template>
 
 <script setup lang="ts">
+import { useOrganizationStore } from "~/lib/stores/organization-store"
 import { useProjectsStore } from "~/lib/stores/projects-store"
-import { useUserStore } from "~/lib/stores/user-store"
 
 const props = defineProps<{
   isOpen: boolean
@@ -44,8 +44,8 @@ const emit = defineEmits<{
 }>()
 
 const projectsStore = useProjectsStore()
-const userStore = useUserStore()
-const { selectedOrg } = storeToRefs(userStore)
+const orgStore = useOrganizationStore()
+
 const form = ref<{ name: string, description: string }>({
   name: "",
   description: "",
@@ -61,7 +61,8 @@ async function handleSubmit() {
   const payload: ProjectType = {
     name: form.value.name.trim(),
     description: form.value.description.trim(),
-    orgId: selectedOrg.value?.id ?? "",
+    orgId: orgStore.activeOrg?.id ?? "",
+
   }
 
   emit("save", payload)
