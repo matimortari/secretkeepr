@@ -2,9 +2,8 @@ import { defineNuxtConfig } from "nuxt/config"
 
 export default defineNuxtConfig({
   modules: [
-    "@nuxtjs/color-mode",
-    "@nuxtjs/google-fonts",
     "@nuxt/icon",
+    "@nuxtjs/google-fonts",
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
     "@vueuse/motion/nuxt",
@@ -29,15 +28,9 @@ export default defineNuxtConfig({
       },
     },
   },
-  colorMode: {
-    classSuffix: "",
-    preference: "system",
-    fallback: "dark",
-    storageKey: "nuxt-color-mode",
-  },
   googleFonts: {
     families: {
-      Roboto: true,
+      Lato: true,
       Goldman: true,
       Silkscreen: true,
       JetBrainsMono: true,
