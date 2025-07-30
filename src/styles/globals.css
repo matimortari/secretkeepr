@@ -3,14 +3,14 @@
 @import "tailwindcss/utilities";
 
 @layer base {
-  html.dark {
+  html {
     --background: #0a0b0c;
     --foreground: #e9e9e9;
 
-    --card: #171819;
+    --card: #131313;
     --card-foreground: #e9e9e9;
 
-    --popover: #1a1c1d;
+    --popover: #1b1b1b;
     --popover-foreground: #e9e9e9;
 
     --primary: #c9d247;
@@ -19,7 +19,7 @@
     --secondary: #294360;
     --secondary-foreground: #e9e9e9;
 
-    --muted: #282828;
+    --muted: #2c2b2b;
     --muted-foreground: #8a8a8a;
 
     --danger: #d33737;
@@ -30,37 +30,7 @@
 
     --accent: #2d6455;
     --border: #333333;
-    --input: #151515;
-  }
-
-  html.light {
-    --background: #e2e2e1;
-    --foreground: #222222;
-
-    --card: #e9e9e9;
-    --card-foreground: #222222;
-
-    --popover: #e9e9e9;
-    --popover-foreground: #222222;
-
-    --primary: #c9d247;
-    --primary-foreground: #222222;
-
-    --secondary: #2c4969;
-    --secondary-foreground: #e9e9e9;
-
-    --muted: #e1e1e1;
-    --muted-foreground: #686868;
-
-    --danger: #d33737;
-    --danger-foreground: #e42525;
-
-    --success: #2b5e3c;
-    --success-foreground: #327047;
-
-    --accent: #2d6455;
-    --border: #cccccc;
-    --input: #e7e3e3;
+    --input: #0a0a0a;
   }
 
   * {
@@ -83,8 +53,8 @@
 @layer components {
   /* Headers and typography */
   h1 {
-    font-size: 2.25rem;
-    line-height: 2.5rem;
+    font-size: 3.25rem;
+    line-height: 3.5rem;
     font-weight: 800;
   }
   h2 {
@@ -118,12 +88,6 @@
     line-height: 1.25rem;
     font-weight: 500;
     color: var(--muted-foreground);
-  }
-  .text-label {
-    font-size: 0.8rem;
-    line-height: 1rem;
-    letter-spacing: 0.05em;
-    font-weight: 600;
   }
 
   /* UI components */
@@ -168,6 +132,7 @@
   input,
   textarea,
   select {
+    font-family: "JetBrains Mono", monospace;
     background-color: var(--input);
     color: var(--muted-foreground);
     border: 2px solid var(--border);
@@ -182,14 +147,14 @@
   input:hover,
   textarea:hover,
   select:hover {
-    box-shadow: 0 0 0 0.5px var(--accent);
+    box-shadow: 0 0 0 0.5px var(--secondary);
   }
 
   input:focus,
   textarea:focus,
   select:focus {
     outline: none;
-    box-shadow: 0 0 0 2px var(--accent);
+    box-shadow: 0 0 0 2px var(--secondary);
     outline: 2px solid transparent;
     outline-offset: 2px;
   }
@@ -316,18 +281,4 @@
     background-color: var(--success);
     color: var(--success-foreground);
   }
-}
-
-/* Keyframe animation for infinite scroll effect */
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-.animate-scroll {
-  animation: scroll 30s linear infinite;
-  display: flex;
 }

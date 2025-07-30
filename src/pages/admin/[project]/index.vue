@@ -1,9 +1,5 @@
 <template>
-  <div
-    v-motion :initial="{ opacity: 0 }"
-    :enter="{ opacity: 1 }" :transition="{ duration: 800 }"
-    class="flex flex-col gap-4"
-  >
+  <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b pb-2">
       <NuxtLink to="/admin/projects">
         <Icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
@@ -32,8 +28,7 @@
           <Transition name="dropdown" mode="out-in">
             <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm">
               <li
-                v-for="env in environments"
-                :key="env"
+                v-for="env in ['development', 'staging', 'production']" :key="env"
                 class="cursor-pointer rounded p-2 capitalize hover:bg-muted"
                 @click="() => { selectedEnvironment = env; isDropdownOpen = false; handleExportToEnv(); }"
               >
@@ -49,13 +44,13 @@
       </nav>
     </header>
 
-    <ProjectsProjectSecrets
+    <ProjectSecrets
       :secrets="secrets"
       :project-id="project?.id ?? ''"
-      @edit="(secret) => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = secret }"
+      @edit="(secret: SecretType) => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = secret }"
     />
 
-    <ProjectsSecretDialog
+    <SecretDialog
       :is-open="isDialogOpen && dialogType === 'secret'"
       :selected-secret="selectedSecret"
       :project-id="project?.id ?? ''"
@@ -63,7 +58,7 @@
       @save="handleSaveSecret"
     />
 
-    <ProjectsSecretImportDialog
+    <SecretImportDialog
       :is-open="isDialogOpen && dialogType === 'env'"
       :project-id="project?.id ?? ''"
       :existing-secrets="secrets"
@@ -83,11 +78,11 @@ const projectId = route.params.project as string
 const { project, secrets } = useProjectSecrets(projectId)
 const projectsStore = useProjectsStore()
 const secretsStore = useSecretsStore()
+
 const isDialogOpen = ref(false)
 const dialogType = ref<"secret" | "env" | null>(null)
 const selectedSecret = ref<SecretType | null>(null)
 const selectedEnvironment = ref("")
-const environments = ["development", "staging", "production"]
 const dropdownRef = ref<HTMLElement | null>(null)
 const isDropdownOpen = ref(false)
 
@@ -101,23 +96,22 @@ async function handleImportFromEnv(importedSecrets: SecretType[]) {
   selectedSecret.value = null
 
   try {
-    for (const secret of importedSecrets) {
-      const existingSecret = secretsStore.secrets.find(s => s.key === secret.key)
-      if (existingSecret) {
-        const updatedValues = [...(existingSecret.values ?? []), ...(secret.values ?? [])]
-
-        await secretsStore.updateSecret(projectId, existingSecret.id!, {
-          key: existingSecret.key,
+    await Promise.all(importedSecrets.map(async (secret) => {
+      const existing = secretsStore.secrets.find(s => s.key === secret.key)
+      if (existing) {
+        const updatedValues = [...(existing.values ?? []), ...(secret.values ?? [])]
+        return secretsStore.updateSecret(projectId, existing.id!, {
+          key: existing.key,
           values: updatedValues,
         })
       }
       else {
-        await secretsStore.createSecret(projectId, {
+        return secretsStore.createSecret(projectId, {
           key: secret.key,
           values: secret.values ?? [],
         })
       }
-    }
+    }))
     await secretsStore.getSecretsByProject(projectId)
   }
   catch (error: any) {
@@ -130,23 +124,21 @@ async function handleExportToEnv() {
     return
 
   try {
-    const secrets = secretsStore.secrets.filter(s => s.projectId === projectId)
     const env = selectedEnvironment.value
-    const filteredSecrets = secrets
-      .map((secret) => {
-        const val = secret.values?.find(v => v.environment === env)?.value
-        return val ? `${secret.key}=${val}` : null
+    const filteredSecrets = secretsStore.secrets
+      .filter(s => s.projectId === projectId)
+      .map((s) => {
+        const val = s.values?.find(v => v.environment === env)?.value
+        return val ? `${s.key}="${val}"` : null
       })
       .filter(Boolean)
-      .join("\n")
+      .join("\n\n")
 
     const url = URL.createObjectURL(new Blob([filteredSecrets], { type: "text/plain" }))
     const a = document.createElement("a")
     a.href = url
-    a.download = `${projectId}-${env}.env`
-    document.body.appendChild(a)
+    a.download = `.env.${project.value?.name}.${env}`
     a.click()
-    document.body.removeChild(a)
     URL.revokeObjectURL(url)
   }
   catch (error: any) {

@@ -60,7 +60,7 @@ export async function removeUserFromOrgService(orgId: string, memberId: string):
 
 export async function createOrgInviteService(): Promise<{ inviteLink: string }> {
   const baseUrl = getBaseUrl()
-  const response = await fetch(`${baseUrl}/api/org/invite`, {
+  const response = await fetch(`${baseUrl}/api/org/invite/create`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
   })
