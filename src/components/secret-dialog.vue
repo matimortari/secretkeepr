@@ -2,15 +2,15 @@
   <Dialog :is-open="isOpen" :title="props.selectedSecret ? 'Edit Secret' : 'Create New Secret'" @update:is-open="emit('close')">
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-2">
-        <label for="key" class="text-label">Key</label>
+        <label for="key" class="text-sm font-semibold">Key</label>
         <input id="key" v-model="form.key" type="text" class="w-full">
 
-        <label for="description" class="text-label">Description (optional)</label>
+        <label for="description" class="text-sm font-semibold">Description (optional)</label>
         <input id="description" v-model="form.description" type="text" class="w-full">
       </div>
 
       <div v-for="env in environments" :key="env" class="flex flex-col items-start gap-1">
-        <label :for="env" class="text-label capitalize">{{ env }}</label>
+        <label :for="env" class="text-sm font-semibold capitalize">{{ env }}</label>
         <input :id="env" v-model="form.values[env]" type="text" class="w-full">
       </div>
 
@@ -23,7 +23,7 @@
           <button class="font-semibold hover:underline" type="button" @click="emit('close')">
             Cancel
           </button>
-          <button class="btn-success" type="submit" :disabled="!!secretStore.error">
+          <button class="btn-success" type="submit">
             Save
           </button>
         </div>

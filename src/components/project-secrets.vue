@@ -25,7 +25,7 @@
           v-for="(secret, index) in sortedSecrets" :key="secret.key"
           v-motion class="border"
           :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0 }"
-          :transition="{ duration: 600 }" :delay="100 * index"
+          :duration="600" :delay="100 * index"
         >
           <td class="relative flex flex-row items-center justify-between p-2 font-mono text-sm font-bold text-muted-foreground">
             <div class="flex max-w-[80%] flex-row items-center gap-2">
@@ -37,7 +37,7 @@
               />
             </div>
             <nav class="navigation-group">
-              <button @click="toggleVisibility(secret.key)">
+              <button @click="visibleKeys[secret.key] = !visibleKeys[secret.key]">
                 <Icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
               <button @click="updateSecret(secret.key)">
@@ -83,6 +83,7 @@ const props = defineProps<{
 const emit = defineEmits(["edit", "deleted", "update"])
 
 const secretsStore = useSecretsStore()
+
 const visibleKeys = ref<Record<string, boolean>>({})
 const environments = ref(["development", "staging", "production"])
 const sort = ref<{ key: string, direction: "asc" | "desc" }>({
@@ -97,10 +98,6 @@ const sortedSecrets = computed(() => {
     else return b.key.localeCompare(a.key)
   })
 })
-
-function toggleVisibility(key: string) {
-  visibleKeys.value[key] = !visibleKeys.value[key]
-}
 
 function getSecretValue(key: string, env: string) {
   const secretsWithKey = props.secrets.filter(s => s.key === key)

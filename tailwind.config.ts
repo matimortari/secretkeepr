@@ -2,7 +2,7 @@ export default {
   darkMode: "class",
   theme: {
     fontFamily: {
-      sans: ["Roboto"],
+      sans: ["Lato", "sans-serif"],
       goldman: ["Goldman", "sans-serif"],
       silkscreen: ["Silkscreen", "sans-serif"],
       mono: ["JetBrains Mono", "monospace"],

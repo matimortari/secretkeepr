@@ -2,14 +2,16 @@
   <div
     v-motion class="flex flex-col items-center justify-center"
     :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
-    :transition="{ duration: 1000 }"
+    :duration="800"
   >
     <header
-      v-motion class="flex flex-col items-center gap-4 border-b p-4 text-center"
+      v-motion class="flex flex-col items-center gap-4 border-b-2 p-4 text-center"
       :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
-      :transition="{ duration: 800 }"
+      :duration="800"
     >
-      <h1>Welcome to SecretKeepR</h1>
+      <h1>
+        Welcome to SecretKeepR
+      </h1>
       <p class="text-caption">
         To get started, please create an organization name with at least 3 characters.
       </p>
@@ -44,6 +46,7 @@ import { useUserStore } from "~/lib/stores/user-store"
 const router = useRouter()
 const userStore = useUserStore()
 const orgStore = useOrganizationStore()
+
 const localOrg = ref({
   name: "",
 })
