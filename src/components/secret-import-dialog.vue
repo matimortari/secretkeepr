@@ -1,12 +1,12 @@
 <template>
   <Dialog :is-open="isOpen" title="Import from .env" @update:is-open="emit('close')">
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
-      <textarea v-model="envText" rows="10" class="scroll-area resize-none font-mono" placeholder="Paste your .env content here..." />
+      <textarea v-model="envText" rows="10" class="scroll-area resize-none" placeholder="Paste your .env content here..." />
 
       <div class="flex flex-col items-start gap-1">
-        <label class="text-label">Environment</label>
+        <label class="text-sm font-semibold">Environment</label>
         <select v-model="selectedEnv" class="w-full capitalize">
-          <option v-for="env in environments" :key="env" :value="env" class="capitalize">
+          <option v-for="env in ['development', 'staging', 'production']" :key="env" :value="env" class="capitalize">
             {{ env }}
           </option>
         </select>
@@ -21,7 +21,7 @@
           <button class="font-semibold hover:underline" type="button" @click="emit('close')">
             Cancel
           </button>
-          <button class="btn-success" type="submit" :disabled="!!secretStore.error">
+          <button class="btn-success" type="submit">
             Import
           </button>
         </div>
@@ -45,9 +45,9 @@ const emit = defineEmits<{
 }>()
 
 const secretStore = useSecretsStore()
+
 const envText = ref("")
 const selectedEnv = ref<Environment>("development")
-const environments: Environment[] = ["development", "staging", "production"]
 
 function parseEnv(text: string): Record<string, string> {
   const lines = text.split("\n")

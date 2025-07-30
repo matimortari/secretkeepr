@@ -1,11 +1,9 @@
 <template>
-  <div
-    v-motion :initial="{ opacity: 0 }"
-    :enter="{ opacity: 1 }" :transition="{ duration: 800 }"
-    class="flex flex-col gap-4"
-  >
+  <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b pb-2">
-      <h2>My Projects</h2>
+      <h2>
+        My Projects
+      </h2>
 
       <nav class="navigation-group w-full flex-1 justify-end">
         <div class="relative hidden md:block">
@@ -34,16 +32,15 @@
       <li
         v-for="(project, index) in filteredProjects" :key="project.id"
         v-motion :initial="{ opacity: 0, y: 20 }"
-        :enter="{ opacity: 1, y: 0 }" :transition="{ duration: 400 }"
-        :delay="20 * index"
+        :enter="{ opacity: 1, y: 0 }" :duration="400"
+        :delay="50 * index"
       >
-        <ProjectsProjectCard :project="project" />
+        <ProjectCard :project="project" />
       </li>
       <li
         v-motion :initial="{ opacity: 0, y: 20 }"
-        :visible="{ opacity: 1, y: 0 }" :transition="{ duration: 400 }"
-
-        :delay="20 * filteredProjects.length"
+        :visible="{ opacity: 1, y: 0 }" :duration="400"
+        :delay="50 * filteredProjects.length"
       >
         <button
           class="card group flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 border-dashed bg-transparent text-muted-foreground transition-all hover:border-secondary hover:text-secondary"
@@ -55,31 +52,25 @@
       </li>
     </ul>
 
-    <ProjectsProjectDialog
-      :is-open="isDialogOpen"
-      @close="isDialogOpen = false"
-      @save="handleCreateProject"
-    />
+    <ProjectDialog :is-open="isDialogOpen" @close="isDialogOpen = false" @save="handleCreateProject" />
   </div>
 </template>
 
 <script setup lang="ts">
 import auth from "~/lib/middleware/auth"
+import { useOrganizationStore } from "~/lib/stores/organization-store"
 import { useProjectsStore } from "~/lib/stores/projects-store"
-import { useUserStore } from "~/lib/stores/user-store"
 
-const userStore = useUserStore()
+const orgStore = useOrganizationStore()
 const projectsStore = useProjectsStore()
-const { projects } = storeToRefs(projectsStore)
+
 const searchQuery = ref("")
 const isDialogOpen = ref(false)
 
-const orgId = computed(() => userStore.selectedOrg?.id || "")
-
 const filteredProjects = computed(() => {
-  return projects.value.filter(project =>
-    project.orgId === orgId.value
-    && typeof project.name === "string"
+  return projectsStore.projects.filter(project =>
+    typeof project.name === "string"
+    && project.orgId === orgStore.activeOrg?.id
     && project.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })

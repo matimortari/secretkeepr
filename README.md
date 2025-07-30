@@ -15,7 +15,6 @@ For detailed instructions on building and using the command-line interface, see 
 - **Audit Logs:** Track sensitive operations like secret changes and organization updates.
 - **Encrypted Secrets:** Secrets are encrypted at rest and never exposed unencrypted beyond the UI.
 - **CLI Integration:** Manage secrets and projects directly from your terminal with the command-line tool for SecretKeepR.
-- **Theme Toggle:** Switch between light and dark modes to suit your preference.
 
 ## 🛠️ Stack
 

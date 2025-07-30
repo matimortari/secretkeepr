@@ -1,16 +1,16 @@
 <template>
   <section
     id="hero" v-motion
-    class="flex flex-col items-center gap-4 border-b p-8 text-center lg:p-12" :initial="{ opacity: 0, y: 20 }"
-    :visible="{ opacity: 1, y: 0 }" :transition="{ duration: 800 }"
+    class="flex flex-col items-center gap-8 p-8 text-center lg:p-20" :initial="{ opacity: 0, y: 20 }"
+    :visible="{ opacity: 1, y: 0 }" :duration="800"
   >
     <h1 class="font-goldman">
       Securely Manage Your Secrets
     </h1>
     <p
-      v-motion class="max-w-xl leading-5"
+      v-motion class="max-w-2xl text-lg leading-5 text-muted-foreground"
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
-      :transition="{ duration: 800 }"
+      :duration="800"
     >
       SecretKeepR is a secrets manager designed to help users and organizations securely manage and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
     </p>
@@ -20,10 +20,10 @@
     </NuxtLink>
   </section>
 
-  <section id="features" class="relative gap-12 border-b p-4 text-center lg:py-12">
-    <div class="relative flex w-full">
+  <section id="features" class="relative gap-12 text-center lg:py-12">
+    <div class="gradient-mask-wrapper relative w-full overflow-hidden p-4">
       <div class="animate-scroll">
-        <div v-for="(feature, index) in [...features, ...features]" :key="index" class="box-border flex min-w-[350px] max-w-sm flex-grow-0 flex-col items-center gap-2 p-8">
+        <div v-for="(feature, index) in [...features, ...features]" :key="index" class="flex min-w-[350px] max-w-sm flex-grow-0 flex-col items-center gap-2 p-8">
           <Icon :name="feature.icon" class="text-primary" size="60" />
           <h4 class="font-silkscreen tracking-tight md:whitespace-nowrap">
             {{ feature.title }}
@@ -38,9 +38,8 @@
 
   <section
     id="how-to-use" v-motion
-    class="flex flex-col items-center gap-12 border-b p-8 text-center lg:p-20" :initial="{ opacity: 0, y: 40 }"
-    :visible="{ opacity: 1, y: 0 }" :transition="{ duration: 800 }"
-    :delay="200"
+    class="flex flex-col items-center gap-12 border-y p-8 text-center lg:p-20" :initial="{ opacity: 0, y: 40 }"
+    :visible="{ opacity: 1, y: 0 }" :duration="800"
   >
     <h2 class="font-goldman">
       Getting Started
@@ -51,7 +50,7 @@
         v-for="(step, index) in howToUseSteps" :key="index"
         v-motion class="flex flex-col items-center gap-1"
         :initial="{ opacity: 0, y: -40 }" :visible="{ opacity: 1, y: 0 }"
-        :transition="{ duration: 800 }" :delay="50 * index"
+        :duration="500" :delay="100 * index"
       >
         <h5 class="whitespace-nowrap">
           {{ index + 1 }}. {{ step.title }}
@@ -65,8 +64,8 @@
 
   <section
     id="cli" v-motion
-    class="w-full flex-col gap-8 border-b text-center md:text-start lg:p-20" :initial="{ opacity: 0, y: 40 }"
-    :visible="{ opacity: 1, y: 0 }" :transition="{ duration: 800 }"
+    class="w-full flex-col gap-8 text-center md:text-start lg:p-20" :initial="{ opacity: 0, y: 40 }"
+    :visible="{ opacity: 1, y: 0 }" :duration="800"
   >
     <div class="my-4 flex flex-col items-center justify-between gap-8 md:flex-row">
       <div class="flex flex-col gap-4">
@@ -112,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { copyToClipboard } from '~/lib/utils'
+import { copyToClipboard } from "~/lib/utils"
 
 const features = [
   {
@@ -195,11 +194,40 @@ useSeoMeta({
   ogImage: "https://secretkeepr.vercel.app/og-image.png",
   ogUrl: "https://secretkeepr.vercel.app",
 })
-
-definePageMeta({
-  auth: {
-    unauthenticatedOnly: true,
-    navigateAuthenticatedTo: "/admin/projects",
-  },
-})
 </script>
+
+<style scoped>
+.gradient-mask-wrapper::before,
+.gradient-mask-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 200px;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.gradient-mask-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(10, 11, 12, 0.8) 0%, rgba(10, 11, 12, 0.2) 100%);
+}
+
+.gradient-mask-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(10, 11, 12, 0.8) 0%, rgba(10, 11, 12, 0.2) 100%);
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+  display: flex;
+}
+</style>

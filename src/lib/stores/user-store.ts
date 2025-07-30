@@ -5,113 +5,93 @@ import {
   updateUserService,
 } from "~/lib/services/user-service"
 
-const ACTIVE_ORG_KEY = "active_org_id"
+export const useUserStore = defineStore("user", () => {
+  const user = ref<UserType | null>(null)
+  const isLoading = ref(false)
+  const error = ref<string | null>(null)
 
-export const useUserStore = defineStore("user", {
-  state: () => ({
-    user: null as UserType | null,
-    selectedOrg: null as OrganizationType | null,
-    isLoading: false,
-    error: null as string | null,
-  }),
+  function requireUser() {
+    if (!user.value) {
+      error.value = "User not found"
+      throw new Error(error.value)
+    }
+  }
 
-  actions: {
-    requireUser() {
-      if (!this.user) {
-        const error = "User not found"
-        this.error = error
-        throw new Error(error)
-      }
-    },
+  async function getUser() {
+    isLoading.value = true
+    error.value = null
 
-    async getUser() {
-      this.isLoading = true
-      this.error = null
+    try {
+      user.value = await getUserService()
+      return user.value
+    }
+    catch (error: any) {
+      error.value = error?.message || "Failed to get user"
+      throw error
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
 
-      try {
-        this.user = await getUserService()
+  async function updateUser(updatedUser: UpdateUserPayload) {
+    requireUser()
+    isLoading.value = true
+    error.value = null
 
-        const orgFromStorage = localStorage.getItem(ACTIVE_ORG_KEY)
-        const matchedOrg = this.user?.memberships?.find(
-          m => m.organization?.id === orgFromStorage,
-        )?.organization
+    try {
+      const response = await updateUserService(updatedUser)
+      user.value = response.user
+      return response
+    }
+    catch (error: any) {
+      error.value = error?.message || "Failed to update user"
+      throw error
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
 
-        this.selectedOrg
-          = matchedOrg || this.user?.memberships?.[0]?.organization || null
+  async function updateUserImage(formData: FormData) {
+    requireUser()
+    isLoading.value = true
+    error.value = null
 
-        if (this.selectedOrg) {
-          localStorage.setItem(ACTIVE_ORG_KEY, this.selectedOrg.id)
-        }
+    try {
+      const response = await updateUserImageService(formData)
+      if (user.value)
+        user.value.image = response.imageUrl
+      return response
+    }
+    catch (error: any) {
+      error.value = error?.message || "Failed to update user image"
+      throw error
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
 
-        return this.user
-      }
-      catch (error: any) {
-        this.error = error?.message || "Failed to fetch user"
-        throw error
-      }
-      finally {
-        this.isLoading = false
-      }
-    },
+  async function deleteUser() {
+    requireUser()
+    isLoading.value = true
+    error.value = null
 
-    async updateUser(updatedUser: UpdateUserPayload) {
-      this.requireUser()
-      this.isLoading = true
-      this.error = null
+    try {
+      const response = await deleteUserService()
+      user.value = null
+      localStorage.removeItem("active_org_id")
+      return response
+    }
+    catch (error: any) {
+      error.value = error?.message || "Failed to delete user"
+      throw error
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
 
-      try {
-        const response = await updateUserService(updatedUser)
-        this.user = response.user
-        return response
-      }
-      catch (error: any) {
-        this.error = error?.message || "Failed to update user"
-        throw error
-      }
-      finally {
-        this.isLoading = false
-      }
-    },
-
-    async updateUserImage(formData: FormData) {
-      this.requireUser()
-      this.isLoading = true
-      this.error = null
-
-      try {
-        const response = await updateUserImageService(formData)
-        if (this.user)
-          this.user.image = response.imageUrl
-        return response
-      }
-      catch (error: any) {
-        this.error = error?.message || "Failed to update user image"
-        throw error
-      }
-      finally {
-        this.isLoading = false
-      }
-    },
-
-    async deleteUser() {
-      this.requireUser()
-      this.isLoading = true
-      this.error = null
-
-      try {
-        const response = await deleteUserService()
-        this.user = null
-        this.selectedOrg = null
-        localStorage.removeItem(ACTIVE_ORG_KEY)
-        return response
-      }
-      catch (error: any) {
-        this.error = error?.message || "Failed to delete user"
-        throw error
-      }
-      finally {
-        this.isLoading = false
-      }
-    },
-  },
+  return { user, isLoading, error, getUser, updateUser, updateUserImage, deleteUser }
 })
