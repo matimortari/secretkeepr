@@ -50,7 +50,7 @@
       @edit="(secret: SecretType) => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = secret }"
     />
 
-    <SecretDialog
+    <ProjectSecretDialog
       :is-open="isDialogOpen && dialogType === 'secret'"
       :selected-secret="selectedSecret"
       :project-id="project?.id ?? ''"
@@ -58,7 +58,7 @@
       @save="handleSaveSecret"
     />
 
-    <SecretImportDialog
+    <ProjectSecretImportDialog
       :is-open="isDialogOpen && dialogType === 'env'"
       :project-id="project?.id ?? ''"
       :existing-secrets="secrets"
