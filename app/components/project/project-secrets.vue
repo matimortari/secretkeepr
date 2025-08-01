@@ -1,20 +1,21 @@
 <template>
   <div class="scroll-area overflow-x-auto">
-    <table class="table-fixed rounded-sm border md:w-full md:overflow-hidden">
+    <table class="table-fixed rounded-sm md:w-full md:overflow-hidden">
       <thead>
-        <tr class="border bg-muted text-sm font-semibold transition-all">
+        <tr class="bg-muted text-sm font-semibold">
           <th class="navigation-group w-full p-2 text-left">
             <span>Key</span>
             <Icon
               name="ph:arrow-down-bold"
               size="15"
-              class="hover:scale-sm transition-all hover:text-primary"
+              class="transition-all hover:text-primary"
               :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'"
               role="button"
               @click="sort.direction = sort.direction === 'asc' ? 'desc' : 'asc'"
             />
           </th>
-          <th v-for="env in environments" :key="env" class="border p-2 text-left capitalize md:w-1/6">
+
+          <th v-for="env in environments" :key="env" class="p-2 text-left capitalize md:w-1/6">
             <span>{{ env }}</span>
           </th>
         </tr>
@@ -23,24 +24,25 @@
       <tbody>
         <tr
           v-for="(secret, index) in sortedSecrets" :key="secret.key"
-          v-motion class="border"
+          v-motion class="text-muted-foreground"
           :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0 }"
-          :duration="600" :delay="100 * index"
+          :duration="600" :delay="200 * index"
         >
-          <td class="relative flex flex-row items-center justify-between p-2 font-mono text-sm font-bold text-muted-foreground">
-            <div class="flex max-w-[80%] flex-row items-center gap-2">
-              <span class="truncate">{{ secret.key }}</span>
-              <Icon
-                v-if="secret.description" name="carbon:information-square"
-                :title="secret.description ?? undefined" size="15"
-                class="hover:scale-md hidden flex-shrink-0 cursor-pointer transition-all md:inline"
-              />
-            </div>
-            <nav class="navigation-group">
+          <td class="flex flex-row items-center justify-between gap-4 p-2 font-mono text-sm font-semibold">
+            <span class="w-full truncate">{{ secret.key }}</span>
+            <Icon
+              v-if="secret.description"
+              name="carbon:information-square"
+              :title="secret.description ?? undefined"
+              size="15"
+              class="hover:scale-md hidden flex-shrink-0 cursor-pointer transition-all md:inline"
+            />
+
+            <nav class="flex items-center justify-end gap-2 md:justify-start">
               <button @click="visibleKeys[secret.key] = !visibleKeys[secret.key]">
                 <Icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
-              <button @click="updateSecret(secret.key)">
+              <button @click="handleUpdateSecret(secret.key)">
                 <Icon name="carbon:edit" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
               <button @click="handleDeleteSecret(secret.key)">
@@ -49,12 +51,12 @@
             </nav>
           </td>
 
-          <td v-for="env in environments" :key="env" class="border p-2 font-mono text-sm text-muted-foreground">
-            <div class="flex flex-row items-center justify-between">
+          <td v-for="env in environments" :key="env" class="w-[150px] max-w-[150px] overflow-hidden p-2 font-mono text-sm">
+            <div class="flex flex-row items-center justify-between gap-4">
               <span
                 class="max-w-[80%] select-none truncate"
                 :class="[
-                  !getSecretValue(secret.key, env) ? '' : 'cursor-pointer rounded bg-card px-1 transition-all hover:text-primary',
+                  getSecretValue(secret.key, env) ? 'cursor-pointer rounded bg-card px-1 transition-all hover:text-primary' : '',
                 ]" @click="copyToClipboard(getSecretValue(secret.key, env))"
               >
                 {{ renderValue(secret.key, env) }}
@@ -110,14 +112,14 @@ function getSecretValue(key: string, env: string) {
 }
 
 function renderValue(key: string, env: string): string {
-  const val = getSecretValue(key, env)
-  if (!val)
+  const secretValue = getSecretValue(key, env)
+  if (!secretValue)
     return "—"
 
-  return visibleKeys.value[key] ? val : "•".repeat(Math.min(val.length, 12))
+  return visibleKeys.value[key] ? secretValue : "•".repeat(Math.min(secretValue.length))
 }
 
-function updateSecret(key: string) {
+function handleUpdateSecret(key: string) {
   const secret = props.secrets.find(s => s.key === key)
   if (secret)
     emit("edit", secret)
