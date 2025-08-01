@@ -9,8 +9,6 @@ export default defineNuxtConfig({
     "@vueuse/motion/nuxt",
     "nuxt-auth-utils",
   ],
-  srcDir: "src",
-  serverDir: "server",
   runtimeConfig: {
     public: {
       baseUrl: process.env.NUXT_PUBLIC_BASE_URL,
@@ -40,7 +38,7 @@ export default defineNuxtConfig({
     preconnect: true,
   },
   tailwindcss: {
-    cssPath: "~/styles/globals.css",
+    cssPath: "~/assets/styles.css",
   },
   compatibilityDate: "2025-05-24",
 })
