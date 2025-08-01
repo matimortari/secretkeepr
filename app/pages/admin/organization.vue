@@ -27,7 +27,7 @@
         </div>
       </nav>
 
-      <section class="flex flex-col px-8">
+      <section class="flex flex-col md:px-8">
         <div
           v-for="(field, index) in orgFields" :key="index"
           class="md:navigation-group flex flex-col items-center justify-between border-b p-4 text-center md:text-start"

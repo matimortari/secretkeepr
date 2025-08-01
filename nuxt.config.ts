@@ -32,15 +32,16 @@ export default defineNuxtConfig({
     },
   },
   googleFonts: {
+    display: "swap",
+    prefetch: true,
+    preconnect: true,
     families: {
       Lato: true,
       Goldman: true,
       Silkscreen: true,
       JetBrainsMono: true,
     },
-    display: "swap",
-    prefetch: true,
-    preconnect: true,
+
   },
   tailwindcss: {
     cssPath: "~/assets/styles.css",
