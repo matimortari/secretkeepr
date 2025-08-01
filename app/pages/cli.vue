@@ -46,7 +46,7 @@
 
         <div class="absolute bottom-2 right-2 z-10 flex select-none items-end gap-2 font-semibold text-muted-foreground">
           <span>Powered by Go</span>
-          <img src="/gopher.png" width="60" height="60">
+          <img src="/assets/gopher.png" width="60" height="60">
         </div>
       </div>
     </div>
