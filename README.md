@@ -18,14 +18,17 @@ For detailed instructions on building and using the command-line interface, see 
 
 ## 🛠️ Stack
 
-- **Nuxt.js** with composition API.
-- **OAuth** authentication with Google & GitHub.
-- **Prisma** for database management.
-- **Pinia** for global state management.
+- **Nuxt.js** with **Vue** composition API and **Nitro** server engine.
+- **OAuth** authentication with Google and GitHub via **nuxt-auth-utils**.
+- **Prisma** for **PostgreSQL** database management.
+- **Pinia** for state management.
+- **Zod** for schema validation.
 - **TypeScript**.
+- **ESLint**.
 - **Tailwind CSS**.
-- **Framer Motion**.
-- **Go** and **Cobra** for CLI development.
+- **Framer Motion** via **@vueuse/motion**.
+- **Go** for CLI development using the **Cobra**.
+- **Vercel** for deployment, analytics, and blob storage.
 
 ## 📬 Contact
 
