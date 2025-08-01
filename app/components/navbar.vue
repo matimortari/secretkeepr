@@ -3,7 +3,7 @@
     <div class="navigation-group">
       <NuxtLink to="/" class="hover:scale-sm flex flex-row items-center gap-2 transition-all">
         <img
-          src="/logo.png" alt="Logo"
+          src="/assets/logo.png" alt="Logo"
           width="40" height="40"
           class="rounded-full"
         >

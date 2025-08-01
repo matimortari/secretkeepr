@@ -4,7 +4,7 @@
     :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
     :duration="800"
   >
-    <img src="/logo.png" alt="Logo" width="120" height="120">
+    <img src="/assets/logo.png" alt="Logo" width="120" height="120">
     <h1 class="font-goldman">
       Sign In
     </h1>
