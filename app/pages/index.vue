@@ -144,7 +144,7 @@ const features = [
 const howToUseSteps = [
   {
     title: "Sign In",
-    description: "Use GitHub or Google to get started securely.",
+    description: "Use GitHub, Google or GitLab to get started securely.",
   },
   {
     title: "Create an Organization",

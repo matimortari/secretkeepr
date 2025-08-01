@@ -13,7 +13,7 @@
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
       :duration="800"
     >
-      Sign in with Google or GitHub to continue.
+      Sign in with your preferred account to access SecretKeepR.
     </p>
   </header>
 
@@ -22,7 +22,7 @@
     :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
     :duration="800"
   >
-    <nav class="navigation-group">
+    <nav class="flex flex-col items-center gap-4">
       <button v-for="provider in providers" :key="provider.name" class="btn" @click="provider.click">
         <Icon :name="provider.icon" size="25" />
         <span>{{ provider.label }}</span>
@@ -47,6 +47,14 @@ const providers = [
     icon: "simple-icons:google",
     click: async () => {
       await navigateTo("/api/auth/google", { external: true })
+    },
+  },
+  {
+    name: "gitlab",
+    label: "Sign In With GitLab",
+    icon: "simple-icons:gitlab",
+    click: async () => {
+      await navigateTo("/api/auth/gitlab", { external: true })
     },
   },
 ]
