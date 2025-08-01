@@ -19,6 +19,11 @@ export default defineNuxtConfig({
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
         redirectURL: `${process.env.NUXT_PUBLIC_BASE_URL}/api/auth/github`,
       },
+      gitlab: {
+        clientId: process.env.GITLAB_CLIENT_ID,
+        clientSecret: process.env.GITLAB_CLIENT_SECRET,
+        redirectURL: `${process.env.NUXT_PUBLIC_BASE_URL}/api/auth/gitlab`,
+      },
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
