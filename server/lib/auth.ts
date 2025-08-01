@@ -8,7 +8,7 @@ export async function handleOAuthUser(event: H3Event, userData: {
   email: string
   image: string | null
   cliToken?: string
-  provider: "google" | "github"
+  provider: "google" | "github" | "gitlab"
 }) {
   const { id: providerAccountId, name, email, image, provider } = userData
 
@@ -110,13 +110,15 @@ export async function handleOAuthUser(event: H3Event, userData: {
     })
   }
   else {
-    await db.cliToken.update({
-      where: { id: user.cliTokens[0].id },
-      data: {
-        token: cliToken,
-        expiresAt,
-      },
-    })
+    if (user.cliTokens[0]) {
+      await db.cliToken.update({
+        where: { id: user.cliTokens[0].id },
+        data: {
+          token: cliToken,
+          expiresAt,
+        },
+      })
+    }
   }
 
   const sessionUser = {
