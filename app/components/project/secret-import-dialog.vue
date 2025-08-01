@@ -1,7 +1,7 @@
 <template>
   <Dialog :is-open="isOpen" title="Import from .env" @update:is-open="emit('close')">
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
-      <textarea v-model="envText" rows="10" class="scroll-area resize-none" placeholder="Paste your .env content here..." />
+      <textarea v-model="envContent" rows="10" class="scroll-area resize-none" placeholder="Paste your .env content here..." />
 
       <div class="flex flex-col items-start gap-1">
         <label class="text-sm font-semibold">Environment</label>
@@ -46,7 +46,7 @@ const emit = defineEmits<{
 
 const secretStore = useSecretsStore()
 
-const envText = ref("")
+const envContent = ref("")
 const selectedEnv = ref<Environment>("development")
 
 function parseEnv(text: string): Record<string, string> {
@@ -71,7 +71,7 @@ function parseEnv(text: string): Record<string, string> {
 
 function handleSubmit() {
   secretStore.error = null
-  const parsed = parseEnv(envText.value)
+  const parsed = parseEnv(envContent.value)
   if (Object.entries(parsed).length === 0) {
     secretStore.error = "No valid key-value pairs found."
     return
@@ -113,7 +113,7 @@ function handleSubmit() {
 
 watch(() => props.isOpen, (open) => {
   if (open) {
-    envText.value = ""
+    envContent.value = ""
     selectedEnv.value = "development"
     secretStore.error = null
   }
