@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
   await requireProjectRole(sessionUser.id!, projectId, ["admin", "owner"])
 
   const filteredValues = body.values.filter((v: { environment: Environment, value: string }) => v.value.trim() !== "")
-  if (filteredValues.length === 0) {
+  if (!filteredValues.length) {
     throw createError({ statusCode: 400, statusMessage: "At least one secret value is required" })
   }
 

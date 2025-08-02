@@ -33,11 +33,11 @@ const props = defineProps({
 
 const emit = defineEmits(["update:isOpen", "confirm"])
 
+const dialogRef = ref<HTMLElement | null>(null)
+
 function closeDialog() {
   emit("update:isOpen", false)
 }
-
-const dialogRef = ref<HTMLElement | null>(null)
 
 useClickOutside(dialogRef, () => {
   if (props.isOpen) {

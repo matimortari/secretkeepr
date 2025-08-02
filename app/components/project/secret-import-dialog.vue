@@ -62,8 +62,16 @@ function parseEnv(text: string): Record<string, string> {
     if (!match)
       continue
 
-    const [, key, value] = match
-    parsed[key.trim()] = value.trim().replace(/^"|"$/g, "")
+    const key = match && match[1] ? match[1].trim() : ""
+    let value = match && match[2] ? match[2].trim() : ""
+    if (
+      (value.startsWith("\"") && value.endsWith("\""))
+      || (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1)
+    }
+
+    parsed[key] = value
   }
 
   return parsed
@@ -72,7 +80,7 @@ function parseEnv(text: string): Record<string, string> {
 function handleSubmit() {
   secretStore.error = null
   const parsed = parseEnv(envContent.value)
-  if (Object.entries(parsed).length === 0) {
+  if (!Object.entries(parsed).length) {
     secretStore.error = "No valid key-value pairs found."
     return
   }

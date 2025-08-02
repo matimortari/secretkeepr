@@ -44,7 +44,12 @@
       </nav>
     </header>
 
+    <p v-if="!secrets.length" class="text-caption my-8 h-[80vh] text-center">
+      No secrets found for this project. Add a new secret or import from an .env file to get started.
+    </p>
+
     <ProjectSecrets
+      v-if="secrets.length"
       :secrets="secrets"
       :project-id="project?.id ?? ''"
       @edit="(secret: SecretType) => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = secret }"

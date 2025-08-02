@@ -51,7 +51,7 @@
         <button type="button" class="btn-secondary disabled:opacity-80" :disabled="!orgStore.hasNextPage" @click="orgStore.nextAuditLogPage">
           <Icon name="ph:arrow-right-bold" size="20" />
         </button>
-        <button type="button" class="btn-danger" :disabled="filteredLogs.length === 0" @click="handleDeleteLogs">
+        <button type="button" class="btn-danger" :disabled="!filteredLogs.length" @click="handleDeleteLogs">
           <Icon name="ph:trash-bold" size="20" />
         </button>
       </nav>
@@ -62,7 +62,7 @@
     <p v-if="orgStore.isLoading" class="text-caption">
       Loading logs...
     </p>
-    <p v-else-if="filteredLogs.length === 0" class="text-caption">
+    <p v-else-if="!filteredLogs.length" class="text-caption">
       No audit logs found.
     </p>
 

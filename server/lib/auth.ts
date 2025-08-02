@@ -100,7 +100,7 @@ export async function handleOAuthUser(event: H3Event, userData: {
 
   const cliToken = randomBytes(16).toString("hex")
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // Expires in 24 hours
-  if (user.cliTokens.length === 0) {
+  if (!user.cliTokens.length) {
     await db.cliToken.create({
       data: {
         token: cliToken,
