@@ -28,11 +28,8 @@
       </nav>
 
       <section class="flex flex-col md:px-8">
-        <div
-          v-for="(field, index) in orgFields" :key="index"
-          class="md:navigation-group flex flex-col items-center justify-between border-b p-4 text-center md:text-start"
-        >
-          <div class="flex flex-col items-center justify-center gap-1 md:items-start md:text-start">
+        <div v-for="(field, index) in orgFields" :key="index" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-4">
+          <div class="flex flex-col items-start justify-center gap-1 text-start">
             <h6>
               {{ field.label }}
             </h6>
@@ -41,29 +38,27 @@
             </p>
           </div>
 
-          <div v-if="field.type === 'input'" class="md:navigation-group flex flex-col gap-1">
+          <div v-if="field.type === 'input'" class="navigation-group gap-4">
             <input
               type="text"
-              :value="field.model"
+              :value="field.model?.value"
               placeholder="Enter value"
               required
               @input="field.update && $event.target && field.update(($event.target as HTMLInputElement).value)"
             >
-            <div class="btn" @click="field.onSave">
+            <button class="btn" @click="field.onSave">
               <Icon name="ph:check-bold" size="20" />
-              <span>Save</span>
-            </div>
+            </button>
           </div>
 
-          <div v-else-if="field.copyable" class="md:navigation-group flex flex-col gap-1">
+          <div v-else-if="field.copyable" class="navigation-group gap-4">
             <span class="text-caption">{{ field.value }}</span>
-            <div class="btn" @click="copyToClipboard(field.value?.value || '')">
+            <button class="btn" @click="copyToClipboard(field.value?.value || '')">
               <Icon name="ph:clipboard-bold" size="20" />
-              <span>Copy</span>
-            </div>
+            </button>
           </div>
 
-          <span v-else class="text-caption md:navigation-group flex flex-col gap-1">{{ field.value }}</span>
+          <span v-else class="navigation-group gap-4">{{ field.value }}</span>
         </div>
       </section>
     </form>
@@ -92,7 +87,7 @@
               </option>
             </select>
 
-            <button class="btn" @click="handleUpdateMemberRole(orgUser.id, userRoles[orgUser.id])">
+            <button class="btn" @click="handleUpdateMemberRole(orgUser.id, userRoles[orgUser.id] || 'member')">
               <Icon name="ph:check-bold" size="15" />
             </button>
             <button v-if="isOwner && orgUser.role !== 'owner'" class="btn" @click="handleRemoveMember(orgUser.id)">
@@ -131,7 +126,7 @@
       </ul>
     </section>
 
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-center justify-between border-b p-4 px-10 text-center md:items-start md:text-start">
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
       <div class="flex flex-col gap-1">
         <h6>
           Invite Members
@@ -170,7 +165,7 @@
         </header>
       </nav>
 
-      <section class="md:navigation-group flex flex-col items-center justify-between border-b p-4 px-10 text-center md:items-start md:text-start">
+      <section class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
         <div class="flex flex-col gap-1">
           <h6>
             Leave Organization
@@ -191,7 +186,7 @@
         </div>
       </section>
 
-      <section class="md:navigation-group flex flex-col items-center justify-between border-b p-4 px-10 text-center md:items-start md:text-start">
+      <section class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
         <div class="flex flex-col gap-1">
           <h6>
             Delete Organization
@@ -255,6 +250,37 @@ const usersWithRoles = computed(() => {
     role: m.role ?? "",
   }))
 })
+
+const orgFields = [
+  {
+    label: "Organization Name",
+    description: "The name of your organization.",
+    type: "input",
+    model: computed(() => orgStore.activeOrg?.name || ""),
+    update: (value: string) => {
+      if (orgStore.activeOrg)
+        orgStore.activeOrg.name = value
+    },
+    onSave: handleSubmit,
+    editable: isOwner,
+  },
+  {
+    label: "Organization ID",
+    description: "This ID uniquely identifies your organization.",
+    value: computed(() => orgStore.activeOrg?.id),
+    copyable: true,
+  },
+  {
+    label: "Created At",
+    description: "When your organization was created.",
+    value: computed(() => formatDate(orgStore.activeOrg?.createdAt)),
+  },
+  {
+    label: "Updated At",
+    description: "Last update time for your organization.",
+    value: computed(() => formatDate(orgStore.activeOrg?.updatedAt)),
+  },
+]
 
 async function handleCreateInvite() {
   inviteError.value = ""
@@ -364,37 +390,6 @@ async function handleDeleteOrg() {
     deleteOrgError.value = error.message || "An error occurred while deleting the organization."
   }
 }
-
-const orgFields = [
-  {
-    label: "Organization Name",
-    description: "The name of your organization.",
-    type: "input",
-    model: computed(() => orgStore.activeOrg?.name || ""),
-    update: (value: string) => {
-      if (orgStore.activeOrg)
-        orgStore.activeOrg.name = value
-    },
-    onSave: handleSubmit,
-    editable: isOwner,
-  },
-  {
-    label: "Organization ID",
-    description: "This ID uniquely identifies your organization.",
-    value: computed(() => orgStore.activeOrg?.id),
-    copyable: true,
-  },
-  {
-    label: "Created At",
-    description: "When your organization was created.",
-    value: computed(() => formatDate(orgStore.activeOrg?.createdAt)),
-  },
-  {
-    label: "Updated At",
-    description: "Last update time for your organization.",
-    value: computed(() => formatDate(orgStore.activeOrg?.updatedAt)),
-  },
-]
 
 onMounted(() => {
   if (orgStore.activeOrg?.id) {

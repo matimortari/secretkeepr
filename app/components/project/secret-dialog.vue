@@ -71,7 +71,7 @@ function handleSubmit() {
     value: form.value.values[env].trim(),
   }))
     .filter(v => v.value.length > 0)
-  if (valuesArray.length === 0) {
+  if (!valuesArray.length) {
     secretStore.error = "At least one value is required"
     return
   }

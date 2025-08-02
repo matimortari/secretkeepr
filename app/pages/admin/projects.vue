@@ -24,7 +24,7 @@
       </nav>
     </header>
 
-    <p v-if="!filteredProjects.length" class="my-8 h-[80vh] text-center text-muted-foreground">
+    <p v-if="!filteredProjects.length" class="text-caption my-8 h-[80vh] text-center">
       No projects found. Create a new project to get started.
     </p>
 

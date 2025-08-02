@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
     where: whereClause,
     select: { id: true },
   })
-  if (logsToDelete.length === 0) {
+  if (!logsToDelete.length) {
     return { message: "No audit logs matched the given criteria." }
   }
 
