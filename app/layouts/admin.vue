@@ -38,13 +38,13 @@ function initActiveOrg(user: UserType) {
   if (import.meta.client) {
     const orgFromStorage = localStorage.getItem("active_org_id")
     const matchedOrg = user.memberships.find(m => m.organization?.id === orgFromStorage)?.organization
-    orgStore.activeOrg = matchedOrg || user.memberships[0].organization || null
+    orgStore.activeOrg = matchedOrg || user.memberships[0]?.organization || null
     if (orgStore.activeOrg) {
       localStorage.setItem("active_org_id", orgStore.activeOrg.id)
     }
   }
   else {
-    orgStore.activeOrg = user.memberships[0].organization || null
+    orgStore.activeOrg = user.memberships[0]?.organization || null
   }
 }
 

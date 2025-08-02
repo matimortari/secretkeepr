@@ -3,7 +3,6 @@ import crypto from "node:crypto"
 
 const algorithm = "aes-256-cbc"
 const secret = process.env.ENCRYPTION_KEY
-
 if (!secret || secret.length < 32) {
   throw new Error("ENCRYPTION_KEY must be set and at least 32 characters long")
 }
@@ -27,6 +26,9 @@ export function encrypt(input: string): string {
 export function decrypt(output: string): string {
   try {
     const [ivHex, encryptedHex] = output.split(":")
+    if (!ivHex || !encryptedHex) {
+      throw new Error("Invalid encrypted input format")
+    }
     const iv = Buffer.from(ivHex, "hex")
     const encrypted = Buffer.from(encryptedHex, "hex")
     const decipher = crypto.createDecipheriv(algorithm, key, iv)
