@@ -33,11 +33,8 @@
       </nav>
 
       <section class="flex flex-col md:px-8">
-        <div
-          v-for="(field, index) in projectFields" :key="index"
-          class="md:navigation-group flex flex-col items-center justify-between border-b p-4 text-center md:text-start"
-        >
-          <div class="flex flex-col items-center justify-center gap-1 md:items-start md:text-start">
+        <div v-for="(field, index) in projectFields" :key="index" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-4">
+          <div class="flex flex-col items-start justify-center gap-1 text-start">
             <h6>
               {{ field.label }}
             </h6>
@@ -46,26 +43,24 @@
             </p>
           </div>
 
-          <div v-if="field.copyable" class="md:navigation-group flex flex-col gap-1">
-            <span class="text-caption">{{ field.value }}</span>
+          <div v-if="field.copyable" class="navigation-group gap-4">
+            <span>{{ field.value }}</span>
             <div class="btn" @click="copyToClipboard(field.value?.value || '')">
               <Icon name="ph:clipboard-bold" size="20" />
-              <span>Copy</span>
             </div>
           </div>
 
-          <div v-else-if="field.type === 'textarea'" class="md:navigation-group flex flex-col gap-1">
+          <div v-else-if="field.type === 'textarea'" class="navigation-group gap-4">
             <textarea
-              :value="field.model.value" class="scroll-area w-full resize-none"
+              :value="field.model?.value" class="scroll-area w-full resize-none"
               @input="field.update && $event.target && field.update(($event.target as HTMLTextAreaElement).value)"
             />
             <div class="btn" @click="field.onSave">
               <Icon name="ph:check-bold" size="20" />
-              <span>Save</span>
             </div>
           </div>
 
-          <span v-else class="text-caption md:navigation-group flex flex-col gap-1">{{ field.value }}</span>
+          <span v-else class="navigation-group gap-4">{{ field.value }}</span>
         </div>
       </section>
     </form>
@@ -99,7 +94,7 @@
       </ul>
     </section>
 
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-center justify-between border-b p-4 px-10 text-center md:items-start md:text-start">
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
       <div class="flex flex-col gap-1">
         <h6>
           Add New Member
@@ -143,7 +138,7 @@
         </header>
       </nav>
 
-      <section class="md:navigation-group flex flex-col items-center justify-between border-b p-4 px-10 text-center md:items-start md:text-start">
+      <section class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
         <div class="flex flex-col gap-1">
           <h6>
             Delete Project
@@ -183,7 +178,7 @@ const projectsStore = useProjectsStore()
 const addMemberError = ref<string | null>(null)
 const addMemberSuccess = ref<string | null>(null)
 const newMemberId = ref("")
-const newMemberRole = ref(roles[0].value)
+const newMemberRole = ref(roles[0]?.value ?? "member")
 
 const project = computed(() => {
   return projectsStore.projects.find(p => p.id === projectId) || null
@@ -241,7 +236,7 @@ async function handleAddMember() {
     await projectsStore.getProjects()
     addMemberSuccess.value = "Member added successfully."
     newMemberId.value = ""
-    newMemberRole.value = roles[0].value
+    newMemberRole.value = roles[0]?.value ?? "member"
   }
   catch (error: any) {
     console.error("Failed to add project member", error)

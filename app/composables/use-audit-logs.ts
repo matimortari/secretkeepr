@@ -85,7 +85,7 @@ export function useAuditLogs() {
   }
 
   function formatMetadata(metadata: Record<string, any>) {
-    if (!metadata || Object.keys(metadata).length === 0)
+    if (!metadata || typeof metadata !== "object")
       return ""
 
     const staticFields = [

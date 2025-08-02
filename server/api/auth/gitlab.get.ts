@@ -36,6 +36,6 @@ export default defineOAuthGitLabEventHandler({
       throw createError({ statusCode: 500, statusMessage: "Internal server error" })
     }
 
-    return sendRedirect(event, "/login?error=gitlab_oauth_failed")
+    return sendRedirect(event, "/sign-in?error=gitlab_oauth_failed")
   },
 })
