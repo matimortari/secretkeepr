@@ -2,7 +2,6 @@ import {
   addProjectMemberService,
   createProjectService,
   deleteProjectService,
-  getProjectMembersService,
   getProjectsService,
   removeProjectMemberService,
   updateProjectMemberService,
@@ -121,27 +120,6 @@ export const useProjectsStore = defineStore("projects", () => {
     }
   }
 
-  async function getProjectMembers(projectId: string) {
-    requireProjectId(projectId)
-    isLoading.value = true
-    error.value = null
-
-    try {
-      const members = await getProjectMembersService(projectId)
-      if (currentProject.value?.id === projectId) {
-        currentProject.value.members = members
-      }
-      return members
-    }
-    catch (error: any) {
-      error.value = error?.message || "Failed to load project members"
-      throw error
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
-
   async function addProjectMember(projectId: string, payload: AddProjectMemberPayload) {
     requireProjectId(projectId)
     if (!payload.userId || !payload.role) {
@@ -230,7 +208,6 @@ export const useProjectsStore = defineStore("projects", () => {
     createProject,
     updateProject,
     deleteProject,
-    getProjectMembers,
     addProjectMember,
     updateProjectMember,
     removeProjectMember,

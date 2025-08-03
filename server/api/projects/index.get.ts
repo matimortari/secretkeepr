@@ -21,12 +21,15 @@ export default defineEventHandler(async (event) => {
       },
       members: {
         select: {
+          id: true,
           role: true,
           userId: true,
           user: {
             select: {
-              name: true,
+              id: true,
               email: true,
+              name: true,
+              image: true,
             },
           },
         },
