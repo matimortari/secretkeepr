@@ -4,105 +4,97 @@
       Preferences
     </h2>
 
-    <form class="flex flex-col" @submit.prevent="handleSubmit">
-      <nav class="md:navigation-group flex flex-col items-center justify-between border-b p-2 text-center md:text-start">
-        <header class="flex flex-col items-center gap-1 text-center md:items-start md:text-start">
-          <h4>User Information</h4>
-          <p class="text-caption">
+    <section class="flex flex-col">
+      <div class="md:navigation-group gap-2 border-b p-2">
+        <header class="flex flex-col gap-2">
+          <h4>
+            User Information
+          </h4>
+          <p class="text-info">
             Manage your account information.
           </p>
         </header>
 
-        <div class="flex flex-col gap-2 md:flex-row md:items-center">
-          <p v-if="userStore.error" class="text-caption text-danger-foreground">
-            {{ userStore.error }}
-          </p>
+        <p v-if="userStore.error" class="text-warning">
+          {{ userStore.error }}
+        </p>
+      </div>
 
-          <button class="btn-primary md:self-start" type="submit">
-            <Icon name="ph:check-circle" size="20" />
-            <span>Save Changes</span>
-          </button>
-        </div>
-      </nav>
-
-      <section class="flex flex-col md:px-8">
-        <div v-for="(field, index) in userFields" :key="index" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-4">
-          <div class="flex flex-col items-start justify-center gap-1 text-start">
-            <h6>
-              {{ field.label }}
-            </h6>
-            <p v-if="field.description" class="text-caption">
-              {{ field.description }}
-            </p>
-          </div>
-
-          <div v-if="field.type === 'input'" class="md:navigation-group">
-            <input
-              type="text"
-              :value="field.model?.value"
-              placeholder="Enter value"
-              required
-              @input="field.update && $event.target && field.update(($event.target as HTMLInputElement).value)"
-            >
-            <div class="btn" @click="field.onSave">
-              <Icon name="ph:check-bold" size="20" />
-            </div>
-          </div>
-
-          <div v-else-if="field.type === 'image'" class="navigation-group">
-            <img v-if="field.src" :src="field.src.value ?? undefined" alt="Profile preview" class="size-10 rounded-full border object-cover">
-            <input
-              id="image"
-              type="file"
-              accept="image/*"
-              class="hidden"
-              @change="field.onUpload"
-            >
-            <label for="image" class="btn">
-              <Icon name="ph:image-bold" size="20" />
-            </label>
-          </div>
-
-          <div v-else-if="field.copyable" class="navigation-group">
-            <span>{{ field.value }}</span>
-            <div class="btn" @click="copyToClipboard(field.value?.value || '')">
-              <Icon name="ph:clipboard-bold" size="20" />
-            </div>
-          </div>
-
-          <span v-else class="navigation-group">{{ field.value }}</span>
-        </div>
-      </section>
-    </form>
-
-    <div class="flex flex-col">
-      <nav class="md:navigation-group flex w-full flex-col justify-between border-b p-2">
-        <header class="flex flex-col items-center gap-1 text-center md:items-start md:text-start">
-          <h4>
-            Danger Zone
-          </h4>
-          <p class="text-caption">
-            This section contains actions that can significantly affect your account. Please proceed with caution.
+      <!-- User Details -->
+      <div v-for="(field, index) in userFields" :key="index" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10">
+        <header class="flex flex-col items-start justify-center gap-1 text-start">
+          <h5>
+            {{ field.label }}
+          </h5>
+          <p v-if="field.description" class="text-info">
+            {{ field.description }}
           </p>
         </header>
-      </nav>
 
-      <section class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
-        <div class="flex flex-col gap-1">
-          <h6>
+        <div v-if="field.copyable" class="navigation-group">
+          <span>{{ field.value }}</span>
+          <div class="btn" @click="copyToClipboard(field.value?.value || '')">
+            <Icon name="ph:clipboard-bold" size="20" />
+          </div>
+        </div>
+
+        <div v-else-if="field.type === 'input'" class="navigation-group">
+          <input
+            type="text"
+            :value="field.model?.value"
+            placeholder="Enter value"
+            @input="field.update && $event.target && field.update(($event.target as HTMLInputElement).value)"
+          >
+          <div class="btn" @click="field.onSave">
+            <Icon name="ph:check-bold" size="20" />
+          </div>
+        </div>
+
+        <div v-else-if="field.type === 'image'" class="navigation-group">
+          <img v-if="field.src" :src="field.src.value ?? undefined" alt="Profile preview" class="size-10 rounded-full border object-cover">
+          <input
+            id="image"
+            type="file"
+            accept="image/*"
+            class="hidden"
+            @change="field.onUpload"
+          >
+          <label for="image" class="btn">
+            <Icon name="ph:image-bold" size="20" />
+          </label>
+        </div>
+
+        <span v-else class="navigation-group">{{ field.value }}</span>
+      </div>
+    </section>
+
+    <!-- Danger Zone -->
+    <section class="flex flex-col">
+      <header class="flex flex-col items-start gap-1 border-b p-2 text-start">
+        <h4>
+          Danger Zone
+        </h4>
+        <p class="text-info">
+          This section contains actions that can significantly affect your account. Please proceed with caution.
+        </p>
+      </header>
+
+      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+        <header class="flex flex-col gap-1">
+          <h5>
             Delete Account
-          </h6>
-          <p class="text-caption text-danger-foreground">
+          </h5>
+          <p class="text-warning">
             This action is irreversible. All your data will be permanently deleted.
           </p>
-        </div>
+        </header>
 
         <button class="btn-danger" @click="handleDeleteUser">
           <Icon name="ph:user-minus-bold" size="20" />
           <span>Delete Account</span>
         </button>
-      </section>
-    </div>
+      </nav>
+    </section>
   </div>
 </template>
 

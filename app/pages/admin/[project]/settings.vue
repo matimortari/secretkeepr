@@ -9,115 +9,111 @@
       </h2>
     </header>
 
-    <form class="flex flex-col" @submit.prevent="handleSubmit">
-      <nav class="md:navigation-group flex flex-col items-center justify-between border-b p-2 text-center md:text-start">
-        <header class="flex flex-col items-center gap-1 text-center md:items-start md:text-start">
+    <section class="flex flex-col">
+      <div class="md:navigation-group gap-2 border-b p-2">
+        <header class="flex flex-col gap-2">
           <h4>
             Project Details
           </h4>
-          <p class="text-caption">
+          <p class="text-info">
             Manage project details and settings.
           </p>
         </header>
 
-        <div class="flex flex-col gap-2 md:flex-row md:items-center">
-          <p v-if="projectsStore.error" class="text-caption text-danger-foreground">
-            {{ projectsStore.error }}
-          </p>
-
-          <button class="btn-primary md:self-start" type="submit" :disabled="!isOwner && !isAdmin">
-            <Icon name="ph:check-circle" size="20" />
-            <span>Save Changes</span>
-          </button>
-        </div>
-      </nav>
-
-      <section class="flex flex-col md:px-8">
-        <div v-for="(field, index) in projectFields" :key="index" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-4">
-          <div class="flex flex-col items-start justify-center gap-1 text-start">
-            <h6>
-              {{ field.label }}
-            </h6>
-            <p v-if="field.description" class="text-caption">
-              {{ field.description }}
-            </p>
-          </div>
-
-          <div v-if="field.copyable" class="navigation-group gap-4">
-            <span>{{ field.value }}</span>
-            <div class="btn" @click="copyToClipboard(field.value?.value || '')">
-              <Icon name="ph:clipboard-bold" size="20" />
-            </div>
-          </div>
-
-          <div v-else-if="field.type === 'textarea'" class="navigation-group gap-4">
-            <textarea
-              :value="field.model?.value" class="scroll-area w-full resize-none"
-              @input="field.update && $event.target && field.update(($event.target as HTMLTextAreaElement).value)"
-            />
-            <div class="btn" @click="field.onSave">
-              <Icon name="ph:check-bold" size="20" />
-            </div>
-          </div>
-
-          <span v-else class="navigation-group gap-4">{{ field.value }}</span>
-        </div>
-      </section>
-    </form>
-
-    <section class="flex flex-col justify-between border-b p-4">
-      <h4>
-        Project Members
-      </h4>
-
-      <ul class="scroll-area flex max-h-52 flex-col items-start gap-1 overflow-y-auto">
-        <li v-for="member in projectMembers" :key="member.userId" class="card navigation-group w-full min-w-0 justify-between">
-          <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
-            <span class="w-full min-w-0 truncate font-semibold md:w-40">{{ member.user?.name }}</span>
-            <span class="text-caption min-w-0 max-w-full truncate md:max-w-52">{{ member.user?.email }}</span>
-          </div>
-
-          <nav v-if="isOwner || (isAdmin && member.userId !== userStore.user?.id)" class="navigation-group justify-end md:w-1/3">
-            <select v-model="member.role" class="min-w-[100px] capitalize">
-              <option v-for="role in roles" :key="role.value" :value="role.value" class="capitalize">
-                {{ role.label }}
-              </option>
-            </select>
-            <button class="btn" @click="handleUpdateMemberRole(member.userId, member.role)">
-              <Icon name="ph:check-bold" size="15" />
-            </button>
-            <button v-if="isOwner && member.role !== 'owner'" class="btn" @click="handleRemoveMember(member.userId)">
-              <Icon name="ph:x" size="15" />
-            </button>
-          </nav>
-        </li>
-      </ul>
-    </section>
-
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
-      <div class="flex flex-col gap-1">
-        <h6>
-          Add New Member
-        </h6>
-        <p class="text-caption">
-          Invite users to join this project.
+        <p v-if="projectsStore.error" class="text-warning">
+          {{ projectsStore.error }}
         </p>
       </div>
 
-      <div class="md:navigation-group flex flex-col gap-2">
-        <p v-if="addMemberError" class="text-caption text-danger-foreground">
+      <!-- Project Details -->
+      <div v-for="(field, index) in projectFields" :key="index" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10">
+        <div class="flex flex-col items-start justify-center gap-1 text-start">
+          <h5>
+            {{ field.label }}
+          </h5>
+          <p v-if="field.description" class="text-info">
+            {{ field.description }}
+          </p>
+        </div>
+
+        <div v-if="field.copyable" class="navigation-group">
+          <span>{{ field.value }}</span>
+          <div class="btn" @click="copyToClipboard(field.value?.value || '')">
+            <Icon name="ph:clipboard-bold" size="20" />
+          </div>
+        </div>
+
+        <div v-else-if="field.type === 'textarea'" class="navigation-group">
+          <textarea
+            :value="field.model?.value" class="scroll-area w-full resize-none"
+            @input="field.update && $event.target && field.update(($event.target as HTMLTextAreaElement).value)"
+          />
+          <div class="btn" @click="field.onSave">
+            <Icon name="ph:check-bold" size="20" />
+          </div>
+        </div>
+
+        <span v-else class="navigation-group">{{ field.value }}</span>
+      </div>
+
+      <!-- Project Members List -->
+      <section class="flex flex-col justify-between border-b p-2 md:px-10">
+        <h5>
+          Project Members
+        </h5>
+
+        <ul class="scroll-area flex max-h-52 flex-col items-start gap-1 overflow-y-auto">
+          <li v-for="member in projectMembers" :key="member.userId" class="card navigation-group w-full min-w-0 justify-between">
+            <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
+              <span class="w-full min-w-0 truncate font-semibold">{{ member.user?.name }}</span>
+              <span class="text-info min-w-0 max-w-full truncate">{{ member.user?.email }}</span>
+            </div>
+
+            <nav v-if="isOwner || (isAdmin && member.userId !== userStore.user?.id)" class="navigation-group justify-end md:w-1/3">
+              <select v-model="member.role" class="min-w-[100px] capitalize">
+                <option v-for="role in roles" :key="role.value" :value="role.value" class="capitalize">
+                  {{ role.label }}
+                </option>
+              </select>
+              <button class="btn" @click="handleUpdateMemberRole(member.userId, member.role)">
+                <Icon name="ph:check-bold" size="15" />
+              </button>
+              <button v-if="isOwner && member.role !== 'owner'" class="btn" @click="handleRemoveMember(member.userId)">
+                <Icon name="ph:x" size="15" />
+              </button>
+            </nav>
+          </li>
+        </ul>
+      </section>
+    </section>
+
+    <!-- Add New Member -->
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+      <header class="flex flex-col gap-1">
+        <h5>
+          Add New Member
+        </h5>
+        <p class="text-info">
+          Invite users to join this project.
+        </p>
+      </header>
+
+      <div class="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center md:text-end">
+        <div class="navigation-group">
+          <input v-model="newMemberId" type="text" placeholder="User ID">
+          <select v-model="newMemberRole" class="min-w-[120px]">
+            <option v-for="role in roles" :key="role.value" :value="role.value">
+              {{ role.label }}
+            </option>
+          </select>
+        </div>
+
+        <p v-if="addMemberError" class="text-warning">
           {{ addMemberError }}
         </p>
-        <p v-if="addMemberSuccess" class="text-caption text-success-foreground">
+        <p v-if="addMemberSuccess" class="text-success">
           {{ addMemberSuccess }}
         </p>
-
-        <input v-model="newMemberId" type="text" placeholder="User ID">
-        <select v-model="newMemberRole" class="min-w-[120px]">
-          <option v-for="role in roles" :key="role.value" :value="role.value">
-            {{ role.label }}
-          </option>
-        </select>
 
         <button class="btn-primary" @click.prevent="handleAddMember">
           <Icon name="ph:plus-circle-bold" size="20" />
@@ -126,34 +122,33 @@
       </div>
     </section>
 
-    <div v-if="isOwner" class="flex flex-col">
-      <nav class="md:navigation-group flex w-full flex-col justify-between border-b p-2">
-        <header class="flex flex-col items-center gap-1 text-center md:items-start md:text-start">
-          <h4>
-            Danger Zone
-          </h4>
-          <p class="text-caption">
-            This section contains actions that can significantly affect your account. Please proceed with caution.
-          </p>
-        </header>
-      </nav>
+    <!-- Danger Zone -->
+    <section v-if="isOwner" class="flex flex-col">
+      <header class="flex flex-col items-start gap-1 border-b p-2 text-start">
+        <h4>
+          Danger Zone
+        </h4>
+        <p class="text-info">
+          This section contains actions that can significantly affect your account. Please proceed with caution.
+        </p>
+      </header>
 
-      <section class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
-        <div class="flex flex-col gap-1">
-          <h6>
+      <section class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+        <header class="flex flex-col gap-1">
+          <h5>
             Delete Project
-          </h6>
-          <p class="text-caption text-danger-foreground">
+          </h5>
+          <p class="text-warning">
             This action is irreversible. All data associated with this project will be permanently deleted.
           </p>
-        </div>
+        </header>
 
         <button class="btn-danger" @click="handleDeleteProject">
           <Icon name="ph:user-minus-bold" size="20" />
           <span>Delete Account</span>
         </button>
       </section>
-    </div>
+    </section>
   </div>
 </template>
 
@@ -186,6 +181,7 @@ const project = computed(() => {
 
 const projectMembers = computed(() => project.value?.members || [])
 const currentUserRole = computed(() => projectMembers.value.find(m => m.userId === userStore.user?.id)?.role)
+
 const isOwner = computed(() => currentUserRole.value === "owner")
 const isAdmin = computed(() => currentUserRole.value === "admin")
 
@@ -220,8 +216,8 @@ const projectFields = [
 ]
 
 async function handleAddMember() {
-  addMemberError.value = ""
-  addMemberSuccess.value = ""
+  addMemberError.value = null
+  addMemberSuccess.value = null
   projectsStore.error = null
   if (!project.value?.id || !newMemberId.value.trim()) {
     addMemberError.value = "User ID is required."

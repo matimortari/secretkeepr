@@ -5,7 +5,7 @@
         <h4 class="truncate">
           {{ project.name }}
         </h4>
-        <p class="text-caption line-clamp-3">
+        <p class="text-info line-clamp-3">
           {{ project.description || 'No description provided.' }}
         </p>
       </div>
