@@ -51,7 +51,7 @@
         </div>
 
         <div v-else-if="field.type === 'image'" class="navigation-group">
-          <img v-if="field.src" :src="field.src.value ?? undefined" alt="Profile preview" class="size-10 rounded-full border object-cover">
+          <img v-if="field.src" :src="field.src.value ?? undefined" alt="Profile preview" class="size-10 rounded-full border-2">
           <input
             id="image"
             type="file"

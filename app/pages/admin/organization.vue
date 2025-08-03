@@ -85,21 +85,19 @@
         </h5>
 
         <ul class="scroll-area flex max-h-52 flex-col items-start gap-1 overflow-y-auto">
-          <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card navigation-group w-full justify-between">
-            <div class="flex flex-col gap-1 truncate">
-              <span>{{ orgUser.name }}</span>
-              <span class="text-info">Role: {{ orgUser.role }}</span>
+          <li v-for="orgUser in usersFromOrg" :key="orgUser.id" class="card navigation-group w-full justify-between overflow-hidden">
+            <div class="flex min-w-0 flex-row items-center gap-2">
+              <img :src="orgUser.image ?? undefined" alt="Avatar" class="hidden size-10 rounded-full border-2 md:block">
+              <div class="flex min-w-0 flex-col">
+                <span class="truncate">{{ orgUser.name }}</span>
+                <span class="text-info truncate">Role: {{ orgUser.role }}</span>
+                <span class="text-info truncate">{{ orgUser.id }}</span>
+              </div>
             </div>
 
-            <!-- && orgUser.id !== userStore.user?.id -->
-            <nav v-if="isOwner" class="navigation-group justify-end">
-              <div class="text-info flex flex-col truncate">
-                <span>{{ orgUser.id }}</span>
-                <span>{{ orgUser.email }}</span>
-              </div>
-
-              <select v-model="userRoles[orgUser.id]" class="min-w-[100px]">
-                <option v-for="role in roles" :key="role.value" :value="role.value" class="capitalize">
+            <nav v-if="isOwner && orgUser.id !== userStore.user?.id" class="navigation-group justify-end">
+              <select v-model="userRoles[orgUser.id]">
+                <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value" class="capitalize">
                   {{ role.label }}
                 </option>
               </select>
@@ -233,11 +231,12 @@ const projectsFromOrg = computed(() => {
   return projectsStore.projects.filter(project => project.orgId === orgStore.activeOrg?.id)
 })
 
-const usersWithRoles = computed(() => {
+const usersFromOrg = computed(() => {
   return (orgStore.activeOrg?.memberships || []).map(m => ({
     id: m.user?.id ?? "",
     name: m.user?.name ?? "",
     email: m.user?.email ?? "",
+    image: m.user?.image ?? "",
     role: m.role ?? "",
   }))
 })
@@ -397,7 +396,7 @@ watch(() => orgStore.activeOrg?.id, async (orgId) => {
   }
 }, { immediate: true })
 
-watch(usersWithRoles, (users) => {
+watch(usersFromOrg, (users) => {
   userRoles.value = Object.fromEntries(users.map(u => [u.id, u.role]))
 }, { immediate: true })
 
