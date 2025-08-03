@@ -63,18 +63,23 @@
         </h5>
 
         <ul class="scroll-area flex max-h-52 flex-col items-start gap-1 overflow-y-auto">
-          <li v-for="member in projectMembers" :key="member.userId" class="card navigation-group w-full min-w-0 justify-between">
-            <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
-              <span class="w-full min-w-0 truncate font-semibold">{{ member.user?.name }}</span>
-              <span class="text-info min-w-0 max-w-full truncate">{{ member.user?.email }}</span>
+          <li v-for="member in projectMembers" :key="member.userId" class="card navigation-group w-full justify-between overflow-hidden">
+            <div class="flex min-w-0 flex-row items-center gap-2">
+              <img :src="member.user?.image ?? undefined" alt="Avatar" class="hidden size-10 rounded-full border-2 md:block">
+              <div class="flex min-w-0 flex-col">
+                <span class="truncate">{{ member.user?.name }}</span>
+                <span class="text-info truncate">{{ member.role }}</span>
+                <span class="text-info truncate">{{ member.userId }}</span>
+              </div>
             </div>
 
-            <nav v-if="isOwner || (isAdmin && member.userId !== userStore.user?.id)" class="navigation-group justify-end md:w-1/3">
-              <select v-model="member.role" class="min-w-[100px] capitalize">
-                <option v-for="role in roles" :key="role.value" :value="role.value" class="capitalize">
+            <nav v-if="(isOwner || isAdmin) && member.userId !== userStore.user?.id" class="navigation-group justify-end md:w-1/3">
+              <select v-model="member.role">
+                <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value" class="capitalize">
                   {{ role.label }}
                 </option>
               </select>
+
               <button class="btn" @click="handleUpdateMemberRole(member.userId, member.role)">
                 <Icon name="ph:check-bold" size="15" />
               </button>
@@ -102,7 +107,7 @@
         <div class="navigation-group">
           <input v-model="newMemberId" type="text" placeholder="User ID">
           <select v-model="newMemberRole" class="min-w-[120px]">
-            <option v-for="role in roles" :key="role.value" :value="role.value">
+            <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value">
               {{ role.label }}
             </option>
           </select>
