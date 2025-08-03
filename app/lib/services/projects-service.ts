@@ -45,16 +45,6 @@ export async function deleteProjectService(projectId: string): Promise<{ message
   return await response.json()
 }
 
-export async function getProjectMembersService(projectId: string): Promise<ProjectMemberType[]> {
-  const baseUrl = getBaseUrl()
-  const response = await fetch(`${baseUrl}/api/projects/${projectId}/members`, {
-    method: "GET",
-  })
-  if (!response.ok)
-    throw new Error(response.statusText)
-  return await response.json()
-}
-
 export async function addProjectMemberService(projectId: string, data: AddProjectMemberPayload): Promise<{ message: string, newMember: ProjectMemberType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects/${projectId}/members`, {
