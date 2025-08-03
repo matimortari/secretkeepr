@@ -53,7 +53,7 @@
         <button type="button" class="btn-secondary disabled:opacity-80" :disabled="!orgStore.hasNextPage" @click="orgStore.nextAuditLogPage">
           <Icon name="ph:arrow-right-bold" size="20" />
         </button>
-        <button type="button" class="btn-danger" :disabled="!filteredLogs.length" @click="handleDeleteLogs">
+        <button type="button" class="btn-danger" :disabled="!logs.length" @click="handleDeleteLogs">
           <Icon name="ph:trash-bold" size="20" />
         </button>
       </nav>
@@ -62,7 +62,7 @@
     <p v-if="orgStore.isLoading" class="text-info">
       Loading logs...
     </p>
-    <p v-else-if="!filteredLogs.length" class="text-info">
+    <p v-else-if="!logs.length" class="text-info">
       No audit logs found.
     </p>
 
@@ -80,9 +80,9 @@
         </thead>
 
         <tbody>
-          <tr v-for="log in filteredLogs" :key="log.id" class="text-info text-left">
-            <td class="truncate border p-2 font-semibold" :title="formatAction(log.action)" :style="{ width: headers[0]?.width }">
-              {{ formatAction(log.action) }}
+          <tr v-for="log in logs" :key="log.id" class="text-info text-left">
+            <td class="truncate border p-2 font-semibold" :title="actions.find(a => a.value === log.action)?.label" :style="{ width: headers[0]?.width }">
+              {{ actions.find(a => a.value === log.action)?.label }}
             </td>
             <td class="truncate border p-2" :title="log.resource" :style="{ width: headers[1]?.width }">
               {{ log.resource }}
@@ -96,6 +96,12 @@
             <td class="truncate border p-2" :title="formatDate(log.createdAt)" :style="{ width: headers[4]?.width }">
               {{ formatDate(log.createdAt) }}
             </td>
+            <td class="truncate border p-2" :title="filters.showSensitiveData ? formatSensitiveData(log.metadata ?? {}) : ''" :style="{ width: headers[5]?.width }">
+              <span v-if="filters.showSensitiveData">
+                {{ formatSensitiveData(log.metadata ?? {}) }}
+              </span>
+              <span v-else class="text-muted">Hidden</span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -107,17 +113,11 @@
 import { useOrganizationStore } from "~/lib/stores/organization-store"
 
 const orgStore = useOrganizationStore()
+const { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveData } = useAuditLogs()
 
-const {
-  filters,
-  headers,
-  filteredLogs,
-  users,
-  actions,
-  formatAction,
-  formatDate,
-  formatMetadata,
-} = useAuditLogs()
+const users = computed(() =>
+  [...new Set(orgStore.auditLogs.logs.map(log => log.userId))].sort((a, b) => a.localeCompare(b)),
+)
 
 async function handleDeleteLogs() {
   if (!orgStore.activeOrg?.id)
