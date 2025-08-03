@@ -44,7 +44,7 @@
       </nav>
     </header>
 
-    <p v-if="!secrets.length" class="text-caption my-8 h-[80vh] text-center">
+    <p v-if="!secrets.length" class="text-info my-8 h-[80vh] text-center">
       No secrets found for this project. Add a new secret or import from an .env file to get started.
     </p>
 
@@ -84,11 +84,11 @@ const { project, secrets } = useProjectSecrets(projectId)
 const projectsStore = useProjectsStore()
 const secretsStore = useSecretsStore()
 
-const isDialogOpen = ref(false)
-const dialogType = ref<"secret" | "env" | null>(null)
 const selectedSecret = ref<SecretType | null>(null)
 const selectedEnvironment = ref("")
 const dropdownRef = ref<HTMLElement | null>(null)
+const dialogType = ref<"secret" | "env" | null>(null)
+const isDialogOpen = ref(false)
 const isDropdownOpen = ref(false)
 
 useClickOutside(dropdownRef, () => {

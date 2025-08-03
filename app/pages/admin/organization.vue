@@ -4,143 +4,134 @@
       Organization
     </h2>
 
-    <form class="flex flex-col" @submit.prevent="handleSubmit">
-      <nav class="md:navigation-group flex flex-col items-center justify-between border-b p-2 text-center md:text-start">
-        <header class="flex flex-col items-center gap-1 text-center md:items-start md:text-start">
+    <section class="flex flex-col">
+      <div class="md:navigation-group gap-2 border-b p-2">
+        <header class="flex flex-col gap-2">
           <h4>
             Organization Details
           </h4>
-          <p class="text-caption">
+          <p class="text-info">
             Manage organization details and settings.
           </p>
         </header>
 
-        <div class="flex flex-col gap-2 md:flex-row md:items-center">
-          <p v-if="orgStore.error" class="text-caption text-danger-foreground">
-            {{ orgStore.error }}
-          </p>
-
-          <button class="btn-primary md:self-start" type="submit" :disabled="!isOwner">
-            <Icon name="ph:check-circle" size="20" />
-            <span>Save Changes</span>
-          </button>
-        </div>
-      </nav>
-
-      <section class="flex flex-col md:px-8">
-        <div v-for="(field, index) in orgFields" :key="index" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-4">
-          <div class="flex flex-col items-start justify-center gap-1 text-start">
-            <h6>
-              {{ field.label }}
-            </h6>
-            <p v-if="field.description" class="text-caption">
-              {{ field.description }}
-            </p>
-          </div>
-
-          <div v-if="field.type === 'input'" class="navigation-group gap-4">
-            <input
-              type="text"
-              :value="field.model?.value"
-              placeholder="Enter value"
-              required
-              @input="field.update && $event.target && field.update(($event.target as HTMLInputElement).value)"
-            >
-            <button class="btn" @click="field.onSave">
-              <Icon name="ph:check-bold" size="20" />
-            </button>
-          </div>
-
-          <div v-else-if="field.copyable" class="navigation-group gap-4">
-            <span class="text-caption">{{ field.value }}</span>
-            <button class="btn" @click="copyToClipboard(field.value?.value || '')">
-              <Icon name="ph:clipboard-bold" size="20" />
-            </button>
-          </div>
-
-          <span v-else class="navigation-group gap-4">{{ field.value }}</span>
-        </div>
-      </section>
-    </form>
-
-    <section class="flex flex-col justify-between border-b p-4">
-      <h4>
-        Organization Members
-      </h4>
-
-      <ul class="scroll-area flex max-h-52 flex-col items-start gap-1 overflow-y-auto">
-        <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card navigation-group w-full min-w-0 justify-between">
-          <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
-            <span class="w-full min-w-0 truncate font-semibold md:w-40">{{ orgUser.name }}</span>
-            <span class="text-caption min-w-0 max-w-full truncate md:max-w-52">Role: {{ orgUser.role }}</span>
-          </div>
-
-          <nav v-if="isOwner && orgUser.id !== userStore.user?.id" class="navigation-group justify-end">
-            <div class="text-caption flex min-w-0 max-w-full flex-col gap-1 md:w-1/3">
-              <span class="truncate text-sm">{{ orgUser.id }}</span>
-              <span class="truncate text-sm">{{ orgUser.email }}</span>
-            </div>
-
-            <select v-model="userRoles[orgUser.id]" class="min-w-[100px]">
-              <option v-for="role in roles" :key="role.value" :value="role.value" class="capitalize">
-                {{ role.label }}
-              </option>
-            </select>
-
-            <button class="btn" @click="handleUpdateMemberRole(orgUser.id, userRoles[orgUser.id] || 'member')">
-              <Icon name="ph:check-bold" size="15" />
-            </button>
-            <button v-if="isOwner && orgUser.role !== 'owner'" class="btn" @click="handleRemoveMember(orgUser.id)">
-              <Icon name="ph:x-bold" size="15" />
-            </button>
-          </nav>
-        </li>
-      </ul>
-    </section>
-
-    <section v-if="isOwner || isAdmin" class="flex flex-col justify-between border-b p-4">
-      <h4>
-        Organization Projects
-      </h4>
-
-      <ul class="scroll-area flex max-h-52 flex-col items-start gap-1 overflow-y-auto">
-        <li v-for="project in projectsFromOrg" :key="project.id" class="card navigation-group w-full min-w-0 justify-between">
-          <div class="flex min-w-0 flex-col gap-1 md:w-2/3">
-            <span class="w-full min-w-0 truncate font-semibold md:w-40">
-              {{ project.name }}
-            </span>
-            <span class="text-caption min-w-0 max-w-full truncate md:max-w-52">
-              {{ project.description || "No description provided." }}
-            </span>
-          </div>
-
-          <nav class="navigation-group justify-end md:w-1/3">
-            <NuxtLink :to="`/admin/${project.id}`" class="btn">
-              <Icon name="ph:eye-bold" size="15" />
-            </NuxtLink>
-            <NuxtLink :to="`/admin/${project.id}/settings`" class="btn">
-              <Icon name="ph:gear-bold" size="15" />
-            </NuxtLink>
-          </nav>
-        </li>
-      </ul>
-    </section>
-
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
-      <div class="flex flex-col gap-1">
-        <h6>
-          Invite Members
-        </h6>
-        <p class="text-caption">
-          Generate an invitation link to invite new users to this organization.
+        <p v-if="orgStore.error" class="text-warning">
+          {{ orgStore.error }}
         </p>
       </div>
 
-      <div class="md:navigation-group flex flex-col gap-2">
-        <p v-if="inviteError" class="text-caption text-danger-foreground">
+      <!-- Organization Details -->
+      <div v-for="(field, index) in orgFields" :key="index" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10">
+        <div class="flex flex-col items-start justify-center gap-1 text-start">
+          <h5>
+            {{ field.label }}
+          </h5>
+          <p v-if="field.description" class="text-info">
+            {{ field.description }}
+          </p>
+        </div>
+
+        <div v-if="field.copyable" class="navigation-group">
+          <span>{{ field.value }}</span>
+          <button class="btn" @click="copyToClipboard(field.value?.value || '')">
+            <Icon name="ph:clipboard-bold" size="20" />
+          </button>
+        </div>
+
+        <div v-else-if="field.type === 'input'" class="navigation-group">
+          <input
+            type="text"
+            :value="field.model?.value"
+            placeholder="Enter value"
+            @input="field.update && $event.target && field.update(($event.target as HTMLInputElement).value)"
+          >
+          <button class="btn" @click="field.onSave">
+            <Icon name="ph:check-bold" size="20" />
+          </button>
+        </div>
+
+        <span v-else class="navigation-group">{{ field.value }}</span>
+      </div>
+
+      <!-- Organization Projects List -->
+      <section v-if="isOwner || isAdmin" class="flex flex-col justify-between border-b p-2 md:px-10">
+        <h5>
+          Organization Projects
+        </h5>
+
+        <ul class="scroll-area flex max-h-52 flex-col items-start gap-1 overflow-y-auto">
+          <li v-for="project in projectsFromOrg" :key="project.id" class="card navigation-group w-full justify-between">
+            <div class="flex flex-col gap-1 truncate">
+              <span>{{ project.name }}</span>
+              <span class="text-info">{{ project.description || "No description provided." }}</span>
+            </div>
+
+            <nav class="navigation-group justify-end">
+              <NuxtLink :to="`/admin/${project.id}`" class="btn">
+                <Icon name="ph:eye-bold" size="15" />
+              </NuxtLink>
+              <NuxtLink :to="`/admin/${project.id}/settings`" class="btn">
+                <Icon name="ph:gear-bold" size="15" />
+              </NuxtLink>
+            </nav>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Organization Members List -->
+      <section class="flex flex-col justify-between border-b p-2 md:px-10">
+        <h5>
+          Organization Members
+        </h5>
+
+        <ul class="scroll-area flex max-h-52 flex-col items-start gap-1 overflow-y-auto">
+          <li v-for="orgUser in usersWithRoles" :key="orgUser.id" class="card navigation-group w-full justify-between">
+            <div class="flex flex-col gap-1 truncate">
+              <span>{{ orgUser.name }}</span>
+              <span class="text-info">Role: {{ orgUser.role }}</span>
+            </div>
+
+            <!-- && orgUser.id !== userStore.user?.id -->
+            <nav v-if="isOwner" class="navigation-group justify-end">
+              <div class="text-info flex flex-col truncate">
+                <span>{{ orgUser.id }}</span>
+                <span>{{ orgUser.email }}</span>
+              </div>
+
+              <select v-model="userRoles[orgUser.id]" class="min-w-[100px]">
+                <option v-for="role in roles" :key="role.value" :value="role.value" class="capitalize">
+                  {{ role.label }}
+                </option>
+              </select>
+
+              <button class="btn" @click="handleUpdateMemberRole(orgUser.id, userRoles[orgUser.id] || 'member')">
+                <Icon name="ph:check-bold" size="15" />
+              </button>
+              <button v-if="isOwner && orgUser.role !== 'owner'" class="btn" @click="handleRemoveMember(orgUser.id)">
+                <Icon name="ph:x-bold" size="15" />
+              </button>
+            </nav>
+          </li>
+        </ul>
+      </section>
+    </section>
+
+    <!-- Invite Members -->
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+      <header class="flex flex-col gap-1">
+        <h5>
+          Invite Members
+        </h5>
+        <p class="text-info">
+          Generate an invitation link to invite new users to this organization.
+        </p>
+      </header>
+
+      <div class="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center md:text-end">
+        <p v-if="inviteError" class="text-warning">
           {{ inviteError }}
         </p>
-        <p v-if="inviteSuccess" class="text-caption text-success-foreground">
+        <p v-if="inviteSuccess" class="text-success">
           {{ inviteSuccess }}
         </p>
 
@@ -151,62 +142,63 @@
       </div>
     </section>
 
-    <AuditLogs :logs="logs" />
+    <AuditLogs />
 
-    <div v-if="isOwner" class="flex flex-col">
-      <nav class="md:navigation-group flex w-full flex-col justify-between border-b p-2">
-        <header class="flex flex-col items-center gap-1 text-center md:items-start md:text-start">
-          <h4>
-            Danger Zone
-          </h4>
-          <p class="text-caption">
-            This section contains actions that can significantly affect your account. Please proceed with caution.
-          </p>
-        </header>
-      </nav>
+    <!-- Danger Zone -->
+    <section v-if="isOwner" class="flex flex-col">
+      <header class="flex flex-col items-start gap-1 border-b p-2 text-start">
+        <h4>
+          Danger Zone
+        </h4>
+        <p class="text-info">
+          This section contains actions that can significantly affect your account. Please proceed with caution.
+        </p>
+      </header>
 
-      <section class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
-        <div class="flex flex-col gap-1">
-          <h6>
+      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+        <header class="flex flex-col gap-1">
+          <h5>
             Leave Organization
-          </h6>
-          <p class="text-caption text-danger-foreground">
+          </h5>
+          <p class="text-warning">
             This action is irreversible. You will no longer have access to this organization.
           </p>
-        </div>
+        </header>
 
-        <div class="navigation-group">
-          <p v-if="leaveOrgError" class="text-caption text-danger-foreground">
+        <div class="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center md:text-end">
+          <p v-if="leaveOrgError" class="text-warning">
             {{ leaveOrgError }}
           </p>
+
           <button class="btn-danger" @click="handleLeaveOrg">
             <Icon name="ph:sign-out-bold" size="20" />
             <span>Leave Organization</span>
           </button>
         </div>
-      </section>
+      </nav>
 
-      <section class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-4 px-10 text-start">
-        <div class="flex flex-col gap-1">
-          <h6>
+      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+        <header class="flex flex-col gap-1">
+          <h5>
             Delete Organization
-          </h6>
-          <p class="text-caption text-danger-foreground">
+          </h5>
+          <p class="text-warning">
             This action is irreversible. All data associated with this organization will be permanently deleted.
           </p>
-        </div>
+        </header>
 
-        <div v-if="deleteOrgError" class="text-caption text-danger-foreground">
-          {{ deleteOrgError }}
-        </div>
-        <div class="navigation-group">
+        <div class="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center md:text-end">
+          <p v-if="deleteOrgError" class="text-warning">
+            {{ deleteOrgError }}
+          </p>
+
           <button class="btn-danger" @click="handleDeleteOrg">
             <Icon name="ph:network-x-bold" size="20" />
             <span>Delete Organization</span>
           </button>
         </div>
-      </section>
-    </div>
+      </nav>
+    </section>
   </div>
 </template>
 
@@ -232,9 +224,8 @@ const userRoles = ref<Record<string, Role>>({})
 const leaveOrgError = ref<string | null>(null)
 const deleteOrgError = ref<string | null>(null)
 const inviteError = ref<string | null>(null)
-const inviteSuccess = ref("")
+const inviteSuccess = ref<string | null>(null)
 
-const logs = computed(() => orgStore.activeOrg?.auditLogs || [])
 const isOwner = computed(() => orgStore.activeOrg?.memberships?.find(m => m.userId === userStore.user?.id)?.role === "owner")
 const isAdmin = computed(() => orgStore.activeOrg?.memberships?.find(m => m.userId === userStore.user?.id)?.role === "admin")
 
@@ -283,8 +274,8 @@ const orgFields = [
 ]
 
 async function handleCreateInvite() {
-  inviteError.value = ""
-  inviteSuccess.value = ""
+  inviteError.value = null
+  inviteSuccess.value = null
   try {
     const link = await orgStore.createInviteLink()
     navigator.clipboard.writeText(link)

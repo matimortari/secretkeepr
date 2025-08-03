@@ -12,7 +12,7 @@
       <h1>
         Join Organization
       </h1>
-      <p class="text-caption">
+      <p class="text-info">
         To join an organization, please enter your invite token below.
       </p>
     </header>
@@ -28,9 +28,9 @@
       </button>
     </form>
 
-    <p class="text-caption flex min-h-4 flex-col items-center gap-2">
+    <p class="text-info flex min-h-4 flex-col items-center gap-2">
       <span v-if="orgStore.error" class="text-danger-foreground">{{ orgStore.error }}</span>
-      <span v-else-if="joinOrgSuccess" class="text-success-foreground">
+      <span v-else-if="joinOrgSuccess" class="text-success">
         {{ joinOrgSuccess }}
       </span>
     </p>
@@ -46,11 +46,11 @@ const router = useRouter()
 const orgStore = useOrganizationStore()
 
 const token = ref(route.query.token as string || "")
-const joinOrgSuccess = ref("")
+const joinOrgSuccess = ref<string | null>(null)
 
 async function handleAcceptInvite() {
   orgStore.error = null
-  joinOrgSuccess.value = ""
+  joinOrgSuccess.value = null
 
   try {
     await orgStore.acceptInvite(token.value)

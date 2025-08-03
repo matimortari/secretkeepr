@@ -13,7 +13,7 @@
       </div>
 
       <footer class="flex flex-row items-center justify-between">
-        <p class="text-caption text-danger-foreground">
+        <p class="text-warning">
           {{ secretStore.error || " " }}
         </p>
 

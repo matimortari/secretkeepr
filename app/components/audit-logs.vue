@@ -1,8 +1,10 @@
 <template>
-  <section class="md:navigation-group flex w-full flex-col justify-between py-4 md:px-8">
-    <header class="flex flex-col items-center gap-1 text-center md:items-start md:text-start">
-      <h5>Audit Logs</h5>
-      <p class="text-caption">
+  <section class="flex flex-col items-start justify-between gap-2 border-b p-2">
+    <header class="flex flex-col items-start gap-1 text-start">
+      <h4>
+        Audit Logs
+      </h4>
+      <p class="text-info">
         Track changes and activities.
       </p>
     </header>
@@ -45,7 +47,7 @@
           <Icon name="ph:arrow-left-bold" size="20" />
         </button>
 
-        <span class="text-caption whitespace-nowrap">
+        <span class="text-info whitespace-nowrap">
           {{ orgStore.auditLogs.page }} / {{ orgStore.totalPages }}
         </span>
         <button type="button" class="btn-secondary disabled:opacity-80" :disabled="!orgStore.hasNextPage" @click="orgStore.nextAuditLogPage">
@@ -56,13 +58,11 @@
         </button>
       </nav>
     </nav>
-  </section>
 
-  <div class="flex flex-col items-center justify-center py-4 text-center md:px-8">
-    <p v-if="orgStore.isLoading" class="text-caption">
+    <p v-if="orgStore.isLoading" class="text-info">
       Loading logs...
     </p>
-    <p v-else-if="!filteredLogs.length" class="text-caption">
+    <p v-else-if="!filteredLogs.length" class="text-info">
       No audit logs found.
     </p>
 
@@ -80,7 +80,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="log in filteredLogs" :key="log.id" class="text-caption text-left">
+          <tr v-for="log in filteredLogs" :key="log.id" class="text-info text-left">
             <td class="truncate border p-2 font-semibold" :title="formatAction(log.action)" :style="{ width: headers[0]?.width }">
               {{ formatAction(log.action) }}
             </td>
@@ -100,7 +100,7 @@
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">

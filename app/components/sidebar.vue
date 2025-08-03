@@ -24,7 +24,7 @@
       />
     </div>
     <nav v-if="projectsFromOrg.length" class="scroll-area flex flex-col overflow-y-auto">
-      <NuxtLink v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.id}`" class="text-caption truncate rounded p-2 hover:bg-muted">
+      <NuxtLink v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.id}`" class="text-info truncate rounded p-2 hover:bg-muted">
         {{ project.name }}
       </NuxtLink>
     </nav>
