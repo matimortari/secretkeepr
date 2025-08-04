@@ -4,13 +4,13 @@
     :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
     :duration="800"
   >
-    <h1
+    <h2
       v-motion class="font-goldman"
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
       :duration="800"
     >
-      Command-line Interface – SecretKeepR
-    </h1>
+      Command-line Interface
+    </h2>
   </section>
 </template>
 

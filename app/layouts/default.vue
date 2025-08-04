@@ -1,5 +1,5 @@
 <template>
-  <header class="navigation-group card justify-between border-b-2 p-4">
+  <header class="navigation-group justify-between border-b-2 bg-card p-4">
     <NuxtLink to="/" class="hover:scale-sm flex flex-row items-center gap-2 transition-all">
       <img
         src="/assets/logo.png" alt="Logo"

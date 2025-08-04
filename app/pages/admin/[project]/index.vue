@@ -29,8 +29,7 @@
             <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm">
               <li
                 v-for="env in ['development', 'staging', 'production']" :key="env"
-                class="rounded p-2 capitalize hover:bg-muted"
-                @click="() => { selectedEnvironment = env; isDropdownOpen = false; handleExportToEnv(); }"
+                class="rounded p-2 capitalize hover:bg-muted" @click="handleExportToEnv(env); isDropdownOpen = false"
               >
                 {{ env }}
               </li>
@@ -80,12 +79,11 @@ import { useSecretsStore } from "~/lib/stores/secrets-store"
 
 const route = useRoute()
 const projectId = route.params.project as string
-const { project, secrets } = useProjectSecrets(projectId)
 const projectsStore = useProjectsStore()
 const secretsStore = useSecretsStore()
+const { project, secrets, handleImportFromEnv, handleExportToEnv } = useProjectSecrets(projectId)
 
 const selectedSecret = ref<SecretType | null>(null)
-const selectedEnvironment = ref("")
 const dropdownRef = ref<HTMLElement | null>(null)
 const dialogType = ref<"secret" | "env" | null>(null)
 const isDialogOpen = ref(false)
@@ -94,65 +92,6 @@ const isDropdownOpen = ref(false)
 useClickOutside(dropdownRef, () => {
   isDropdownOpen.value = false
 }, { escapeKey: true })
-
-async function handleImportFromEnv(importedSecrets: SecretType[]) {
-  isDialogOpen.value = false
-  dialogType.value = null
-  selectedSecret.value = null
-
-  try {
-    await Promise.all(importedSecrets.map(async (secret) => {
-      const existing = secretsStore.secrets.find(s => s.key === secret.key)
-      if (existing) {
-        const updatedValues = [...(existing.values ?? []), ...(secret.values ?? [])]
-        return secretsStore.updateSecret(projectId, existing.id!, {
-          key: existing.key,
-          values: updatedValues,
-        })
-      }
-      else {
-        return secretsStore.createSecret(projectId, {
-          key: secret.key,
-          values: secret.values ?? [],
-        })
-      }
-    }))
-    await secretsStore.getSecretsByProject(projectId)
-  }
-  catch (error: any) {
-    console.error("Failed to import secrets:", error)
-  }
-}
-
-async function handleExportToEnv() {
-  if (!selectedEnvironment.value)
-    return
-
-  try {
-    const env = selectedEnvironment.value
-    const filteredSecrets = secretsStore.secrets
-      .filter(s => s.projectId === projectId)
-      .map((s) => {
-        const val = s.values?.find(v => v.environment === env)?.value
-        return val ? `${s.key}="${val}"` : null
-      })
-      .filter(Boolean)
-      .join("\n\n")
-
-    const url = URL.createObjectURL(new Blob([filteredSecrets], { type: "text/plain" }))
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `.env.${project.value?.name}.${env}`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-  catch (error: any) {
-    console.error("Failed to export secrets:", error)
-  }
-  finally {
-    selectedEnvironment.value = ""
-  }
-}
 
 async function handleSaveSecret(secret: SecretType) {
   isDialogOpen.value = false
