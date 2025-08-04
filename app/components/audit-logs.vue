@@ -9,14 +9,17 @@
       </p>
     </header>
 
-    <div class="flex w-full flex-row items-center justify-between">
+    <div class="flex w-full flex-row gap-2 overflow-auto md:items-center md:justify-between">
       <nav class="navigation-group">
-        <input v-model="filters.date" type="date" class="input">
+        <input
+          v-model="filters.date" type="date"
+          title="Filter by date" class="cursor-pointer appearance-none rounded border border-muted bg-transparent p-2 focus:outline-none"
+        >
 
         <div ref="userDropdownRef" class="relative">
-          <button class="btn" @click="isUserDropdownOpen = !isUserDropdownOpen">
+          <button class="btn" title="Filter by user" @click="isUserDropdownOpen = !isUserDropdownOpen">
             <span class="capitalize">{{ filters.user || 'All Users' }}</span>
-            <Icon name="ph:caret-down-bold" size="16" />
+            <Icon name="ph:caret-down-bold" size="15" />
           </button>
           <Transition name="dropdown">
             <ul v-if="isUserDropdownOpen" class="dropdown scroll-area overflow-y-auto whitespace-nowrap text-sm">
@@ -34,9 +37,9 @@
         </div>
 
         <div ref="actionDropdownRef" class="relative">
-          <button class="btn" @click="isActionDropdownOpen = !isActionDropdownOpen">
+          <button class="btn" title="Filter by action" @click="isActionDropdownOpen = !isActionDropdownOpen">
             <span>{{ actions.find(a => a.value === filters.action)?.label || 'All Actions' }}</span>
-            <Icon name="ph:caret-down-bold" size="16" />
+            <Icon name="ph:caret-down-bold" size="15" />
           </button>
           <Transition name="dropdown">
             <ul v-if="isActionDropdownOpen" class="dropdown scroll-area overflow-y-auto whitespace-nowrap text-sm">
@@ -50,41 +53,55 @@
           </Transition>
         </div>
 
-        <label class="navigation-group justify-center whitespace-nowrap text-xs">
-          <input v-model="filters.showSensitiveData" type="checkbox" class="appearance-none rounded border border-muted bg-transparent p-2 checked:bg-secondary focus:outline-none">
-          <span>Show sensitive data</span>
-        </label>
+        <button
+          class="btn" :title="filters.showSensitiveInfo ? 'Hide Sensitive Info' : 'Show Sensitive Info'"
+          @click="filters.showSensitiveInfo = !filters.showSensitiveInfo"
+        >
+          <Icon :name="filters.showSensitiveInfo ? 'ph:eye-slash-bold' : 'ph:eye-bold'" size="20" />
+        </button>
       </nav>
 
       <nav v-if="orgStore.totalPages > 0" class="navigation-group">
-        <button type="button" class="btn-secondary disabled:opacity-80" :disabled="!orgStore.hasPrevPage" @click="orgStore.prevAuditLogPage">
+        <button
+          type="button" class="btn-secondary disabled:opacity-80"
+          :disabled="!orgStore.hasPrevPage" title="Previous Page"
+          @click="orgStore.prevAuditLogPage"
+        >
           <Icon name="ph:arrow-left-bold" size="20" />
         </button>
 
         <span class="text-info whitespace-nowrap">
           {{ orgStore.auditLogs.page }} / {{ orgStore.totalPages }}
         </span>
-        <button type="button" class="btn-secondary disabled:opacity-80" :disabled="!orgStore.hasNextPage" @click="orgStore.nextAuditLogPage">
+        <button
+          type="button" class="btn-secondary disabled:opacity-80"
+          :disabled="!orgStore.hasNextPage" title="Next Page"
+          @click="orgStore.nextAuditLogPage"
+        >
           <Icon name="ph:arrow-right-bold" size="20" />
         </button>
-        <button type="button" class="btn-danger" :disabled="!logs.length" @click="handleDeleteLogs">
+        <button
+          type="button" class="btn-danger"
+          :disabled="!logs.length" title="Delete Filtered Logs"
+          @click="handleDeleteLogs"
+        >
           <Icon name="ph:trash-bold" size="20" />
         </button>
       </nav>
     </div>
 
-    <p v-if="orgStore.isLoading" class="text-info py-4">
+    <p v-if="orgStore.isLoading" class="text-info h-[50vh] py-4">
       Loading logs...
     </p>
-    <p v-else-if="!logs.length" class="text-info py-4">
+    <p v-else-if="!logs.length" class="text-info h-[50vh] py-4">
       No audit logs found.
     </p>
 
     <div v-else class="scroll-area max-h-[50vh] w-full overflow-x-auto">
-      <table class="table-fixed rounded-sm md:w-full">
+      <table class="min-w-full table-auto rounded-sm md:w-full md:overflow-hidden">
         <thead>
-          <tr class="bg-muted text-sm font-semibold">
-            <th v-for="header in headers" :key="header.value" class="w-full border-x p-2 text-left" :style="{ width: header.width }">
+          <tr class="truncate bg-muted text-sm font-semibold">
+            <th v-for="header in headers" :key="header.value" class="border p-2">
               <div class="navigation-group">
                 <Icon :name="header.icon" size="20" />
                 <span>{{ header.label }}</span>
@@ -94,25 +111,25 @@
         </thead>
 
         <tbody>
-          <tr v-for="log in logs" :key="log.id" class="text-info text-left">
-            <td class="truncate border p-2 font-semibold" :title="actions.find(a => a.value === log.action)?.label" :style="{ width: headers[0]?.width }">
+          <tr v-for="log in logs" :key="log.id">
+            <td class="max-w-sm truncate border p-2 text-sm font-medium md:max-w-40" :title="actions.find(a => a.value === log.action)?.label">
               {{ actions.find(a => a.value === log.action)?.label }}
             </td>
-            <td class="truncate border p-2" :title="log.resource" :style="{ width: headers[1]?.width }">
+            <td class="text-info max-w-sm truncate border p-2 md:max-w-32" :title="log.resource">
               {{ log.resource }}
             </td>
-            <td class="truncate border p-2" :title="formatMetadata(log.metadata ?? {})" :style="{ width: headers[2]?.width }">
+            <td class="text-info max-w-md truncate border p-2 md:max-w-60" :title="formatMetadata(log.metadata ?? {})">
               {{ formatMetadata(log.metadata ?? {}) }}
             </td>
-            <td class="truncate border p-2" :title="log.userId" :style="{ width: headers[3]?.width }">
+            <td class="text-info max-w-sm truncate border p-2 md:max-w-32" :title="log.userId">
               <span>{{ log.userId }}</span>
             </td>
-            <td class="truncate border p-2" :title="formatDate(log.createdAt)" :style="{ width: headers[4]?.width }">
+            <td class="text-info max-w-sm truncate border p-2 md:max-w-32" :title="formatDate(log.createdAt)">
               {{ formatDate(log.createdAt) }}
             </td>
-            <td class="truncate border p-2" :title="filters.showSensitiveData ? formatSensitiveData(log.metadata ?? {}) : ''" :style="{ width: headers[5]?.width }">
-              <span v-if="filters.showSensitiveData">
-                {{ formatSensitiveData(log.metadata ?? {}) }}
+            <td class="text-info max-w-sm truncate border p-2 md:max-w-32" :title="filters.showSensitiveInfo ? formatSensitiveInfo(log.metadata ?? {}) : ''">
+              <span v-if="filters.showSensitiveInfo">
+                {{ formatSensitiveInfo(log.metadata ?? {}) }}
               </span>
               <span v-else class="text-muted">Hidden</span>
             </td>
@@ -127,7 +144,7 @@
 import { useOrganizationStore } from "~/lib/stores/organization-store"
 
 const orgStore = useOrganizationStore()
-const { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveData } = useAuditLogs()
+const { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveInfo } = useAuditLogs()
 
 const users = computed(() =>
   [...new Set(orgStore.auditLogs.logs.map(log => log.userId))].sort((a, b) => a.localeCompare(b)),
@@ -194,7 +211,8 @@ async function handleDeleteLogs() {
   opacity: 1;
   transform: translateY(0);
 }
-.dropdown {
-  @apply absolute right-0 z-10 mt-2 min-w-[10rem] rounded-md border bg-popover p-1 shadow-lg;
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
 }
 </style>

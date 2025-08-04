@@ -27,8 +27,8 @@ For detailed instructions on building and using the command-line interface, see 
 - **ESLint**.
 - **Tailwind CSS**.
 - **Framer Motion** via **@vueuse/motion**.
-- **Go** for CLI development using the **Cobra**.
-- **Vercel** for deployment, blob storage and analytics.
+- **Go** for CLI development using **Cobra**.
+- **Vercel** for deployment, blob storage and website analytics.
 
 ## 📬 Contact
 

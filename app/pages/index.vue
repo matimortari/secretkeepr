@@ -1,7 +1,7 @@
 <template>
   <section
     id="hero" v-motion
-    class="flex flex-col items-center gap-8 p-8 text-center lg:p-20" :initial="{ opacity: 0, y: 20 }"
+    class="flex flex-col items-center gap-8 border-b bg-card p-8 text-center md:p-12" :initial="{ opacity: 0, y: 20 }"
     :visible="{ opacity: 1, y: 0 }" :duration="800"
   >
     <h1 class="font-goldman">
@@ -14,18 +14,19 @@
     >
       SecretKeepR is a secrets manager designed to help users and organizations securely manage and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
     </p>
+
     <NuxtLink to="/sign-in" class="btn-primary rounded-full">
       <span>Get Started</span>
       <Icon name="ph:arrow-right-bold" size="20" />
     </NuxtLink>
   </section>
 
-  <section id="features" class="relative gap-12 text-center lg:py-12">
-    <div class="gradient-mask-wrapper relative w-full overflow-hidden p-4">
+  <section id="features" class="relative gap-12 text-center md:py-12">
+    <div class="gradient-mask-wrapper relative w-full overflow-hidden">
       <div class="animate-scroll">
         <div v-for="(feature, index) in [...features, ...features]" :key="index" class="flex min-w-[350px] max-w-sm flex-grow-0 flex-col items-center gap-2 p-8">
           <Icon :name="feature.icon" class="text-primary" size="60" />
-          <h4 class="font-silkscreen tracking-tight md:whitespace-nowrap">
+          <h4 class="whitespace-nowrap font-silkscreen tracking-tight">
             {{ feature.title }}
           </h4>
           <p class="leading-5 tracking-tight text-muted-foreground">
@@ -38,7 +39,7 @@
 
   <section
     id="how-to-use" v-motion
-    class="flex flex-col items-center gap-12 border-y p-8 text-center lg:p-20" :initial="{ opacity: 0, y: 40 }"
+    class="flex flex-col items-center gap-8 border-y p-8 text-center md:p-12" :initial="{ opacity: 0, y: 40 }"
     :visible="{ opacity: 1, y: 0 }" :duration="800"
   >
     <h2 class="font-goldman">
@@ -64,41 +65,41 @@
 
   <section
     id="cli" v-motion
-    class="w-full flex-col gap-8 text-center md:text-start lg:p-20" :initial="{ opacity: 0, y: 40 }"
+    class="flex flex-col items-center gap-8 p-8 text-center md:p-12 md:text-start" :initial="{ opacity: 0, y: 40 }"
     :visible="{ opacity: 1, y: 0 }" :duration="800"
   >
-    <div class="my-4 flex flex-col items-center justify-between gap-8 md:flex-row">
-      <div class="flex flex-col gap-4">
+    <div class="card flex w-full flex-col items-center gap-4 p-8">
+      <header class="flex flex-col items-center gap-2">
         <h2 class="font-goldman">
           Command Line Interface
         </h2>
-        <p class="max-w-lg leading-5 text-muted-foreground">
+        <p class="max-w-lg text-center leading-5 text-muted-foreground">
           Manage secrets and projects directly from your terminal. Fast, secure, and open-source. Read the
           <NuxtLink to="/cli" class="text-primary">
             documentation
           </NuxtLink> for more details.
         </p>
-      </div>
+      </header>
 
-      <div class="code-block relative">
-        <span>{{ installCommand }}</span>
-        <button class="hover:scale-sm absolute right-2 top-2 text-muted-foreground transition-all" title="Copy" @click="copyToClipboard(installCommand)">
-          <Icon name="ph:copy-bold" size="20" />
+      <div class="code-block relative w-full max-w-full overflow-x-auto md:max-w-lg">
+        <div class="whitespace-nowrap">
+          {{ installCommand }}
+        </div>
+        <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="copy(installCommand)">
+          <Icon :name="clipboardIcon" size="20" />
         </button>
       </div>
-    </div>
 
-    <div class="flex flex-col items-center gap-4">
       <p class="leading-5 text-muted-foreground">
         After installing, run the following commands to get started:
       </p>
 
-      <div class="code-block relative w-full max-w-2xl">
+      <div class="code-block relative w-full max-w-full overflow-x-auto md:max-w-lg">
         <span v-for="(command, index) in cliCommands" :key="index" class="block">
           {{ command }}
         </span>
-        <button class="hover:scale-sm absolute right-2 top-2 text-muted-foreground transition-all" title="Copy" @click="copyToClipboard(cliCommands.join('\n'))">
-          <Icon name="ph:copy-bold" size="20" />
+        <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="copy(cliCommands.join('\n'))">
+          <Icon :name="clipboardIcon" size="20" />
         </button>
 
         <div class="absolute bottom-2 right-2 z-10 hidden select-none items-end gap-2 font-semibold text-muted-foreground md:flex">
@@ -112,7 +113,8 @@
 
 <script setup lang="ts">
 import guest from "~/lib/middleware/guest"
-import { copyToClipboard } from "~/lib/utils"
+
+const { copy, clipboardIcon } = useClipboard()
 
 const features = [
   {
@@ -145,7 +147,7 @@ const features = [
 const howToUseSteps = [
   {
     title: "Sign In",
-    description: "Use GitHub, Google or GitLab to get started securely.",
+    description: "Get started securely using Google, GitHub, or GitLab.",
   },
   {
     title: "Create an Organization",
