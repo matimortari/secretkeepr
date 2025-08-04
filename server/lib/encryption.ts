@@ -8,11 +8,10 @@ if (!secret || secret.length < 32) {
 }
 
 const key = crypto.createHash("sha256").update(secret).digest()
-const ivLength = 16
 
 export function encrypt(input: string): string {
   try {
-    const iv = crypto.randomBytes(ivLength)
+    const iv = crypto.randomBytes(16)
     const cipher = crypto.createCipheriv(algorithm, key, iv)
     const encrypted = Buffer.concat([cipher.update(input, "utf8"), cipher.final()])
     return `${iv.toString("hex")}:${encrypted.toString("hex")}`

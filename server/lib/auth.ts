@@ -110,15 +110,13 @@ export async function handleOAuthUser(event: H3Event, userData: {
     })
   }
   else {
-    if (user.cliTokens[0]) {
-      await db.cliToken.update({
-        where: { id: user.cliTokens[0].id },
-        data: {
-          token: cliToken,
-          expiresAt,
-        },
-      })
-    }
+    await db.cliToken.update({
+      where: { id: user.cliTokens[0]?.id },
+      data: {
+        token: cliToken,
+        expiresAt,
+      },
+    })
   }
 
   const sessionUser = {

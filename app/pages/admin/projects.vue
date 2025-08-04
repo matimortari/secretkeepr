@@ -94,11 +94,6 @@ onMounted(async () => {
   await projectsStore.getProjects()
 })
 
-watch(isDialogOpen, (val) => {
-  if (val)
-    projectsStore.error = null
-})
-
 useHead({
   title: "Projects – SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/projects" }, { rel: "icon", href: "/favicon.ico" }],
