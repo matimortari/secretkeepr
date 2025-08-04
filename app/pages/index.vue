@@ -111,6 +111,7 @@
 </template>
 
 <script setup lang="ts">
+import guest from "~/lib/middleware/guest"
 import { copyToClipboard } from "~/lib/utils"
 
 const features = [
@@ -193,6 +194,10 @@ useSeoMeta({
   ogDescription: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
   ogImage: "https://secretkeepr.vercel.app/og-image.png",
   ogUrl: "https://secretkeepr.vercel.app",
+})
+
+definePageMeta({
+  middleware: guest,
 })
 </script>
 
