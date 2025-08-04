@@ -182,9 +182,6 @@ async function handleSaveSecret(secret: SecretType) {
 }
 
 onMounted(async () => {
-  if (!projectsStore.projects?.length) {
-    await projectsStore.getProjects()
-  }
   await secretsStore.getSecretsByProject(projectId)
 })
 
