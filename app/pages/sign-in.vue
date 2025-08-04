@@ -1,10 +1,10 @@
 <template>
   <header
-    v-motion class="flex flex-col items-center gap-8 border-b p-12 text-center"
+    v-motion class="flex flex-col items-center gap-4 border-b p-8 text-center"
     :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
     :duration="800"
   >
-    <img src="/assets/logo.png" alt="Logo" width="120" height="120">
+    <img src="/assets/logo.png" alt="Logo" width="80" height="80">
     <h1 class="font-goldman">
       Sign In
     </h1>
@@ -18,7 +18,7 @@
   </header>
 
   <div
-    v-motion class="flex flex-col items-center gap-4 p-12 text-center"
+    v-motion class="flex flex-col items-center gap-8 p-8 text-center md:p-12"
     :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
     :duration="800"
   >
@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import guest from '~/lib/middleware/guest'
+import guest from "~/lib/middleware/guest"
 
 const providers = [
   {
