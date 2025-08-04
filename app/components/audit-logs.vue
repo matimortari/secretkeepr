@@ -15,7 +15,7 @@
 
         <div ref="userDropdownRef" class="relative">
           <button class="btn" @click="isUserDropdownOpen = !isUserDropdownOpen">
-            <span>{{ filters.user || 'All Users' }}</span>
+            <span class="capitalize">{{ filters.user || 'All Users' }}</span>
             <Icon name="ph:caret-down-bold" size="16" />
           </button>
           <Transition name="dropdown">
@@ -73,10 +73,10 @@
       </nav>
     </div>
 
-    <p v-if="orgStore.isLoading" class="text-info">
+    <p v-if="orgStore.isLoading" class="text-info py-4">
       Loading logs...
     </p>
-    <p v-else-if="!logs.length" class="text-info">
+    <p v-else-if="!logs.length" class="text-info py-4">
       No audit logs found.
     </p>
 
@@ -92,6 +92,7 @@
             </th>
           </tr>
         </thead>
+
         <tbody>
           <tr v-for="log in logs" :key="log.id" class="text-info text-left">
             <td class="truncate border p-2 font-semibold" :title="actions.find(a => a.value === log.action)?.label" :style="{ width: headers[0]?.width }">
@@ -176,12 +177,6 @@ async function handleDeleteLogs() {
     console.error("Failed to delete audit logs:", error)
   }
 }
-
-onMounted(async () => {
-  if (orgStore.activeOrg?.id) {
-    await orgStore.getAuditLogs(orgStore.activeOrg.id)
-  }
-})
 </script>
 
 <style scoped>

@@ -381,16 +381,9 @@ async function handleDeleteOrg() {
   }
 }
 
-onMounted(() => {
-  if (orgStore.activeOrg?.id) {
-    orgStore.getAuditLogs(orgStore.activeOrg?.id)
-    projectsStore.getProjects()
-  }
-  userStore.getUser()
-})
-
 watch(() => orgStore.activeOrg?.id, async (orgId) => {
   if (orgId) {
+    await userStore.getUser()
     await orgStore.getAuditLogs(orgId)
     await projectsStore.getProjects()
   }

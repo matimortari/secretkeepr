@@ -5,14 +5,9 @@
         <tr class="bg-muted text-sm font-semibold">
           <th class="navigation-group w-full p-2 text-left">
             <span>Key</span>
-            <Icon
-              name="ph:arrow-down-bold"
-              size="15"
-              class="transition-all hover:text-primary"
-              :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'"
-              role="button"
-              @click="sort.direction = sort.direction === 'asc' ? 'desc' : 'asc'"
-            />
+            <button @click="sort.direction = sort.direction === 'asc' ? 'desc' : 'asc'">
+              <Icon name="ph:arrow-down-bold" size="15" class="transition-all hover:text-primary" :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'" />
+            </button>
           </th>
 
           <th v-for="env in environments" :key="env" class="p-2 text-left capitalize md:w-1/6">
