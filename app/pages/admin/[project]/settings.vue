@@ -38,8 +38,8 @@
 
         <div v-if="field.copyable" class="navigation-group">
           <span>{{ field.value }}</span>
-          <div class="btn" @click="copyToClipboard(field.value?.value || '')">
-            <Icon name="ph:clipboard-bold" size="20" />
+          <div class="btn" @click="copy(field.value?.value || '')">
+            <Icon :name="clipboardIcon" size="20" />
           </div>
         </div>
 
@@ -161,7 +161,7 @@
 import auth from "~/lib/middleware/auth"
 import { useProjectsStore } from "~/lib/stores/projects-store"
 import { useUserStore } from "~/lib/stores/user-store"
-import { copyToClipboard, formatDate } from "~/lib/utils"
+import { formatDate } from "~/lib/utils"
 
 const roles = [
   { value: "owner", label: "Owner" },
@@ -172,6 +172,7 @@ const roles = [
 const router = useRouter()
 const route = useRoute()
 const projectId = route.params.project as string
+const { copy, clipboardIcon } = useClipboard()
 const userStore = useUserStore()
 const projectsStore = useProjectsStore()
 

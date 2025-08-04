@@ -179,7 +179,8 @@
   }
 
   .code-block {
-    background-color: var(--card);
+    position: relative;
+    background-color: var(--muted);
     font-family: "JetBrains Mono", monospace;
     padding: 1.5rem;
     border-radius: 0.25rem;
@@ -188,8 +189,9 @@
     font-weight: 600;
     text-align: left;
     overflow-x: auto;
-    white-space: pre-wrap;
+    white-space: nowrap;
     word-break: break-all;
+    box-sizing: border-box;
   }
 
   /* Buttons */
@@ -255,6 +257,10 @@
 
 /* Utilities layer for custom utility classes */
 @layer utilities {
+  .footer-bg {
+    background-image: url("./footer-bg.png");
+  }
+
   .scale-sm {
     transform: scale(1.08);
   }

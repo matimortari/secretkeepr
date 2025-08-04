@@ -9,7 +9,7 @@ export function useAuditLogs() {
     date: "",
     user: "",
     action: "",
-    showSensitiveData: false,
+    showSensitiveInfo: false,
   })
 
   const actions = [
@@ -32,16 +32,16 @@ export function useAuditLogs() {
   ]
 
   const headers = [
-    { label: "Action", value: "action", icon: "ph:cursor-click-bold", width: "10%" },
-    { label: "Resource", value: "resource", icon: "ph:archive-box-bold", width: "20%" },
-    { label: "Metadata", value: "metadata", icon: "ph:note-bold", width: "30%" },
-    { label: "User ID", value: "userId", icon: "ph:user-bold", width: "10%" },
-    { label: "Created At", value: "createdAt", icon: "ph:clock-bold", width: "15%" },
-    { label: "Sensitive Info", value: "sensitive", icon: "ph:shield-bold", width: "15%" },
+    { label: "Action", value: "action", icon: "ph:cursor-click-bold" },
+    { label: "Resource", value: "resource", icon: "ph:archive-box-bold" },
+    { label: "Metadata", value: "metadata", icon: "ph:note-bold" },
+    { label: "User ID", value: "userId", icon: "ph:user-bold" },
+    { label: "Created At", value: "createdAt", icon: "ph:clock-bold" },
+    { label: "Sensitive Info", value: "sensitive", icon: "ph:shield-bold" },
   ]
 
   const logs = computed(() => {
-    const { date, user, action, showSensitiveData } = filters.value
+    const { date, user, action, showSensitiveInfo } = filters.value
 
     return (orgStore.auditLogs.logs || [])
       .filter((log) => {
@@ -52,7 +52,7 @@ export function useAuditLogs() {
         return dateMatch && userMatch && actionMatch
       })
       .map((log) => {
-        if (showSensitiveData)
+        if (showSensitiveInfo)
           return log
         const { ip, userAgent, ...metadata } = log.metadata || {}
         return { ...log, metadata }
@@ -113,11 +113,11 @@ export function useAuditLogs() {
     return entries.length ? entries.join("; ") : JSON.stringify(safeMetadata)
   }
 
-  function formatSensitiveData(metadata: Record<string, any>) {
+  function formatSensitiveInfo(metadata: Record<string, any>) {
     const ip = metadata.ip ?? "N/A"
     const agent = metadata.userAgent ?? "N/A"
     return `IP: ${ip}; Agent: ${agent}`
   }
 
-  return { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveData }
+  return { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveInfo }
 }
