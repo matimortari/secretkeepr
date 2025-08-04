@@ -9,40 +9,54 @@
       </p>
     </header>
 
-    <nav class="navigation-group">
-      <input v-model="filters.date" type="date">
+    <div class="flex w-full flex-row items-center justify-between">
+      <nav class="navigation-group">
+        <input v-model="filters.date" type="date" class="input">
 
-      <select v-model="filters.user">
-        <option value="">
-          All Users
-        </option>
-        <option value="self">
-          Self
-        </option>
-        <option v-for="user in users" :key="user" :value="user">
-          {{ user }}
-        </option>
-      </select>
+        <div ref="userDropdownRef" class="relative">
+          <button class="btn" @click="isUserDropdownOpen = !isUserDropdownOpen">
+            <span>{{ filters.user || 'All Users' }}</span>
+            <Icon name="ph:caret-down-bold" size="16" />
+          </button>
+          <Transition name="dropdown">
+            <ul v-if="isUserDropdownOpen" class="dropdown scroll-area overflow-y-auto whitespace-nowrap text-sm">
+              <li class="rounded p-2 hover:bg-muted" @click="setUserFilter('')">
+                All Users
+              </li>
+              <li class="rounded p-2 hover:bg-muted" @click="setUserFilter('self')">
+                Self
+              </li>
+              <li v-for="user in users" :key="user" class="rounded p-2 hover:bg-muted" @click="setUserFilter(user)">
+                {{ user }}
+              </li>
+            </ul>
+          </Transition>
+        </div>
 
-      <select v-model="filters.action">
-        <option value="">
-          All Actions
-        </option>
-        <option v-for="action in actions" :key="action.value" :value="action.value">
-          {{ action.label }}
-        </option>
-      </select>
+        <div ref="actionDropdownRef" class="relative">
+          <button class="btn" @click="isActionDropdownOpen = !isActionDropdownOpen">
+            <span>{{ actions.find(a => a.value === filters.action)?.label || 'All Actions' }}</span>
+            <Icon name="ph:caret-down-bold" size="16" />
+          </button>
+          <Transition name="dropdown">
+            <ul v-if="isActionDropdownOpen" class="dropdown scroll-area overflow-y-auto whitespace-nowrap text-sm">
+              <li class="rounded p-2 hover:bg-muted" @click="setActionFilter('')">
+                All Actions
+              </li>
+              <li v-for="action in actions" :key="action.value" class="rounded p-2 hover:bg-muted" @click="setActionFilter(action.value)">
+                {{ action.label }}
+              </li>
+            </ul>
+          </Transition>
+        </div>
 
-      <label class="navigation-group justify-center whitespace-nowrap text-xs">
-        <input
-          v-model="filters.showSensitiveData"
-          type="checkbox"
-          class="appearance-none rounded border border-muted bg-transparent p-2 checked:bg-secondary focus:outline-none"
-        >
-        <span>Show sensitive data</span>
-      </label>
+        <label class="navigation-group justify-center whitespace-nowrap text-xs">
+          <input v-model="filters.showSensitiveData" type="checkbox" class="appearance-none rounded border border-muted bg-transparent p-2 checked:bg-secondary focus:outline-none">
+          <span>Show sensitive data</span>
+        </label>
+      </nav>
 
-      <nav v-if="orgStore.totalPages > 0" class="navigation-group w-full justify-around">
+      <nav v-if="orgStore.totalPages > 0" class="navigation-group">
         <button type="button" class="btn-secondary disabled:opacity-80" :disabled="!orgStore.hasPrevPage" @click="orgStore.prevAuditLogPage">
           <Icon name="ph:arrow-left-bold" size="20" />
         </button>
@@ -57,7 +71,7 @@
           <Icon name="ph:trash-bold" size="20" />
         </button>
       </nav>
-    </nav>
+    </div>
 
     <p v-if="orgStore.isLoading" class="text-info">
       Loading logs...
@@ -78,7 +92,6 @@
             </th>
           </tr>
         </thead>
-
         <tbody>
           <tr v-for="log in logs" :key="log.id" class="text-info text-left">
             <td class="truncate border p-2 font-semibold" :title="actions.find(a => a.value === log.action)?.label" :style="{ width: headers[0]?.width }">
@@ -119,6 +132,29 @@ const users = computed(() =>
   [...new Set(orgStore.auditLogs.logs.map(log => log.userId))].sort((a, b) => a.localeCompare(b)),
 )
 
+const isUserDropdownOpen = ref(false)
+const isActionDropdownOpen = ref(false)
+const userDropdownRef = ref<HTMLElement | null>(null)
+const actionDropdownRef = ref<HTMLElement | null>(null)
+
+useClickOutside(userDropdownRef, () => {
+  isUserDropdownOpen.value = false
+}, { escapeKey: true })
+
+useClickOutside(actionDropdownRef, () => {
+  isActionDropdownOpen.value = false
+}, { escapeKey: true })
+
+function setUserFilter(user: string) {
+  filters.value.user = user
+  isUserDropdownOpen.value = false
+}
+
+function setActionFilter(action: string) {
+  filters.value.action = action
+  isActionDropdownOpen.value = false
+}
+
 async function handleDeleteLogs() {
   if (!orgStore.activeOrg?.id)
     return
@@ -147,3 +183,23 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(0.25rem);
+}
+.dropdown-enter-to,
+.dropdown-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+.dropdown {
+  @apply absolute right-0 z-10 mt-2 min-w-[10rem] rounded-md border bg-popover p-1 shadow-lg;
+}
+</style>
