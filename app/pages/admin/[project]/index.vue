@@ -29,7 +29,7 @@
             <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm">
               <li
                 v-for="env in ['development', 'staging', 'production']" :key="env"
-                class="cursor-pointer rounded p-2 capitalize hover:bg-muted"
+                class="rounded p-2 capitalize hover:bg-muted"
                 @click="() => { selectedEnvironment = env; isDropdownOpen = false; handleExportToEnv(); }"
               >
                 {{ env }}
