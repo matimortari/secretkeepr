@@ -32,6 +32,8 @@
 </template>
 
 <script setup lang="ts">
+import guest from '~/lib/middleware/guest'
+
 const providers = [
   {
     name: "github",
@@ -68,5 +70,9 @@ useHead({
 useSeoMeta({
   title: "Sign In – SecretKeepR",
   description: "Sign In to SecretKeepR.",
+})
+
+definePageMeta({
+  middleware: guest,
 })
 </script>
