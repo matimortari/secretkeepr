@@ -15,13 +15,9 @@
 
     <div class="navigation-group justify-between">
       <span class="font-semibold">Projects</span>
-      <Icon
-        name="ph:plus-bold"
-        size="25"
-        role="button"
-        class="hover:scale-md transition-all hover:text-accent"
-        @click="isDialogOpen = true"
-      />
+      <button class="hover:scale-md transition-all hover:text-accent" @click="isDialogOpen = true">
+        <Icon name="ph:plus-bold" size="25" />
+      </button>
     </div>
     <nav v-if="projectsFromOrg.length" class="scroll-area flex flex-col overflow-y-auto">
       <NuxtLink v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.id}`" class="text-info truncate rounded p-2 hover:bg-muted">

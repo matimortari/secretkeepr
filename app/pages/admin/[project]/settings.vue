@@ -312,10 +312,6 @@ async function handleDeleteProject() {
   }
 }
 
-onMounted(() => {
-  userStore.getUser()
-})
-
 watch(() => project.value, (newProject) => {
   if (newProject && project.value) {
     project.value.name = newProject.name

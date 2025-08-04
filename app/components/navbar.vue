@@ -32,7 +32,7 @@
               >
                 <span>{{ org.name }}</span>
               </li>
-              <li class="group truncate rounded p-2 hover:bg-muted" role="option">
+              <li class="group truncate rounded p-2 hover:bg-muted">
                 <NuxtLink to="/setup/create-org" class="navigation-group">
                   <Icon name="ph:plus-bold" size="20" class="group-hover:scale-md text-accent transition-all" />
                   <span>Create Organization</span>
@@ -70,9 +70,7 @@ const props = defineProps<{
   isSidebarOpen: boolean
 }>()
 
-defineEmits<{
-  (e: "toggleSidebar"): void
-}>()
+defineEmits<(e: "toggleSidebar") => void>()
 
 const { clear } = useUserSession()
 const route = useRoute()
