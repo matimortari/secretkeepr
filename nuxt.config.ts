@@ -39,7 +39,6 @@ export default defineNuxtConfig({
       Silkscreen: true,
       JetBrainsMono: true,
     },
-
   },
   tailwindcss: {
     cssPath: "~/assets/styles.css",
