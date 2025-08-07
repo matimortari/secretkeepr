@@ -1,18 +1,19 @@
 <template>
   <section
     id="hero" v-motion
-    class="flex flex-col items-center gap-8 border-b bg-card p-8 text-center md:p-12" :initial="{ opacity: 0, y: 20 }"
+    class="md:gradient-mask-wrapper flex flex-col items-center gap-8 border-b bg-card p-8 text-center md:p-12" :initial="{ opacity: 0, y: 20 }"
     :visible="{ opacity: 1, y: 0 }" :duration="800"
   >
     <h1 class="font-goldman">
-      Securely Manage Your Secrets
+      Your Secrets, Secured and Organized
     </h1>
     <p
       v-motion class="max-w-2xl text-lg leading-5 text-muted-foreground"
       :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
       :duration="800"
     >
-      SecretKeepR is a secrets manager designed to help users and organizations securely manage and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
+      No more .env headaches. SecretKeepR is a secrets manager designed to help users and organizations securely manage
+      and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
     </p>
 
     <NuxtLink to="/sign-in" class="btn-primary rounded-full">
@@ -21,18 +22,25 @@
     </NuxtLink>
   </section>
 
-  <section id="features" class="relative gap-12 text-center md:py-12">
-    <div class="gradient-mask-wrapper relative w-full overflow-hidden">
-      <div class="animate-scroll">
-        <div v-for="(feature, index) in [...features, ...features]" :key="index" class="flex min-w-[350px] max-w-sm flex-grow-0 flex-col items-center gap-2 p-8">
-          <Icon :name="feature.icon" class="text-primary" size="60" />
-          <h4 class="whitespace-nowrap font-silkscreen tracking-tight">
-            {{ feature.title }}
-          </h4>
-          <p class="leading-5 tracking-tight text-muted-foreground">
-            {{ feature.description }}
-          </p>
-        </div>
+  <section id="features" class="relative flex flex-col items-center gap-8 p-8 text-center md:p-12">
+    <h2 class="font-goldman">
+      Features
+    </h2>
+
+    <div class="flex flex-col flex-wrap items-center justify-center md:flex-row">
+      <div
+        v-for="(feature, index) in features" :key="index"
+        v-motion class="flex min-w-[350px] max-w-sm flex-grow-0 flex-col items-center gap-2 p-8"
+        :initial="{ opacity: 0, y: -40 }" :visible="{ opacity: 1, y: 0 }"
+        :duration="500" :delay="100 * index"
+      >
+        <Icon :name="feature.icon" class="text-primary" size="60" />
+        <h4 class="whitespace-nowrap font-silkscreen tracking-tight">
+          {{ feature.title }}
+        </h4>
+        <p class="leading-5 tracking-tight text-muted-foreground">
+          {{ feature.description }}
+        </p>
       </div>
     </div>
   </section>
@@ -68,7 +76,7 @@
     class="flex flex-col items-center gap-8 p-8 text-center md:p-12 md:text-start" :initial="{ opacity: 0, y: 40 }"
     :visible="{ opacity: 1, y: 0 }" :duration="800"
   >
-    <div class="card flex w-full flex-col items-center gap-4 p-8">
+    <div class="card relative flex w-full flex-col items-center gap-4 p-8">
       <header class="flex flex-col items-center gap-2">
         <h2 class="font-goldman">
           Command Line Interface
@@ -81,31 +89,43 @@
         </p>
       </header>
 
-      <div class="code-block relative w-full max-w-full overflow-x-auto md:max-w-lg">
-        <div class="whitespace-nowrap">
-          {{ installCommand }}
+      <div class="flex w-full flex-col gap-8 md:flex-row md:items-center">
+        <div class="card flex flex-col gap-2">
+          <p class="text-sm leading-5 text-muted-foreground">
+            Install the CLI tool using the following command:
+          </p>
+
+          <div class="code-block relative w-full max-w-full md:max-w-lg">
+            <span class="block overflow-x-auto whitespace-nowrap">
+              {{ installCommand }}
+            </span>
+            <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="installClipboard.copy(installCommand)">
+              <Icon :name="installClipboard.copyIcon.value" size="20" />
+            </button>
+          </div>
         </div>
-        <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="installClipboard.copy(installCommand)">
-          <Icon :name="installClipboard.clipboardIcon.value" size="20" />
-        </button>
+
+        <div class="card flex flex-col gap-2">
+          <p class="text-sm leading-5 text-muted-foreground">
+            After installing, run the following commands to get started:
+          </p>
+
+          <div class="code-block relative w-full max-w-full md:max-w-lg">
+            <div class="overflow-x-auto">
+              <span v-for="(command, index) in cliCommands" :key="index" class="block whitespace-nowrap">
+                {{ command }}
+              </span>
+            </div>
+            <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="cliClipboard.copy(cliCommands.join('\n'))">
+              <Icon :name="cliClipboard.copyIcon.value" size="20" />
+            </button>
+          </div>
+        </div>
       </div>
 
-      <p class="leading-5 text-muted-foreground">
-        After installing, run the following commands to get started:
-      </p>
-
-      <div class="code-block relative w-full max-w-full overflow-x-auto md:max-w-lg">
-        <span v-for="(command, index) in cliCommands" :key="index" class="block">
-          {{ command }}
-        </span>
-        <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="cliClipboard.copy(cliCommands.join('\n'))">
-          <Icon :name="cliClipboard.clipboardIcon.value" size="20" />
-        </button>
-
-        <div class="absolute bottom-2 right-2 z-10 hidden select-none items-end gap-2 font-semibold text-muted-foreground md:flex">
-          <span>Powered by Go</span>
-          <img src="/assets/gopher.png" alt="Go Gopher" width="60" height="60">
-        </div>
+      <div class="absolute bottom-2 right-2 z-10 hidden select-none items-end gap-2 font-semibold text-muted-foreground md:flex">
+        <span>Powered by Go</span>
+        <img src="/assets/gopher.png" alt="Go Gopher" width="60" height="60">
       </div>
     </div>
   </section>
@@ -226,18 +246,5 @@ definePageMeta({
 .gradient-mask-wrapper::after {
   right: 0;
   background: linear-gradient(to left, rgba(10, 11, 12, 0.8) 0%, rgba(10, 11, 12, 0.2) 100%);
-}
-
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-.animate-scroll {
-  animation: scroll 30s linear infinite;
-  display: flex;
 }
 </style>
