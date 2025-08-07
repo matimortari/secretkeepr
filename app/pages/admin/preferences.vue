@@ -34,7 +34,7 @@
         <div v-if="field.copyable" class="navigation-group">
           <span>{{ field.value }}</span>
           <button class="btn" title="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')">
-            <Icon :name="fieldClipboardHandlers[index]?.clipboardIcon.value || ''" size="20" />
+            <Icon :name="fieldClipboardHandlers[index]?.copyIcon.value || ''" size="20" />
           </button>
         </div>
 
