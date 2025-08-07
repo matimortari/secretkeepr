@@ -1,7 +1,7 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b py-2">
-      <NuxtLink :to="`/admin/${project?.id}`">
+      <NuxtLink :to="`/admin/${project?.slug}`">
         <Icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
       </NuxtLink>
       <h2 class="max-w-lg truncate">
@@ -171,7 +171,7 @@ const roles = [
 
 const router = useRouter()
 const route = useRoute()
-const projectId = route.params.project as string
+const slug = route.params.project as string
 const { createClipboardHandler } = useClipboard()
 const userStore = useUserStore()
 const projectsStore = useProjectsStore()
@@ -182,8 +182,9 @@ const newMemberId = ref("")
 const newMemberRole = ref(roles[0]?.value ?? "member")
 
 const project = computed(() => {
-  return projectsStore.projects.find(p => p.id === projectId) || null
+  return projectsStore.projects.find(p => p.slug === slug) || null
 })
+const projectId = computed(() => project.value?.id ?? "")
 
 const projectMembers = computed(() => project.value?.members || [])
 const currentUserRole = computed(() => projectMembers.value.find(m => m.userId === userStore.user?.id)?.role)
@@ -196,6 +197,12 @@ const projectFields = [
     label: "Project ID",
     description: "This ID uniquely identifies your project.",
     value: computed(() => project.value?.id),
+    copyable: true,
+  },
+  {
+    label: "Project Slug",
+    description: "This slug is used in the URL to access your project.",
+    value: computed(() => project.value?.slug),
     copyable: true,
   },
   {
@@ -319,12 +326,13 @@ async function handleDeleteProject() {
 watch(() => project.value, (newProject) => {
   if (newProject && project.value) {
     project.value.name = newProject.name
+    project.value.slug = newProject.slug
     project.value.description = newProject.description
     project.value.id = newProject.id
   }
 }, { immediate: true })
 
-watch(() => projectId, async (id) => {
+watch(() => projectId.value, async (id) => {
   await projectsStore.getProjects()
   const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name
 

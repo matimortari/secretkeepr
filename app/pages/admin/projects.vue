@@ -79,6 +79,7 @@ async function handleCreateProject(project: ProjectType) {
   try {
     await projectsStore.createProject({
       name: project.name,
+      slug: project.slug,
       description: project.description ?? undefined,
       orgId: project.orgId,
     })
