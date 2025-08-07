@@ -33,8 +33,8 @@
 
         <div v-if="field.copyable" class="navigation-group">
           <span>{{ field.value }}</span>
-          <button class="btn" title="Copy to Clipboard" @click="copy(field.value?.value || '')">
-            <Icon :name="clipboardIcon" size="20" />
+          <button class="btn" title="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')">
+            <Icon :name="fieldClipboardHandlers[index]?.clipboardIcon.value || ''" size="20" />
           </button>
         </div>
 
@@ -214,7 +214,7 @@ const roles = [
 ]
 
 const router = useRouter()
-const { copy, clipboardIcon } = useClipboard()
+const { createClipboardHandler } = useClipboard()
 const userStore = useUserStore()
 const orgStore = useOrganizationStore()
 const projectsStore = useProjectsStore()
@@ -272,6 +272,9 @@ const orgFields = [
     value: computed(() => formatDate(orgStore.activeOrg?.updatedAt)),
   },
 ]
+
+const fieldClipboardHandlers = orgFields
+  .map(field => (field.copyable ? createClipboardHandler() : null))
 
 async function handleCreateInvite() {
   inviteError.value = null
