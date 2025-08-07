@@ -86,7 +86,9 @@ useClickOutside(dropdownRef, () => {
 
 const currentPage = computed(() => {
   const segments = route.path.split("/").filter(Boolean)
-  return segments.length ? segments[segments.length - 1] : "home"
+  let page = segments.length ? segments[segments.length - 1] : "home"
+  page = (page ?? "home").replace(/-/g, " ")
+  return page.replace(/\b\w/g, l => l.toUpperCase())
 })
 
 async function setActiveOrg(org: OrganizationType) {

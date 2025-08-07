@@ -83,6 +83,7 @@ model ProjectMember {
 model Project {
   id           String          @id @default(cuid())
   name         String
+  slug         String
   description  String?
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
@@ -90,6 +91,8 @@ model Project {
   organization Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
   secrets      Secret[]
   members      ProjectMember[]
+
+  @@unique([orgId, slug])
 }
 
 model Secret {

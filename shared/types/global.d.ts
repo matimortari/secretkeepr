@@ -46,6 +46,7 @@ interface OrganizationType {
 interface ProjectType {
   id?: string
   name: string
+  slug: string
   description?: string | null
   orgId: string
   createdAt?: Date
@@ -108,12 +109,14 @@ interface UpdateUserPayload {
 
 interface CreateProjectPayload {
   name: string
+  slug: string
   description?: string
   orgId: string
 }
 
 interface UpdateProjectPayload {
   name?: string
+  slug?: string
   description?: string | null
 }
 

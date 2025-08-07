@@ -18,16 +18,32 @@ export default defineEventHandler(async (event) => {
 
   const project = await db.project.findUnique({
     where: { id: projectId },
-    select: { orgId: true },
   })
   if (!project) {
     throw createError({ statusCode: 404, statusMessage: "Project not found" })
+  }
+
+  const newSlug = body.slug || project.slug
+  const conflictingProject = await db.project.findFirst({
+    where: {
+      orgId: project.orgId,
+      NOT: { id: projectId },
+      OR: [
+        { slug: newSlug },
+        { name: body.name },
+      ],
+    },
+  })
+
+  if (conflictingProject) {
+    throw createError({ statusCode: 409, statusMessage: "Duplicate project name or slug. Please choose a different value." })
   }
 
   const updatedProject = await db.project.update({
     where: { id: projectId },
     data: {
       name: body.name,
+      slug: newSlug,
       description: body.description || null,
     },
   })
@@ -39,6 +55,7 @@ export default defineEventHandler(async (event) => {
     resource: `Project: ${projectId}`,
     metadata: {
       newName: updatedProject.name,
+      newSlug: updatedProject.slug,
       newDescription: updatedProject.description || null,
     },
     req: event.node.req,

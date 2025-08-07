@@ -13,6 +13,7 @@ declare module "#auth-utils" {
     }[]
     projects?: {
       id: string
+      slug: string
       name: string
       role: Role
     }[]

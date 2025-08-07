@@ -92,3 +92,15 @@ export function getInviteBaseUrl(event: any) {
   const host = event.req.headers.host
   return `${protocol}://${host}`
 }
+
+export async function generateprojectSlug(orgId: string, baseSlug: string) {
+  let slug = baseSlug
+  let count = 1
+
+  while (await db.project.findFirst({ where: { orgId, slug } })) {
+    slug = `${baseSlug}-${count}`
+    count++
+  }
+
+  return slug
+}
