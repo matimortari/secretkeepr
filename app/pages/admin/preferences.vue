@@ -159,7 +159,7 @@ const userFields = [
   {
     label: "CLI Token",
     description: "This token is used for CLI access. Keep it secret and secure.",
-    value: computed(() => userStore.user?.cliTokens?.[0]?.token),
+    value: computed(() => userStore.user?.cliToken),
     copyable: true,
   },
   {

@@ -26,11 +26,11 @@ interface UserType {
   name: string
   email: string
   image: string | null
+  cliToken?: string | null
   createdAt?: Date
   updatedAt?: Date
   memberships: UserOrgMembershipType[]
   projectMemberships?: ProjectMemberType[]
-  cliTokens?: { token: string, expiresAt: Date, createdAt: Date }[]
 }
 
 interface OrganizationType {
