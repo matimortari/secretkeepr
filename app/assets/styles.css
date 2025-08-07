@@ -182,7 +182,8 @@
     position: relative;
     background-color: var(--muted);
     font-family: "JetBrains Mono", monospace;
-    padding: 1.5rem;
+    padding: 1rem;
+    padding-right: 2rem;
     border-radius: 0.25rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
