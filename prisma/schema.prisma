@@ -30,7 +30,7 @@ model User {
   memberships        UserOrganizationMembership[]
   projectMemberships ProjectMember[]
   auditLogs          AuditLog[]
-  cliTokens          CliToken[]
+  cliToken           String?                      @unique
 }
 
 model Account {
@@ -143,13 +143,4 @@ model Invitation {
   usedAt       DateTime?
 
   @@index([orgId])
-}
-
-model CliToken {
-  id        String   @id @default(cuid())
-  userId    String
-  token     String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

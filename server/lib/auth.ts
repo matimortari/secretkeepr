@@ -23,7 +23,6 @@ export async function handleOAuthUser(event: H3Event, userData: {
     include: {
       user: {
         include: {
-          cliTokens: true,
           memberships: {
             select: {
               role: true,
@@ -46,7 +45,6 @@ export async function handleOAuthUser(event: H3Event, userData: {
     const foundUser = await db.user.findUnique({
       where: { email },
       include: {
-        cliTokens: true,
         memberships: {
           select: {
             role: true,
@@ -72,7 +70,6 @@ export async function handleOAuthUser(event: H3Event, userData: {
           image: image ?? undefined,
         },
         include: {
-          cliTokens: true,
           memberships: {
             select: {
               role: true,
@@ -98,26 +95,14 @@ export async function handleOAuthUser(event: H3Event, userData: {
     })
   }
 
+  // Always regenerate the CLI token on login
   const cliToken = randomBytes(16).toString("hex")
-  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // Expires in 24 hours
-  if (!user.cliTokens.length) {
-    await db.cliToken.create({
-      data: {
-        token: cliToken,
-        userId: user.id,
-        expiresAt,
-      },
-    })
-  }
-  else {
-    await db.cliToken.update({
-      where: { id: user.cliTokens[0]?.id },
-      data: {
-        token: cliToken,
-        expiresAt,
-      },
-    })
-  }
+  await db.user.update({
+    where: { id: user.id },
+    data: {
+      cliToken,
+    },
+  })
 
   const sessionUser = {
     id: user.id,
