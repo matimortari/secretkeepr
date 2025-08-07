@@ -85,8 +85,8 @@
         <div class="whitespace-nowrap">
           {{ installCommand }}
         </div>
-        <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="copy(installCommand)">
-          <Icon :name="clipboardIcon" size="20" />
+        <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="installClipboard.copy(installCommand)">
+          <Icon :name="installClipboard.clipboardIcon.value" size="20" />
         </button>
       </div>
 
@@ -98,8 +98,8 @@
         <span v-for="(command, index) in cliCommands" :key="index" class="block">
           {{ command }}
         </span>
-        <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="copy(cliCommands.join('\n'))">
-          <Icon :name="clipboardIcon" size="20" />
+        <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="cliClipboard.copy(cliCommands.join('\n'))">
+          <Icon :name="cliClipboard.clipboardIcon.value" size="20" />
         </button>
 
         <div class="absolute bottom-2 right-2 z-10 hidden select-none items-end gap-2 font-semibold text-muted-foreground md:flex">
@@ -114,7 +114,10 @@
 <script setup lang="ts">
 import guest from "~/lib/middleware/guest"
 
-const { copy, clipboardIcon } = useClipboard()
+const { createClipboardHandler } = useClipboard()
+
+const installClipboard = createClipboardHandler()
+const cliClipboard = createClipboardHandler()
 
 const features = [
   {
