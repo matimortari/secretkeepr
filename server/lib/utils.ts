@@ -17,20 +17,13 @@ export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
     throw createError({ statusCode: 401, statusMessage: "Unauthorized" })
   }
 
-  const userWithToken = await db.user.findFirst({
+  const userWithToken = await db.user.findUnique({
     where: {
-      cliTokens: {
-        some: {
-          token,
-          expiresAt: {
-            gt: new Date(),
-          },
-        },
-      },
+      cliToken: token,
     },
   })
   if (!userWithToken) {
-    throw createError({ statusCode: 401, statusMessage: "Invalid or expired token" })
+    throw createError({ statusCode: 401, statusMessage: "Invalid token" })
   }
 
   return userWithToken
