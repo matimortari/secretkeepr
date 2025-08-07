@@ -1,6 +1,6 @@
-import { nanoid } from "nanoid"
 import db from "#server/lib/db"
 import { createAuditLog, getInviteBaseUrl, getUserFromSession, requireOrgRole } from "#server/lib/utils"
+import { nanoid } from "nanoid"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)

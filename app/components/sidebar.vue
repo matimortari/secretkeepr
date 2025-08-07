@@ -20,7 +20,7 @@
       </button>
     </div>
     <nav v-if="projectsFromOrg.length" class="scroll-area flex flex-col overflow-y-auto">
-      <NuxtLink v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.id}`" class="text-info truncate rounded p-2 hover:bg-muted">
+      <NuxtLink v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-info truncate rounded p-2 hover:bg-muted">
         {{ project.name }}
       </NuxtLink>
     </nav>
@@ -49,6 +49,7 @@ defineEmits(["update:isOpen"])
 const navLinks = [
   { href: "/admin/projects", icon: "ph:folder-open", label: "Projects" },
   { href: "/admin/organization", icon: "ph:building-office", label: "Organization" },
+  { href: "/admin/audit-logs", icon: "ph:clipboard-text", label: "Audit Logs" },
   { href: "/admin/preferences", icon: "ph:user-gear", label: "Preferences" },
 ]
 
@@ -66,6 +67,7 @@ async function handleCreateProject(project: ProjectType) {
   try {
     await projectsStore.createProject({
       name: project.name,
+      slug: project.slug,
       description: project.description ?? undefined,
       orgId: project.orgId,
     })

@@ -1,5 +1,5 @@
 import db from "#server/lib/db"
-import { createAuditLog, getUserFromSession, requireOrgRole } from "#server/lib/utils"
+import { createAuditLog, generateprojectSlug, getUserFromSession, requireOrgRole } from "#server/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -14,9 +14,24 @@ export default defineEventHandler(async (event) => {
 
   await requireOrgRole(sessionUser.id!, body.orgId, ["owner"])
 
+  const projectSlug = await generateprojectSlug(body.orgId, body.slug || body.name)
+  const existingProject = await db.project.findFirst({
+    where: {
+      orgId: body.orgId,
+      OR: [
+        { slug: projectSlug },
+        { name: body.name },
+      ],
+    },
+  })
+  if (existingProject) {
+    throw createError({ statusCode: 409, statusMessage: "Duplicate project name or slug. Please choose a different value." })
+  }
+
   const newProject = await db.project.create({
     data: {
       name: body.name,
+      slug: projectSlug,
       description: body.description || "",
       orgId: body.orgId,
       members: {
@@ -35,6 +50,7 @@ export default defineEventHandler(async (event) => {
     resource: `Project: ${newProject.id}`,
     metadata: {
       name: newProject.name,
+      slug: newProject.slug,
       description: newProject.description,
     },
     req: event.node.req,

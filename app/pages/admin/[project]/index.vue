@@ -37,7 +37,7 @@
           </Transition>
         </div>
 
-        <NuxtLink v-if="project?.id" :to="`/admin/${project.id}/settings`" class="btn">
+        <NuxtLink v-if="project?.id" :to="`/admin/${project.slug}/settings`" class="btn">
           <Icon name="ph:gear-bold" size="20" />
         </NuxtLink>
       </nav>
@@ -78,10 +78,16 @@ import { useProjectsStore } from "~/lib/stores/projects-store"
 import { useSecretsStore } from "~/lib/stores/secrets-store"
 
 const route = useRoute()
-const projectId = route.params.project as string
+const slug = route.params.project as string
 const projectsStore = useProjectsStore()
 const secretsStore = useSecretsStore()
-const { project, secrets, handleImportFromEnv, handleExportToEnv } = useProjectSecrets(projectId)
+
+const project = computed(() => {
+  return projectsStore.projects.find(p => p.slug === slug) || null
+})
+
+const projectId = computed(() => project.value?.id ?? "")
+const { secrets, handleImportFromEnv, handleExportToEnv } = useProjectSecrets(projectId.value)
 
 const selectedSecret = ref<SecretType | null>(null)
 const dropdownRef = ref<HTMLElement | null>(null)
@@ -100,20 +106,20 @@ async function handleSaveSecret(secret: SecretType) {
 
   try {
     if (secret.id) {
-      await secretsStore.updateSecret(projectId, secret.id, {
+      await secretsStore.updateSecret(projectId.value, secret.id, {
         key: secret.key,
         description: secret.description ?? "",
         values: secret.values ?? [],
       })
     }
     else {
-      await secretsStore.createSecret(projectId, {
+      await secretsStore.createSecret(projectId.value, {
         key: secret.key,
         description: secret.description ?? "",
         values: secret.values ?? [],
       })
     }
-    await secretsStore.getSecretsByProject(projectId)
+    await secretsStore.getSecretsByProject(projectId.value)
   }
   catch (error: any) {
     console.error("Failed to create or update secret:", error)
@@ -121,10 +127,10 @@ async function handleSaveSecret(secret: SecretType) {
 }
 
 onMounted(async () => {
-  await secretsStore.getSecretsByProject(projectId)
+  await secretsStore.getSecretsByProject(projectId.value)
 })
 
-watch(() => projectId, async (id) => {
+watch(() => projectId.value, async (id) => {
   await projectsStore.getProjects()
   const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name
 
