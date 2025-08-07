@@ -67,10 +67,10 @@
             </div>
 
             <nav class="navigation-group justify-end">
-              <NuxtLink :to="`/admin/${project.id}`" class="btn">
+              <NuxtLink :to="`/admin/${project.slug}`" class="btn">
                 <Icon name="ph:eye-bold" size="15" />
               </NuxtLink>
-              <NuxtLink :to="`/admin/${project.id}/settings`" class="btn">
+              <NuxtLink :to="`/admin/${project.slug}/settings`" class="btn">
                 <Icon name="ph:gear-bold" size="15" />
               </NuxtLink>
             </nav>
@@ -139,8 +139,6 @@
         </button>
       </div>
     </section>
-
-    <AuditLogs />
 
     <!-- Danger Zone -->
     <section v-if="isOwner" class="flex flex-col">
