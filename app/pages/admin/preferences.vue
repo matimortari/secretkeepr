@@ -33,9 +33,9 @@
 
         <div v-if="field.copyable" class="navigation-group">
           <span>{{ field.value }}</span>
-          <div class="btn" @click="copy(field.value?.value || '')">
-            <Icon :name="clipboardIcon" size="20" />
-          </div>
+          <button class="btn" title="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')">
+            <Icon :name="fieldClipboardHandlers[index]?.clipboardIcon.value || ''" size="20" />
+          </button>
         </div>
 
         <div v-else-if="field.type === 'input'" class="navigation-group">
@@ -105,7 +105,7 @@ import { useUserStore } from "~/lib/stores/user-store"
 import { formatDate } from "~/lib/utils"
 
 const router = useRouter()
-const { copy, clipboardIcon } = useClipboard()
+const { createClipboardHandler } = useClipboard()
 const { clear } = useUserSession()
 const orgStore = useOrganizationStore()
 const userStore = useUserStore()
@@ -170,6 +170,9 @@ const userFields = [
     onUpload: handleUploadImage,
   },
 ]
+
+const fieldClipboardHandlers = userFields
+  .map(field => (field.copyable ? createClipboardHandler() : null))
 
 async function handleUploadImage(event: Event) {
   userStore.error = null

@@ -38,9 +38,9 @@
 
         <div v-if="field.copyable" class="navigation-group">
           <span>{{ field.value }}</span>
-          <div class="btn" @click="copy(field.value?.value || '')">
-            <Icon :name="clipboardIcon" size="20" />
-          </div>
+          <button class="btn" title="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')">
+            <Icon :name="fieldClipboardHandlers[index]?.clipboardIcon.value || ''" size="20" />
+          </button>
         </div>
 
         <div v-else-if="field.type === 'textarea'" class="navigation-group">
@@ -172,7 +172,7 @@ const roles = [
 const router = useRouter()
 const route = useRoute()
 const projectId = route.params.project as string
-const { copy, clipboardIcon } = useClipboard()
+const { createClipboardHandler } = useClipboard()
 const userStore = useUserStore()
 const projectsStore = useProjectsStore()
 
@@ -220,6 +220,9 @@ const projectFields = [
     onSave: handleSubmit,
   },
 ]
+
+const fieldClipboardHandlers = projectFields
+  .map(field => (field.copyable ? createClipboardHandler() : null))
 
 async function handleAddMember() {
   addMemberError.value = null
