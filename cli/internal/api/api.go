@@ -3,11 +3,22 @@ package api
 import (
 	"bytes"
 	"net/http"
+	"os"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
-// "https://secretkeepr.vercel.app/api"
-var BaseURL = "http://localhost:3000/api"
+var BaseURL string
+
+func init() {
+	_ = godotenv.Load()
+
+	BaseURL = os.Getenv("API_URL")
+	if BaseURL == "" {
+		BaseURL = "https://secretkeepr.vercel.app/api"
+	}
+}
 
 func buildURL(path string) string {
 	if !strings.HasPrefix(path, "/") {
