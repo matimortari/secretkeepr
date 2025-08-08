@@ -10,24 +10,24 @@ export async function getProjectsService(): Promise<ProjectType[]> {
   return await response.json()
 }
 
-export async function createProjectService(data: CreateProjectPayload): Promise<{ message: string, newProject: ProjectType }> {
+export async function createProjectService(payload: CreateProjectPayload): Promise<{ message: string, newProject: ProjectType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(response.statusText)
   return await response.json()
 }
 
-export async function updateProjectService(projectId: string, data: UpdateProjectPayload): Promise<{ message: string, updatedProject: ProjectType }> {
+export async function updateProjectService(projectId: string, payload: UpdateProjectPayload): Promise<{ message: string, updatedProject: ProjectType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects/${projectId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(response.statusText)
@@ -45,24 +45,24 @@ export async function deleteProjectService(projectId: string): Promise<{ message
   return await response.json()
 }
 
-export async function addProjectMemberService(projectId: string, data: AddProjectMemberPayload): Promise<{ message: string, newMember: ProjectMemberType }> {
+export async function addProjectMemberService(projectId: string, payload: AddProjectMemberPayload): Promise<{ message: string, newMember: ProjectMemberType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects/${projectId}/members`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(response.statusText)
   return await response.json()
 }
 
-export async function updateProjectMemberService(projectId: string, memberId: string, data: { role: Role }): Promise<{ message: string, updatedMember: ProjectMemberType }> {
+export async function updateProjectMemberService(projectId: string, memberId: string, payload: { role: Role }): Promise<{ message: string, updatedMember: ProjectMemberType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects/${projectId}/members/${memberId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(`${response.status}`)

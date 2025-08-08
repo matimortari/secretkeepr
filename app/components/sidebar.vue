@@ -6,27 +6,27 @@
     :class="isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
   >
     <span class="font-semibold">Overview</span>
-    <nav class="flex flex-col gap-1 border-b py-2 text-sm font-semibold text-muted-foreground">
-      <NuxtLink v-for="link in navLinks" :key="link.href" :to="link.href" class="navigation-group rounded p-2 hover:bg-muted">
-        <Icon :name="link.icon" size="30" />
+    <nav class="flex flex-col gap-1 border-b py-2 text-sm font-semibold text-muted-foreground" aria-label="Main Navigation">
+      <nuxt-link v-for="link in navLinks" :key="link.href" :to="link.href" class="navigation-group rounded p-2 hover:bg-muted">
+        <icon :name="link.icon" size="30" />
         <span>{{ link.label }}</span>
-      </NuxtLink>
+      </nuxt-link>
     </nav>
 
     <div class="navigation-group justify-between">
       <span class="font-semibold">Projects</span>
-      <button class="hover:scale-md transition-all hover:text-accent" @click="isDialogOpen = true">
-        <Icon name="ph:plus-bold" size="25" />
+      <button class="hover:scale-md transition-all hover:text-accent" aria-label="Create New Project" @click="isDialogOpen = true">
+        <icon name="ph:plus-bold" size="25" />
       </button>
     </div>
-    <nav v-if="projectsFromOrg.length" class="scroll-area flex flex-col overflow-y-auto">
-      <NuxtLink v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-info truncate rounded p-2 hover:bg-muted">
+    <nav v-if="projectsFromOrg.length" class="scroll-area flex flex-col overflow-y-auto" aria-label="Projects Navigation">
+      <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-info truncate rounded p-2 hover:bg-muted">
         {{ project.name }}
-      </NuxtLink>
+      </nuxt-link>
     </nav>
 
     <a href="https://github.com/matimortari/secretkeepr" class="navigation-group group border-t py-4">
-      <Icon name="simple-icons:github" size="25" class="group-hover:scale-md transition-all group-hover:text-accent" />
+      <icon name="simple-icons:github" size="25" class="group-hover:scale-md transition-all group-hover:text-accent" />
       <span class="text-sm font-semibold text-muted-foreground">
         Support This Project
       </span>

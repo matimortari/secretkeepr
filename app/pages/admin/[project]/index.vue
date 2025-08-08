@@ -1,45 +1,46 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b pb-2">
-      <NuxtLink to="/admin/projects">
-        <Icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
-      </NuxtLink>
+      <nuxt-link to="/admin/projects">
+        <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
+      </nuxt-link>
       <h2 class="max-w-lg truncate">
         {{ project?.name }}
       </h2>
 
-      <nav class="navigation-group w-full flex-1 justify-end">
-        <button class="btn-primary" @click="() => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = null }">
+      <nav class="navigation-group w-full flex-1 justify-end" aria-label="Project Actions">
+        <button class="btn-primary" aria-label="Add New Secret" @click="() => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = null }">
           <span class="hidden md:inline">Add New Secret</span>
-          <Icon name="ph:plus-bold" size="20" />
+          <icon name="ph:plus-bold" size="20" />
         </button>
 
-        <button class="btn-secondary" @click="() => { isDialogOpen = true; dialogType = 'env'; selectedSecret = null }">
+        <button class="btn-secondary" aria-label="Import Secrets from .env File" @click="() => { isDialogOpen = true; dialogType = 'env'; selectedSecret = null }">
           <span class="hidden md:block">Import</span>
-          <Icon name="ph:upload-bold" size="20" />
+          <icon name="ph:upload-bold" size="20" />
         </button>
 
         <div ref="dropdownRef" class="relative">
-          <button class="btn" @click="isDropdownOpen = !isDropdownOpen">
+          <button class="btn" aria-label="Export Secrets to .env File" @click="isDropdownOpen = !isDropdownOpen">
             <span class="hidden md:block">Export</span>
-            <Icon name="ph:download-bold" size="20" />
+            <icon name="ph:download-bold" size="20" />
           </button>
 
-          <Transition name="dropdown" mode="out-in">
-            <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm">
+          <transition name="dropdown" mode="out-in">
+            <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm" role="menu" aria-label="Export environments">
               <li
                 v-for="env in ['development', 'staging', 'production']" :key="env"
-                class="rounded p-2 capitalize hover:bg-muted" @click="handleExportToEnv(env); isDropdownOpen = false"
+                role="menuitem" class="rounded p-2 capitalize hover:bg-muted"
+                @click="handleExportToEnv(env); isDropdownOpen = false"
               >
                 {{ env }}
               </li>
             </ul>
-          </Transition>
+          </transition>
         </div>
 
-        <NuxtLink v-if="project?.id" :to="`/admin/${project.slug}/settings`" class="btn">
-          <Icon name="ph:gear-bold" size="20" />
-        </NuxtLink>
+        <nuxt-link v-if="project?.id" :to="`/admin/${project.slug}/settings`" class="btn">
+          <icon name="ph:gear-bold" size="20" />
+        </nuxt-link>
       </nav>
     </header>
 
