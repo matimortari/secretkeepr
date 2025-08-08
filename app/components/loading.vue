@@ -1,19 +1,18 @@
 <template>
   <div class="flex min-h-screen flex-col items-center justify-center gap-4">
-    <div class="progress-bar w-1/4 bg-muted">
-      <div class="progress bg-primary" />
+    <div class="relative w-1/4 bg-muted">
+      <div class="progress-bar bg-primary" />
     </div>
   </div>
 </template>
 
 <style scoped>
-.progress {
+.progress-bar {
   height: 4px;
-  transition: 0.5s;
-  animation: animate-loading 2s ease infinite;
+  animation: progress 2s ease infinite;
 }
 
-@keyframes animate-loading {
+@keyframes progress {
   0% {
     width: 0%;
   }

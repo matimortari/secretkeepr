@@ -1,12 +1,12 @@
 <template>
   <Loading v-if="isLoading" />
 
-  <div v-show="!isLoading">
+  <div v-show="!isLoading" class="min-h-screen">
     <Navbar :orgs="orgs" :org="orgStore.activeOrg" :is-sidebar-open="isSidebarOpen" @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
 
     <div class="flex flex-1">
       <Sidebar :org="orgStore.activeOrg" :is-open="isSidebarOpen" @update:is-open="isSidebarOpen = $event" />
-      <main class="flex min-h-screen flex-1 flex-col overflow-x-hidden p-4">
+      <main class="flex flex-1 flex-col overflow-x-hidden p-4">
         <slot :active-org="orgStore.activeOrg" />
       </main>
     </div>

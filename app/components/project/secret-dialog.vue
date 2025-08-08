@@ -20,10 +20,10 @@
         </p>
 
         <div class="navigation-group">
-          <button class="font-semibold hover:underline" type="button" @click="emit('close')">
+          <button class="hover:underline" type="button" aria-label="Cancel" @click="emit('close')">
             Cancel
           </button>
-          <button class="btn-success" type="submit">
+          <button class="btn-success" type="submit" aria-label="Save Secret">
             Save
           </button>
         </div>

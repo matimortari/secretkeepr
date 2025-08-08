@@ -33,8 +33,11 @@
 
         <div v-if="field.copyable" class="navigation-group">
           <span>{{ field.value }}</span>
-          <button class="btn" title="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')">
-            <Icon :name="fieldClipboardHandlers[index]?.clipboardIcon.value || ''" size="20" />
+          <button
+            class="btn" title="Copy to Clipboard"
+            aria-label="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')"
+          >
+            <icon :name="fieldClipboardHandlers[index]?.copyIcon.value || ''" size="20" />
           </button>
         </div>
 
@@ -45,8 +48,8 @@
             placeholder="Enter value"
             @input="field.update && $event.target && field.update(($event.target as HTMLInputElement).value)"
           >
-          <button class="btn" @click="field.onSave">
-            <Icon name="ph:check-bold" size="20" />
+          <button class="btn" aria-label="Save Changes" @click="field.onSave">
+            <icon name="ph:check-bold" size="20" />
           </button>
         </div>
 
@@ -66,13 +69,13 @@
               <span class="text-info">{{ project.description || "No description provided." }}</span>
             </div>
 
-            <nav class="navigation-group justify-end">
-              <NuxtLink :to="`/admin/${project.slug}`" class="btn">
-                <Icon name="ph:eye-bold" size="15" />
-              </NuxtLink>
-              <NuxtLink :to="`/admin/${project.slug}/settings`" class="btn">
-                <Icon name="ph:gear-bold" size="15" />
-              </NuxtLink>
+            <nav class="navigation-group justify-end" aria-label="Organization Project Actions">
+              <nuxt-link :to="`/admin/${project.slug}`" class="btn">
+                <icon name="ph:eye-bold" size="15" />
+              </nuxt-link>
+              <nuxt-link :to="`/admin/${project.slug}/settings`" class="btn">
+                <icon name="ph:gear-bold" size="15" />
+              </nuxt-link>
             </nav>
           </li>
         </ul>
@@ -95,18 +98,18 @@
               </div>
             </div>
 
-            <nav v-if="isOwner && orgUser.id !== userStore.user?.id" class="navigation-group justify-end">
+            <nav v-if="isOwner && orgUser.id !== userStore.user?.id" class="navigation-group justify-end" aria-label="Organization Member Actions">
               <select v-model="userRoles[orgUser.id]">
                 <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value" class="capitalize">
                   {{ role.label }}
                 </option>
               </select>
 
-              <button class="btn" @click="handleUpdateMemberRole(orgUser.id, userRoles[orgUser.id] || 'member')">
-                <Icon name="ph:check-bold" size="15" />
+              <button class="btn" aria-label="Update Member Role" @click="handleUpdateMemberRole(orgUser.id, userRoles[orgUser.id] || 'member')">
+                <icon name="ph:check-bold" size="15" />
               </button>
-              <button v-if="isOwner && orgUser.role !== 'owner'" class="btn" @click="handleRemoveMember(orgUser.id)">
-                <Icon name="ph:x-bold" size="15" />
+              <button v-if="isOwner && orgUser.role !== 'owner'" class="btn" aria-label="Remove Member" @click="handleRemoveMember(orgUser.id)">
+                <icon name="ph:x-bold" size="15" />
               </button>
             </nav>
           </li>
@@ -115,7 +118,7 @@
     </section>
 
     <!-- Invite Members -->
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Invite Members">
       <header class="flex flex-col gap-1">
         <h5>
           Invite Members
@@ -133,8 +136,8 @@
           {{ inviteSuccess }}
         </p>
 
-        <button class="btn-primary" @click="handleCreateInvite">
-          <Icon name="ph:link" size="20" />
+        <button class="btn-primary" aria-label="Create Invite Link" @click="handleCreateInvite">
+          <icon name="ph:link" size="20" />
           <span>Copy Invite Link</span>
         </button>
       </div>
@@ -151,7 +154,7 @@
         </p>
       </header>
 
-      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Leave Organization">
         <header class="flex flex-col gap-1">
           <h5>
             Leave Organization
@@ -166,14 +169,14 @@
             {{ leaveOrgError }}
           </p>
 
-          <button class="btn-danger" @click="handleLeaveOrg">
-            <Icon name="ph:sign-out-bold" size="20" />
+          <button class="btn-danger" aria-label="Leave Organization" @click="handleLeaveOrg">
+            <icon name="ph:sign-out-bold" size="20" />
             <span>Leave Organization</span>
           </button>
         </div>
       </nav>
 
-      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Organization">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Organization
@@ -188,8 +191,8 @@
             {{ deleteOrgError }}
           </p>
 
-          <button class="btn-danger" @click="handleDeleteOrg">
-            <Icon name="ph:network-x-bold" size="20" />
+          <button class="btn-danger" aria-label="Delete Organization" @click="handleDeleteOrg">
+            <icon name="ph:network-x-bold" size="20" />
             <span>Delete Organization</span>
           </button>
         </div>
