@@ -33,8 +33,11 @@
 
         <div v-if="field.copyable" class="navigation-group">
           <span>{{ field.value }}</span>
-          <button class="btn" title="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')">
-            <Icon :name="fieldClipboardHandlers[index]?.copyIcon.value || ''" size="20" />
+          <button
+            class="btn" title="Copy to Clipboard"
+            aria-label="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')"
+          >
+            <icon :name="fieldClipboardHandlers[index]?.copyIcon.value || ''" size="20" />
           </button>
         </div>
 
@@ -46,7 +49,7 @@
             @input="field.update && $event.target && field.update(($event.target as HTMLInputElement).value)"
           >
           <div class="btn" @click="field.onSave">
-            <Icon name="ph:check-bold" size="20" />
+            <icon name="ph:check-bold" size="20" />
           </div>
         </div>
 
@@ -60,7 +63,7 @@
             @change="field.onUpload"
           >
           <label for="image" class="btn">
-            <Icon name="ph:image-bold" size="20" />
+            <icon name="ph:image-bold" size="20" />
           </label>
         </div>
 
@@ -79,7 +82,7 @@
         </p>
       </header>
 
-      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Account">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Account
@@ -89,8 +92,8 @@
           </p>
         </header>
 
-        <button class="btn-danger" @click="handleDeleteUser">
-          <Icon name="ph:user-minus-bold" size="20" />
+        <button class="btn-danger" aria-label="Delete Account" @click="handleDeleteUser">
+          <icon name="ph:user-minus-bold" size="20" />
           <span>Delete Account</span>
         </button>
       </nav>
