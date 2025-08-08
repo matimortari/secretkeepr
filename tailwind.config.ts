@@ -15,9 +15,9 @@ export default {
           DEFAULT: "var(--card)",
           foreground: "var(--card-foreground)",
         },
-        popover: {
-          DEFAULT: "var(--popover)",
-          foreground: "var(--popover-foreground)",
+        overlay: {
+          DEFAULT: "var(--overlay)",
+          foreground: "var(--overlay-foreground)",
         },
         primary: {
           DEFAULT: "var(--primary)",

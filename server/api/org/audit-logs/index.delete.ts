@@ -5,14 +5,7 @@ export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
 
   const body = await readBody(event)
-
-  const {
-    orgId,
-    action,
-    beforeDate,
-    createdBySelfOnly = false,
-    protectedActions = ["org.create"],
-  } = body
+  const { orgId, action, beforeDate, createdBySelfOnly = false, protectedActions = ["org.create"] } = body
   if (!orgId || typeof orgId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }

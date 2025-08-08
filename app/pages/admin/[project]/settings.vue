@@ -1,9 +1,9 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b py-2">
-      <NuxtLink :to="`/admin/${project?.slug}`">
-        <Icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
-      </NuxtLink>
+      <nuxt-link :to="`/admin/${project?.slug}`">
+        <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
+      </nuxt-link>
       <h2 class="max-w-lg truncate">
         {{ project?.name }}
       </h2>
@@ -38,8 +38,11 @@
 
         <div v-if="field.copyable" class="navigation-group">
           <span>{{ field.value }}</span>
-          <button class="btn" title="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')">
-            <Icon :name="fieldClipboardHandlers[index]?.copyIcon.value || ''" size="20" />
+          <button
+            class="btn" title="Copy to Clipboard"
+            aria-label="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')"
+          >
+            <icon :name="fieldClipboardHandlers[index]?.copyIcon.value || ''" size="20" />
           </button>
         </div>
 
@@ -49,7 +52,7 @@
             @input="field.update && $event.target && field.update(($event.target as HTMLTextAreaElement).value)"
           />
           <div class="btn" @click="field.onSave">
-            <Icon name="ph:check-bold" size="20" />
+            <icon name="ph:check-bold" size="20" />
           </div>
         </div>
 
@@ -73,18 +76,18 @@
               </div>
             </div>
 
-            <nav v-if="(isOwner || isAdmin) && member.userId !== userStore.user?.id" class="navigation-group justify-end md:w-1/3">
+            <nav v-if="(isOwner || isAdmin) && member.userId !== userStore.user?.id" class="navigation-group justify-end md:w-1/3" aria-label="Project Member Actions">
               <select v-model="member.role">
                 <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value" class="capitalize">
                   {{ role.label }}
                 </option>
               </select>
 
-              <button class="btn" @click="handleUpdateMemberRole(member.userId, member.role)">
-                <Icon name="ph:check-bold" size="15" />
+              <button class="btn" aria-label="Update Member Role" @click="handleUpdateMemberRole(member.userId, member.role)">
+                <icon name="ph:check-bold" size="15" />
               </button>
-              <button v-if="isOwner && member.role !== 'owner'" class="btn" @click="handleRemoveMember(member.userId)">
-                <Icon name="ph:x" size="15" />
+              <button v-if="isOwner && member.role !== 'owner'" class="btn" aria-label="Remove Member" @click="handleRemoveMember(member.userId)">
+                <icon name="ph:x" size="15" />
               </button>
             </nav>
           </li>
@@ -93,7 +96,7 @@
     </section>
 
     <!-- Add New Member -->
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Add New Member">
       <header class="flex flex-col gap-1">
         <h5>
           Add New Member
@@ -120,8 +123,8 @@
           {{ addMemberSuccess }}
         </p>
 
-        <button class="btn-primary" @click.prevent="handleAddMember">
-          <Icon name="ph:plus-circle-bold" size="20" />
+        <button class="btn-primary" aria-label="Add Member" @click.prevent="handleAddMember">
+          <icon name="ph:plus-circle-bold" size="20" />
           <span>Add Member</span>
         </button>
       </div>
@@ -138,7 +141,7 @@
         </p>
       </header>
 
-      <section class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10">
+      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Project">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Project
@@ -148,11 +151,11 @@
           </p>
         </header>
 
-        <button class="btn-danger" @click="handleDeleteProject">
-          <Icon name="ph:user-minus-bold" size="20" />
+        <button class="btn-danger" aria-label="Delete Project" @click="handleDeleteProject">
+          <icon name="ph:user-minus-bold" size="20" />
           <span>Delete Account</span>
         </button>
-      </section>
+      </nav>
     </section>
   </div>
 </template>

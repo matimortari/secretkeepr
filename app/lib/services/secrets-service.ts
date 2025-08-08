@@ -10,24 +10,24 @@ export async function getProjectSecretsService(projectId: string): Promise<{ sec
   return await response.json()
 }
 
-export async function createSecretService(projectId: string, data: CreateSecretPayload): Promise<{ message: string, newSecret: SecretType }> {
+export async function createSecretService(projectId: string, payload: CreateSecretPayload): Promise<{ message: string, newSecret: SecretType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects/${projectId}/secrets`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(response.statusText)
   return await response.json()
 }
 
-export async function updateSecretService(projectId: string, secretId: string, data: UpdateSecretPayload): Promise<{ message: string, updatedSecret: SecretType }> {
+export async function updateSecretService(projectId: string, secretId: string, payload: UpdateSecretPayload): Promise<{ message: string, updatedSecret: SecretType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects/${projectId}/secrets/${secretId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(response.statusText)

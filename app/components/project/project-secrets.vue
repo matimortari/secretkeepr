@@ -5,8 +5,8 @@
         <tr class="bg-muted text-sm font-semibold">
           <th class="navigation-group w-full p-2 text-left">
             <span>Key</span>
-            <button @click="sort.direction = sort.direction === 'asc' ? 'desc' : 'asc'">
-              <Icon name="ph:arrow-down-bold" size="15" class="transition-all hover:text-primary" :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'" />
+            <button aria-label="Sort by Key" @click="sort.direction = sort.direction === 'asc' ? 'desc' : 'asc'">
+              <icon name="ph:arrow-down-bold" size="15" class="transition-all hover:text-primary" :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'" />
             </button>
           </th>
 
@@ -25,7 +25,7 @@
         >
           <td class="flex flex-row items-center justify-between gap-4 p-2 font-mono text-sm font-semibold">
             <span class="w-full truncate">{{ secret.key }}</span>
-            <Icon
+            <icon
               v-if="secret.description"
               name="carbon:information-square"
               :title="secret.description ?? undefined"
@@ -34,14 +34,14 @@
             />
 
             <nav class="flex items-center justify-end gap-2 md:justify-start">
-              <button @click="visibleKeys[secret.key] = !visibleKeys[secret.key]">
-                <Icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md transition-all hover:text-accent" />
+              <button aria-label="Toggle Secret Value Visibility" @click="visibleKeys[secret.key] = !visibleKeys[secret.key]">
+                <icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
-              <button @click="handleUpdateSecret(secret.key)">
-                <Icon name="carbon:edit" size="20" class="hover:scale-md transition-all hover:text-accent" />
+              <button aria-label="Edit Secret" @click="handleUpdateSecret(secret.key)">
+                <icon name="carbon:edit" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
-              <button @click="handleDeleteSecret(secret.key)">
-                <Icon name="carbon:delete" size="20" class="hover:scale-md transition-all hover:text-danger-foreground" />
+              <button aria-label="Delete Secret" @click="handleDeleteSecret(secret.key)">
+                <icon name="carbon:delete" size="20" class="hover:scale-md transition-all hover:text-danger-foreground" />
               </button>
             </nav>
           </td>
@@ -57,8 +57,8 @@
                 {{ renderValue(secret.key, env) }}
               </span>
 
-              <button @click="copyToClipboard(getSecretValue(secret.key, env))">
-                <Icon name="carbon:copy" size="20" class="hover:scale-md transition-all hover:text-accent" />
+              <button aria-label="Copy Secret Value" @click="copyToClipboard(getSecretValue(secret.key, env))">
+                <icon name="carbon:copy" size="20" class="hover:scale-md transition-all hover:text-accent" />
               </button>
             </div>
           </td>
