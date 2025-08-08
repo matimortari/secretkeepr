@@ -1,23 +1,23 @@
 import { getBaseUrl } from "~/lib/utils"
 
-export async function createOrgService(data: CreateOrgPayload): Promise<{ message: string, newOrg: OrganizationType }> {
+export async function createOrgService(payload: CreateOrgPayload): Promise<{ message: string, newOrg: OrganizationType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/org`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(response.statusText)
   return await response.json()
 }
 
-export async function updateOrgService(orgId: string, data: UpdateOrgPayload): Promise<{ message: string, updatedOrg: OrganizationType }> {
+export async function updateOrgService(orgId: string, payload: UpdateOrgPayload): Promise<{ message: string, updatedOrg: OrganizationType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/org/${orgId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(response.statusText)
@@ -35,12 +35,12 @@ export async function deleteOrgService(orgId: string): Promise<{ message: string
   return await response.json()
 }
 
-export async function updateOrgMemberService(memberId: string, data: { role: Role, orgId: string }): Promise<UserOrgMembershipType> {
+export async function updateOrgMemberService(memberId: string, payload: { role: Role, orgId: string }): Promise<UserOrgMembershipType> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/org/members/${memberId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(response.statusText)
@@ -91,12 +91,12 @@ export async function getAuditLogsService(orgId: string, page: number = 1, limit
   return await response.json()
 }
 
-export async function deleteAuditLogsService(data: DeleteAuditLogsPayload): Promise<{ message: string, deletedCount: number }> {
+export async function deleteAuditLogsService(payload: DeleteAuditLogsPayload): Promise<{ message: string, deletedCount: number }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/org/audit-logs`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(response.statusText)

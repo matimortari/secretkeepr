@@ -23,16 +23,16 @@
         class="w-full" type="text"
         autofocus
       >
-      <button class="btn-primary w-full" type="submit">
+      <button class="btn-primary w-full" type="submit" aria-label="Create Organization">
         Create Organization
       </button>
     </form>
 
     <p class="text-info flex min-h-4 flex-col items-center gap-2">
       <span v-if="orgStore.error" class="text-danger-foreground">{{ orgStore.error }}</span>
-      <span> Already have an invite? <NuxtLink to="/setup/join-org" class="text-primary hover:underline">
+      <span> Already have an invite? <nuxt-link to="/setup/join-org" class="text-primary hover:underline">
         Join an Organization.
-      </NuxtLink>
+      </nuxt-link>
       </span>
     </p>
   </div>

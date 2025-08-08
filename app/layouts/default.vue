@@ -1,17 +1,17 @@
 <template>
   <header class="navigation-group justify-between border-b-2 bg-card p-4">
-    <NuxtLink to="/" class="hover:scale-sm flex flex-row items-center gap-2 transition-all">
+    <nuxt-link to="/" class="hover:scale-sm flex flex-row items-center gap-2 transition-all">
       <img
         src="/assets/logo.png" alt="Logo"
         width="40" height="40"
         class="rounded-full"
       >
-    </NuxtLink>
+    </nuxt-link>
 
-    <NuxtLink to="/sign-in" class="btn">
-      <Icon name="ph:sign-in-bold" size="20" />
+    <nuxt-link to="/sign-in" class="btn">
+      <icon name="ph:sign-in-bold" size="20" />
       <span class="hidden md:inline">Sign In</span>
-    </NuxtLink>
+    </nuxt-link>
   </header>
 
   <main class="bg-image min-h-screen overflow-hidden">
