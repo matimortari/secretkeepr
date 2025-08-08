@@ -8,7 +8,7 @@
       <nav class="navigation-group w-full flex-1 justify-end">
         <div class="relative hidden md:block">
           <span class="absolute inset-y-0 left-0 flex flex-row items-center pl-4 text-muted-foreground">
-            <Icon name="ph:magnifying-glass-bold" size="20" />
+            <icon name="ph:magnifying-glass-bold" size="20" />
           </span>
           <input
             id="search" v-model="searchQuery"
@@ -17,9 +17,9 @@
           >
         </div>
 
-        <button class="btn-primary" @click="isDialogOpen = true">
+        <button class="btn-primary" aria-label="Add New Project" @click="isDialogOpen = true">
           <span class="hidden md:inline">Add New Project</span>
-          <Icon name="ph:plus-bold" size="20" />
+          <icon name="ph:plus-bold" size="20" />
         </button>
       </nav>
     </header>
@@ -44,9 +44,9 @@
       >
         <button
           class="card group flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 border-dashed bg-transparent text-muted-foreground transition-all hover:border-secondary hover:text-secondary"
-          @click="isDialogOpen = true"
+          aria-label="Add New Project" @click="isDialogOpen = true"
         >
-          <Icon name="ph:plus" size="50" class="group-hover:scale-md transition-all group-hover:text-secondary" />
+          <icon name="ph:plus" size="50" class="group-hover:scale-md transition-all group-hover:text-secondary" />
           <span class="group-hover:scale-sm font-semibold transition-all group-hover:text-secondary">Add New Project</span>
         </button>
       </li>

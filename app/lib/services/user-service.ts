@@ -10,12 +10,12 @@ export async function getUserService(): Promise<UserType> {
   return await response.json()
 }
 
-export async function updateUserService(data: UpdateUserPayload): Promise<{ message: string, user: UserType }> {
+export async function updateUserService(payload: UpdateUserPayload): Promise<{ message: string, user: UserType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/user`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   if (!response.ok)
     throw new Error(response.statusText)

@@ -1,9 +1,9 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b pb-2">
-      <NuxtLink to="/organization">
-        <Icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
-      </NuxtLink>
+      <nuxt-link to="/organization">
+        <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
+      </nuxt-link>
       <h2 class="max-w-lg truncate">
         Audit Logs
       </h2>
@@ -11,38 +11,42 @@
 
     <section class="flex flex-col">
       <div class="navigation-group justify-between gap-2 overflow-x-auto border-b p-2">
-        <nav class="navigation-group">
+        <nav class="navigation-group" aria-label="Filters">
           <input
             v-model="filters.date" type="date"
             title="Filter by date" class="cursor-pointer appearance-none rounded border border-muted bg-transparent p-2 focus:outline-none"
           >
 
           <div ref="userDropdownRef" class="relative">
-            <button class="btn" title="Filter by user" @click="isUserDropdownOpen = !isUserDropdownOpen">
+            <button class="btn" title="Filter by user" aria-label="Filter by User" @click="isUserDropdownOpen = !isUserDropdownOpen">
               <span class="capitalize">{{ filters.user || 'All Users' }}</span>
-              <Icon name="ph:caret-down-bold" size="15" />
+              <icon name="ph:caret-down-bold" size="15" />
             </button>
-            <Transition name="dropdown">
-              <ul v-if="isUserDropdownOpen" class="dropdown scroll-area overflow-y-auto whitespace-nowrap text-sm">
-                <li class="rounded p-2 hover:bg-muted" @click="setUserFilter('')">
+            <transition name="dropdown">
+              <ul v-if="isUserDropdownOpen" class="dropdown scroll-area overflow-y-auto whitespace-nowrap text-sm" role="menu" aria-label="Filter by User">
+                <li class="rounded p-2 hover:bg-muted" role="menuitem" @click="setUserFilter('')">
                   All Users
                 </li>
-                <li class="rounded p-2 hover:bg-muted" @click="setUserFilter('self')">
+                <li class="rounded p-2 hover:bg-muted" role="menuitem" @click="setUserFilter('self')">
                   Self
                 </li>
-                <li v-for="user in users" :key="user" class="rounded p-2 hover:bg-muted" @click="setUserFilter(user)">
+                <li
+                  v-for="user in users" :key="user"
+                  class="rounded p-2 hover:bg-muted" role="menuitem"
+                  @click="setUserFilter(user)"
+                >
                   {{ user }}
                 </li>
               </ul>
-            </Transition>
+            </transition>
           </div>
 
           <div ref="actionDropdownRef" class="relative">
-            <button class="btn" title="Filter by action" @click="isActionDropdownOpen = !isActionDropdownOpen">
+            <button class="btn" title="Filter by action" aria-label="Filter by Action" @click="isActionDropdownOpen = !isActionDropdownOpen">
               <span>{{ actions.find(a => a.value === filters.action)?.label || 'All Actions' }}</span>
-              <Icon name="ph:caret-down-bold" size="15" />
+              <icon name="ph:caret-down-bold" size="15" />
             </button>
-            <Transition name="dropdown">
+            <transition name="dropdown">
               <ul v-if="isActionDropdownOpen" class="dropdown scroll-area overflow-y-auto whitespace-nowrap text-sm">
                 <li class="rounded p-2 hover:bg-muted" @click="setActionFilter('')">
                   All Actions
@@ -51,24 +55,24 @@
                   {{ action.label }}
                 </li>
               </ul>
-            </Transition>
+            </transition>
           </div>
 
           <button
             class="btn" :title="filters.showSensitiveInfo ? 'Hide Sensitive Info' : 'Show Sensitive Info'"
-            @click="filters.showSensitiveInfo = !filters.showSensitiveInfo"
+            aria-label="Toggle Sensitive Info" @click="filters.showSensitiveInfo = !filters.showSensitiveInfo"
           >
-            <Icon :name="filters.showSensitiveInfo ? 'ph:eye-slash-bold' : 'ph:eye-bold'" size="20" />
+            <icon :name="filters.showSensitiveInfo ? 'ph:eye-slash-bold' : 'ph:eye-bold'" size="20" />
           </button>
         </nav>
 
-        <nav v-if="orgStore.totalPages > 0" class="navigation-group">
+        <nav v-if="orgStore.totalPages > 0" class="navigation-group" aria-label="Pagination">
           <button
             type="button" class="btn-secondary disabled:opacity-80"
             :disabled="!orgStore.hasPrevPage" title="Previous Page"
-            @click="orgStore.prevAuditLogPage"
+            aria-label="Previous Page" @click="orgStore.prevAuditLogPage"
           >
-            <Icon name="ph:arrow-left-bold" size="20" />
+            <icon name="ph:arrow-left-bold" size="20" />
           </button>
 
           <span class="text-info whitespace-nowrap">
@@ -77,16 +81,16 @@
           <button
             type="button" class="btn-secondary disabled:opacity-80"
             :disabled="!orgStore.hasNextPage" title="Next Page"
-            @click="orgStore.nextAuditLogPage"
+            aria-label="Next Page" @click="orgStore.nextAuditLogPage"
           >
-            <Icon name="ph:arrow-right-bold" size="20" />
+            <icon name="ph:arrow-right-bold" size="20" />
           </button>
           <button
             type="button" class="btn-danger"
             :disabled="!logs.length" title="Delete Filtered Logs"
-            @click="handleDeleteLogs"
+            aria-label="Delete Filtered Logs" @click="handleDeleteLogs"
           >
-            <Icon name="ph:trash-bold" size="20" />
+            <icon name="ph:trash-bold" size="20" />
           </button>
         </nav>
       </div>
@@ -105,7 +109,7 @@
           <tr class="truncate bg-muted text-sm font-semibold">
             <th v-for="header in headers" :key="header.value" class="border p-2">
               <div class="navigation-group">
-                <Icon :name="header.icon" size="20" />
+                <icon :name="header.icon" size="20" />
                 <span>{{ header.label }}</span>
               </div>
             </th>

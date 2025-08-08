@@ -81,18 +81,18 @@ export const useOrganizationStore = defineStore("organization", () => {
     }
   }
 
-  async function updateOrg(id: string, payload: UpdateOrgPayload) {
-    requireOrgId(id)
+  async function updateOrg(orgId: string, payload: UpdateOrgPayload) {
+    requireOrgId(orgId)
     requireOrgName(payload.name)
     isLoading.value = true
     error.value = null
 
     try {
-      const response = await updateOrgService(id, payload)
-      const index = orgs.value.findIndex(org => org.id === id)
+      const response = await updateOrgService(orgId, payload)
+      const index = orgs.value.findIndex(org => org.id === orgId)
       if (index !== -1)
         orgs.value[index] = response.updatedOrg
-      if (activeOrg.value?.id === id)
+      if (activeOrg.value?.id === orgId)
         activeOrg.value = { ...activeOrg.value, ...response.updatedOrg }
       return response
     }
@@ -269,12 +269,12 @@ export const useOrganizationStore = defineStore("organization", () => {
 
   return {
     orgs,
-    activeOrg,
+    error,
+    isLoading,
     members,
+    activeOrg,
     inviteLink,
     auditLogs,
-    isLoading,
-    error,
     totalPages,
     hasNextPage,
     hasPrevPage,

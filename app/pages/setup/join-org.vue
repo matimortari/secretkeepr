@@ -23,7 +23,7 @@
         class="w-full" type="text"
         autofocus
       >
-      <button class="btn-primary w-full" type="submit">
+      <button class="btn-primary w-full" type="submit" aria-label="Join Organization">
         Accept Invite
       </button>
     </form>
