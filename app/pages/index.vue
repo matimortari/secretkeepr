@@ -16,10 +16,10 @@
       and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
     </p>
 
-    <NuxtLink to="/sign-in" class="btn-primary rounded-full">
+    <nuxt-link to="/sign-in" class="btn-primary rounded-full">
       <span>Get Started</span>
-      <Icon name="ph:arrow-right-bold" size="20" />
-    </NuxtLink>
+      <icon name="ph:arrow-right-bold" size="20" />
+    </nuxt-link>
   </section>
 
   <section id="features" class="relative flex flex-col items-center gap-8 p-8 text-center md:p-12">
@@ -34,7 +34,7 @@
         :initial="{ opacity: 0, y: -40 }" :visible="{ opacity: 1, y: 0 }"
         :duration="500" :delay="100 * index"
       >
-        <Icon :name="feature.icon" class="text-primary" size="60" />
+        <icon :name="feature.icon" class="text-primary" size="60" />
         <h4 class="whitespace-nowrap font-silkscreen tracking-tight">
           {{ feature.title }}
         </h4>
@@ -83,9 +83,9 @@
         </h2>
         <p class="max-w-lg text-center leading-5 text-muted-foreground">
           Manage secrets and projects directly from your terminal. Fast, secure, and open-source. Read the
-          <NuxtLink to="/cli" class="text-primary">
+          <nuxt-link to="/cli" class="text-primary">
             documentation
-          </NuxtLink> for more details.
+          </nuxt-link> for more details.
         </p>
       </header>
 
@@ -99,8 +99,11 @@
             <span class="block overflow-x-auto whitespace-nowrap">
               {{ installCommand }}
             </span>
-            <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="installClipboard.copy(installCommand)">
-              <Icon :name="installClipboard.copyIcon.value" size="20" />
+            <button
+              class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy"
+              aria-label="Copy Install Command" @click="installClipboard.copy(installCommand)"
+            >
+              <icon :name="installClipboard.copyIcon.value" size="20" />
             </button>
           </div>
         </div>
@@ -116,8 +119,11 @@
                 {{ command }}
               </span>
             </div>
-            <button class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy" @click="cliClipboard.copy(cliCommands.join('\n'))">
-              <Icon :name="cliClipboard.copyIcon.value" size="20" />
+            <button
+              class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy"
+              aria-label="Copy CLI Commands" @click="cliClipboard.copy(cliCommands.join('\n'))"
+            >
+              <icon :name="cliClipboard.copyIcon.value" size="20" />
             </button>
           </div>
         </div>

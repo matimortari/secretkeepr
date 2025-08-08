@@ -36,9 +36,6 @@ export function useProjectSecrets(projectId: string) {
   }
 
   const handleExportToEnv = async (env: string | null | undefined) => {
-    if (!env)
-      return
-
     try {
       const filteredSecrets = secretsStore.secrets
         .filter(s => s.projectId === projectId)
