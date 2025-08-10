@@ -17,7 +17,6 @@ export const useOrganizationStore = defineStore("organization", () => {
     inviteLink?: string
     auditLogs?: AuditLogType[]
   } | null>(null)
-
   const members = ref<UserOrgMembershipType[]>([])
   const inviteLink = ref<string | null>(null)
   const auditLogs = ref({

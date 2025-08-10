@@ -30,7 +30,7 @@ export function useProjectSecrets(projectId: string) {
       }))
       await secretsStore.getSecretsByProject(projectId)
     }
-    catch (error) {
+    catch (error: any) {
       console.error("Failed to import secrets:", error)
     }
   }
@@ -57,7 +57,7 @@ export function useProjectSecrets(projectId: string) {
 
       setTimeout(() => URL.revokeObjectURL(url), 1000)
     }
-    catch (error) {
+    catch (error: any) {
       console.error("Failed to export secrets:", error)
     }
   }

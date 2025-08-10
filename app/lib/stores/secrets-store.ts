@@ -120,5 +120,13 @@ export const useSecretsStore = defineStore("secrets", () => {
     }
   }
 
-  return { secrets, isLoading, error, getSecretsByProject, createSecret, updateSecret, deleteSecret }
+  return {
+    secrets,
+    isLoading,
+    error,
+    getSecretsByProject,
+    createSecret,
+    updateSecret,
+    deleteSecret,
+  }
 })

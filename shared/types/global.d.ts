@@ -104,7 +104,6 @@ interface DeleteAuditLogsPayload {
 
 interface UpdateUserPayload {
   name?: string
-  image?: string | null
 }
 
 interface CreateProjectPayload {

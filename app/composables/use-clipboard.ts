@@ -12,7 +12,7 @@ export function useClipboard() {
         copied.value = true
         setTimeout(() => (copied.value = false), 1500)
       }
-      catch (error) {
+      catch (error: any) {
         console.error("Clipboard copy failed:", error)
       }
     }
