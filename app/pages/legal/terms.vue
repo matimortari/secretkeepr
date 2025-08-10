@@ -88,13 +88,13 @@ const termsContent = [
 ]
 
 useHead({
-  title: "Terms of Service – SecretKeepR",
+  title: "Terms of Service - SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/legal/terms" }, { rel: "icon", href: "/favicon.ico" }],
   meta: [{ name: "description", content: "Read the terms of service for SecretKeepR." }],
 })
 
 useSeoMeta({
-  title: "Terms of Service – SecretKeepR",
+  title: "Terms of Service - SecretKeepR",
   description: "Read the terms of service for SecretKeepR.",
 })
 </script>

@@ -205,7 +205,7 @@ const cliCommands = [
 ]
 
 useHead({
-  title: "SecretKeepR – Securely Manage Your Environment Variables",
+  title: "SecretKeepR - Securely Manage Your Environment Variables",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app" }, { rel: "icon", href: "/favicon.ico" }],
   meta: [
     { name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." },
@@ -219,9 +219,9 @@ useHead({
 })
 
 useSeoMeta({
-  title: "SecretKeepR – Securely Manage Your Environment Variables",
+  title: "SecretKeepR - Securely Manage Your Environment Variables",
   description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
-  ogTitle: "SecretKeepR – Securely Manage Your Environment Variables",
+  ogTitle: "SecretKeepR - Securely Manage Your Environment Variables",
   ogDescription: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
   ogImage: "https://secretkeepr.vercel.app/og-image.png",
   ogUrl: "https://secretkeepr.vercel.app",

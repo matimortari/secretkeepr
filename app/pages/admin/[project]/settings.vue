@@ -152,8 +152,8 @@
         </header>
 
         <button class="btn-danger" aria-label="Delete Project" @click="handleDeleteProject">
-          <icon name="ph:user-minus-bold" size="20" />
-          <span>Delete Account</span>
+          <icon name="ph:trash-bold" size="20" />
+          <span>Delete Project</span>
         </button>
       </nav>
     </section>
@@ -254,7 +254,7 @@ async function handleAddMember() {
     newMemberRole.value = roles[0]?.value ?? "member"
   }
   catch (error: any) {
-    console.error("Failed to add project member", error)
+    console.error("Failed to add member", error)
     addMemberError.value = error?.message || "Failed to add project member."
   }
 }
@@ -269,8 +269,8 @@ async function handleUpdateMemberRole(memberId: string, newRole: Role) {
     await projectsStore.getProjects()
   }
   catch (error: any) {
-    console.error("Failed to update role", error)
-    projectsStore.error = error?.message || "Failed to update member role."
+    console.error("Failed to update memeber role", error)
+    projectsStore.error = error?.message
   }
 }
 
@@ -287,7 +287,7 @@ async function handleRemoveMember(memberId: string) {
   }
   catch (error: any) {
     console.error("Failed to remove member", error)
-    projectsStore.error = error?.message || "Failed to remove project member."
+    projectsStore.error = error?.message
   }
 }
 
@@ -305,7 +305,7 @@ async function handleSubmit() {
   }
   catch (error: any) {
     console.error("Failed to update project", error)
-    projectsStore.error = error?.message || "Failed to update project."
+    projectsStore.error = error?.message
   }
 }
 
@@ -340,13 +340,13 @@ watch(() => projectId.value, async (id) => {
   const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name
 
   useHead({
-    title: `${projectTitle} | Settings – SecretKeepR`,
+    title: `${projectTitle} | Settings - SecretKeepR`,
     link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}/settings` }, { rel: "icon", href: "/favicon.ico" }],
     meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
   })
 
   useSeoMeta({
-    title: `${projectTitle} | Settings – SecretKeepR`,
+    title: `${projectTitle} | Settings - SecretKeepR`,
     description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
   })
 }, { immediate: true })
