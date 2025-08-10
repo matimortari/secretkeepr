@@ -202,7 +202,7 @@ async function handleUploadImage(event: Event) {
   }
   catch (error: any) {
     console.error("Failed to upload image:", error)
-    userStore.error = error?.message || "Failed to upload image."
+    userStore.error = error?.message
   }
 }
 
@@ -210,21 +210,20 @@ async function handleSubmit() {
   userStore.error = null
   if (!userStore.user?.id)
     return
-  if (!userStore.user?.name.trim()) {
+  if (!userStore.user?.name) {
     userStore.error = "User name cannot be empty."
     return
   }
 
   try {
     await userStore.updateUser({
-      name: userStore.user?.name.trim(),
-      image: userStore.user.image ?? undefined,
+      name: userStore.user?.name,
     })
     await userStore.getUser()
   }
   catch (error: any) {
     console.error("Failed to update user data:", error)
-    userStore.error = error?.message || "Failed to update user data."
+    userStore.error = error?.message
   }
 }
 
@@ -240,7 +239,7 @@ async function handleDeleteUser() {
   }
   catch (error: any) {
     console.error("Failed to delete account:", error)
-    userStore.error = error?.message || "Failed to delete account."
+    userStore.error = error?.message
   }
 }
 
@@ -252,13 +251,13 @@ watch(() => userStore.user, (newUser: UserType | null) => {
 }, { immediate: true })
 
 useHead({
-  title: "Preferences – SecretKeepR",
+  title: "Preferences - SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/preferences" }, { rel: "icon", href: "/favicon.ico" }],
   meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
 })
 
 useSeoMeta({
-  title: "Preferences – SecretKeepR",
+  title: "Preferences - SecretKeepR",
   description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
 })
 

@@ -76,6 +76,7 @@ async function handleCreateProject(project: ProjectType) {
   }
   catch (error: any) {
     console.error("Failed to create project:", error)
+    projectsStore.error = error?.message
   }
 }
 

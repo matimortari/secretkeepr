@@ -8,15 +8,11 @@ export default defineEventHandler(async (event) => {
   if (body.name !== undefined && typeof body.name !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Invalid name" })
   }
-  if (body.image !== undefined && typeof body.image !== "string") {
-    throw createError({ statusCode: 400, statusMessage: "Invalid image URL" })
-  }
 
   const updatedUser = await db.user.update({
     where: { id: sessionUser.id },
     data: {
       name: body.name,
-      image: body.image,
     },
   })
 

@@ -34,18 +34,18 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
-  async function updateUser(updatedUser: UpdateUserPayload) {
+  async function updateUser(payload: UpdateUserPayload) {
     requireUser()
     isLoading.value = true
     error.value = null
 
     try {
-      const response = await updateUserService(updatedUser)
+      const response = await updateUserService(payload)
       user.value = response.user
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to update user"
+      error.value = error?.message || "Failed to update user data"
       throw error
     }
     finally {
@@ -53,13 +53,13 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
-  async function updateUserImage(formData: FormData) {
+  async function updateUserImage(image: FormData) {
     requireUser()
     isLoading.value = true
     error.value = null
 
     try {
-      const response = await updateUserImageService(formData)
+      const response = await updateUserImageService(image)
       if (user.value)
         user.value.image = response.imageUrl
       return response
@@ -93,5 +93,13 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
-  return { user, isLoading, error, getUser, updateUser, updateUserImage, deleteUser }
+  return {
+    user,
+    isLoading,
+    error,
+    getUser,
+    updateUser,
+    updateUserImage,
+    deleteUser,
+  }
 })
