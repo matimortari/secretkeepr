@@ -64,13 +64,13 @@ async function handleAcceptInvite() {
 }
 
 useHead({
-  title: "Accept Invite – SecretKeepR",
+  title: "Accept Invite - SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/setup/invite" }, { rel: "icon", href: "/favicon.ico" }],
   meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
 })
 
 useSeoMeta({
-  title: "Accept Invite – SecretKeepR",
+  title: "Accept Invite - SecretKeepR",
   description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
 })
 

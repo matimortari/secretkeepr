@@ -287,8 +287,8 @@ async function handleCreateInvite() {
     inviteSuccess.value = "Invite link copied to clipboard!"
   }
   catch (error: any) {
-    inviteError.value = error?.message || "Failed to create invite link."
     console.error("Failed to create invite link:", error)
+    inviteError.value = error?.message || "Failed to create invite link."
   }
 }
 
@@ -303,7 +303,7 @@ async function handleUpdateMemberRole(memberId: string, newRole: Role) {
   }
   catch (error: any) {
     console.error("Failed to update member role:", error)
-    orgStore.error = error?.message || "Failed to update member role."
+    orgStore.error = error?.message
   }
 }
 
@@ -320,7 +320,7 @@ async function handleRemoveMember(memberId: string) {
   }
   catch (error: any) {
     console.error("Failed to remove member:", error)
-    orgStore.error = error?.message || "Failed to remove member."
+    orgStore.error = error?.message
   }
 }
 
@@ -338,7 +338,7 @@ async function handleSubmit() {
   }
   catch (error: any) {
     console.error("Failed to update organization:", error)
-    orgStore.error = error?.message || "Failed to update organization."
+    orgStore.error = error?.message
   }
 }
 
@@ -356,8 +356,8 @@ async function handleLeaveOrg() {
     await router.push("/setup/create-org")
   }
   catch (error: any) {
-    console.error("Leave org error:", error)
-    leaveOrgError.value = error.message || "An error occurred while leaving the organization."
+    console.error("Failed to leave organization:", error)
+    leaveOrgError.value = error?.message || "An error occurred while leaving the organization."
   }
 }
 
@@ -382,8 +382,8 @@ async function handleDeleteOrg() {
     }
   }
   catch (error: any) {
-    console.error("Delete org error:", error)
     deleteOrgError.value = error.message || "An error occurred while deleting the organization."
+    console.error("Delete org error:", error)
   }
 }
 
@@ -400,7 +400,7 @@ watch(usersFromOrg, (users) => {
 }, { immediate: true })
 
 useHead({
-  title: "Organization – SecretKeepR",
+  title: "Organization - SecretKeepR",
   link: [
     { rel: "canonical", href: "https://secretkeepr.vercel.app/admin/organization" },
     { rel: "icon", href: "/favicon.ico" },
@@ -409,7 +409,7 @@ useHead({
 })
 
 useSeoMeta({
-  title: "Organization – SecretKeepR",
+  title: "Organization - SecretKeepR",
   description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
 })
 

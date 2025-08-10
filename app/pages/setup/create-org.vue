@@ -71,13 +71,13 @@ async function handleCreateOrg() {
 }
 
 useHead({
-  title: "Create Organization – SecretKeepR",
+  title: "Create Organization - SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/setup/create-org" }, { rel: "icon", href: "/favicon.ico" }],
   meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
 })
 
 useSeoMeta({
-  title: "Create Organization – SecretKeepR",
+  title: "Create Organization - SecretKeepR",
   description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
 })
 

@@ -124,6 +124,7 @@ async function handleSaveSecret(secret: SecretType) {
   }
   catch (error: any) {
     console.error("Failed to create or update secret:", error)
+    secretsStore.error = error?.message
   }
 }
 
@@ -136,13 +137,13 @@ watch(() => projectId.value, async (id) => {
   const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name
 
   useHead({
-    title: `${projectTitle} – SecretKeepR`,
+    title: `${projectTitle} - SecretKeepR`,
     link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}` }, { rel: "icon", href: "/favicon.ico" }],
     meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
   })
 
   useSeoMeta({
-    title: `${projectTitle} – SecretKeepR`,
+    title: `${projectTitle} - SecretKeepR`,
     description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
   })
 }, { immediate: true })

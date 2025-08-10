@@ -88,6 +88,7 @@ async function handleCreateProject(project: ProjectType) {
   }
   catch (error: any) {
     console.error("Failed to create project:", error)
+    projectsStore.error = error?.message
   }
 }
 
@@ -96,13 +97,13 @@ onMounted(async () => {
 })
 
 useHead({
-  title: "Projects – SecretKeepR",
+  title: "Projects - SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/projects" }, { rel: "icon", href: "/favicon.ico" }],
   meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
 })
 
 useSeoMeta({
-  title: "Projects – SecretKeepR",
+  title: "Projects - SecretKeepR",
   description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
 })
 
