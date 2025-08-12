@@ -31,7 +31,7 @@
           </p>
         </header>
 
-        <div v-if="field.copyable" class="navigation-group">
+        <div v-if="field.copyable" class="navigation-group justify-end">
           <span>{{ field.value }}</span>
           <button
             class="btn" title="Copy to Clipboard"
@@ -41,19 +41,14 @@
           </button>
         </div>
 
-        <div v-else-if="field.type === 'input'" class="navigation-group">
-          <input
-            type="text"
-            :value="field.model?.value"
-            placeholder="Enter value"
-            @input="field.update && $event.target && field.update(($event.target as HTMLInputElement).value)"
-          >
-          <div class="btn" @click="field.onSave">
+        <div v-else-if="field.type === 'input'" class="navigation-group justify-end">
+          <input class="w-full" type="text" :value="field.model?.value" @input="field.update?.(($event.target as HTMLInputElement).value)">
+          <button class="btn" aria-label="Save Changes" @click="field.onSave">
             <icon name="ph:check-bold" size="20" />
-          </div>
+          </button>
         </div>
 
-        <div v-else-if="field.type === 'image'" class="navigation-group">
+        <div v-else-if="field.type === 'image'" class="navigation-group justify-end">
           <img v-if="field.src" :src="field.src.value ?? undefined" alt="Profile preview" class="size-10 rounded-full border-2">
           <input
             id="image"
@@ -67,7 +62,7 @@
           </label>
         </div>
 
-        <span v-else class="navigation-group">{{ field.value }}</span>
+        <span v-else class="navigation-group justify-end">{{ field.value }}</span>
       </div>
     </section>
 
@@ -82,7 +77,7 @@
         </p>
       </header>
 
-      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Account">
+      <nav class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Account">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Account
@@ -242,13 +237,6 @@ async function handleDeleteUser() {
     userStore.error = error.message
   }
 }
-
-watch(() => userStore.user, (newUser: UserType | null) => {
-  if (newUser && userStore.user) {
-    userStore.user.name = newUser.name
-    userStore.user.image = newUser.image
-  }
-}, { immediate: true })
 
 useHead({
   title: "Preferences - SecretKeepR",
