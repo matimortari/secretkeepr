@@ -31,16 +31,16 @@
     <ul v-else class="scroll-area grid max-h-[80vh] gap-4 overflow-y-auto md:grid-cols-3">
       <li
         v-for="(project, index) in filteredProjects" :key="project.id"
-        v-motion :initial="{ opacity: 0, y: 20 }"
-        :enter="{ opacity: 1, y: 0 }" :duration="400"
-        :delay="50 * index"
+        v-motion :initial="{ opacity: 0 }"
+        :enter="{ opacity: 1 }" :duration="600"
+        :delay="200 * index"
       >
         <ProjectCard :project="project" />
       </li>
       <li
-        v-motion :initial="{ opacity: 0, y: 20 }"
-        :visible="{ opacity: 1, y: 0 }" :duration="400"
-        :delay="50 * filteredProjects.length"
+        v-motion :initial="{ opacity: 0 }"
+        :visible="{ opacity: 1 }" :duration="600"
+        :delay="200 * filteredProjects.length"
       >
         <button
           class="card group flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 border-dashed bg-transparent text-muted-foreground transition-all hover:border-secondary hover:text-secondary"

@@ -1,17 +1,13 @@
 <template>
   <section
     id="hero" v-motion
-    class="md:gradient-mask-wrapper flex flex-col items-center gap-8 border-b bg-card p-8 text-center md:p-12" :initial="{ opacity: 0, y: 20 }"
-    :visible="{ opacity: 1, y: 0 }" :duration="800"
+    class="md:gradient-mask-wrapper flex flex-col items-center gap-8 border-b bg-card p-8 text-center md:p-16" :initial="{ opacity: 0 }"
+    :visible="{ opacity: 1 }" :duration="800"
   >
     <h1 class="font-goldman">
       Your Secrets, Secured and Organized
     </h1>
-    <p
-      v-motion class="max-w-2xl text-lg leading-5 text-muted-foreground"
-      :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
-      :duration="800"
-    >
+    <p class="max-w-2xl text-lg leading-5 text-muted-foreground">
       No more .env headaches. SecretKeepR is a secrets manager designed to help users and organizations securely manage
       and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
     </p>
@@ -22,7 +18,11 @@
     </nuxt-link>
   </section>
 
-  <section id="features" class="relative flex flex-col items-center gap-8 p-8 text-center md:p-12">
+  <section
+    id="features" v-motion
+    class="relative flex flex-col items-center gap-8 p-8 text-center md:p-12" :initial="{ opacity: 0, x: -20 }"
+    :visible="{ opacity: 1, x: 0 }" :duration="800"
+  >
     <h2 class="font-goldman">
       Features
     </h2>
@@ -31,8 +31,8 @@
       <div
         v-for="(feature, index) in features" :key="index"
         v-motion class="flex min-w-[350px] max-w-sm flex-grow-0 flex-col items-center gap-2 p-8"
-        :initial="{ opacity: 0, y: -40 }" :visible="{ opacity: 1, y: 0 }"
-        :duration="500" :delay="100 * index"
+        :initial="{ opacity: 0, y: -20 }" :visible="{ opacity: 1, y: 0 }"
+        :duration="800" :delay="200 * index"
       >
         <icon :name="feature.icon" class="text-primary" size="60" />
         <h4 class="whitespace-nowrap font-silkscreen tracking-tight">
@@ -47,8 +47,8 @@
 
   <section
     id="how-to-use" v-motion
-    class="flex flex-col items-center gap-8 border-y p-8 text-center md:p-12" :initial="{ opacity: 0, y: 40 }"
-    :visible="{ opacity: 1, y: 0 }" :duration="800"
+    class="flex flex-col items-center gap-8 border-y p-8 text-center md:p-12" :initial="{ opacity: 0 }"
+    :visible="{ opacity: 1 }" :duration="800"
   >
     <h2 class="font-goldman">
       Getting Started
@@ -58,8 +58,8 @@
       <div
         v-for="(step, index) in howToUseSteps" :key="index"
         v-motion class="flex flex-col items-center gap-1"
-        :initial="{ opacity: 0, y: -40 }" :visible="{ opacity: 1, y: 0 }"
-        :duration="500" :delay="100 * index"
+        :initial="{ opacity: 0, x: -20 }" :visible="{ opacity: 1, x: 0 }"
+        :duration="800" :delay="200 * index"
       >
         <h5 class="whitespace-nowrap">
           {{ index + 1 }}. {{ step.title }}
@@ -73,7 +73,7 @@
 
   <section
     id="cli" v-motion
-    class="flex flex-col items-center gap-8 p-8 text-center md:p-12 md:text-start" :initial="{ opacity: 0, y: 40 }"
+    class="flex flex-col items-center gap-8 p-8 text-center md:p-12 md:text-start" :initial="{ opacity: 0, y: 20 }"
     :visible="{ opacity: 1, y: 0 }" :duration="800"
   >
     <div class="card relative flex w-full flex-col items-center gap-4 p-8">

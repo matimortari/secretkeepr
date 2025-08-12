@@ -1,39 +1,34 @@
 <template>
   <header
     v-motion class="flex flex-col items-center gap-4 border-b p-8 text-center"
-    :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
+    :initial="{ opacity: 0, scale: 0.8 }" :visible="{ opacity: 1, scale: 1 }"
     :duration="800"
   >
     <img src="/assets/logo.png" alt="Logo" width="80" height="80">
     <h2 class="font-goldman">
       Terms of Service
     </h2>
-    <p
-      v-motion class="text-muted-foreground"
-      :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
-      :duration="800"
-    >
+    <p class="text-muted-foreground">
       Review the rules and terms for using SecretKeepR.
     </p>
   </header>
 
   <div
     v-motion class="mx-auto flex max-w-3xl flex-col gap-4 p-4 text-left md:p-12"
-    :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
+    :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
     :duration="800"
   >
-    <p class="font-semibold">
+    <p class="text-sm">
       Effective Date: August 5, 2025
     </p>
 
     <section v-for="(section, index) in termsContent" :key="index">
-      <h3>{{ section.title }}</h3>
+      <h3>
+        {{ section.title }}
+      </h3>
 
-      <p v-for="(para, i) in section.body || []" :key="`p-${index}-${i}`">
-        <span v-html="para" />
-      </p>
-
-      <ul v-if="section.list" class="list-disc">
+      <p v-for="(para, i) in section.body" :key="`para-${i}`" v-html="para" />
+      <ul class="list-disc">
         <li v-for="(item, i) in section.list" :key="`li-${index}-${i}`">
           {{ item }}
         </li>

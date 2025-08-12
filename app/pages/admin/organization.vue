@@ -31,7 +31,7 @@
           </p>
         </div>
 
-        <div v-if="field.copyable" class="navigation-group">
+        <div v-if="field.copyable" class="navigation-group justify-end">
           <span>{{ field.value }}</span>
           <button
             class="btn" title="Copy to Clipboard"
@@ -41,19 +41,14 @@
           </button>
         </div>
 
-        <div v-else-if="field.type === 'input'" class="navigation-group">
-          <input
-            type="text"
-            :value="field.model?.value"
-            placeholder="Enter value"
-            @input="field.update && $event.target && field.update(($event.target as HTMLInputElement).value)"
-          >
+        <div v-else-if="field.type === 'input'" class="navigation-group justify-end">
+          <input class="w-full" type="text" :value="field.model?.value" @input="field.update?.(($event.target as HTMLInputElement).value)">
           <button class="btn" aria-label="Save Changes" @click="field.onSave">
             <icon name="ph:check-bold" size="20" />
           </button>
         </div>
 
-        <span v-else class="navigation-group">{{ field.value }}</span>
+        <span v-else class="navigation-group justify-end">{{ field.value }}</span>
       </div>
 
       <!-- Organization Projects List -->
@@ -118,7 +113,7 @@
     </section>
 
     <!-- Invite Members -->
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Invite Members">
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Invite Members">
       <header class="flex flex-col gap-1">
         <h5>
           Invite Members
@@ -128,7 +123,7 @@
         </p>
       </header>
 
-      <div class="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center md:text-end">
+      <div class="navigation-group">
         <p v-if="inviteError" class="text-warning">
           {{ inviteError }}
         </p>
@@ -154,7 +149,7 @@
         </p>
       </header>
 
-      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Leave Organization">
+      <nav class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Leave Organization">
         <header class="flex flex-col gap-1">
           <h5>
             Leave Organization
@@ -164,7 +159,7 @@
           </p>
         </header>
 
-        <div class="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center md:text-end">
+        <div class="navigation-group">
           <p v-if="leaveOrgError" class="text-warning">
             {{ leaveOrgError }}
           </p>
@@ -176,7 +171,7 @@
         </div>
       </nav>
 
-      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Organization">
+      <nav class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Organization">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Organization
@@ -186,7 +181,7 @@
           </p>
         </header>
 
-        <div class="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center md:text-end">
+        <div class="navigation-group">
           <p v-if="deleteOrgError" class="text-warning">
             {{ deleteOrgError }}
           </p>
@@ -387,22 +382,13 @@ async function handleDeleteOrg() {
   }
 }
 
-watch(() => orgStore.activeOrg, async (org) => {
-  if (org?.id) {
-    await orgStore.getAuditLogs(org.id)
-  }
-}, { immediate: true })
-
 watch(usersFromOrg, (users) => {
   userRoles.value = Object.fromEntries(users.map(u => [u.id, u.role]))
 }, { immediate: true })
 
 useHead({
   title: "Organization - SecretKeepR",
-  link: [
-    { rel: "canonical", href: "https://secretkeepr.vercel.app/admin/organization" },
-    { rel: "icon", href: "/favicon.ico" },
-  ],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/organization" }, { rel: "icon", href: "/favicon.ico" }],
   meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
 })
 

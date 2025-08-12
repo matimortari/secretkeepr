@@ -1,12 +1,8 @@
 <template>
-  <div
-    v-motion class="flex flex-col items-center justify-center"
-    :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
-    :duration="800"
-  >
+  <div class="flex flex-col items-center justify-center">
     <header
       v-motion class="flex flex-col items-center gap-4 border-b-2 p-4 text-center"
-      :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
+      :initial="{ opacity: 0, y: -10, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
       :duration="800"
     >
       <h1>
@@ -17,7 +13,11 @@
       </p>
     </header>
 
-    <form class="flex w-[90%] flex-col items-center gap-2 p-4" @submit.prevent="handleAcceptInvite">
+    <form
+      v-motion class="flex w-[90%] flex-col items-center gap-2 p-4"
+      :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
+      :duration="800" @submit.prevent="handleAcceptInvite"
+    >
       <input
         v-model="token" placeholder="Invite Token"
         class="w-full" type="text"
@@ -64,13 +64,13 @@ async function handleAcceptInvite() {
 }
 
 useHead({
-  title: "Accept Invite - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/setup/invite" }, { rel: "icon", href: "/favicon.ico" }],
+  title: "Join Organization - SecretKeepR",
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/setup/join-org" }, { rel: "icon", href: "/favicon.ico" }],
   meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
 })
 
 useSeoMeta({
-  title: "Accept Invite - SecretKeepR",
+  title: "Join Organization - SecretKeepR",
   description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
 })
 

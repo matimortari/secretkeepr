@@ -13,7 +13,7 @@
           v-model="form.slug"
           type="text"
           class="w-full"
-          :placeholder="form.name.trim() ? form.name.trim().toLowerCase().replace(/\s+/g, '-') : 'project-slug'"
+          :placeholder="form.name.trim().toLowerCase().replace(/\s+/g, '-')"
         >
         <p class="text-xs text-muted-foreground">
           This will be used in the project URL.
@@ -75,7 +75,7 @@ async function handleSubmit() {
 
   const payload: ProjectType = {
     name: form.value.name.trim(),
-    slug: form.value.name.trim().toLowerCase().replace(/\s+/g, "-"),
+    slug: form.value.slug.trim() || form.value.name.trim().toLowerCase().replace(/\s+/g, "-"),
     description: form.value.description.trim(),
     orgId: orgStore.activeOrg?.id ?? "",
   }
@@ -99,10 +99,4 @@ watch(() => props.isOpen, (open) => {
     projectsStore.error = null
   }
 }, { immediate: true })
-
-watch(() => form.value.name, (newName) => {
-  if (!form.value.slug) {
-    form.value.slug = newName.trim().toLowerCase().replace(/\s+/g, "-")
-  }
-})
 </script>
