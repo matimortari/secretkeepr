@@ -45,6 +45,10 @@ export const useProjectsStore = defineStore("projects", () => {
 
     try {
       projects.value = await getProjectsService()
+      if (currentProject.value) {
+        currentProject.value
+          = projects.value.find(p => p.id === currentProject.value?.id) || null
+      }
       return projects.value
     }
     catch (error: any) {
@@ -161,7 +165,7 @@ export const useProjectsStore = defineStore("projects", () => {
       const response = await updateProjectMemberService(projectId, userId, { role })
       if (currentProject.value?.id === projectId && currentProject.value.members) {
         currentProject.value.members = currentProject.value.members.map(m =>
-          m.id === userId ? response.updatedMember : m,
+          m.userId === userId ? response.updatedMember : m,
         )
       }
       return response
@@ -187,7 +191,7 @@ export const useProjectsStore = defineStore("projects", () => {
     try {
       const response = await removeProjectMemberService(projectId, memberId)
       if (currentProject.value?.id === projectId && currentProject.value.members) {
-        currentProject.value.members = currentProject.value.members.filter(m => m.id !== memberId)
+        currentProject.value.members = currentProject.value.members.filter(m => m.userId !== memberId)
       }
       return response
     }
@@ -202,6 +206,7 @@ export const useProjectsStore = defineStore("projects", () => {
 
   return {
     projects,
+    currentProject,
     isLoading,
     error,
     getProjects,

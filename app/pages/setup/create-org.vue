@@ -1,12 +1,8 @@
 <template>
-  <div
-    v-motion class="flex flex-col items-center justify-center"
-    :initial="{ opacity: 0, y: 40 }" :visible="{ opacity: 1, y: 0 }"
-    :duration="800"
-  >
+  <div class="flex flex-col items-center justify-center">
     <header
       v-motion class="flex flex-col items-center gap-4 border-b-2 p-4 text-center"
-      :initial="{ opacity: 0, y: 20, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
+      :initial="{ opacity: 0, y: -10, scale: 0.8 }" :visible="{ opacity: 1, y: 0, scale: 1 }"
       :duration="800"
     >
       <h1>
@@ -17,7 +13,11 @@
       </p>
     </header>
 
-    <form class="flex w-[90%] flex-col items-center gap-2 p-4" @submit.prevent="handleCreateOrg">
+    <form
+      v-motion class="flex w-[90%] flex-col items-center gap-2 p-4"
+      :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
+      :duration="800" @submit.prevent="handleCreateOrg"
+    >
       <input
         v-model="localOrg.name" placeholder="Organization Name"
         class="w-full" type="text"
