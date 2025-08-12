@@ -124,7 +124,7 @@ async function handleSaveSecret(secret: SecretType) {
   }
   catch (error: any) {
     console.error("Failed to create or update secret:", error)
-    secretsStore.error = error?.message
+    secretsStore.error = error.message
   }
 }
 

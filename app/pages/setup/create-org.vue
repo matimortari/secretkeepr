@@ -41,10 +41,8 @@
 <script setup lang="ts">
 import auth from "~/lib/middleware/auth"
 import { useOrganizationStore } from "~/lib/stores/organization-store"
-import { useUserStore } from "~/lib/stores/user-store"
 
 const router = useRouter()
-const userStore = useUserStore()
 const orgStore = useOrganizationStore()
 
 const localOrg = ref({
@@ -53,7 +51,7 @@ const localOrg = ref({
 
 async function handleCreateOrg() {
   orgStore.error = null
-  if (!localOrg.value || !localOrg.value.name || localOrg.value.name.length < 3) {
+  if (!localOrg.value.name || localOrg.value.name.length < 3) {
     orgStore.error = "Organization name must be at least 3 characters long."
     return
   }
@@ -61,12 +59,11 @@ async function handleCreateOrg() {
   try {
     await orgStore.createOrg(localOrg.value)
     localOrg.value.name = ""
-    await userStore.getUser()
     router.push("/admin/projects")
   }
   catch (error: any) {
     console.error("Failed to create organization:", error)
-    orgStore.error = error.message || "Failed to create organization."
+    orgStore.error = error.message
   }
 }
 
