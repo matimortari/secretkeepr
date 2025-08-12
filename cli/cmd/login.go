@@ -14,6 +14,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var tokenFlag string
+
 func openBrowser(url string) error {
 	switch runtime.GOOS {
 	case "linux":
@@ -27,7 +29,17 @@ func openBrowser(url string) error {
 	}
 }
 
-var tokenFlag string
+func handleToken(token string) {
+	if token == "" {
+		color.Red("No token entered. Aborting.")
+		return
+	}
+	if err := config.SaveToken(token); err != nil {
+		color.Red("Failed to save token: %v", err)
+		return
+	}
+	color.Green("Authenticated successfully.")
+}
 
 var loginCmd = &cobra.Command{
 	Use:   "login [token]",
@@ -59,31 +71,19 @@ You can:
 		if webURL == "" {
 			webURL = "https://secretkeepr.vercel.app"
 		}
-		url := webURL + "/admin/preferences"
 
-		color.Cyan("Opening SecretKeepR preferences in browser: %s", url)
-		if err := openBrowser(url); err != nil {
+		color.Cyan("Opening SecretKeepR preferences in browser: %s", webURL+"/admin/preferences")
+		if err := openBrowser(webURL + "/admin/preferences"); err != nil {
 			color.Yellow("Couldn't open browser automatically. Open the link above manually.")
 		}
 		fmt.Println("Paste your CLI token from the dashboard below.")
 		fmt.Print("CLI Token: ")
 
+		// Read user input (CLI Token), trim whitespace, and pass it to the handler function for processing.
 		reader := bufio.NewReader(os.Stdin)
 		token, _ := reader.ReadString('\n')
 		handleToken(strings.TrimSpace(token))
 	},
-}
-
-func handleToken(token string) {
-	if token == "" {
-		color.Red("No token entered. Aborting.")
-		os.Exit(1)
-	}
-	if err := config.SaveToken(token); err != nil {
-		color.Red("Failed to save token: %v", err)
-		os.Exit(1)
-	}
-	color.Green("Authenticated successfully.")
 }
 
 func init() {
