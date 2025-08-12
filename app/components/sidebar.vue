@@ -80,6 +80,10 @@ async function handleCreateProject(project: ProjectType) {
   }
 }
 
+onMounted(async () => {
+  await projectsStore.getProjects()
+})
+
 watch(isDialogOpen, (val) => {
   if (val)
     projectsStore.error = null
