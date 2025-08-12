@@ -130,7 +130,7 @@ async function handleDeleteSecret(key: string) {
   }
   catch (error: any) {
     console.error("Failed to delete secret:", error)
-    secretsStore.error = error?.message
+    secretsStore.error = error.message
   }
 }
 </script>

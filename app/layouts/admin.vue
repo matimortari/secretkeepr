@@ -17,11 +17,13 @@
 
 <script setup lang="ts">
 import { useOrganizationStore } from "~/lib/stores/organization-store"
+import { useProjectsStore } from "~/lib/stores/projects-store"
 import { useUserStore } from "~/lib/stores/user-store"
 
 const router = useRouter()
 const userStore = useUserStore()
 const orgStore = useOrganizationStore()
+const projectsStore = useProjectsStore()
 
 const isSidebarOpen = ref(false)
 const isLoading = ref(true)
@@ -29,12 +31,13 @@ const isLoading = ref(true)
 const orgs = computed(() =>
   userStore.user?.memberships
     ?.map(m => m.organization)
-    .filter((org): org is OrganizationType => !!org) ?? [],
+    .filter((org: unknown): org is OrganizationType => !!org) ?? [],
 )
 
 function initActiveOrg(user: UserType) {
   if (!user?.memberships?.length)
     return
+
   if (import.meta.client) {
     const orgFromStorage = localStorage.getItem("active_org_id")
     const matchedOrg = user.memberships.find(m => m.organization?.id === orgFromStorage)?.organization
@@ -48,13 +51,37 @@ function initActiveOrg(user: UserType) {
   }
 }
 
-onMounted(async () => {
-  const user = await userStore.getUser()
-  if (!user?.memberships?.length) {
-    return router.replace("/setup/create-org")
+async function getGlobalData() {
+  try {
+    const [user] = await Promise.all([
+      userStore.getUser(),
+      projectsStore.getProjects(),
+    ])
+    if (!user?.memberships?.length) {
+      await router.replace("/setup/create-org")
+      return
+    }
+
+    orgStore.orgs = user.memberships
+      .map((m: UserOrgMembershipType) => m.organization)
+      .filter((org: OrganizationType | undefined | null): org is OrganizationType => !!org)
+
+    initActiveOrg(user)
   }
-  orgStore.orgs = user.memberships.map(m => m.organization).filter((org): org is OrganizationType => !!org)
-  initActiveOrg(user)
-  isLoading.value = false
+  catch (error: any) {
+    console.error("Failed to load global data:", error)
+  }
+  finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  if (document.readyState === "complete") {
+    getGlobalData()
+  }
+  else {
+    window.addEventListener("load", getGlobalData)
+  }
 })
 </script>

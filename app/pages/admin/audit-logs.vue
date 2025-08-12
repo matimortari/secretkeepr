@@ -150,6 +150,11 @@ import { useOrganizationStore } from "~/lib/stores/organization-store"
 const orgStore = useOrganizationStore()
 const { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveInfo } = useAuditLogs()
 
+const isUserDropdownOpen = ref(false)
+const isActionDropdownOpen = ref(false)
+const userDropdownRef = ref<HTMLElement | null>(null)
+const actionDropdownRef = ref<HTMLElement | null>(null)
+
 const userMap = computed(() => {
   const map = new Map<string, string>()
   orgStore.activeOrg?.memberships?.forEach((membership) => {
@@ -170,11 +175,6 @@ const users = computed(() => {
   })
   return Array.from(userSet).sort()
 })
-
-const isUserDropdownOpen = ref(false)
-const isActionDropdownOpen = ref(false)
-const userDropdownRef = ref<HTMLElement | null>(null)
-const actionDropdownRef = ref<HTMLElement | null>(null)
 
 useClickOutside(userDropdownRef, () => {
   isUserDropdownOpen.value = false
@@ -213,19 +213,13 @@ async function handleDeleteLogs() {
   }
   catch (error: any) {
     console.error("Failed to delete audit logs:", error)
-    orgStore.error = error?.message
+    orgStore.error = error.message
   }
 }
 
-onMounted(() => {
-  if (orgStore.activeOrg?.id) {
-    orgStore.getAuditLogs(orgStore.activeOrg.id)
-  }
-})
-
-watch(() => orgStore.activeOrg, (newOrg) => {
-  if (newOrg?.id) {
-    orgStore.getAuditLogs(newOrg.id)
+watch(() => orgStore.activeOrg, async (org) => {
+  if (org?.id) {
+    await orgStore.getAuditLogs(org.id)
   }
 }, { immediate: true })
 

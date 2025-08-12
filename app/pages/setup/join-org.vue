@@ -59,7 +59,7 @@ async function handleAcceptInvite() {
   }
   catch (error: any) {
     console.error("Failed to accept invite:", error)
-    orgStore.error = error.message || "Failed to accept invite."
+    orgStore.error = error.message
   }
 }
 

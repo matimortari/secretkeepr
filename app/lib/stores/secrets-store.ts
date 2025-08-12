@@ -42,7 +42,7 @@ export const useSecretsStore = defineStore("secrets", () => {
       return secrets.value
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to load secrets"
+      error.value = error.message || "Failed to load secrets"
       throw error
     }
     finally {
@@ -62,7 +62,7 @@ export const useSecretsStore = defineStore("secrets", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to create secret"
+      error.value = error.message || "Failed to create secret"
       throw error
     }
     finally {
@@ -92,7 +92,7 @@ export const useSecretsStore = defineStore("secrets", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to update secret"
+      error.value = error.message || "Failed to update secret"
       throw error
     }
     finally {
@@ -112,7 +112,7 @@ export const useSecretsStore = defineStore("secrets", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to delete secret"
+      error.value = error.message || "Failed to delete secret"
       throw error
     }
     finally {
