@@ -1,8 +1,6 @@
 import { useOrganizationStore } from "~/lib/stores/organization-store"
-import { useUserStore } from "~/lib/stores/user-store"
 
 export function useAuditLogs() {
-  const userStore = useUserStore()
   const orgStore = useOrganizationStore()
 
   const filters = ref({
@@ -35,7 +33,7 @@ export function useAuditLogs() {
     { label: "Action", value: "action", icon: "ph:cursor-click-bold" },
     { label: "Resource", value: "resource", icon: "ph:archive-box-bold" },
     { label: "Metadata", value: "metadata", icon: "ph:note-bold" },
-    { label: "User ID", value: "userId", icon: "ph:user-bold" },
+    { label: "User", value: "userId", icon: "ph:user-bold" },
     { label: "Created At", value: "createdAt", icon: "ph:clock-bold" },
     { label: "Sensitive Info", value: "sensitive", icon: "ph:shield-bold" },
   ]
@@ -47,7 +45,7 @@ export function useAuditLogs() {
       .filter((log) => {
         const logDate = log.createdAt ? new Date(log.createdAt).toISOString().slice(0, 10) : ""
         const dateMatch = !date || logDate === date
-        const userMatch = !user || (user === "self" ? log.userId === userStore.user?.id : log.userId === user)
+        const userMatch = !user || log.userId === user
         const actionMatch = !action || log.action === action
         return dateMatch && userMatch && actionMatch
       })
@@ -101,8 +99,7 @@ export function useAuditLogs() {
         }
       }
     }
-
-    if (Array.isArray(safeMetadata.values)) {
+    if (safeMetadata.values) {
       safeMetadata.values.forEach((item: any, i: number) => {
         if (item?.value && item?.environment) {
           entries.push(`Value ${i + 1}: ${item.value} (${item.environment})`)
