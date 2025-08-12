@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,41 +11,39 @@ import (
 // configFilePath returns the full path to the token file used by the CLI.
 //
 // The file is located at $HOME/.secretkeepr and is used to securely save and load the user's access token.
-// It is hidden and stored with permissions that restrict access to the current user only.
-func configFilePath() string {
-	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".secretkeepr")
+func configFilePath() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("could not determine home directory: %w", err)
+	}
+	return filepath.Join(home, ".secretkeepr"), nil
 }
 
 // SaveToken writes the given token string to the configuration file.
 //
-// The token is trimmed of whitespace and saved to $HOME/.secretkeepr, allowing only the file owner to read and write.
-// It returns an error if the write operation fails.
+// It trims whitespace and saves it via configFilePath(), allowing only its owner to read and write, and returns an error if the write operation fails.
 func SaveToken(token string) error {
 	token = strings.TrimSpace(token)
-	return os.WriteFile(configFilePath(), []byte(token), 0600)
+	path, err := configFilePath()
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, []byte(token), 0600)
 }
 
-// LoadToken reads and returns the token from the configuration file.
+// LoadAuthToken reads the authentication token from the configuration file.
 //
-// It trims any leading or trailing whitespace from the token content.
-// It returns an error if the file does not exist or is inaccessible.
-func LoadToken() (string, error) {
-	data, err := os.ReadFile(configFilePath())
+// It trims any leading/trailing whitespace from the token, and prints a login prompt if the file does not exist or is inaccessible.
+func LoadAuthToken() (string, error) {
+	path, err := configFilePath()
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSpace(string(data)), nil
-}
 
-// LoadAuthToken loads the authentication token from the configuration file.
-//
-// It returns an error if the token cannot be loaded, indicating that the user is not logged in.
-func LoadAuthToken() (string, error) {
-	token, err := LoadToken()
+	data, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Println("You're not logged in. Please run `secretkeepr login`.")
-		return "", err
+		return "", errors.New("authentication token not found")
 	}
-	return token, nil
+	return strings.TrimSpace(string(data)), nil
 }

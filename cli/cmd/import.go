@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 
@@ -18,66 +19,6 @@ var (
 	importEnv       string
 	importFile      string
 )
-
-var importCmd = &cobra.Command{
-	Use:   "import",
-	Short: "Import secrets from a local .env file into a SecretKeepR project environment",
-	Long: `Import secrets stored in a .env file into a specified SecretKeepR project environment.
-
-You can specify:
-  • The project ID (--project)
-  • The environment to import to (--env, defaults to "development")
-  • The path to the .env file (--file, defaults to ".env")
-
-Example:
-  secretkeepr import --project abc123 --env production --file ./prod.env`,
-
-	Run: func(cmd *cobra.Command, args []string) {
-		if importProjectID == "" {
-			color.Red("Error: --project flag is required")
-			return
-		}
-		if importEnv == "" {
-			importEnv = "development"
-		}
-		if importFile == "" {
-			importFile = ".env"
-		}
-
-		token, err := config.LoadAuthToken()
-		if err != nil {
-			color.Red("Failed to load auth token: %v", err)
-			return
-		}
-
-		secrets, err := parseDotEnv(importFile)
-		if err != nil {
-			color.Red("Failed to parse .env file: %v", err)
-			return
-		}
-		if len(secrets) == 0 {
-			color.Yellow("No secrets found in %s", importFile)
-			return
-		}
-
-		color.Cyan("Importing secrets into project %s (env: %s):", importProjectID, importEnv)
-		successCount := 0
-		failCount := 0
-
-		for key, value := range secrets {
-			err := postSecret(token, importProjectID, key, importEnv, value)
-			if err != nil {
-				color.Red("❌ %s: %v", key, err)
-				failCount++
-			} else {
-				color.Green("✅ %s", key)
-				successCount++
-			}
-		}
-
-		color.Cyan("Import completed: %d succeeded, %d failed.", successCount, failCount)
-	},
-}
 
 func parseDotEnv(filename string) (map[string]string, error) {
 	file, err := os.Open(filename)
@@ -113,7 +54,7 @@ func parseDotEnv(filename string) (map[string]string, error) {
 	return secrets, nil
 }
 
-func postSecret(token, projectID, key, environment, value string) error {
+func importSecret(token, projectID, key, environment, value string) error {
 	payload := map[string]any{
 		"key": key,
 		"values": []map[string]string{
@@ -134,12 +75,66 @@ func postSecret(token, projectID, key, environment, value string) error {
 		return err
 	}
 	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 && resp.StatusCode != 201 {
-		return fmt.Errorf("API returned status: %s", resp.Status)
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		return fmt.Errorf("API error: %s", resp.Status)
 	}
 
 	return nil
+}
+
+var importCmd = &cobra.Command{
+	Use:   "import",
+	Short: "Import secrets from a .env file in a SecretKeepR project",
+	Long: `Import secrets stored in a .env file into a specified SecretKeepR project environment.
+
+You can specify:
+  • The project ID (--project)
+  • The environment to import to (--env, defaults to "development")
+  • The path to the .env file (--file, defaults to ".env")
+
+Example:
+  secretkeepr import --project abc123 --env production --file ./prod.env`,
+
+	Run: func(cmd *cobra.Command, args []string) {
+		if importProjectID == "" {
+			color.Red("Error: --project flag is required")
+			return
+		}
+		if importEnv == "" {
+			importEnv = "development"
+		}
+		if importFile == "" {
+			importFile = ".env"
+		}
+
+		token, err := config.LoadAuthToken()
+		if err != nil {
+			color.Red("Failed to load authentication token: %v", err)
+			return
+		}
+
+		secrets, err := parseDotEnv(importFile)
+		if err != nil {
+			color.Red("Failed to parse .env file: %v", err)
+			return
+		}
+		if len(secrets) == 0 {
+			color.Yellow("No secrets found in %s", importFile)
+			return
+		}
+
+		color.Cyan("Importing secrets into project %s (env: %s):", importProjectID, importEnv)
+		for key, value := range secrets {
+			err := importSecret(token, importProjectID, key, importEnv, value)
+			if err != nil {
+				color.Red("%s: %v", key, err)
+			} else {
+				color.Green("%s", key)
+			}
+		}
+
+		color.Cyan("Import completed.")
+	},
 }
 
 func init() {
