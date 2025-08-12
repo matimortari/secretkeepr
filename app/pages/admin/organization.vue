@@ -288,7 +288,7 @@ async function handleCreateInvite() {
   }
   catch (error: any) {
     console.error("Failed to create invite link:", error)
-    inviteError.value = error?.message || "Failed to create invite link."
+    inviteError.value = error.message
   }
 }
 
@@ -303,7 +303,7 @@ async function handleUpdateMemberRole(memberId: string, newRole: Role) {
   }
   catch (error: any) {
     console.error("Failed to update member role:", error)
-    orgStore.error = error?.message
+    orgStore.error = error.message
   }
 }
 
@@ -320,7 +320,7 @@ async function handleRemoveMember(memberId: string) {
   }
   catch (error: any) {
     console.error("Failed to remove member:", error)
-    orgStore.error = error?.message
+    orgStore.error = error.message
   }
 }
 
@@ -338,7 +338,7 @@ async function handleSubmit() {
   }
   catch (error: any) {
     console.error("Failed to update organization:", error)
-    orgStore.error = error?.message
+    orgStore.error = error.message
   }
 }
 
@@ -357,7 +357,7 @@ async function handleLeaveOrg() {
   }
   catch (error: any) {
     console.error("Failed to leave organization:", error)
-    leaveOrgError.value = error?.message || "An error occurred while leaving the organization."
+    leaveOrgError.value = error.message
   }
 }
 
@@ -382,16 +382,14 @@ async function handleDeleteOrg() {
     }
   }
   catch (error: any) {
-    deleteOrgError.value = error.message || "An error occurred while deleting the organization."
-    console.error("Delete org error:", error)
+    console.error("Failed to delete organization:", error)
+    deleteOrgError.value = error.message
   }
 }
 
-watch(() => orgStore.activeOrg?.id, async (orgId) => {
-  if (orgId) {
-    await userStore.getUser()
-    await orgStore.getAuditLogs(orgId)
-    await projectsStore.getProjects()
+watch(() => orgStore.activeOrg, async (org) => {
+  if (org?.id) {
+    await orgStore.getAuditLogs(org.id)
   }
 }, { immediate: true })
 

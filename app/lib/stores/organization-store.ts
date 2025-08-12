@@ -72,7 +72,7 @@ export const useOrganizationStore = defineStore("organization", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to create organization"
+      error.value = error.message || "Failed to create organization"
       throw error
     }
     finally {
@@ -96,7 +96,7 @@ export const useOrganizationStore = defineStore("organization", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to update organization"
+      error.value = error.message || "Failed to update organization"
       throw error
     }
     finally {
@@ -117,7 +117,7 @@ export const useOrganizationStore = defineStore("organization", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to delete organization"
+      error.value = error.message || "Failed to delete organization"
       throw error
     }
     finally {
@@ -139,7 +139,7 @@ export const useOrganizationStore = defineStore("organization", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to update member role"
+      error.value = error.message || "Failed to update member role"
       throw error
     }
     finally {
@@ -161,7 +161,7 @@ export const useOrganizationStore = defineStore("organization", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to remove member"
+      error.value = error.message || "Failed to remove member"
       throw error
     }
     finally {
@@ -182,7 +182,7 @@ export const useOrganizationStore = defineStore("organization", () => {
       return link
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to create invite link"
+      error.value = error.message || "Failed to create invite link"
       throw error
     }
     finally {
@@ -198,7 +198,7 @@ export const useOrganizationStore = defineStore("organization", () => {
       return await acceptOrgInviteService(token)
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to accept invite"
+      error.value = error.message || "Failed to accept invite"
       throw error
     }
     finally {
@@ -226,7 +226,7 @@ export const useOrganizationStore = defineStore("organization", () => {
       auditLogs.value.page = 1
       auditLogs.value.limit = 15
       auditLogs.value.total = 0
-      auditLogs.value.error = error?.message || "Failed to get audit logs"
+      auditLogs.value.error = error.message || "Failed to get audit logs"
       throw error
     }
     finally {
@@ -246,7 +246,7 @@ export const useOrganizationStore = defineStore("organization", () => {
       return response
     }
     catch (error: any) {
-      auditLogs.value.error = error?.message || "Failed to delete audit logs"
+      auditLogs.value.error = error.message || "Failed to delete audit logs"
       throw error
     }
     finally {

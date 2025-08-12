@@ -26,7 +26,7 @@ export const useUserStore = defineStore("user", () => {
       return user.value
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to get user"
+      error.value = error.message || "Failed to get user"
       throw error
     }
     finally {
@@ -45,7 +45,7 @@ export const useUserStore = defineStore("user", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to update user data"
+      error.value = error.message || "Failed to update user data"
       throw error
     }
     finally {
@@ -65,7 +65,7 @@ export const useUserStore = defineStore("user", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to update user image"
+      error.value = error.message || "Failed to update user image"
       throw error
     }
     finally {
@@ -85,7 +85,7 @@ export const useUserStore = defineStore("user", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to delete user"
+      error.value = error.message || "Failed to delete user"
       throw error
     }
     finally {

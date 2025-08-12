@@ -202,7 +202,7 @@ async function handleUploadImage(event: Event) {
   }
   catch (error: any) {
     console.error("Failed to upload image:", error)
-    userStore.error = error?.message
+    userStore.error = error.message
   }
 }
 
@@ -223,7 +223,7 @@ async function handleSubmit() {
   }
   catch (error: any) {
     console.error("Failed to update user data:", error)
-    userStore.error = error?.message
+    userStore.error = error.message
   }
 }
 
@@ -239,7 +239,7 @@ async function handleDeleteUser() {
   }
   catch (error: any) {
     console.error("Failed to delete account:", error)
-    userStore.error = error?.message
+    userStore.error = error.message
   }
 }
 
