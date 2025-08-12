@@ -5,9 +5,12 @@
         <tr class="bg-muted text-sm font-semibold">
           <th class="navigation-group w-full p-2 text-left">
             <span>Key</span>
-            <button aria-label="Sort by Key" @click="sort.direction = sort.direction === 'asc' ? 'desc' : 'asc'">
-              <icon name="ph:arrow-down-bold" size="15" class="transition-all hover:text-primary" :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'" />
-            </button>
+            <icon
+              name="ph:arrow-down-bold" size="15"
+              aria-label="Sort by Key" role="button"
+              class="transition-all hover:text-primary" title="Sort by Key"
+              :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'" @click="sort.direction = sort.direction === 'asc' ? 'desc' : 'asc'"
+            />
           </th>
 
           <th v-for="env in environments" :key="env" class="p-2 text-left capitalize md:w-1/6">
@@ -19,11 +22,11 @@
       <tbody>
         <tr
           v-for="(secret, index) in sortedSecrets" :key="secret.key"
-          v-motion class="text-muted-foreground"
-          :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0 }"
-          :duration="600" :delay="200 * index"
+          v-motion
+          :initial="{ opacity: 0 }" :enter="{ opacity: 1 }"
+          :duration="400" :delay="100 * index"
         >
-          <td class="flex flex-row items-center justify-between gap-4 p-2 font-mono text-sm font-semibold">
+          <td class="flex flex-row items-center justify-between gap-4 p-2 font-mono text-sm font-semibold text-muted-foreground">
             <span class="w-full truncate">{{ secret.key }}</span>
             <icon
               v-if="secret.description"
@@ -46,7 +49,7 @@
             </nav>
           </td>
 
-          <td v-for="env in environments" :key="env" class="w-[150px] max-w-[150px] overflow-hidden p-2 font-mono text-sm">
+          <td v-for="env in environments" :key="env" class="w-[150px] max-w-[150px] overflow-hidden p-2 font-mono text-sm text-muted-foreground">
             <div class="flex flex-row items-center justify-between gap-4">
               <span
                 class="max-w-[80%] select-none truncate"

@@ -36,7 +36,7 @@
           </p>
         </div>
 
-        <div v-if="field.copyable" class="navigation-group">
+        <div v-if="field.copyable" class="navigation-group justify-end">
           <span>{{ field.value }}</span>
           <button
             class="btn" title="Copy to Clipboard"
@@ -46,7 +46,14 @@
           </button>
         </div>
 
-        <div v-else-if="field.type === 'textarea'" class="navigation-group">
+        <div v-else-if="field.type === 'input'" class="navigation-group justify-end">
+          <input class="w-full" type="text" :value="field.model?.value" @input="field.update?.(($event.target as HTMLInputElement).value)">
+          <button class="btn" aria-label="Save Changes" @click="field.onSave">
+            <icon name="ph:check-bold" size="20" />
+          </button>
+        </div>
+
+        <div v-else-if="field.type === 'textarea'" class="navigation-group justify-end">
           <textarea
             :value="field.model?.value" class="scroll-area w-full resize-none"
             @input="field.update && $event.target && field.update(($event.target as HTMLTextAreaElement).value)"
@@ -56,7 +63,7 @@
           </div>
         </div>
 
-        <span v-else class="navigation-group">{{ field.value }}</span>
+        <span v-else class="navigation-group justify-end">{{ field.value }}</span>
       </div>
 
       <!-- Project Members List -->
@@ -96,7 +103,7 @@
     </section>
 
     <!-- Add New Member -->
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Add New Member">
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Add New Member">
       <header class="flex flex-col gap-1">
         <h5>
           Add New Member
@@ -106,15 +113,13 @@
         </p>
       </header>
 
-      <div class="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center md:text-end">
-        <div class="navigation-group">
-          <input v-model="newMemberId" type="text" placeholder="User ID">
-          <select v-model="newMemberRole" class="min-w-[120px]">
-            <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value">
-              {{ role.label }}
-            </option>
-          </select>
-        </div>
+      <div class="navigation-group">
+        <input v-model="newMemberId" type="text" placeholder="User ID" class="w-32">
+        <select v-model="newMemberRole" class="md:min-w-[120px]">
+          <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value">
+            {{ role.label }}
+          </option>
+        </select>
 
         <p v-if="addMemberError" class="text-warning">
           {{ addMemberError }}
@@ -141,7 +146,7 @@
         </p>
       </header>
 
-      <nav class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Project">
+      <nav class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Project">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Project
@@ -151,10 +156,16 @@
           </p>
         </header>
 
-        <button class="btn-danger" aria-label="Delete Project" @click="handleDeleteProject">
-          <icon name="ph:trash-bold" size="20" />
-          <span>Delete Project</span>
-        </button>
+        <div class="navigation-group">
+          <p v-if="deleteProjectError" class="text-warning">
+            {{ deleteProjectError }}
+          </p>
+
+          <button class="btn-danger" aria-label="Delete Project" @click="handleDeleteProject">
+            <icon name="ph:trash-bold" size="20" />
+            <span>Delete Project</span>
+          </button>
+        </div>
       </nav>
     </section>
   </div>
@@ -181,21 +192,33 @@ const projectsStore = useProjectsStore()
 
 const addMemberError = ref<string | null>(null)
 const addMemberSuccess = ref<string | null>(null)
+const deleteProjectError = ref<string | null>(null)
 const newMemberId = ref("")
 const newMemberRole = ref(roles[0]?.value ?? "member")
 
 const project = computed(() => {
   return projectsStore.projects.find(p => p.slug === slug) || null
 })
-const projectId = computed(() => project.value?.id ?? "")
 
+const projectId = computed(() => project.value?.id ?? "")
 const projectMembers = computed(() => project.value?.members || [])
 const currentUserRole = computed(() => projectMembers.value.find(m => m.userId === userStore.user?.id)?.role)
-
 const isOwner = computed(() => currentUserRole.value === "owner")
 const isAdmin = computed(() => currentUserRole.value === "admin")
 
 const projectFields = [
+  {
+    label: "Project Name",
+    description: "The name of your project.",
+    type: "input",
+    model: computed(() => project.value?.name),
+    update: (value: string) => {
+      if (project.value)
+        project.value.name = value
+    },
+    onSave: handleSubmit,
+    editable: isOwner,
+  },
   {
     label: "Project ID",
     description: "This ID uniquely identifies your project.",
@@ -205,8 +228,14 @@ const projectFields = [
   {
     label: "Project Slug",
     description: "This slug is used in the URL to access your project.",
-    value: computed(() => project.value?.slug),
-    copyable: true,
+    type: "input",
+    model: computed(() => project.value?.slug),
+    update: (value: string) => {
+      if (project.value)
+        project.value.slug = value
+    },
+    onSave: handleSubmit,
+    editable: isOwner,
   },
   {
     label: "Created At",
@@ -310,7 +339,7 @@ async function handleSubmit() {
 }
 
 async function handleDeleteProject() {
-  projectsStore.error = null
+  deleteProjectError.value = null
   if (!project.value?.id)
     return
   if (!confirm("Are you sure you want to delete this project? This action cannot be undone."))
@@ -322,21 +351,11 @@ async function handleDeleteProject() {
   }
   catch (error: any) {
     console.error("Failed to delete project:", error)
-    projectsStore.error = error.message
+    deleteProjectError.value = error.message
   }
 }
 
-watch(() => project.value, (newProject) => {
-  if (newProject && project.value) {
-    project.value.name = newProject.name
-    project.value.slug = newProject.slug
-    project.value.description = newProject.description
-    project.value.id = newProject.id
-  }
-}, { immediate: true })
-
 watch(() => projectId.value, async (id) => {
-  await projectsStore.getProjects()
   const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name
 
   useHead({

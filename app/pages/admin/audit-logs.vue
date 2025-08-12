@@ -10,7 +10,7 @@
     </header>
 
     <section class="flex flex-col">
-      <div class="md:navigation-group flex flex-col items-center justify-between gap-2 border-b p-2">
+      <div class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2">
         <nav class="navigation-group" aria-label="Filters">
           <input v-model="filters.date" type="date" title="Filter by date" class="hidden md:block">
 
@@ -72,9 +72,11 @@
             <icon name="ph:arrow-left-bold" size="20" />
           </button>
 
-          <span class="text-info whitespace-nowrap">
-            {{ orgStore.auditLogs.page }} / {{ orgStore.totalPages }}
-          </span>
+          <div class="text-info flex flex-col items-center justify-center gap-1 whitespace-nowrap md:mx-4">
+            <span>{{ orgStore.auditLogs.page }} / {{ orgStore.totalPages }}</span>
+            <span v-if="logs.length" class="text-xs italic">{{ logsSummary }}</span>
+          </div>
+
           <button
             type="button" class="btn-secondary disabled:opacity-80"
             :disabled="!orgStore.hasNextPage" title="Next Page"
@@ -82,10 +84,14 @@
           >
             <icon name="ph:arrow-right-bold" size="20" />
           </button>
+
           <button
-            type="button" class="btn-danger"
-            :disabled="!logs.length" title="Delete Filtered Logs"
-            aria-label="Delete Filtered Logs" @click="handleDeleteLogs"
+            type="button"
+            class="btn-danger"
+            :disabled="!logs.length"
+            title="Delete Filtered Logs"
+            aria-label="Delete Filtered Logs"
+            @click="handleDeleteLogs"
           >
             <icon name="ph:trash-bold" size="20" />
           </button>
@@ -103,9 +109,9 @@
     <div v-else class="scroll-area w-full overflow-x-auto">
       <table class="min-w-full table-auto rounded-sm md:w-full md:overflow-hidden">
         <thead>
-          <tr class="truncate bg-muted text-sm font-semibold">
-            <th v-for="header in headers" :key="header.value" class="border p-2">
-              <div class="navigation-group">
+          <tr class="bg-muted text-sm font-semibold">
+            <th v-for="header in headers" :key="header.value">
+              <div class="navigation-group truncate p-2">
                 <icon :name="header.icon" size="20" />
                 <span>{{ header.label }}</span>
               </div>
@@ -115,26 +121,26 @@
 
         <tbody>
           <tr v-for="log in logs" :key="log.id">
-            <td class="max-w-sm truncate border p-2 text-sm font-medium md:max-w-40" :title="actions.find(a => a.value === log.action)?.label">
+            <td class="max-w-sm truncate p-2 text-sm font-medium md:max-w-40" :title="actions.find(a => a.value === log.action)?.label">
               {{ actions.find(a => a.value === log.action)?.label }}
             </td>
-            <td class="text-info max-w-sm truncate border p-2 md:max-w-32" :title="log.resource">
+            <td class="text-info max-w-sm truncate p-2 md:max-w-32" :title="log.resource">
               {{ log.resource }}
             </td>
-            <td class="text-info max-w-md truncate border p-2 md:max-w-60" :title="formatMetadata(log.metadata ?? {})">
+            <td class="text-info max-w-md truncate p-2 md:max-w-60" :title="formatMetadata(log.metadata ?? {})">
               {{ formatMetadata(log.metadata ?? {}) }}
             </td>
-            <td class="text-info max-w-sm truncate border p-2 md:max-w-32" :title="userMap.get(log.userId)">
+            <td class="text-info max-w-sm truncate p-2 md:max-w-32" :title="userMap.get(log.userId)">
               {{ userMap.get(log.userId) }}
             </td>
-            <td class="text-info max-w-sm truncate border p-2 md:max-w-32" :title="formatDate(log.createdAt)">
+            <td class="text-info max-w-sm truncate p-2 md:max-w-32" :title="formatDate(log.createdAt)">
               {{ formatDate(log.createdAt) }}
             </td>
-            <td class="text-info max-w-sm truncate border p-2 md:max-w-32" :title="filters.showSensitiveInfo ? formatSensitiveInfo(log.metadata ?? {}) : ''">
+            <td class="text-info max-w-sm truncate p-2 md:max-w-32" :title="filters.showSensitiveInfo ? formatSensitiveInfo(log.metadata ?? {}) : ''">
               <span v-if="filters.showSensitiveInfo">
                 {{ formatSensitiveInfo(log.metadata ?? {}) }}
               </span>
-              <span v-else class="text-muted">Hidden</span>
+              <span v-else>Hidden</span>
             </td>
           </tr>
         </tbody>
@@ -194,11 +200,18 @@ function setActionFilter(action: string) {
   isActionDropdownOpen.value = false
 }
 
+const logsSummary = computed(() => {
+  const count = logs.value.length
+  const logLabel = count === 1 ? "log" : "logs"
+  return count ? `${count} ${logLabel}` : "no matching logs"
+})
+
 async function handleDeleteLogs() {
   if (!orgStore.activeOrg?.id)
     return
-  if (!confirm("Are you sure you want to delete all filtered audit logs? This action cannot be undone."))
+  if (!confirm(`Are you sure you want to delete ${logsSummary.value}? This action cannot be undone. Only the logs matching your current filters will be deleted.`)) {
     return
+  }
 
   const deleteFilters = {
     orgId: orgStore.activeOrg.id,
@@ -270,10 +283,6 @@ input[type="date"]::-webkit-clear-button {
 }
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.5);
-  cursor: pointer;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
 </style>
