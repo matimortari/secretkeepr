@@ -88,13 +88,9 @@ async function handleCreateProject(project: ProjectType) {
   }
   catch (error: any) {
     console.error("Failed to create project:", error)
-    projectsStore.error = error?.message
+    projectsStore.error = error.message
   }
 }
-
-onMounted(async () => {
-  await projectsStore.getProjects()
-})
 
 useHead({
   title: "Projects - SecretKeepR",

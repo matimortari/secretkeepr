@@ -255,7 +255,7 @@ async function handleAddMember() {
   }
   catch (error: any) {
     console.error("Failed to add member", error)
-    addMemberError.value = error?.message || "Failed to add project member."
+    addMemberError.value = error.message
   }
 }
 
@@ -270,7 +270,7 @@ async function handleUpdateMemberRole(memberId: string, newRole: Role) {
   }
   catch (error: any) {
     console.error("Failed to update memeber role", error)
-    projectsStore.error = error?.message
+    projectsStore.error = error.message
   }
 }
 
@@ -287,7 +287,7 @@ async function handleRemoveMember(memberId: string) {
   }
   catch (error: any) {
     console.error("Failed to remove member", error)
-    projectsStore.error = error?.message
+    projectsStore.error = error.message
   }
 }
 
@@ -305,7 +305,7 @@ async function handleSubmit() {
   }
   catch (error: any) {
     console.error("Failed to update project", error)
-    projectsStore.error = error?.message
+    projectsStore.error = error.message
   }
 }
 
@@ -322,7 +322,7 @@ async function handleDeleteProject() {
   }
   catch (error: any) {
     console.error("Failed to delete project:", error)
-    projectsStore.error = error?.message || "Failed to delete project."
+    projectsStore.error = error.message
   }
 }
 

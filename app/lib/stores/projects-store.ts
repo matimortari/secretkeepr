@@ -48,7 +48,7 @@ export const useProjectsStore = defineStore("projects", () => {
       return projects.value
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to load projects"
+      error.value = error.message || "Failed to load projects"
       throw error
     }
     finally {
@@ -67,7 +67,7 @@ export const useProjectsStore = defineStore("projects", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to create project"
+      error.value = error.message || "Failed to create project"
       throw error
     }
     finally {
@@ -90,7 +90,7 @@ export const useProjectsStore = defineStore("projects", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to update project"
+      error.value = error.message || "Failed to update project"
       throw error
     }
     finally {
@@ -112,7 +112,7 @@ export const useProjectsStore = defineStore("projects", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to delete project"
+      error.value = error.message || "Failed to delete project"
       throw error
     }
     finally {
@@ -140,7 +140,7 @@ export const useProjectsStore = defineStore("projects", () => {
       return member.newMember
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to add project member"
+      error.value = error.message || "Failed to add project member"
       throw error
     }
     finally {
@@ -167,7 +167,7 @@ export const useProjectsStore = defineStore("projects", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to update project member"
+      error.value = error.message || "Failed to update project member"
       throw error
     }
     finally {
@@ -192,7 +192,7 @@ export const useProjectsStore = defineStore("projects", () => {
       return response
     }
     catch (error: any) {
-      error.value = error?.message || "Failed to remove project member"
+      error.value = error.message || "Failed to remove project member"
       throw error
     }
     finally {
