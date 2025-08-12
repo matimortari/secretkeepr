@@ -3,7 +3,10 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
 
+	"github.com/fatih/color"
 	"github.com/matimortari/secretkeepr/cli/internal/api"
 	"github.com/matimortari/secretkeepr/cli/internal/config"
 	"github.com/spf13/cobra"
@@ -23,33 +26,40 @@ type User struct {
 var whoamiCmd = &cobra.Command{
 	Use:   "whoami",
 	Short: "Display information about the current user",
+	Long:  `Fetch and display the authenticated user's info including organizations and roles.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		token, err := config.LoadAuthToken()
 		if err != nil {
-			return
+			color.Red("Failed to load authentication token: %v", err)
+			os.Exit(1)
+		}
+		if token == "" {
+			color.Red("No authentication token found. Please login first using 'secretkeepr login'.")
+			os.Exit(1)
 		}
 
 		resp, err := api.Get(token, "/user")
 		if err != nil {
-			fmt.Println("Failed to get user data:", err)
-			return
+			color.Red("Failed to get user data: %v", err)
+			os.Exit(1)
 		}
 		defer resp.Body.Close()
 		if resp.StatusCode != 200 {
-			fmt.Printf("API error: %s\n", resp.Status)
-			return
+			body, _ := io.ReadAll(resp.Body)
+			color.Red("API error: %s\n%s", resp.Status, string(body))
+			os.Exit(1)
 		}
 
 		var user User
 		err = json.NewDecoder(resp.Body).Decode(&user)
 		if err != nil {
-			fmt.Println("Failed to parse user data:", err)
-			return
+			color.Red("Failed to parse user data: %v", err)
+			os.Exit(1)
 		}
-
-		fmt.Printf("User: %s\nEmail: %s\n", user.Name, user.Email)
-		fmt.Println("Organizations:")
+		fmt.Printf("%s %s\n", color.CyanString("User:"), user.Name)
+		fmt.Printf("%s %s\n\n", color.CyanString("Email:"), user.Email)
+		color.Cyan("Organizations:")
 		for _, m := range user.Memberships {
 			fmt.Printf(" - %s (role: %s)\n", m.Organization.Name, m.Role)
 		}
