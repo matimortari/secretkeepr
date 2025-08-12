@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -15,88 +15,92 @@ import (
 )
 
 var (
-	importProjectID string
-	importEnv       string
-	importFile      string
+	importProjectSlug string
+	importEnv         string
+	importFile        string
 )
 
-func parseDotEnv(filename string) (map[string]string, error) {
-	file, err := os.Open(filename)
+func fetchSecrets(token, projectID, environment string) (map[string]string, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/projects/%s/secrets?environment=%s", api.BaseURL, projectID, environment), nil)
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	req.Header.Set("Authorization", "Bearer "+token)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API error: %s", resp.Status)
+	}
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var data struct {
+		Secrets []struct {
+			Key    string `json:"key"`
+			Values []struct {
+				Environment string `json:"environment"`
+				Value       string `json:"value"`
+			} `json:"values"`
+		} `json:"secrets"`
+	}
+
+	if err := json.Unmarshal(bodyBytes, &data); err != nil {
+		return nil, err
+	}
 
 	secrets := make(map[string]string)
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if line == "" || strings.HasPrefix(line, "#") {
-			continue
+	for _, secret := range data.Secrets {
+		for _, val := range secret.Values {
+			if strings.EqualFold(val.Environment, environment) {
+				secrets[secret.Key] = val.Value
+				break
+			}
 		}
-
-		parts := strings.SplitN(line, "=", 2)
-		if len(parts) != 2 {
-			continue
-		}
-
-		key := strings.TrimSpace(parts[0])
-		value := strings.Trim(strings.TrimSpace(parts[1]), `"'`)
-		if key != "" && value != "" {
-			secrets[key] = value
-		}
-	}
-	if err := scanner.Err(); err != nil {
-		return nil, err
 	}
 
 	return secrets, nil
 }
 
-func importSecret(token, projectID, key, environment, value string) error {
-	payload := map[string]any{
-		"key": key,
-		"values": []map[string]string{
-			{
-				"environment": environment,
-				"value":       value,
-			},
-		},
-	}
-
-	bodyBytes, err := json.Marshal(payload)
+func writeDotEnv(filename string, secrets map[string]string) error {
+	f, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
+	defer f.Close()
 
-	resp, err := api.Post(token, fmt.Sprintf("/projects/%s/secrets", projectID), bodyBytes)
-	if err != nil {
-		return err
+	for key, val := range secrets {
+		line := fmt.Sprintf("%s=%s\n", key, val)
+		if _, err := f.WriteString(line); err != nil {
+			return err
+		}
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
-		return fmt.Errorf("API error: %s", resp.Status)
-	}
-
 	return nil
 }
 
 var importCmd = &cobra.Command{
 	Use:   "import",
-	Short: "Import secrets from a .env file in a SecretKeepR project",
-	Long: `Import secrets stored in a .env file into a specified SecretKeepR project environment.
+	Short: "Import secrets from a SecretKeepR project environment into a local .env file",
+	Long: `Fetch secrets from a SecretKeepR project environment and save them to a local .env file.
 
 You can specify:
-  • The project ID (--project)
-  • The environment to import to (--env, defaults to "development")
-  • The path to the .env file (--file, defaults to ".env")
+  • The project slug (--project)
+  • The environment to fetch (--env, defaults to "development")
+  • The path to save the .env file (--file, defaults to ".env")
 
 Example:
-  secretkeepr import --project abc123 --env production --file ./prod.env`,
+  secretkeepr import --project my-project --env production --file ./prod.env
+`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		if importProjectID == "" {
+		if importProjectSlug == "" {
 			color.Red("Error: --project flag is required")
 			return
 		}
@@ -113,34 +117,37 @@ Example:
 			return
 		}
 
-		secrets, err := parseDotEnv(importFile)
+		project, err := getProjectBySlug(token, importProjectSlug)
 		if err != nil {
-			color.Red("Failed to parse .env file: %v", err)
+			color.Red("Failed to find project by slug '%s': %v", importProjectSlug, err)
+			return
+		}
+
+		color.Cyan("Fetching secrets from project %s (env: %s)...", project.Name, importEnv)
+		secrets, err := fetchSecrets(token, project.ID, importEnv)
+		if err != nil {
+			color.Red("Failed to fetch secrets: %v", err)
 			return
 		}
 		if len(secrets) == 0 {
-			color.Yellow("No secrets found in %s", importFile)
+			color.Yellow("No secrets found for environment %s", importEnv)
 			return
 		}
 
-		color.Cyan("Importing secrets into project %s (env: %s):", importProjectID, importEnv)
-		for key, value := range secrets {
-			err := importSecret(token, importProjectID, key, importEnv, value)
-			if err != nil {
-				color.Red("%s: %v", key, err)
-			} else {
-				color.Green("%s", key)
-			}
+		err = writeDotEnv(importFile, secrets)
+		if err != nil {
+			color.Red("Failed to write .env file: %v", err)
+			return
 		}
 
-		color.Cyan("Import completed.")
+		color.Green("Secrets imported and saved to %s", importFile)
 	},
 }
 
 func init() {
-	importCmd.Flags().StringVarP(&importProjectID, "project", "p", "", "Project ID to import secrets into")
-	importCmd.Flags().StringVarP(&importEnv, "env", "e", "development", "Environment for the secrets")
-	importCmd.Flags().StringVarP(&importFile, "file", "f", ".env", "Path to .env file")
+	importCmd.Flags().StringVarP(&importProjectSlug, "project", "p", "", "Project slug to import secrets from")
+	importCmd.Flags().StringVarP(&importEnv, "env", "e", "development", "Environment to import secrets from")
+	importCmd.Flags().StringVarP(&importFile, "file", "f", ".env", "Path to save .env file")
 
 	_ = importCmd.MarkFlagRequired("project")
 

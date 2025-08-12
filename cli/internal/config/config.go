@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"os"
@@ -46,4 +47,41 @@ func LoadAuthToken() (string, error) {
 		return "", errors.New("authentication token not found")
 	}
 	return strings.TrimSpace(string(data)), nil
+}
+
+// ParseDotEnv reads key=value pairs from a .env file and returns them as a map.
+//
+// It reads the file line by line, ignoring comments and blank lines, and returns an error if the file cannot be read or if the contents are invalid.
+func ParseDotEnv(filename string) (map[string]string, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	secrets := make(map[string]string)
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) != 2 {
+			continue
+		}
+
+		key := strings.TrimSpace(parts[0])
+		value := strings.Trim(strings.TrimSpace(parts[1]), `"'`)
+		if key != "" && value != "" {
+			secrets[key] = value
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return secrets, nil
 }
