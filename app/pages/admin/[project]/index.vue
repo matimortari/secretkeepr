@@ -1,6 +1,6 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
-    <header class="navigation-group border-b pb-2">
+    <header class="navigation-group border-b py-2">
       <nuxt-link to="/admin/projects">
         <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
       </nuxt-link>
@@ -88,7 +88,8 @@ const project = computed(() => {
 })
 
 const projectId = computed(() => project.value?.id ?? "")
-const { secrets, handleImportFromEnv, handleExportToEnv } = useProjectSecrets(projectId.value)
+const { handleImportFromEnv, handleExportToEnv } = useProjectSecrets(projectId.value)
+const { secrets } = storeToRefs(secretsStore)
 
 const selectedSecret = ref<SecretType | null>(null)
 const dropdownRef = ref<HTMLElement | null>(null)
@@ -128,12 +129,12 @@ async function handleSaveSecret(secret: SecretType) {
   }
 }
 
-onMounted(async () => {
-  await secretsStore.getSecretsByProject(projectId.value)
-})
-
 watch(() => projectId.value, async (id) => {
+  if (!id)
+    return
+
   await projectsStore.getProjects()
+  await secretsStore.getSecretsByProject(id)
   const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name
 
   useHead({
