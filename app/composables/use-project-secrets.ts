@@ -6,9 +6,6 @@ export function useProjectSecrets(projectId: string) {
   const secretsStore = useSecretsStore()
 
   const project = computed(() => projectsStore.projects.find(p => p.id === projectId))
-  const secrets = computed(() =>
-    secretsStore.secrets.filter(secret => secret.projectId === projectId),
-  )
 
   const handleImportFromEnv = async (importedSecrets: SecretType[]) => {
     try {
@@ -62,5 +59,5 @@ export function useProjectSecrets(projectId: string) {
     }
   }
 
-  return { project, secrets, handleImportFromEnv, handleExportToEnv }
+  return { handleImportFromEnv, handleExportToEnv }
 }
