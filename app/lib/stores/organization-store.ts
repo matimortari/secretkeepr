@@ -1,15 +1,3 @@
-import {
-  acceptOrgInviteService,
-  createOrgInviteService,
-  createOrgService,
-  deleteAuditLogsService,
-  deleteOrgService,
-  getAuditLogsService,
-  removeUserFromOrgService,
-  updateOrgMemberService,
-  updateOrgService,
-} from "~/lib/services/organization-service"
-
 export const useOrganizationStore = defineStore("organization", () => {
   const orgs = ref<OrganizationType[]>([])
   const activeOrg = ref<OrganizationType & {

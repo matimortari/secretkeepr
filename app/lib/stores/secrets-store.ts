@@ -1,10 +1,3 @@
-import {
-  createSecretService,
-  deleteSecretService,
-  getProjectSecretsService,
-  updateSecretService,
-} from "~/lib/services/secrets-service"
-
 export const useSecretsStore = defineStore("secrets", () => {
   const secrets = ref<SecretType[]>([])
   const isLoading = ref(false)

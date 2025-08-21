@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col items-center justify-center gap-4 bg-background p-8 md:flex-row md:p-24">
     <header
-      v-motion class="card flex flex-col items-center gap-8 p-8 text-start md:flex-row"
-      :initial="{ opacity: 0, x: -40 }" :visible="{ opacity: 1, x: 0 }"
+      v-motion class="flex flex-col items-center gap-8 p-8 text-start md:flex-row"
+      :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
       :duration="800"
     >
       <img src="/assets/logo.png" alt="Logo" width="120" height="120">
@@ -26,7 +26,7 @@
 
     <div
       v-motion class="flex flex-col items-center gap-8 p-8 text-center md:items-end md:p-12 md:text-start"
-      :initial="{ opacity: 0, x: -40 }" :visible="{ opacity: 1, x: 0 }"
+      :initial="{ opacity: 0, x: -20 }" :visible="{ opacity: 1, x: 0 }"
       :duration="800"
     >
       <nav class="flex w-full flex-col gap-4">
@@ -44,8 +44,6 @@
 </template>
 
 <script setup lang="ts">
-import guest from "~/lib/middleware/guest"
-
 const providers = [
   {
     name: "google",

@@ -1,5 +1,3 @@
-import { useOrganizationStore } from "~/lib/stores/organization-store"
-
 export function useAuditLogs() {
   const orgStore = useOrganizationStore()
 

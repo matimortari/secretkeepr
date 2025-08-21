@@ -1,5 +1,3 @@
-import { getBaseUrl } from "~/lib/utils"
-
 export async function getProjectSecretsService(projectId: string): Promise<{ secrets: SecretType[] }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects/${projectId}/secrets`, {
