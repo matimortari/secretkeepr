@@ -45,8 +45,6 @@
 </template>
 
 <script setup lang="ts">
-import { useSecretsStore } from "~/lib/stores/secrets-store"
-
 const props = defineProps<{
   isOpen: boolean
   selectedSecret?: SecretType | null

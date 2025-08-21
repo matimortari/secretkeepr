@@ -162,11 +162,6 @@
 </template>
 
 <script setup lang="ts">
-import auth from "~/lib/middleware/auth"
-import { useProjectsStore } from "~/lib/stores/projects-store"
-import { useUserStore } from "~/lib/stores/user-store"
-import { formatDate } from "~/lib/utils"
-
 const roles = [
   { value: "owner", label: "Owner" },
   { value: "admin", label: "Admin" },

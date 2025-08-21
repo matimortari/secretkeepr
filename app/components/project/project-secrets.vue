@@ -72,9 +72,6 @@
 </template>
 
 <script setup lang="ts">
-import { useSecretsStore } from "~/lib/stores/secrets-store"
-import { copyToClipboard } from "~/lib/utils"
-
 const props = defineProps<{
   secrets: SecretType[]
   projectId: string

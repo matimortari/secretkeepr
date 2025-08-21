@@ -1,5 +1,3 @@
-import { getBaseUrl } from "~/lib/utils"
-
 export async function createOrgService(payload: CreateOrgPayload): Promise<{ message: string, newOrg: OrganizationType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/org`, {

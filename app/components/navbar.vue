@@ -52,18 +52,16 @@
       <button class="btn md:hidden" aria-label="Toggle Sidebar" @click="$emit('toggleSidebar')">
         <icon :name="props.isSidebarOpen ? 'ph:x' : 'ph:list'" size="20" />
       </button>
+
+      <img :src="userStore.user?.image ?? undefined" alt="Avatar" class="size-10 rounded-full border-2">
       <button class="btn" aria-label="Sign Out" @click="signOut">
         <icon name="ph:sign-out-bold" size="20" />
-        <span class="hidden md:inline">Sign Out</span>
       </button>
     </nav>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useOrganizationStore } from "~/lib/stores/organization-store"
-import { useUserStore } from "~/lib/stores/user-store"
-
 const props = defineProps<{
   orgs: OrganizationType[]
   isSidebarOpen: boolean

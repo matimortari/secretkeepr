@@ -97,11 +97,6 @@
 </template>
 
 <script setup lang="ts">
-import auth from "~/lib/middleware/auth"
-import { useOrganizationStore } from "~/lib/stores/organization-store"
-import { useUserStore } from "~/lib/stores/user-store"
-import { formatDate } from "~/lib/utils"
-
 const router = useRouter()
 const { clear } = useUserSession()
 const { createActionHandler } = useActionIcon()

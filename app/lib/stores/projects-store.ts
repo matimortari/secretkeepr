@@ -1,13 +1,3 @@
-import {
-  addProjectMemberService,
-  createProjectService,
-  deleteProjectService,
-  getProjectsService,
-  removeProjectMemberService,
-  updateProjectMemberService,
-  updateProjectService,
-} from "~/lib/services/projects-service"
-
 export const useProjectsStore = defineStore("projects", () => {
   const projects = ref<ProjectType[]>([])
   const currentProject = ref<ProjectType | null>(null)

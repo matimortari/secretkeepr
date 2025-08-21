@@ -64,10 +64,6 @@
 </template>
 
 <script setup lang="ts">
-import auth from "~/lib/middleware/auth"
-import { useOrganizationStore } from "~/lib/stores/organization-store"
-import { useProjectsStore } from "~/lib/stores/projects-store"
-
 const orgStore = useOrganizationStore()
 const projectsStore = useProjectsStore()
 
