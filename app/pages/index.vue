@@ -93,9 +93,9 @@
           </p>
           <button
             class="hover:scale-sm flex items-center transition-all" title="Copy to Clipboard"
-            aria-label="Copy Install Command" @click="createClipboardHandler().copy(installCommand)"
+            aria-label="Copy Install Command" @click="copyIcon.triggerCopy(installCommand)"
           >
-            <icon :name="createClipboardHandler().copyIcon.value" size="20" />
+            <icon :name="copyIcon.icon.value" size="20" />
           </button>
         </div>
         <Shiki lang="bash" :code="installCommand" class="code-block" />
@@ -125,7 +125,8 @@
 <script setup lang="ts">
 import guest from "~/lib/middleware/guest"
 
-const { createClipboardHandler } = useClipboard()
+const { createActionHandler } = useActionIcon()
+const copyIcon = createActionHandler("ph:copy-bold")
 
 const features = [
   {
