@@ -1,6 +1,6 @@
 <template>
   <Dialog :is-open="isOpen" title="Create New Project" @update:is-open="emit('close')">
-    <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
+    <form class="flex flex-col gap-2" @submit.prevent="handleSubmit">
       <div class="flex flex-col items-start gap-1">
         <label for="name" class="text-sm font-semibold">Project Name</label>
         <input id="name" v-model="form.name" type="text" class="w-full">
@@ -15,14 +15,17 @@
           class="w-full"
           :placeholder="form.name.trim().toLowerCase().replace(/\s+/g, '-')"
         >
-        <p class="text-xs text-muted-foreground">
+        <span class="text-xs text-muted-foreground">
           This will be used in the project URL.
-        </p>
+        </span>
       </div>
 
       <div class="flex flex-col items-start gap-1">
         <label for="description" class="text-sm font-semibold">Description</label>
         <input id="description" v-model="form.description" type="text" class="w-full">
+        <span class="text-xs text-muted-foreground">
+          An optional description for your project.
+        </span>
       </div>
 
       <footer class="flex flex-row items-center justify-between">
@@ -31,7 +34,7 @@
         </p>
 
         <nav class="navigation-group">
-          <button class="hover:underline" type="button" aria-label="Cancel" @click="emit('close')">
+          <button type="button" class="text-sm font-semibold hover:underline" aria-label="Cancel" @click="emit('close')">
             Cancel
           </button>
           <button class="btn-success" type="submit" aria-label="Save Project">

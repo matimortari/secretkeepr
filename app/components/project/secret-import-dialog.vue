@@ -1,7 +1,11 @@
 <template>
   <Dialog :is-open="isOpen" title="Import from .env" @update:is-open="emit('close')">
-    <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
-      <textarea v-model="envContent" rows="10" class="scroll-area resize-none" placeholder="Paste your .env content here..." />
+    <form class="flex flex-col gap-2" @submit.prevent="handleSubmit">
+      <textarea
+        v-model="envContent" name="env-content"
+        placeholder="Paste your .env content here..."
+        rows="8" class="scroll-area resize-none"
+      />
 
       <div class="flex flex-col items-start gap-1">
         <span class="text-sm font-semibold">Environment</span>
@@ -10,6 +14,9 @@
             {{ env }}
           </option>
         </select>
+        <span class="text-xs text-muted-foreground">
+          Select the environment for the imported secrets.
+        </span>
       </div>
 
       <footer class="flex flex-row items-center justify-between">
@@ -18,7 +25,7 @@
         </p>
 
         <div class="navigation-group">
-          <button class="hover:underline" type="button" aria-label="Cancel" @click="emit('close')">
+          <button type="button" class="text-sm font-semibold hover:underline" aria-label="Cancel" @click="emit('close')">
             Cancel
           </button>
           <button class="btn-success" type="submit" aria-label="Import Secrets from .env File">

@@ -2,13 +2,13 @@
   <teleport to="body">
     <transition name="fade">
       <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#000000] bg-opacity-50" @mousedown.self="closeDialog">
-        <div class="overlay min-w-[400px]">
-          <header class="flex flex-row items-center justify-between gap-4">
+        <div class="overlay min-w-[400px] space-y-6">
+          <header class="flex flex-row items-center justify-between gap-4 border-b py-2">
             <h2>
               {{ title }}
             </h2>
 
-            <button aria-label="Close Dialog" @mousedown="closeDialog">
+            <button aria-label="Close Dialog" class="flex items-center" @mousedown="closeDialog">
               <icon name="ph:x-bold" size="30" class="text-muted-foreground" />
             </button>
           </header>

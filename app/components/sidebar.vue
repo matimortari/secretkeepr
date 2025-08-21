@@ -7,7 +7,7 @@
   >
     <span class="font-semibold">Overview</span>
     <nav class="flex flex-col gap-1 border-b py-2 text-sm font-semibold text-muted-foreground" aria-label="Main Navigation">
-      <nuxt-link v-for="link in navLinks" :key="link.href" :to="link.href" class="navigation-group rounded p-2 hover:bg-muted">
+      <nuxt-link v-for="link in navLinks" :key="link.url" :to="link.url" class="navigation-group rounded p-2 hover:bg-muted">
         <icon :name="link.icon" size="30" />
         <span>{{ link.label }}</span>
       </nuxt-link>
@@ -19,18 +19,18 @@
         <icon name="ph:plus-bold" size="25" />
       </button>
     </div>
-    <nav v-if="projectsFromOrg.length" class="scroll-area flex flex-col overflow-y-auto" aria-label="Projects Navigation">
-      <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-info truncate rounded p-2 hover:bg-muted">
+    <nav v-if="projectsFromOrg.length" aria-label="Projects Navigation" class="scroll-area flex max-h-64 flex-col overflow-x-hidden">
+      <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-info break-words p-2">
         {{ project.name }}
       </nuxt-link>
     </nav>
 
-    <a href="https://github.com/matimortari/secretkeepr" class="navigation-group group border-t py-4">
+    <nuxt-link to="https://github.com/matimortari/secretkeepr" class="navigation-group group border-t py-4">
       <icon name="simple-icons:github" size="25" class="group-hover:scale-md transition-all group-hover:text-accent" />
       <span class="text-sm font-semibold text-muted-foreground">
         Support This Project
       </span>
-    </a>
+    </nuxt-link>
   </aside>
 
   <ProjectDialog :is-open="isDialogOpen" @close="isDialogOpen = false" @save="handleCreateProject" />
@@ -47,10 +47,10 @@ const props = defineProps<{
 defineEmits(["update:isOpen"])
 
 const navLinks = [
-  { href: "/admin/projects", icon: "ph:folder-open", label: "Projects" },
-  { href: "/admin/organization", icon: "ph:building-office", label: "Organization" },
-  { href: "/admin/audit-logs", icon: "ph:clipboard-text", label: "Audit Logs" },
-  { href: "/admin/preferences", icon: "ph:user-gear", label: "Preferences" },
+  { url: "/admin/projects", icon: "ph:folder-open", label: "Projects" },
+  { url: "/admin/organization", icon: "ph:building-office", label: "Organization" },
+  { url: "/admin/audit-logs", icon: "ph:clipboard-text", label: "Audit Logs" },
+  { url: "/admin/preferences", icon: "ph:user-gear", label: "Preferences" },
 ]
 
 const projectsStore = useProjectsStore()
