@@ -268,7 +268,7 @@
 
   .scroll-area {
     scrollbar-width: thin;
-    scrollbar-color: var(--border) var(--muted);
+    scrollbar-color: var(--muted-foreground) transparent;
     padding: 0.5rem;
   }
 

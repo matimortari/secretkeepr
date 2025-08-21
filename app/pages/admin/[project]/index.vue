@@ -133,7 +133,6 @@ watch(() => projectId.value, async (id) => {
   if (!id)
     return
 
-  await projectsStore.getProjects()
   await secretsStore.getSecretsByProject(id)
   const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name
 
