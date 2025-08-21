@@ -37,8 +37,6 @@
 </template>
 
 <script setup lang="ts">
-import { useProjectsStore } from "~/lib/stores/projects-store"
-
 const props = defineProps<{
   org: OrganizationType | null
   isOpen: boolean
@@ -50,7 +48,7 @@ const navLinks = [
   { url: "/admin/projects", icon: "ph:folder-open", label: "Projects" },
   { url: "/admin/organization", icon: "ph:building-office", label: "Organization" },
   { url: "/admin/audit-logs", icon: "ph:clipboard-text", label: "Audit Logs" },
-  { url: "/admin/preferences", icon: "ph:user-gear", label: "Preferences" },
+  { url: "/admin/preferences", icon: "ph:user-gear", label: "User Preferences" },
 ]
 
 const projectsStore = useProjectsStore()
@@ -85,3 +83,12 @@ watch(isDialogOpen, (val) => {
     projectsStore.error = null
 })
 </script>
+
+<style scoped>
+.scroll-area {
+  direction: rtl;
+}
+.scroll-area > * {
+  direction: ltr;
+}
+</style>

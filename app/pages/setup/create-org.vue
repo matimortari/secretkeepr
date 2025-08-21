@@ -39,9 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import auth from "~/lib/middleware/auth"
-import { useOrganizationStore } from "~/lib/stores/organization-store"
-
 const router = useRouter()
 const orgStore = useOrganizationStore()
 

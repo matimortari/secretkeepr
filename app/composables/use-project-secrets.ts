@@ -1,6 +1,3 @@
-import { useProjectsStore } from "~/lib/stores/projects-store"
-import { useSecretsStore } from "~/lib/stores/secrets-store"
-
 export function useProjectSecrets(projectId: string) {
   const projectsStore = useProjectsStore()
   const secretsStore = useSecretsStore()

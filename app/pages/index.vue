@@ -123,8 +123,6 @@
 </template>
 
 <script setup lang="ts">
-import guest from "~/lib/middleware/guest"
-
 const { createActionHandler } = useActionIcon()
 const copyIcon = createActionHandler("ph:copy-bold")
 

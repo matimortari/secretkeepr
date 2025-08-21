@@ -1,5 +1,3 @@
-import { getBaseUrl } from "~/lib/utils"
-
 export async function getProjectsService(): Promise<ProjectType[]> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects`, {

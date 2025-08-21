@@ -74,10 +74,6 @@
 </template>
 
 <script setup lang="ts">
-import auth from "~/lib/middleware/auth"
-import { useProjectsStore } from "~/lib/stores/projects-store"
-import { useSecretsStore } from "~/lib/stores/secrets-store"
-
 const route = useRoute()
 const slug = route.params.project as string
 const projectsStore = useProjectsStore()

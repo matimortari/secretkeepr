@@ -16,10 +16,6 @@
 </template>
 
 <script setup lang="ts">
-import { useOrganizationStore } from "~/lib/stores/organization-store"
-import { useProjectsStore } from "~/lib/stores/projects-store"
-import { useUserStore } from "~/lib/stores/user-store"
-
 const router = useRouter()
 const userStore = useUserStore()
 const orgStore = useOrganizationStore()
