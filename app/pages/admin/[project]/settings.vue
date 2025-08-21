@@ -49,18 +49,8 @@
         <div v-else-if="field.type === 'input'" class="navigation-group justify-end">
           <input class="w-full" type="text" :value="field.model?.value" @input="field.update?.(($event.target as HTMLInputElement).value)">
           <button class="btn" aria-label="Save Changes" @click="field.onSave">
-            <icon name="ph:check-bold" size="20" />
+            <icon name="ph:floppy-disk-bold" size="20" />
           </button>
-        </div>
-
-        <div v-else-if="field.type === 'textarea'" class="navigation-group justify-end">
-          <textarea
-            :value="field.model?.value" class="scroll-area w-full resize-none"
-            @input="field.update && $event.target && field.update(($event.target as HTMLTextAreaElement).value)"
-          />
-          <div class="btn" @click="field.onSave">
-            <icon name="ph:check-bold" size="20" />
-          </div>
         </div>
 
         <span v-else class="navigation-group justify-end">{{ field.value }}</span>
@@ -91,7 +81,7 @@
               </select>
 
               <button class="btn" aria-label="Update Member Role" @click="handleUpdateMemberRole(member.userId, member.role)">
-                <icon name="ph:check-bold" size="15" />
+                <icon name="ph:floppy-disk-bold" size="15" />
               </button>
               <button v-if="isOwner && member.role !== 'owner'" class="btn" aria-label="Remove Member" @click="handleRemoveMember(member.userId)">
                 <icon name="ph:x" size="15" />
@@ -238,6 +228,18 @@ const projectFields = [
     editable: isOwner,
   },
   {
+    label: "Project Description",
+    description: "Briefly describe the purpose or content of this project.",
+    type: "input",
+    model: computed(() => project.value?.description),
+    update: (value: string) => {
+      if (project.value)
+        project.value.description = value
+    },
+    onSave: handleSubmit,
+    editable: isOwner,
+  },
+  {
     label: "Created At",
     description: "When your project was created.",
     value: computed(() => formatDate(project.value?.createdAt)),
@@ -246,17 +248,6 @@ const projectFields = [
     label: "Updated At",
     description: "Last update time for your project.",
     value: computed(() => formatDate(project.value?.updatedAt)),
-  },
-  {
-    label: "Project Description",
-    description: "Briefly describe the purpose or content of this project.",
-    type: "textarea",
-    model: computed(() => project.value?.description),
-    update: (value: string) => {
-      if (project.value)
-        project.value.description = value
-    },
-    onSave: handleSubmit,
   },
 ]
 

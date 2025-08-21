@@ -16,6 +16,13 @@
             class="w-full pl-10"
           >
         </div>
+        <button aria-label="Sort by Name" class="btn" @click="sort.direction = sort.direction === 'asc' ? 'desc' : 'asc'">
+          <icon
+            name="ph:arrow-down-bold" size="20"
+            class="transition-all" title="Sort by Name"
+            :class="sort.direction === 'asc' ? 'rotate-180' : 'rotate-0'"
+          />
+        </button>
 
         <button class="btn-primary" aria-label="Add New Project" @click="isDialogOpen = true">
           <span class="hidden md:inline">Add New Project</span>
@@ -66,13 +73,26 @@ const projectsStore = useProjectsStore()
 
 const searchQuery = ref("")
 const isDialogOpen = ref(false)
+const sort = ref<{ key: string, direction: "asc" | "desc" }>({
+  key: "name",
+  direction: "asc",
+})
 
 const filteredProjects = computed(() => {
-  return projectsStore.projects.filter(project =>
+  const filtered = projectsStore.projects.filter(project =>
     typeof project.name === "string"
     && project.orgId === orgStore.activeOrg?.id
     && project.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
+
+  return [...filtered].sort((a, b) => {
+    const nameA = a.name.toLowerCase()
+    const nameB = b.name.toLowerCase()
+
+    return sort.value.direction === "asc"
+      ? nameA.localeCompare(nameB)
+      : nameB.localeCompare(nameA)
+  })
 })
 
 async function handleCreateProject(project: ProjectType) {

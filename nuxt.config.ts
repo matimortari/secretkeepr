@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@vueuse/motion/nuxt",
     "nuxt-auth-utils",
+    "nuxt-shiki",
   ],
   alias: {
     "#server": fileURLToPath(new URL("./server", import.meta.url)),
@@ -28,9 +29,16 @@ export default defineNuxtConfig({
       JetBrainsMono: true,
     },
   },
-    icon: {
+  icon: {
     clientBundle: {
       scan: true,
+    },
+  },
+  shiki: {
+    bundledLangs: ["bash", "html", "javascript", "json", "markdown", "typescript", "vue"],
+    bundledThemes: ["catppuccin-macchiato"],
+    highlightOptions: {
+      theme: "catppuccin-macchiato",
     },
   },
   tailwindcss: {

@@ -44,7 +44,7 @@
         <div v-else-if="field.type === 'input'" class="navigation-group justify-end">
           <input class="w-full" type="text" :value="field.model?.value" @input="field.update?.(($event.target as HTMLInputElement).value)">
           <button class="btn" aria-label="Save Changes" @click="field.onSave">
-            <icon name="ph:check-bold" size="20" />
+            <icon name="ph:floppy-disk-bold" size="20" />
           </button>
         </div>
 

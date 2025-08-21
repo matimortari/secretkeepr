@@ -1,16 +1,28 @@
 <template>
   <Dialog :is-open="isOpen" :title="props.selectedSecret ? 'Edit Secret' : 'Create New Secret'" @update:is-open="emit('close')">
-    <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
-      <div class="flex flex-col items-start gap-2">
+    <form class="flex flex-col gap-2" @submit.prevent="handleSubmit">
+      <div class="flex flex-col items-start gap-1">
         <label for="key" class="text-sm font-semibold">Key</label>
         <input id="key" v-model="form.key" type="text" class="w-full">
-
-        <label for="description" class="text-sm font-semibold">Description (optional)</label>
-        <input id="description" v-model="form.description" type="text" class="w-full">
+        <span class="text-xs text-muted-foreground">
+          The unique identifier for the secret.
+        </span>
       </div>
 
+      <div class="flex flex-col items-start gap-1">
+        <label for="description" class="text-sm font-semibold">Description (optional)</label>
+        <input id="description" v-model="form.description" type="text" class="w-full">
+        <span class="text-xs text-muted-foreground">
+          An optional description for the secret usage.
+        </span>
+      </div>
+
+      <h5 class="border-t py-2">
+        Environments
+      </h5>
+
       <div v-for="env in environments" :key="env" class="flex flex-col items-start gap-1">
-        <label :for="env" class="text-sm font-semibold capitalize">{{ env }}</label>
+        <label :for="env" class="text-xs font-semibold capitalize">{{ env }}</label>
         <input :id="env" v-model="form.values[env]" type="text" class="w-full">
       </div>
 
@@ -20,7 +32,7 @@
         </p>
 
         <div class="navigation-group">
-          <button class="hover:underline" type="button" aria-label="Cancel" @click="emit('close')">
+          <button type="button" class="text-sm font-semibold hover:underline" aria-label="Cancel" @click="emit('close')">
             Cancel
           </button>
           <button class="btn-success" type="submit" aria-label="Save Secret">
