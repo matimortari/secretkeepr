@@ -1,7 +1,7 @@
 export function useClipboard() {
   function createClipboardHandler() {
     const copied = ref(false)
-    const copyIcon = computed(() => copied.value ? "ph:check-bold" : "ph:clipboard-bold")
+    const copyIcon = computed(() => copied.value ? "ph:check-bold" : "ph:copy-bold")
 
     async function copy(text: string) {
       if (!text)

@@ -44,7 +44,7 @@
         <div v-else-if="field.type === 'input'" class="navigation-group justify-end">
           <input class="w-full" type="text" :value="field.model?.value" @input="field.update?.(($event.target as HTMLInputElement).value)">
           <button class="btn" aria-label="Save Changes" @click="field.onSave">
-            <icon name="ph:check-bold" size="20" />
+            <icon name="ph:floppy-disk-bold" size="20" />
           </button>
         </div>
 
@@ -101,7 +101,7 @@
               </select>
 
               <button class="btn" aria-label="Update Member Role" @click="handleUpdateMemberRole(orgUser.id, userRoles[orgUser.id] || 'member')">
-                <icon name="ph:check-bold" size="15" />
+                <icon name="ph:floppy-disk-bold" size="15" />
               </button>
               <button v-if="isOwner && orgUser.role !== 'owner'" class="btn" aria-label="Remove Member" @click="handleRemoveMember(orgUser.id)">
                 <icon name="ph:x-bold" size="15" />

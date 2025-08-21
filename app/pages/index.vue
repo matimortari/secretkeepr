@@ -1,7 +1,7 @@
 <template>
   <section
     id="hero" v-motion
-    class="md:gradient-mask-wrapper flex flex-col items-center gap-8 border-b bg-card p-8 text-center md:p-16" :initial="{ opacity: 0 }"
+    class="md:gradient-mask-wrapper flex flex-col items-center gap-8 border-b bg-card p-8 text-center md:p-20" :initial="{ opacity: 0 }"
     :visible="{ opacity: 1 }" :duration="800"
   >
     <h1 class="font-goldman">
@@ -76,64 +76,49 @@
     class="flex flex-col items-center gap-8 p-8 text-center md:p-12 md:text-start" :initial="{ opacity: 0, y: 20 }"
     :visible="{ opacity: 1, y: 0 }" :duration="800"
   >
-    <div class="card relative flex w-full flex-col items-center gap-4 p-8">
-      <header class="flex flex-col items-center gap-2">
-        <h2 class="font-goldman">
-          Command Line Interface
-        </h2>
-        <p class="max-w-lg text-center leading-5 text-muted-foreground">
-          Manage secrets and projects directly from your terminal. Fast, secure, and open-source. Read the
-          <nuxt-link to="/cli" class="text-primary">
-            documentation
-          </nuxt-link> for more details.
+    <header class="flex flex-col items-center gap-2">
+      <h2 class="font-goldman">
+        Command Line Interface
+      </h2>
+      <p class="max-w-lg text-center leading-5 text-muted-foreground">
+        Manage secrets and projects directly from your terminal. Fast, secure, and open-source.
+      </p>
+    </header>
+
+    <div class="relative flex w-full max-w-2xl flex-col gap-8">
+      <article class="card flex flex-col p-0">
+        <div class="flex items-center justify-between p-2 text-start text-sm leading-5 text-muted-foreground">
+          <p>
+            > Install the CLI tool using the following command:
+          </p>
+          <button
+            class="hover:scale-sm flex items-center transition-all" title="Copy to Clipboard"
+            aria-label="Copy Install Command" @click="createClipboardHandler().copy(installCommand)"
+          >
+            <icon :name="createClipboardHandler().copyIcon.value" size="20" />
+          </button>
+        </div>
+        <Shiki lang="bash" :code="installCommand" class="code-block" />
+      </article>
+
+      <article class="card flex flex-col p-0">
+        <p class="flex items-center justify-between p-2 text-start text-sm leading-5 text-muted-foreground">
+          > After installing, run the following commands to get started:
         </p>
-      </header>
+        <Shiki lang="bash" :code="cliCommands.join('\n')" class="code-block" />
+      </article>
 
-      <div class="flex w-full flex-col gap-8 md:flex-row md:items-center">
-        <div class="card flex flex-col gap-2">
-          <p class="text-sm leading-5 text-muted-foreground">
-            Install the CLI tool using the following command:
-          </p>
-
-          <div class="code-block relative w-full max-w-full md:max-w-lg">
-            <span class="block overflow-x-auto whitespace-nowrap">
-              {{ installCommand }}
-            </span>
-            <button
-              class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy"
-              aria-label="Copy Install Command" @click="installClipboard.copy(installCommand)"
-            >
-              <icon :name="installClipboard.copyIcon.value" size="20" />
-            </button>
-          </div>
-        </div>
-
-        <div class="card flex flex-col gap-2">
-          <p class="text-sm leading-5 text-muted-foreground">
-            After installing, run the following commands to get started:
-          </p>
-
-          <div class="code-block relative w-full max-w-full md:max-w-lg">
-            <div class="overflow-x-auto">
-              <span v-for="(command, index) in cliCommands" :key="index" class="block whitespace-nowrap">
-                {{ command }}
-              </span>
-            </div>
-            <button
-              class="hover:scale-sm absolute right-2 top-2 z-10 text-muted-foreground transition-all" title="Copy"
-              aria-label="Copy CLI Commands" @click="cliClipboard.copy(cliCommands.join('\n'))"
-            >
-              <icon :name="cliClipboard.copyIcon.value" size="20" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="absolute bottom-2 right-2 z-10 hidden select-none items-end gap-2 font-semibold text-muted-foreground md:flex">
+      <div class="absolute bottom-2 right-2 z-10 hidden select-none items-end gap-2 text-sm text-muted-foreground md:flex">
         <span>Powered by Go</span>
-        <img src="/assets/gopher.png" alt="Go Gopher" width="60" height="60">
+        <img src="/assets/gopher.png" alt="Go Gopher" width="50" height="50">
       </div>
     </div>
+
+    <p class="text-muted-foreground">
+      Read the <nuxt-link to="/cli" class="text-primary">
+        documentation
+      </nuxt-link> for more details.
+    </p>
   </section>
 </template>
 
@@ -141,9 +126,6 @@
 import guest from "~/lib/middleware/guest"
 
 const { createClipboardHandler } = useClipboard()
-
-const installClipboard = createClipboardHandler()
-const cliClipboard = createClipboardHandler()
 
 const features = [
   {
@@ -197,6 +179,7 @@ const howToUseSteps = [
 ]
 
 const installCommand = "go install github.com/matimortari/secretkeepr/cli@latest"
+
 const cliCommands = [
   "secretkeepr login",
   "secretkeepr create org my-org",
