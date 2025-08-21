@@ -35,16 +35,16 @@
           <span>{{ field.value }}</span>
           <button
             class="btn" title="Copy to Clipboard"
-            aria-label="Copy to Clipboard" @click="fieldClipboardHandlers[index]?.copy(field.value?.value || '')"
+            aria-label="Copy to Clipboard" @click="copyIcon[index]?.triggerCopy(field.value?.value || '')"
           >
-            <icon :name="fieldClipboardHandlers[index]?.copyIcon.value || ''" size="20" />
+            <icon :name="copyIcon[index]?.icon.value || 'ph:copy-bold'" size="20" />
           </button>
         </div>
 
         <div v-else-if="field.type === 'input'" class="navigation-group justify-end">
           <input class="w-full" type="text" :value="field.model?.value" @input="field.update?.(($event.target as HTMLInputElement).value)">
           <button class="btn" aria-label="Save Changes" @click="field.onSave">
-            <icon name="ph:floppy-disk-bold" size="20" />
+            <icon :name="saveIcon.icon.value" size="20" />
           </button>
         </div>
 
@@ -104,7 +104,7 @@ import { formatDate } from "~/lib/utils"
 
 const router = useRouter()
 const { clear } = useUserSession()
-const { createClipboardHandler } = useClipboard()
+const { createActionHandler } = useActionIcon()
 const orgStore = useOrganizationStore()
 const userStore = useUserStore()
 
@@ -169,8 +169,10 @@ const userFields = [
   },
 ]
 
-const fieldClipboardHandlers = userFields
-  .map(field => (field.copyable ? createClipboardHandler() : null))
+const saveIcon = createActionHandler("ph:floppy-disk-bold")
+const copyIcon = userFields.map(field =>
+  field.copyable ? createActionHandler("ph:copy-bold") : null,
+)
 
 async function handleUploadImage(event: Event) {
   userStore.error = null
@@ -215,6 +217,7 @@ async function handleSubmit() {
       name: userStore.user?.name,
     })
     await userStore.getUser()
+    saveIcon.triggerSuccess()
   }
   catch (error: any) {
     console.error("Failed to update user data:", error)
