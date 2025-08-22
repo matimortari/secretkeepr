@@ -28,7 +28,7 @@
     --success: #2b5e3c;
     --success-foreground: #327047;
 
-    --accent: #2d6455;
+    --accent: #c54d38;
     --border: #333333;
     --input: #0a0a0a;
   }
@@ -53,7 +53,7 @@
 @layer components {
   /* Headers and typography */
   h1 {
-    font-size: 3.25rem;
+    font-size: 3rem;
     line-height: 3.5rem;
     font-weight: 800;
   }
@@ -179,7 +179,7 @@
   }
 
   .code-block {
-    background-color: #24273a;
+    background-color: #101010;
     padding: 1.25rem;
     font-size: 0.875rem;
     text-align: start;

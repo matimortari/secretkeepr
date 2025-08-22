@@ -111,12 +111,12 @@ async function handleCreateProject(project: ProjectType) {
 useHead({
   title: "Projects - SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/projects" }, { rel: "icon", href: "/favicon.ico" }],
-  meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
+  meta: [{ name: "description", content: "SecretKeepR projects page." }],
 })
 
 useSeoMeta({
   title: "Projects - SecretKeepR",
-  description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
+  description: "SecretKeepR projects page.",
 })
 
 definePageMeta({

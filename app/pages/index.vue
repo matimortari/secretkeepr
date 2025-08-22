@@ -1,46 +1,46 @@
 <template>
   <section
     id="hero" v-motion
-    class="md:gradient-mask-wrapper flex flex-col items-center gap-8 border-b bg-card p-8 text-center md:p-20" :initial="{ opacity: 0 }"
+    class="hero-container flex flex-col items-center gap-12 p-8 text-center md:p-20" :initial="{ opacity: 0 }"
     :visible="{ opacity: 1 }" :duration="800"
   >
-    <h1 class="font-goldman">
-      Your Secrets, Secured and Organized
-    </h1>
-    <p class="max-w-2xl text-lg leading-5 text-muted-foreground">
-      No more .env headaches. SecretKeepR is a secrets manager designed to help users and organizations securely manage
-      and share environment variables. It provides access controls for managing projects, users, and secrets across organizations.
-    </p>
+    <div class="hero-background" />
 
-    <nuxt-link to="/sign-in" class="btn-primary rounded-full">
-      <span>Get Started</span>
-      <icon name="ph:arrow-right-bold" size="20" />
-    </nuxt-link>
-  </section>
+    <div class="z-10 flex max-w-2xl flex-col items-center gap-6 border-b py-8">
+      <h1 class="font-goldman leading-10">
+        Your Secrets, Secured.
+      </h1>
+      <p class="text-lg font-semibold leading-5 text-muted-foreground">
+        No more .env headaches. SecretKeepR is designed to help users and organizations securely manage and share secrets.
+        It provides access controls for managing projects, users, and secrets.
+      </p>
 
-  <section
-    id="features" v-motion
-    class="relative flex flex-col items-center gap-8 p-8 text-center md:p-12" :initial="{ opacity: 0, x: -20 }"
-    :visible="{ opacity: 1, x: 0 }" :duration="800"
-  >
-    <h2 class="font-goldman">
-      Features
-    </h2>
+      <nuxt-link to="/sign-in" class="btn-primary hero-btn group">
+        <span>Get Started</span>
+        <icon name="ph:arrow-right-bold" size="20" class="transition-transform group-hover:translate-x-1" />
+      </nuxt-link>
+    </div>
 
-    <div class="flex flex-col flex-wrap items-center justify-center md:flex-row">
-      <div
-        v-for="(feature, index) in features" :key="index"
-        v-motion class="flex min-w-[350px] max-w-sm flex-grow-0 flex-col items-center gap-2 p-8"
-        :initial="{ opacity: 0, y: -20 }" :visible="{ opacity: 1, y: 0 }"
-        :duration="800" :delay="200 * index"
-      >
-        <icon :name="feature.icon" class="text-primary" size="60" />
-        <h4 class="whitespace-nowrap font-silkscreen tracking-tight">
-          {{ feature.title }}
-        </h4>
-        <p class="leading-5 tracking-tight text-muted-foreground">
-          {{ feature.description }}
-        </p>
+    <div class="z-10 flex flex-col items-center gap-4">
+      <h2 class="font-goldman">
+        Features
+      </h2>
+
+      <div class="flex flex-col flex-wrap items-center justify-center md:flex-row">
+        <div
+          v-for="(feature, index) in features" :key="index"
+          v-motion class="flex min-w-[350px] max-w-sm flex-grow-0 flex-col items-center gap-2 p-8"
+          :initial="{ opacity: 0, y: -20 }" :visible="{ opacity: 1, y: 0 }"
+          :duration="800" :delay="200 * index"
+        >
+          <icon :name="feature.icon" class="text-primary" size="60" />
+          <h4 class="whitespace-nowrap font-silkscreen tracking-tight">
+            {{ feature.title }}
+          </h4>
+          <p class="leading-5 tracking-tight text-muted-foreground">
+            {{ feature.description }}
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -215,24 +215,43 @@ definePageMeta({
 </script>
 
 <style scoped>
-.gradient-mask-wrapper::before,
-.gradient-mask-wrapper::after {
-  content: "";
+.hero-background {
+  background: linear-gradient(360deg, var(--background) 70%, var(--primary) 90%, var(--secondary) 100%);
   position: absolute;
   top: 0;
-  width: 200px;
-  height: 100%;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.gradient-mask-wrapper::before {
   left: 0;
-  background: linear-gradient(to right, rgba(10, 11, 12, 0.8) 0%, rgba(10, 11, 12, 0.2) 100%);
+  width: 100%;
+  height: 100%;
+  transform-origin: top;
+  animation: gradientGrow 10s ease-in-out infinite;
 }
 
-.gradient-mask-wrapper::after {
-  right: 0;
-  background: linear-gradient(to left, rgba(10, 11, 12, 0.8) 0%, rgba(10, 11, 12, 0.2) 100%);
+@keyframes gradientGrow {
+  0% {
+    transform: scaleY(0.5);
+    opacity: 0.1;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scaleY(0.5);
+    opacity: 0.1;
+  }
+}
+
+.hero-container {
+  border-bottom-width: 1px;
+  box-shadow: 0 0 8px 2px var(--primary);
+}
+
+.hero-btn {
+  box-shadow: 0 0 0 2px var(--primary);
+  transition: box-shadow 0.5s ease;
+  border-radius: 5rem;
+}
+.hero-btn:hover {
+  box-shadow: 0 0 8px 2px var(--accent);
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b pb-2">
-      <nuxt-link to="/admin/organization">
+      <nuxt-link to="/admin/organization" class="flex items-center">
         <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
       </nuxt-link>
       <h2 class="max-w-lg truncate">
@@ -236,12 +236,12 @@ watch(() => orgStore.activeOrg, async (org) => {
 useHead({
   title: "Audit Logs - SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/audit-logs" }, { rel: "icon", href: "/favicon.ico" }],
-  meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
+  meta: [{ name: "description", content: "SecretKeepR audit logs page." }],
 })
 
 useSeoMeta({
   title: "Audit Logs - SecretKeepR",
-  description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
+  description: "SecretKeepR audit logs page.",
 })
 
 definePageMeta({

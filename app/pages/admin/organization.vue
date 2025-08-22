@@ -113,7 +113,7 @@
     </section>
 
     <!-- Invite Members -->
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Invite Members">
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10" aria-label="Invite Members">
       <header class="flex flex-col gap-1">
         <h5>
           Invite Members
@@ -123,7 +123,7 @@
         </p>
       </header>
 
-      <div class="navigation-group">
+      <div class="navigation-group self-end">
         <p v-if="inviteError" class="text-warning">
           {{ inviteError }}
         </p>
@@ -149,7 +149,7 @@
         </p>
       </header>
 
-      <nav class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Leave Organization">
+      <nav class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10" aria-label="Leave Organization">
         <header class="flex flex-col gap-1">
           <h5>
             Leave Organization
@@ -159,7 +159,7 @@
           </p>
         </header>
 
-        <div class="navigation-group">
+        <div class="navigation-group self-end">
           <p v-if="leaveOrgError" class="text-warning">
             {{ leaveOrgError }}
           </p>
@@ -171,7 +171,7 @@
         </div>
       </nav>
 
-      <nav class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Organization">
+      <nav class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Organization">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Organization
@@ -181,7 +181,7 @@
           </p>
         </header>
 
-        <div class="navigation-group">
+        <div class="navigation-group self-end">
           <p v-if="deleteOrgError" class="text-warning">
             {{ deleteOrgError }}
           </p>
@@ -386,12 +386,12 @@ watch(usersFromOrg, (users) => {
 useHead({
   title: "Organization - SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/organization" }, { rel: "icon", href: "/favicon.ico" }],
-  meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
+  meta: [{ name: "description", content: "SecretKeepR organization page." }],
 })
 
 useSeoMeta({
   title: "Organization - SecretKeepR",
-  description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
+  description: "SecretKeepR organization page.",
 })
 
 definePageMeta({
