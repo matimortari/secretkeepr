@@ -39,9 +39,9 @@ export default defineNuxtConfig({
   },
   shiki: {
     bundledLangs: ["bash", "html", "javascript", "json", "markdown", "typescript", "vue"],
-    bundledThemes: ["catppuccin-macchiato"],
+    bundledThemes: ["vesper"],
     highlightOptions: {
-      theme: "catppuccin-macchiato",
+      theme: "vesper",
     },
   },
   tailwindcss: {

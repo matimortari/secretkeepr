@@ -10,17 +10,18 @@
         </p>
       </div>
 
-      <div class="navigation-group absolute bottom-4 left-4 text-muted-foreground">
-        <icon name="ph:key-bold" size="20" class="group-hover:scale-sm transition-all group-hover:text-secondary" />
-        <span class="group-hover:scale-sm font-medium transition-all group-hover:text-secondary">{{ totalProjectSecrets }}</span>
-
-        <nuxt-link :to="`/admin/${project.slug}/settings`" class="group-hover:scale-sm transition-all group-hover:text-secondary">
-          <icon name="ph:gear-bold" size="20" class="ml-2 mt-1" />
+      <div class="navigation-group absolute bottom-4 left-4 gap-4 text-muted-foreground">
+        <nuxt-link :to="`/admin/${project.slug}/settings`" class="flex items-center">
+          <icon name="ph:gear-bold" size="20" class="hover:scale-sm transition-all" />
         </nuxt-link>
+        <div class="flex flex-row items-center gap-2">
+          <icon name="ph:key-bold" size="20" />
+          <span class="text-sm">{{ totalProjectSecrets }}</span>
+        </div>
       </div>
 
       <div class="absolute bottom-4 right-4 flex items-center justify-center rounded-full bg-muted p-2">
-        <icon name="ph:arrow-right-bold" size="30" class="group-hover:scale-sm transition-all group-hover:text-secondary" />
+        <icon name="ph:arrow-right-bold" size="25" class="group-hover:scale-sm transition-all group-hover:text-secondary" />
       </div>
     </div>
   </nuxt-link>

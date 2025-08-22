@@ -20,7 +20,7 @@
       </button>
     </div>
     <nav v-if="projectsFromOrg.length" aria-label="Projects Navigation" class="scroll-area flex max-h-64 flex-col overflow-x-hidden">
-      <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-info break-words p-2">
+      <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-info break-words p-2 hover:underline">
         {{ project.name }}
       </nuxt-link>
     </nav>
@@ -48,7 +48,7 @@ const navLinks = [
   { url: "/admin/projects", icon: "ph:folder-open", label: "Projects" },
   { url: "/admin/organization", icon: "ph:building-office", label: "Organization" },
   { url: "/admin/audit-logs", icon: "ph:clipboard-text", label: "Audit Logs" },
-  { url: "/admin/preferences", icon: "ph:user-gear", label: "User Preferences" },
+  { url: "/admin/preferences", icon: "ph:user-gear", label: "Preferences" },
 ]
 
 const projectsStore = useProjectsStore()
