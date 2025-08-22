@@ -77,7 +77,7 @@
         </p>
       </header>
 
-      <nav class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Account">
+      <nav class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Account">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Account
@@ -87,10 +87,16 @@
           </p>
         </header>
 
-        <button class="btn-danger" aria-label="Delete Account" @click="handleDeleteUser">
-          <icon name="ph:user-minus-bold" size="20" />
-          <span>Delete Account</span>
-        </button>
+        <div class="navigation-group self-end">
+          <p v-if="userStore.error" class="text-warning">
+            {{ userStore.error }}
+          </p>
+
+          <button class="btn-danger" aria-label="Delete Account" @click="handleDeleteUser">
+            <icon name="ph:user-minus-bold" size="20" />
+            <span>Delete Account</span>
+          </button>
+        </div>
       </nav>
     </section>
   </div>
@@ -239,12 +245,12 @@ async function handleDeleteUser() {
 useHead({
   title: "Preferences - SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/preferences" }, { rel: "icon", href: "/favicon.ico" }],
-  meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
+  meta: [{ name: "description", content: "SecretKeepR user preferences page." }],
 })
 
 useSeoMeta({
   title: "Preferences - SecretKeepR",
-  description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
+  description: "SecretKeepR user preferences page.",
 })
 
 definePageMeta({

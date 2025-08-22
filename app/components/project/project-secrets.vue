@@ -38,10 +38,10 @@
 
             <nav class="flex items-center justify-end gap-2 md:justify-start">
               <button aria-label="Toggle Secret Value Visibility" @click="visibleKeys[secret.key] = !visibleKeys[secret.key]">
-                <icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md transition-all hover:text-accent" />
+                <icon :name="visibleKeys[secret.key] ? 'carbon:view' : 'carbon:view-off'" size="20" class="hover:scale-md transition-all hover:text-primary" />
               </button>
               <button aria-label="Edit Secret" @click="handleUpdateSecret(secret.key)">
-                <icon name="carbon:edit" size="20" class="hover:scale-md transition-all hover:text-accent" />
+                <icon name="carbon:edit" size="20" class="hover:scale-md transition-all hover:text-primary" />
               </button>
               <button aria-label="Delete Secret" @click="handleDeleteSecret(secret.key)">
                 <icon name="carbon:delete" size="20" class="hover:scale-md transition-all hover:text-danger-foreground" />
@@ -61,7 +61,7 @@
               </span>
 
               <button aria-label="Copy Secret Value" @click="copyToClipboard(getSecretValue(secret.key, env))">
-                <icon name="carbon:copy" size="20" class="hover:scale-md transition-all hover:text-accent" />
+                <icon name="carbon:copy" size="20" class="hover:scale-md transition-all hover:text-secondary" />
               </button>
             </div>
           </td>

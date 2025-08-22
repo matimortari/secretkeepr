@@ -1,7 +1,7 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b py-2">
-      <nuxt-link to="/admin/projects">
+      <nuxt-link to="/admin/projects" class="flex items-center">
         <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
       </nuxt-link>
       <h2 class="max-w-lg truncate">
@@ -135,12 +135,12 @@ watch(() => projectId.value, async (id) => {
   useHead({
     title: `${projectTitle} - SecretKeepR`,
     link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}` }, { rel: "icon", href: "/favicon.ico" }],
-    meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
+    meta: [{ name: "description", content: `${projectTitle} project page.` }],
   })
 
   useSeoMeta({
     title: `${projectTitle} - SecretKeepR`,
-    description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
+    description: `${projectTitle} project page.`,
   })
 }, { immediate: true })
 

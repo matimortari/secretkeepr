@@ -1,7 +1,7 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b py-2">
-      <nuxt-link :to="`/admin/${project?.slug}`">
+      <nuxt-link :to="`/admin/${project?.slug}`" class="flex items-center">
         <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
       </nuxt-link>
       <h2 class="max-w-lg truncate">
@@ -93,7 +93,7 @@
     </section>
 
     <!-- Add New Member -->
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Add New Member">
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10" aria-label="Add New Member">
       <header class="flex flex-col gap-1">
         <h5>
           Add New Member
@@ -103,7 +103,7 @@
         </p>
       </header>
 
-      <div class="navigation-group">
+      <div class="navigation-group self-end">
         <input v-model="newMemberId" type="text" placeholder="User ID" class="w-32">
         <select v-model="newMemberRole" class="md:min-w-[120px]">
           <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value">
@@ -136,7 +136,7 @@
         </p>
       </header>
 
-      <nav class="md:navigation-group flex flex-col items-end justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Project">
+      <nav class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Project">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Project
@@ -146,7 +146,7 @@
           </p>
         </header>
 
-        <div class="navigation-group">
+        <div class="navigation-group self-end">
           <p v-if="deleteProjectError" class="text-warning">
             {{ deleteProjectError }}
           </p>
@@ -350,12 +350,12 @@ watch(() => projectId.value, async (id) => {
   useHead({
     title: `${projectTitle} | Settings - SecretKeepR`,
     link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}/settings` }, { rel: "icon", href: "/favicon.ico" }],
-    meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
+    meta: [{ name: "description", content: `${projectTitle} project settings page.` }],
   })
 
   useSeoMeta({
     title: `${projectTitle} | Settings - SecretKeepR`,
-    description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
+    description: `${projectTitle} project settings page.`,
   })
 }, { immediate: true })
 
