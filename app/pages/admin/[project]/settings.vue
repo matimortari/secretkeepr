@@ -2,7 +2,7 @@
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b py-2">
       <nuxt-link :to="`/admin/${project?.slug}`" class="flex items-center">
-        <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
+        <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent" />
       </nuxt-link>
       <h2 class="max-w-lg truncate">
         {{ project?.name }}
@@ -103,25 +103,28 @@
         </p>
       </header>
 
-      <div class="navigation-group self-end">
-        <input v-model="newMemberId" type="text" placeholder="User ID" class="w-32">
-        <select v-model="newMemberRole" class="md:min-w-[120px]">
-          <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value">
-            {{ role.label }}
-          </option>
-        </select>
+      <div class="md:navigation-group flex flex-col gap-1">
+        <div class="flex flex-row items-center gap-2">
+          <input v-model="newMemberId" type="text" placeholder="User ID" class="w-32">
+          <select v-model="newMemberRole" class="md:min-w-[120px]">
+            <option v-for="role in [...roles].reverse().filter(r => r.value !== 'owner')" :key="role.value" :value="role.value">
+              {{ role.label }}
+            </option>
+          </select>
+        </div>
 
-        <p v-if="addMemberError" class="text-warning">
-          {{ addMemberError }}
-        </p>
-        <p v-if="addMemberSuccess" class="text-success">
-          {{ addMemberSuccess }}
-        </p>
-
-        <button class="btn-primary" aria-label="Add Member" @click.prevent="handleAddMember">
-          <icon name="ph:plus-circle-bold" size="20" />
-          <span>Add Member</span>
-        </button>
+        <div class="navigation-group self-end">
+          <p v-if="addMemberError" class="text-warning">
+            {{ addMemberError }}
+          </p>
+          <p v-if="addMemberSuccess" class="text-success">
+            {{ addMemberSuccess }}
+          </p>
+          <button class="btn-primary" aria-label="Add Member" @click.prevent="handleAddMember">
+            <icon name="ph:plus-circle-bold" size="20" />
+            <span>Add Member</span>
+          </button>
+        </div>
       </div>
     </section>
 

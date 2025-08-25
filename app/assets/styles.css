@@ -10,8 +10,8 @@
     --card: #131313;
     --card-foreground: #e9e9e9;
 
-    --overlay: #1b1b1b;
-    --overlay-foreground: #e9e9e9;
+    --popover: #1b1b1b;
+    --popover-foreground: #e9e9e9;
 
     --primary: #c9d247;
     --primary-foreground: #222222;
@@ -109,27 +109,23 @@
     border: 1px solid var(--border);
     border-radius: 0.25rem;
     padding: 0.5rem;
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .overlay {
-    background-color: var(--overlay);
-    color: var(--overlay-foreground);
+  .popover {
+    background-color: var(--popover);
+    color: var(--popover-foreground);
     border: 1px solid var(--border);
     border-radius: 0.25rem;
     padding: 1rem;
     box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.4);
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dropdown {
     position: absolute;
-    background-color: var(--overlay);
-    color: var(--overlay-foreground);
+    background-color: var(--popover);
+    color: var(--popover-foreground);
     border: 1px solid var(--border);
     border-radius: 0.25rem;
     padding: 0.5rem;
@@ -151,9 +147,7 @@
     border-radius: 0.25rem;
     padding: 0.5rem;
     font-size: 0.875rem;
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   input:hover,
@@ -205,9 +199,7 @@
     white-space: nowrap;
     user-select: none;
     cursor: pointer;
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .btn:hover,
@@ -252,6 +244,10 @@
 @layer utilities {
   .footer-bg {
     background-image: url("./footer-bg.png");
+  }
+  .footer-vignette {
+    border-radius: inherit;
+    box-shadow: inset 0 0 60px 20px var(--background);
   }
 
   .gradient-mask {

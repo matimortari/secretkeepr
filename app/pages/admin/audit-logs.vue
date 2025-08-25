@@ -1,8 +1,8 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
-    <header class="navigation-group border-b pb-2">
+    <header class="navigation-group border-b py-2">
       <nuxt-link to="/admin/organization" class="flex items-center">
-        <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent md:mt-2" />
+        <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent" />
       </nuxt-link>
       <h2 class="max-w-lg truncate">
         Audit Logs
@@ -120,25 +120,23 @@
         </thead>
 
         <tbody>
-          <tr v-for="log in logs" :key="log.id">
-            <td class="max-w-sm truncate p-2 text-sm font-medium md:max-w-40" :title="actions.find(a => a.value === log.action)?.label">
+          <tr v-for="log in logs" :key="log.id" class="border text-sm hover:bg-muted">
+            <td class="max-w-sm p-2 align-top font-medium md:max-w-24" :title="actions.find(a => a.value === log.action)?.label">
               {{ actions.find(a => a.value === log.action)?.label }}
             </td>
-            <td class="text-info max-w-sm truncate p-2 md:max-w-32" :title="log.resource">
+            <td class="text-info max-w-sm overflow-hidden text-ellipsis p-2 align-top md:max-w-32" :title="log.resource">
               {{ log.resource }}
             </td>
-            <td class="text-info max-w-md truncate p-2 md:max-w-60" :title="formatMetadata(log.metadata ?? {})">
-              {{ formatMetadata(log.metadata ?? {}) }}
-            </td>
-            <td class="text-info max-w-sm truncate p-2 md:max-w-32" :title="userMap.get(log.userId)">
+            <td class="text-info max-w-md overflow-hidden text-ellipsis p-2 align-top md:max-w-60" :title="JSON.stringify(log.metadata, null, 2)" v-html="formatMetadata(log.metadata)" />
+            <td class="text-info max-w-sm overflow-hidden text-ellipsis p-2 align-top md:max-w-24" :title="userMap.get(log.userId)">
               {{ userMap.get(log.userId) }}
             </td>
-            <td class="text-info max-w-sm truncate p-2 md:max-w-32" :title="formatDate(log.createdAt)">
+            <td class="text-info max-w-sm overflow-hidden text-ellipsis p-2 align-top md:max-w-32" :title="formatDate(log.createdAt)">
               {{ formatDate(log.createdAt) }}
             </td>
-            <td class="text-info max-w-sm truncate p-2 md:max-w-32" :title="filters.showSensitiveInfo ? formatSensitiveInfo(log.metadata ?? {}) : ''">
+            <td class="text-info max-w-sm overflow-hidden text-ellipsis p-2 align-top md:max-w-32" :title="filters.showSensitiveInfo ? formatSensitiveData(log.metadata) : ''">
               <span v-if="filters.showSensitiveInfo">
-                {{ formatSensitiveInfo(log.metadata ?? {}) }}
+                {{ formatSensitiveData(log.metadata) }}
               </span>
               <span v-else>Hidden</span>
             </td>
@@ -151,7 +149,7 @@
 
 <script setup lang="ts">
 const orgStore = useOrganizationStore()
-const { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveInfo } = useAuditLogs()
+const { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveData } = useAuditLogs()
 
 const isUserDropdownOpen = ref(false)
 const isActionDropdownOpen = ref(false)

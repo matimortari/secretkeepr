@@ -1,4 +1,4 @@
-export function useProjectSecrets(projectId: string) {
+export function useEnvFile(projectId: string) {
   const projectsStore = useProjectsStore()
   const secretsStore = useSecretsStore()
 

@@ -1,7 +1,7 @@
 <template>
   <section
     id="hero" v-motion
-    class="hero-container flex flex-col items-center gap-12 p-8 text-center md:p-20" :initial="{ opacity: 0 }"
+    class="hero-container flex min-h-screen flex-col items-center gap-12 p-8 text-center md:p-20" :initial="{ opacity: 0 }"
     :visible="{ opacity: 1 }" :duration="800"
   >
     <div class="hero-background" />
