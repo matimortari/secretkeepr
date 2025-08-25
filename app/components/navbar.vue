@@ -49,7 +49,9 @@
     </div>
 
     <nav class="navigation-group" aria-label="User Actions">
-      <img :src="userStore.user?.image ?? undefined" alt="Avatar" class="size-10 rounded-full border-2">
+      <nuxt-link to="/admin/preferences" title="User Preferences" aria-label="User Preferences">
+        <img :src="userStore.user?.image ?? undefined" alt="Avatar" class="size-10 rounded-full border-2">
+      </nuxt-link>
       <button class="btn md:hidden" aria-label="Toggle Sidebar" @click="$emit('toggleSidebar')">
         <icon :name="props.isSidebarOpen ? 'ph:x' : 'ph:list'" size="20" />
       </button>

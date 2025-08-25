@@ -17,9 +17,9 @@ export default <Partial<Config>>{
           DEFAULT: "var(--card)",
           foreground: "var(--card-foreground)",
         },
-        overlay: {
-          DEFAULT: "var(--overlay)",
-          foreground: "var(--overlay-foreground)",
+        popover: {
+          DEFAULT: "var(--popover)",
+          foreground: "var(--popover-foreground)",
         },
         primary: {
           DEFAULT: "var(--primary)",

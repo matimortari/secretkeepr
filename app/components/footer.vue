@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer-bg flex flex-col items-center justify-between gap-2 bg-contain p-8 md:flex-row">
+  <footer class="footer-bg footer-vignette flex flex-col items-center justify-between gap-2 bg-contain p-8 md:flex-row">
     <p class="whitespace-nowrap text-sm text-muted-foreground">
       © {{ new Date().getFullYear() }} SecretKeepR. All rights reserved.
     </p>

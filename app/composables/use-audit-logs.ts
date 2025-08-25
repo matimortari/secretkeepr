@@ -1,12 +1,12 @@
 export function useAuditLogs() {
   const orgStore = useOrganizationStore()
 
-  const filters = ref({
-    date: "",
-    user: "",
-    action: "",
-    showSensitiveInfo: false,
-  })
+  interface NormalizedLogType extends AuditLogType {
+    actionLabel: string
+    createdAtFormatted: string
+    sensitiveInfo: string
+    metadata: Record<string, any>
+  }
 
   const actions = [
     { value: "org.create", label: "Organization Created" },
@@ -36,28 +36,27 @@ export function useAuditLogs() {
     { label: "Sensitive Info", value: "sensitive", icon: "ph:shield-bold" },
   ]
 
-  const logs = computed(() => {
-    const { date, user, action, showSensitiveInfo } = filters.value
-
-    return (orgStore.auditLogs.logs || [])
-      .filter((log) => {
-        const logDate = log.createdAt ? new Date(log.createdAt).toISOString().slice(0, 10) : ""
-        const dateMatch = !date || logDate === date
-        const userMatch = !user || log.userId === user
-        const actionMatch = !action || log.action === action
-        return dateMatch && userMatch && actionMatch
-      })
-      .map((log) => {
-        if (showSensitiveInfo)
-          return log
-        const { ip, userAgent, ...metadata } = log.metadata || {}
-        return { ...log, metadata }
-      })
+  const filters = ref({
+    date: "",
+    user: "",
+    action: "",
+    showSensitiveInfo: false,
   })
 
+  function stripSensitiveData(metadata: Record<string, any>) {
+    const { ip, userAgent, ...rest } = metadata
+    return rest
+  }
+
+  function formatSensitiveData(metadata: Record<string, any>) {
+    const ip = metadata.ip ?? "N/A"
+    const agent = metadata.userAgent ?? "N/A"
+    return `IP: ${ip}; Agent: ${agent}`
+  }
+
   function formatDate(date?: string | Date): string {
-    const d = new Date(date ?? "")
-    return Number.isNaN(d.getTime())
+    const d = typeof date === "string" ? new Date(date) : date
+    return !d || Number.isNaN(d.getTime())
       ? ""
       : d.toLocaleString("en-US", {
           year: "numeric",
@@ -74,45 +73,58 @@ export function useAuditLogs() {
       return ""
 
     const { ip, userAgent, ...safeMetadata } = metadata
-
-    const staticFields = [
-      ["secretKey", "Secret"],
-      ["projectName", "Project"],
-      ["name", "Name"],
-      ["description", "Description"],
-      ["key", "Key"],
-      ["addedUserId", "Added User"],
-      ["removedUserId", "Removed User"],
-      ["role", "Role"],
-    ]
-
     const entries: string[] = []
-    for (const [key, label] of staticFields) {
-      if (key && safeMetadata[key] !== undefined) {
-        if (key === "addedUserId") {
-          entries.push(`${label}: ${safeMetadata[key]}, Role: ${safeMetadata.role}`)
-        }
-        else {
-          entries.push(`${label}: ${safeMetadata[key]}`)
-        }
+
+    for (const [key, value] of Object.entries(safeMetadata)) {
+      if (value === null || value === undefined || value === "")
+        continue // skip empty values
+
+      if (Array.isArray(value)) {
+        value.forEach((item, i) => {
+          if (!item)
+            return // skip null/undefined
+          const valStr = typeof item === "object" ? JSON.stringify(item) : item
+          entries.push(`${key} ${i + 1}: ${valStr}`)
+        })
+      }
+      else if (typeof value === "object" && value !== null) {
+        entries.push(`${key}: ${JSON.stringify(value)}`)
+      }
+      else {
+        entries.push(`${key}: ${value}`)
       }
     }
-    if (safeMetadata.values) {
-      safeMetadata.values.forEach((item: any, i: number) => {
-        if (item?.value && item?.environment) {
-          entries.push(`Value ${i + 1}: ${item.value} (${item.environment})`)
-        }
+
+    // Wrap each entry in a div with truncate so it remains one line
+    return entries.map(e => `<div class="truncate max-w-full">${e}</div>`).join("")
+  }
+
+  const logs = computed<NormalizedLogType[]>(() => {
+    const { date, user, action, showSensitiveInfo } = filters.value
+
+    return (orgStore.auditLogs.logs || [])
+      .filter((log: AuditLogType) => {
+        const createdAtStr = log.createdAt instanceof Date
+          ? log.createdAt.toISOString()
+          : typeof log.createdAt === "string"
+            ? log.createdAt
+            : ""
+        const logDate = createdAtStr.slice(0, 10)
+
+        return (!date || logDate === date)
+          && (!user || log.userId === user)
+          && (!action || log.action === action)
       })
-    }
+      .map((log: AuditLogType) => {
+        const actionLabel = actions.find(a => a.value === log.action)?.label ?? log.action
+        const createdAtFormatted = formatDate(log.createdAt)
+        const sensitiveInfo = formatSensitiveData(log.metadata || {})
+        const metadata = showSensitiveInfo
+          ? log.metadata || {}
+          : stripSensitiveData(log.metadata || {})
+        return { ...log, actionLabel, createdAtFormatted, sensitiveInfo, metadata }
+      })
+  })
 
-    return entries.length ? entries.join("; ") : JSON.stringify(safeMetadata)
-  }
-
-  function formatSensitiveInfo(metadata: Record<string, any>) {
-    const ip = metadata.ip ?? "N/A"
-    const agent = metadata.userAgent ?? "N/A"
-    return `IP: ${ip}; Agent: ${agent}`
-  }
-
-  return { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveInfo }
+  return { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveData }
 }
