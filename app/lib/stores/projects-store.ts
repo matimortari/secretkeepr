@@ -1,6 +1,6 @@
 export const useProjectsStore = defineStore("projects", () => {
   const projects = ref<ProjectType[]>([])
-  const currentProject = ref<ProjectType | null>(null)
+  const currentProject = ref<ProjectType>()
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
@@ -36,8 +36,8 @@ export const useProjectsStore = defineStore("projects", () => {
     try {
       projects.value = await getProjectsService()
       if (currentProject.value) {
-        currentProject.value
-          = projects.value.find(p => p.id === currentProject.value?.id) || null
+        currentProject.value =
+          projects.value.find(p => p.id === currentProject.value?.id)
       }
       return projects.value
     }
@@ -101,7 +101,7 @@ export const useProjectsStore = defineStore("projects", () => {
       const response = await deleteProjectService(projectId)
       projects.value = projects.value.filter(p => p.id !== projectId)
       if (currentProject.value?.id === projectId) {
-        currentProject.value = null
+        currentProject.value = undefined
       }
       return response
     }

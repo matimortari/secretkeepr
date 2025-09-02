@@ -12,10 +12,10 @@
     <section class="flex flex-col">
       <div class="md:navigation-group gap-2 border-b p-2">
         <header class="flex flex-col gap-2">
-          <h4>
+          <h3>
             Project Details
-          </h4>
-          <p class="text-info">
+          </h3>
+          <p class="text-caption">
             Manage project details and settings.
           </p>
         </header>
@@ -31,7 +31,7 @@
           <h5>
             {{ field.label }}
           </h5>
-          <p v-if="field.description" class="text-info">
+          <p v-if="field.description" class="text-caption">
             {{ field.description }}
           </p>
         </div>
@@ -68,8 +68,8 @@
               <img :src="member.user?.image ?? undefined" alt="Avatar" class="hidden size-10 rounded-full border-2 md:block">
               <div class="flex min-w-0 flex-col">
                 <span class="truncate">{{ member.user?.name }}</span>
-                <span class="text-info truncate">{{ member.role }}</span>
-                <span class="text-info truncate">{{ member.userId }}</span>
+                <span class="text-caption truncate">{{ member.role }}</span>
+                <span class="text-caption truncate">{{ member.userId }}</span>
               </div>
             </div>
 
@@ -98,7 +98,7 @@
         <h5>
           Add New Member
         </h5>
-        <p class="text-info">
+        <p class="text-caption">
           Invite users to join this project.
         </p>
       </header>
@@ -131,10 +131,10 @@
     <!-- Danger Zone -->
     <section v-if="isOwner" class="flex flex-col">
       <header class="flex flex-col items-start gap-1 border-b p-2 text-start">
-        <h4>
+        <h3>
           Danger Zone
-        </h4>
-        <p class="text-info">
+        </h3>
+        <p class="text-caption">
           This section contains actions that can significantly affect your account. Please proceed with caution.
         </p>
       </header>
@@ -156,7 +156,7 @@
 
           <button class="btn-danger" aria-label="Delete Project" @click="handleDeleteProject">
             <icon name="ph:trash-bold" size="20" />
-            <span>Delete Project</span>
+            <span>Confirm</span>
           </button>
         </div>
       </nav>
@@ -352,7 +352,7 @@ watch(() => projectId.value, async (id) => {
 
   useHead({
     title: `${projectTitle} | Settings - SecretKeepR`,
-    link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}/settings` }, { rel: "icon", href: "/favicon.ico" }],
+    link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}/settings` }, { rel: "icon", href: "/favicon.svg" }],
     meta: [{ name: "description", content: `${projectTitle} project settings page.` }],
   })
 

@@ -15,7 +15,7 @@
           class="w-full"
           :placeholder="form.name.trim().toLowerCase().replace(/\s+/g, '-')"
         >
-        <span class="text-xs text-muted-foreground">
+        <span class="text-muted-foreground text-xs">
           This will be used in the project URL.
         </span>
       </div>
@@ -23,7 +23,7 @@
       <div class="flex flex-col items-start gap-1">
         <label for="description" class="text-sm font-semibold">Description</label>
         <input id="description" v-model="form.description" type="text" class="w-full">
-        <span class="text-xs text-muted-foreground">
+        <span class="text-muted-foreground text-xs">
           An optional description for your project.
         </span>
       </div>
@@ -34,7 +34,7 @@
         </p>
 
         <nav class="navigation-group">
-          <button type="button" class="text-sm font-semibold hover:underline" aria-label="Cancel" @click="emit('close')">
+          <button class="text-sm font-semibold hover:underline" aria-label="Cancel" @click="emit('close')">
             Cancel
           </button>
           <button class="btn-success" type="submit" aria-label="Save Project">

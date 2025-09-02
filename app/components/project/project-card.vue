@@ -1,18 +1,18 @@
 <template>
   <nuxt-link :to="`/admin/${project.slug}`">
-    <div class="card group relative h-[180px] w-full overflow-hidden border-2 hover:border-secondary">
+    <div class="card group relative h-[180px] w-full overflow-hidden border-2">
       <div class="flex h-full flex-col gap-2 p-2">
-        <h4 class="truncate">
+        <h3 class="truncate">
           {{ project.name }}
-        </h4>
-        <p class="text-info line-clamp-3">
+        </h3>
+        <p class="text-caption line-clamp-3">
           {{ project.description || 'No description provided.' }}
         </p>
       </div>
 
-      <div class="navigation-group absolute bottom-4 left-4 gap-4 text-muted-foreground">
+      <div class="navigation-group text-muted-foreground absolute bottom-4 left-4 gap-4">
         <nuxt-link :to="`/admin/${project.slug}/settings`" class="flex items-center">
-          <icon name="ph:gear-bold" size="20" class="hover:scale-sm transition-all" />
+          <icon name="ph:gear-bold" size="20" class="hover:scale-sm hover:text-accent transition-all" />
         </nuxt-link>
         <div class="flex flex-row items-center gap-2">
           <icon name="ph:key-bold" size="20" />
@@ -20,8 +20,8 @@
         </div>
       </div>
 
-      <div class="absolute bottom-4 right-4 flex items-center justify-center rounded-full bg-muted p-2">
-        <icon name="ph:arrow-right-bold" size="25" class="group-hover:scale-sm transition-all group-hover:text-secondary" />
+      <div class="bg-muted absolute right-4 bottom-4 flex items-center justify-center rounded-full p-2">
+        <icon name="ph:arrow-right-bold" size="25" class="group-hover:scale-sm group-hover:text-accent transition-all" />
       </div>
     </div>
   </nuxt-link>
@@ -33,6 +33,6 @@ const props = defineProps<{
 }>()
 
 const totalProjectSecrets = computed(() => {
-  return props.project.secrets?.length || 0
+  return props.project.secrets?.length ?? 0
 })
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center gap-4 bg-background p-8 md:flex-row md:p-24">
+  <div class="bg-background flex flex-col items-center justify-center gap-4 p-8 md:flex-row md:p-24">
     <header
       v-motion class="flex flex-col items-center gap-8 p-8 text-start md:flex-row"
       :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
@@ -8,11 +8,11 @@
       <img src="/assets/logo.png" alt="Logo" width="120" height="120">
 
       <div class="flex flex-col items-center gap-2 md:items-start">
-        <h1 class="font-goldman">
+        <h1>
           Sign In
         </h1>
 
-        <p class="text-center text-muted-foreground md:text-start">
+        <p class="text-muted-foreground text-center md:text-start">
           By continuing, you agree to our
           <nuxt-link to="/legal/privacy" class="text-primary hover:underline">
             Privacy Policy
@@ -64,7 +64,7 @@ const providers = [
 
 useHead({
   title: "Sign In - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/sign-in" }, { rel: "icon", href: "/favicon.ico" }],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/sign-in" }, { rel: "icon", href: "/favicon.svg" }],
   meta: [{ name: "description", content: "Sign In to SecretKeepR." }],
 })
 

@@ -5,7 +5,7 @@
     <Navbar :orgs="orgs" :org="orgStore.activeOrg" :is-sidebar-open="isSidebarOpen" @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
 
     <div class="flex flex-1">
-      <Sidebar :org="orgStore.activeOrg" :is-open="isSidebarOpen" @update:is-open="isSidebarOpen = $event" />
+      <Sidebar v-if="orgStore.activeOrg" :org="orgStore.activeOrg" :is-open="isSidebarOpen" @update:is-open="isSidebarOpen = $event" />
       <main class="flex flex-1 flex-col overflow-x-hidden p-4">
         <slot :active-org="orgStore.activeOrg" />
       </main>
@@ -37,13 +37,13 @@ function initActiveOrg(user: UserType) {
   if (import.meta.client) {
     const orgFromStorage = localStorage.getItem("active_org_id")
     const matchedOrg = user.memberships.find(m => m.organization?.id === orgFromStorage)?.organization
-    orgStore.activeOrg = matchedOrg || user.memberships[0]?.organization || null
+    orgStore.activeOrg = matchedOrg || user.memberships[0]?.organization
     if (orgStore.activeOrg) {
       localStorage.setItem("active_org_id", orgStore.activeOrg.id)
     }
   }
   else {
-    orgStore.activeOrg = user.memberships[0]?.organization || null
+    orgStore.activeOrg = user.memberships[0]?.organization
   }
 }
 

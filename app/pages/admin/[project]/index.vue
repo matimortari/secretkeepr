@@ -29,7 +29,7 @@
             <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm" role="menu" aria-label="Export environments">
               <li
                 v-for="env in ['development', 'staging', 'production']" :key="env"
-                role="menuitem" class="rounded p-2 capitalize hover:bg-muted"
+                role="menuitem" class="hover:bg-muted rounded p-2 capitalize"
                 @click="handleExportToEnv(env); isDropdownOpen = false"
               >
                 {{ env }}
@@ -44,7 +44,7 @@
       </nav>
     </header>
 
-    <p v-if="!secrets.length" class="text-info my-8 h-[80vh] text-center">
+    <p v-if="!secrets.length" class="text-caption my-8 h-[80vh] text-center">
       No secrets found for this project. Add a new secret or import from an .env file to get started.
     </p>
 
@@ -134,7 +134,7 @@ watch(() => projectId.value, async (id) => {
 
   useHead({
     title: `${projectTitle} - SecretKeepR`,
-    link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}` }, { rel: "icon", href: "/favicon.ico" }],
+    link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}` }, { rel: "icon", href: "/favicon.svg" }],
     meta: [{ name: "description", content: `${projectTitle} project page.` }],
   })
 

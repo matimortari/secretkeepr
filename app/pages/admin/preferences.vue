@@ -7,10 +7,10 @@
     <section class="flex flex-col">
       <div class="md:navigation-group gap-2 border-b p-2">
         <header class="flex flex-col gap-2">
-          <h4>
+          <h3>
             User Information
-          </h4>
-          <p class="text-info">
+          </h3>
+          <p class="text-caption">
             Manage your account information.
           </p>
         </header>
@@ -26,7 +26,7 @@
           <h5>
             {{ field.label }}
           </h5>
-          <p v-if="field.description" class="text-info">
+          <p v-if="field.description" class="text-caption">
             {{ field.description }}
           </p>
         </header>
@@ -51,10 +51,8 @@
         <div v-else-if="field.type === 'image'" class="navigation-group justify-end">
           <img v-if="field.src" :src="field.src.value ?? undefined" alt="Profile preview" class="size-10 rounded-full border-2">
           <input
-            id="image"
-            type="file"
-            accept="image/*"
-            class="hidden"
+            id="image" type="file"
+            accept="image/*" class="hidden"
             @change="field.onUpload"
           >
           <label for="image" class="btn">
@@ -69,10 +67,10 @@
     <!-- Danger Zone -->
     <section class="flex flex-col">
       <header class="flex flex-col items-start gap-1 border-b p-2 text-start">
-        <h4>
+        <h3>
           Danger Zone
-        </h4>
-        <p class="text-info">
+        </h3>
+        <p class="text-caption">
           This section contains actions that can significantly affect your account. Please proceed with caution.
         </p>
       </header>
@@ -94,7 +92,7 @@
 
           <button class="btn-danger" aria-label="Delete Account" @click="handleDeleteUser">
             <icon name="ph:user-minus-bold" size="20" />
-            <span>Delete Account</span>
+            <span>Confirm</span>
           </button>
         </div>
       </nav>
@@ -109,12 +107,15 @@ const { createActionHandler } = useActionIcon()
 const orgStore = useOrganizationStore()
 const userStore = useUserStore()
 
+const user = computed(() => userStore.user as UserType)
+const activeOrg = computed(() => orgStore.activeOrg as OrganizationType)
+
 const currentMembership = computed(() => {
   const user = userStore.user
-  if (!orgStore.activeOrg || !user || !user.memberships)
+  if (!activeOrg.value || !user || !user.memberships)
     return null
 
-  return user.memberships.find(m => m.organization?.id === orgStore.activeOrg?.id) || null
+  return user.memberships.find(m => m.organization?.id === activeOrg.value.id)
 })
 
 const userFields = [
@@ -122,28 +123,28 @@ const userFields = [
     label: "User Name",
     description: "This name will be displayed in your account and projects.",
     type: "input",
-    model: computed(() => userStore.user?.name),
+    model: computed(() => user.value.name),
     update: (value: string) => {
-      if (userStore.user)
-        userStore.user.name = value
+      if (user.value)
+        user.value.name = value
     },
     onSave: handleSubmit,
   },
   {
     label: "User ID",
     description: "This ID is unique to your account and cannot be changed.",
-    value: computed(() => userStore.user?.id),
+    value: computed(() => user.value.id),
     copyable: true,
   },
   {
     label: "User Email",
     description: "Your registered email address.",
-    value: computed(() => userStore.user?.email),
+    value: computed(() => user.value.email),
   },
   {
     label: "Active Organization",
     description: "The organization you are currently working in.",
-    value: computed(() => orgStore.activeOrg?.name),
+    value: computed(() => activeOrg.value.name),
   },
   {
     label: "Active Organization Role",
@@ -153,19 +154,19 @@ const userFields = [
   {
     label: "Joined On",
     description: "Date you joined SecretKeepR.",
-    value: computed(() => formatDate(userStore.user?.createdAt)),
+    value: computed(() => formatDate(user.value.createdAt)),
   },
   {
     label: "CLI Token",
     description: "This token is used for CLI access. Keep it secret and secure.",
-    value: computed(() => userStore.user?.cliToken),
+    value: computed(() => user.value.cliToken),
     copyable: true,
   },
   {
     label: "Profile Image",
     description: "Supported formats: JPG, PNG. Maximum size: 5MB.",
     type: "image",
-    src: computed(() => userStore.user?.image),
+    src: computed(() => user.value.image),
     onUpload: handleUploadImage,
   },
 ]
@@ -206,16 +207,16 @@ async function handleUploadImage(event: Event) {
 
 async function handleSubmit() {
   userStore.error = null
-  if (!userStore.user?.id)
+  if (!user.value.id)
     return
-  if (!userStore.user?.name) {
+  if (!user.value.name) {
     userStore.error = "User name cannot be empty."
     return
   }
 
   try {
     await userStore.updateUser({
-      name: userStore.user?.name,
+      name: user.value.name,
     })
     await userStore.getUser()
     saveIcon.triggerSuccess()
@@ -244,7 +245,7 @@ async function handleDeleteUser() {
 
 useHead({
   title: "Preferences - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/preferences" }, { rel: "icon", href: "/favicon.ico" }],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/preferences" }, { rel: "icon", href: "/favicon.svg" }],
   meta: [{ name: "description", content: "SecretKeepR user preferences page." }],
 })
 

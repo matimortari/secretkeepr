@@ -5,7 +5,7 @@
     :duration="800"
   >
     <img src="/assets/logo.png" alt="Logo" width="80" height="80">
-    <h2 class="font-goldman">
+    <h2 class="font-display">
       Privacy Policy
     </h2>
     <p class="text-muted-foreground">
@@ -85,7 +85,7 @@ const privacyContent = [
 
 useHead({
   title: "Privacy Policy - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/legal/privacy" }, { rel: "icon", href: "/favicon.ico" }],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/legal/privacy" }, { rel: "icon", href: "/favicon.svg" }],
   meta: [{ name: "description", content: "Read the privacy policy for SecretKeepR." }],
 })
 
