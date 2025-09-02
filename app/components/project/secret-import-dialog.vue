@@ -14,7 +14,7 @@
             {{ env }}
           </option>
         </select>
-        <span class="text-xs text-muted-foreground">
+        <span class="text-muted-foreground text-xs">
           Select the environment for the imported secrets.
         </span>
       </div>
@@ -25,7 +25,7 @@
         </p>
 
         <div class="navigation-group">
-          <button type="button" class="text-sm font-semibold hover:underline" aria-label="Cancel" @click="emit('close')">
+          <button class="text-sm font-semibold hover:underline" aria-label="Cancel" @click="emit('close')">
             Cancel
           </button>
           <button class="btn-success" type="submit" aria-label="Import Secrets from .env File">

@@ -8,7 +8,7 @@
       <h1>
         Join Organization
       </h1>
-      <p class="text-info">
+      <p class="text-caption">
         To join an organization, please enter your invite token below.
       </p>
     </header>
@@ -28,7 +28,7 @@
       </button>
     </form>
 
-    <p class="text-info flex min-h-4 flex-col items-center gap-2">
+    <p class="text-caption flex min-h-4 flex-col items-center gap-2">
       <span v-if="orgStore.error" class="text-danger-foreground">{{ orgStore.error }}</span>
       <span v-else-if="joinOrgSuccess" class="text-success">
         {{ joinOrgSuccess }}
@@ -62,7 +62,7 @@ async function handleAcceptInvite() {
 
 useHead({
   title: "Join Organization - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/setup/join-org" }, { rel: "icon", href: "/favicon.ico" }],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/setup/join-org" }, { rel: "icon", href: "/favicon.svg" }],
   meta: [{ name: "description", content: "Join an organization on SecretKeepR." }],
 })
 

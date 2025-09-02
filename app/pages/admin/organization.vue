@@ -7,10 +7,10 @@
     <section class="flex flex-col">
       <div class="md:navigation-group gap-2 border-b p-2">
         <header class="flex flex-col gap-2">
-          <h4>
+          <h3>
             Organization Details
-          </h4>
-          <p class="text-info">
+          </h3>
+          <p class="text-caption">
             Manage organization details and settings.
           </p>
         </header>
@@ -26,7 +26,7 @@
           <h5>
             {{ field.label }}
           </h5>
-          <p v-if="field.description" class="text-info">
+          <p v-if="field.description" class="text-caption">
             {{ field.description }}
           </p>
         </div>
@@ -61,7 +61,7 @@
           <li v-for="project in projectsFromOrg" :key="project.id" class="card navigation-group w-full justify-between">
             <div class="flex flex-col gap-1 truncate">
               <span>{{ project.name }}</span>
-              <span class="text-info">{{ project.description || "No description provided." }}</span>
+              <span class="text-caption">{{ project.description || "No description provided." }}</span>
             </div>
 
             <nav class="navigation-group justify-end" aria-label="Organization Project Actions">
@@ -88,22 +88,22 @@
               <img :src="orgUser.image ?? undefined" alt="Avatar" class="hidden size-10 rounded-full border-2 md:block">
               <div class="flex min-w-0 flex-col">
                 <span class="truncate">{{ orgUser.name }}</span>
-                <span class="text-info truncate">Role: {{ orgUser.role }}</span>
-                <span class="text-info truncate">{{ orgUser.id }}</span>
+                <span class="text-caption truncate">Role: {{ orgUser.role }}</span>
+                <span class="text-caption truncate">{{ orgUser.id }}</span>
               </div>
             </div>
 
             <nav v-if="isOwner && orgUser.id !== userStore.user?.id" class="navigation-group justify-end" aria-label="Organization Member Actions">
-              <select v-model="userRoles[orgUser.id]">
+              <select v-model="userRoles[orgUser.id as string]">
                 <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value" class="capitalize">
                   {{ role.label }}
                 </option>
               </select>
 
-              <button class="btn" aria-label="Update Member Role" @click="handleUpdateMemberRole(orgUser.id, userRoles[orgUser.id] || 'member')">
+              <button class="btn" aria-label="Update Member Role" @click="handleUpdateMemberRole(orgUser.id || '', userRoles[String(orgUser.id)] || 'member')">
                 <icon name="ph:floppy-disk-bold" size="15" />
               </button>
-              <button v-if="isOwner && orgUser.role !== 'owner'" class="btn" aria-label="Remove Member" @click="handleRemoveMember(orgUser.id)">
+              <button v-if="isOwner && orgUser.role !== 'owner'" class="btn" aria-label="Remove Member" @click="handleRemoveMember(orgUser.id || '')">
                 <icon name="ph:x-bold" size="15" />
               </button>
             </nav>
@@ -118,7 +118,7 @@
         <h5>
           Invite Members
         </h5>
-        <p class="text-info">
+        <p class="text-caption">
           Generate an invitation link to invite new users to this organization.
         </p>
       </header>
@@ -141,10 +141,10 @@
     <!-- Danger Zone -->
     <section v-if="isOwner" class="flex flex-col">
       <header class="flex flex-col items-start gap-1 border-b p-2 text-start">
-        <h4>
+        <h3>
           Danger Zone
-        </h4>
-        <p class="text-info">
+        </h3>
+        <p class="text-caption">
           This section contains actions that can significantly affect your account. Please proceed with caution.
         </p>
       </header>
@@ -166,7 +166,7 @@
 
           <button class="btn-danger" aria-label="Leave Organization" @click="handleLeaveOrg">
             <icon name="ph:sign-out-bold" size="20" />
-            <span>Leave Organization</span>
+            <span>Confirm</span>
           </button>
         </div>
       </nav>
@@ -188,7 +188,7 @@
 
           <button class="btn-danger" aria-label="Delete Organization" @click="handleDeleteOrg">
             <icon name="ph:network-x-bold" size="20" />
-            <span>Delete Organization</span>
+            <span>Confirm</span>
           </button>
         </div>
       </nav>
@@ -215,32 +215,35 @@ const deleteOrgError = ref<string | null>(null)
 const inviteError = ref<string | null>(null)
 const inviteSuccess = ref<string | null>(null)
 
-const isOwner = computed(() => orgStore.activeOrg?.memberships?.find(m => m.userId === userStore.user?.id)?.role === "owner")
-const isAdmin = computed(() => orgStore.activeOrg?.memberships?.find(m => m.userId === userStore.user?.id)?.role === "admin")
+const activeOrg = computed(() => orgStore.activeOrg as OrganizationType)
+const currentRole = computed(() => activeOrg.value.memberships?.find(m => m.userId === userStore.user?.id)?.role ?? "member" )
+const isOwner = computed(() => currentRole.value === "owner")
+const isAdmin = computed(() => currentRole.value === "admin")
 
-const projectsFromOrg = computed(() => {
-  return projectsStore.projects.filter(project => project.orgId === orgStore.activeOrg?.id)
-})
-
-const usersFromOrg = computed(() => {
-  return (orgStore.activeOrg?.memberships || []).map(m => ({
-    id: m.user?.id ?? "",
-    name: m.user?.name ?? "",
-    email: m.user?.email ?? "",
-    image: m.user?.image ?? "",
-    role: m.role ?? "",
+const usersFromOrg = computed(() =>
+  (activeOrg.value.memberships ?? []).map(m => ({
+    id: m.user?.id,
+    name: m.user?.name,
+    email: m.user?.email,
+    image: m.user?.image,
+    role: m.role || "member",
   }))
-})
+)
+
+const projectsFromOrg = computed(() =>
+  projectsStore.projects.filter(p => p.orgId === activeOrg.value.id)
+)
+
 
 const orgFields = [
   {
     label: "Organization Name",
     description: "The name of your organization.",
     type: "input",
-    model: computed(() => orgStore.activeOrg?.name || ""),
+    model: computed(() => activeOrg.value.name || ""),
     update: (value: string) => {
-      if (orgStore.activeOrg)
-        orgStore.activeOrg.name = value
+      if (activeOrg.value)
+        activeOrg.value.name = value
     },
     onSave: handleSubmit,
     editable: isOwner,
@@ -248,18 +251,18 @@ const orgFields = [
   {
     label: "Organization ID",
     description: "This ID uniquely identifies your organization.",
-    value: computed(() => orgStore.activeOrg?.id),
+    value: computed(() => activeOrg.value.id),
     copyable: true,
   },
   {
     label: "Created At",
     description: "When your organization was created.",
-    value: computed(() => formatDate(orgStore.activeOrg?.createdAt)),
+    value: computed(() => formatDate(activeOrg.value.createdAt)),
   },
   {
     label: "Updated At",
     description: "Last update time for your organization.",
-    value: computed(() => formatDate(orgStore.activeOrg?.updatedAt)),
+    value: computed(() => formatDate(activeOrg.value.updatedAt)),
   },
 ]
 
@@ -285,11 +288,11 @@ async function handleCreateInvite() {
 
 async function handleUpdateMemberRole(memberId: string, newRole: Role) {
   orgStore.error = null
-  if (!orgStore.activeOrg?.id)
+  if (!activeOrg.value.id)
     return
 
   try {
-    await orgStore.updateOrgMember(memberId, newRole, orgStore.activeOrg?.id)
+    await orgStore.updateOrgMember(memberId, newRole, activeOrg.value.id)
     await userStore.getUser()
   }
   catch (error: any) {
@@ -300,13 +303,13 @@ async function handleUpdateMemberRole(memberId: string, newRole: Role) {
 
 async function handleRemoveMember(memberId: string) {
   orgStore.error = null
-  if (!orgStore.activeOrg?.id)
+  if (!activeOrg.value.id)
     return
   if (!confirm("Are you sure you want to remove this member?"))
     return
 
   try {
-    await orgStore.removeOrgMember(memberId, orgStore.activeOrg?.id)
+    await orgStore.removeOrgMember(memberId, activeOrg.value.id)
     await userStore.getUser()
   }
   catch (error: any) {
@@ -317,13 +320,13 @@ async function handleRemoveMember(memberId: string) {
 
 async function handleSubmit() {
   orgStore.error = null
-  if (!orgStore.activeOrg?.id)
+  if (!activeOrg.value.id)
     return
 
   try {
-    await orgStore.updateOrg(orgStore.activeOrg?.id, {
-      id: orgStore.activeOrg?.id,
-      name: orgStore.activeOrg?.name || "",
+    await orgStore.updateOrg(activeOrg.value.id, {
+      id: activeOrg.value.id,
+      name: activeOrg.value.name || "",
     })
     await userStore.getUser()
     saveIcon.triggerSuccess()
@@ -336,7 +339,7 @@ async function handleSubmit() {
 
 async function handleLeaveOrg() {
   leaveOrgError.value = null
-  if (!orgStore.activeOrg?.id || !userStore.user?.id) {
+  if (!activeOrg.value.id || !userStore.user?.id) {
     leaveOrgError.value = "Missing organization or user ID."
     return
   }
@@ -344,7 +347,7 @@ async function handleLeaveOrg() {
     return
 
   try {
-    await orgStore.removeOrgMember(userStore.user.id, orgStore.activeOrg?.id)
+    await orgStore.removeOrgMember(userStore.user.id, activeOrg.value.id)
     await router.push("/setup/create-org")
   }
   catch (error: any) {
@@ -355,7 +358,7 @@ async function handleLeaveOrg() {
 
 async function handleDeleteOrg() {
   deleteOrgError.value = null
-  const orgId = orgStore.activeOrg?.id
+  const orgId = activeOrg.value.id
   if (!orgId)
     return
   if (!confirm("Are you sure you want to delete this organization? This action cannot be undone."))
@@ -385,7 +388,7 @@ watch(usersFromOrg, (users) => {
 
 useHead({
   title: "Organization - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/organization" }, { rel: "icon", href: "/favicon.ico" }],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/organization" }, { rel: "icon", href: "/favicon.svg" }],
   meta: [{ name: "description", content: "SecretKeepR organization page." }],
 })
 

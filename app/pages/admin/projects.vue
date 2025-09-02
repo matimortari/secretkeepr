@@ -1,20 +1,20 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
-    <header class="navigation-group border-b pb-2">
+    <header class="navigation-group border-b py-2">
       <h2>
         My Projects
       </h2>
 
       <nav class="navigation-group w-full flex-1 justify-end">
         <div class="relative hidden md:block">
-          <span class="absolute inset-y-0 left-0 flex flex-row items-center pl-4 text-muted-foreground">
-            <icon name="ph:magnifying-glass-bold" size="20" />
-          </span>
           <input
             id="search" v-model="searchQuery"
             type="text" placeholder="Search projects..."
-            class="w-full pl-10"
+            class="w-full pr-10"
           >
+          <span class="text-muted-foreground absolute inset-y-0 right-0 flex flex-row items-center pr-4">
+            <icon name="ph:magnifying-glass-bold" size="20" />
+          </span>
         </div>
         <button aria-label="Sort by Name" class="btn" @click="sort.direction = sort.direction === 'asc' ? 'desc' : 'asc'">
           <icon
@@ -31,7 +31,7 @@
       </nav>
     </header>
 
-    <p v-if="!filteredProjects.length" class="text-info my-8 h-[80vh] text-center">
+    <p v-if="!filteredProjects.length" class="text-caption my-8 h-[80vh] text-center">
       No projects found. Create a new project to get started.
     </p>
 
@@ -50,11 +50,11 @@
         :delay="200 * filteredProjects.length"
       >
         <button
-          class="card group flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 border-dashed bg-transparent text-muted-foreground transition-all hover:border-secondary hover:text-secondary"
+          class="card group text-muted-foreground flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 !border-dashed bg-transparent transition-all"
           aria-label="Add New Project" @click="isDialogOpen = true"
         >
-          <icon name="ph:plus" size="50" class="group-hover:scale-md transition-all group-hover:text-secondary" />
-          <span class="group-hover:scale-sm font-semibold transition-all group-hover:text-secondary">Add New Project</span>
+          <icon name="ph:plus" size="50" class="group-hover:scale-md group-hover:text-accent transition-all" />
+          <span class="group-hover:scale-sm transition-all">Add New Project</span>
         </button>
       </li>
     </ul>
@@ -110,7 +110,7 @@ async function handleCreateProject(project: ProjectType) {
 
 useHead({
   title: "Projects - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/projects" }, { rel: "icon", href: "/favicon.ico" }],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/projects" }, { rel: "icon", href: "/favicon.svg" }],
   meta: [{ name: "description", content: "SecretKeepR projects page." }],
 })
 

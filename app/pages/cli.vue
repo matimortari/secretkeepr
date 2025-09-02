@@ -4,7 +4,7 @@
     :initial="{ opacity: 0, scale: 0.8 }" :visible="{ opacity: 1, scale: 1 }"
     :duration="800"
   >
-    <h2 class="font-goldman">
+    <h2 class="font-display">
       Command-Line Interface
     </h2>
   </header>
@@ -21,7 +21,7 @@
 <script setup lang="ts">
 useHead({
   title: "Command-Line Interface - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/cli" }, { rel: "icon", href: "/favicon.ico" }],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/cli" }, { rel: "icon", href: "/favicon.svg" }],
   meta: [{ name: "description", content: "The guide for the command-line interface for SecretKeepR, powered by Go." }],
 })
 

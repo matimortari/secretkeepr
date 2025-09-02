@@ -8,7 +8,7 @@
       <h1>
         Welcome to SecretKeepR
       </h1>
-      <p class="text-info">
+      <p class="text-caption">
         To get started, please create an organization name with at least 3 characters.
       </p>
     </header>
@@ -28,7 +28,7 @@
       </button>
     </form>
 
-    <p class="text-info flex min-h-4 flex-col items-center gap-2">
+    <p class="text-caption flex min-h-4 flex-col items-center gap-2">
       <span v-if="orgStore.error" class="text-danger-foreground">{{ orgStore.error }}</span>
       <span> Already have an invite? <nuxt-link to="/setup/join-org" class="text-primary hover:underline">
         Join an Organization.
@@ -66,7 +66,7 @@ async function handleCreateOrg() {
 
 useHead({
   title: "Create Organization - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/setup/create-org" }, { rel: "icon", href: "/favicon.ico" }],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/setup/create-org" }, { rel: "icon", href: "/favicon.svg" }],
   meta: [{ name: "description", content: "Create your organization on SecretKeepR." }],
 })
 

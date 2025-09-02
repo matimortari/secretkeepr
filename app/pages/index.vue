@@ -1,16 +1,16 @@
 <template>
   <section
     id="hero" v-motion
-    class="hero-container flex min-h-screen flex-col items-center gap-12 p-8 text-center md:p-20" :initial="{ opacity: 0 }"
-    :visible="{ opacity: 1 }" :duration="800"
+    :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
+    :duration="800" class="hero-container flex min-h-screen flex-col items-center gap-12 p-8 text-center md:p-20"
   >
     <div class="hero-background" />
 
     <div class="z-10 flex max-w-2xl flex-col items-center gap-6 border-b py-8">
-      <h1 class="font-goldman leading-10">
+      <h1 class="leading-10">
         Your Secrets, Secured.
       </h1>
-      <p class="text-lg font-semibold leading-5 text-muted-foreground">
+      <p class="text-muted-foreground text-lg leading-5">
         No more .env headaches. SecretKeepR is designed to help users and organizations securely manage and share secrets.
         It provides access controls for managing projects, users, and secrets.
       </p>
@@ -22,22 +22,22 @@
     </div>
 
     <div class="z-10 flex flex-col items-center gap-4">
-      <h2 class="font-goldman">
+      <h2 class="font-display">
         Features
       </h2>
 
-      <div class="flex flex-col flex-wrap items-center justify-center md:flex-row">
+      <div class="flex flex-col flex-wrap items-center justify-center gap-4 md:flex-row">
         <div
           v-for="(feature, index) in features" :key="index"
-          v-motion class="flex min-w-[350px] max-w-sm flex-grow-0 flex-col items-center gap-2 p-8"
-          :initial="{ opacity: 0, y: -20 }" :visible="{ opacity: 1, y: 0 }"
-          :duration="800" :delay="200 * index"
+          v-motion :initial="{ opacity: 0, y: -20 }"
+          :visible="{ opacity: 1, y: 0 }" :duration="800"
+          :delay="200 * index" class="flex max-w-sm min-w-[350px] grow-0 flex-col items-center gap-2 p-8"
         >
           <icon :name="feature.icon" class="text-primary" size="60" />
-          <h4 class="whitespace-nowrap font-silkscreen tracking-tight">
+          <h3 class="font-display-alt tracking-tight whitespace-nowrap">
             {{ feature.title }}
-          </h4>
-          <p class="leading-5 tracking-tight text-muted-foreground">
+          </h3>
+          <p class="text-muted-foreground leading-5 tracking-tight">
             {{ feature.description }}
           </p>
         </div>
@@ -47,24 +47,24 @@
 
   <section
     id="how-to-use" v-motion
-    class="flex flex-col items-center gap-8 border-y p-8 text-center md:p-12" :initial="{ opacity: 0 }"
-    :visible="{ opacity: 1 }" :duration="800"
+    :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
+    :duration="800" class="flex flex-col items-center gap-8 border-y p-8 text-center md:p-12"
   >
-    <h2 class="font-goldman">
+    <h2 class="font-display">
       Getting Started
     </h2>
 
     <div class="grid grid-cols-1 gap-4 text-center md:grid-cols-5">
       <div
         v-for="(step, index) in howToUseSteps" :key="index"
-        v-motion class="flex flex-col items-center gap-1"
-        :initial="{ opacity: 0, x: -20 }" :visible="{ opacity: 1, x: 0 }"
-        :duration="800" :delay="200 * index"
+        v-motion :initial="{ opacity: 0, x: -20 }"
+        :visible="{ opacity: 1, x: 0 }" :duration="800"
+        :delay="200 * index" class="flex flex-col items-center gap-1"
       >
         <h5 class="whitespace-nowrap">
           {{ index + 1 }}. {{ step.title }}
         </h5>
-        <p class="max-w-xs leading-5 tracking-tight text-muted-foreground">
+        <p class="text-muted-foreground max-w-xs leading-5 tracking-tight">
           {{ step.description }}
         </p>
       </div>
@@ -73,21 +73,21 @@
 
   <section
     id="cli" v-motion
-    class="flex flex-col items-center gap-8 p-8 text-center md:p-12 md:text-start" :initial="{ opacity: 0, y: 20 }"
-    :visible="{ opacity: 1, y: 0 }" :duration="800"
+    :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
+    :duration="800" class="flex flex-col items-center gap-8 p-8 text-center md:p-12 md:text-start"
   >
     <header class="flex flex-col items-center gap-2">
-      <h2 class="font-goldman">
+      <h2 class="font-display">
         Command Line Interface
       </h2>
-      <p class="max-w-lg text-center leading-5 text-muted-foreground">
+      <p class="text-muted-foreground max-w-lg text-center leading-5">
         Manage secrets and projects directly from your terminal. Fast, secure, and open-source.
       </p>
     </header>
 
     <div class="relative flex w-full max-w-2xl flex-col gap-8">
       <article class="card flex flex-col p-0">
-        <div class="flex items-center justify-between p-2 text-start text-sm leading-5 text-muted-foreground">
+        <div class="text-muted-foreground flex items-center justify-between p-2 text-start text-sm leading-5">
           <p>
             > Install the CLI tool using the following command:
           </p>
@@ -102,13 +102,13 @@
       </article>
 
       <article class="card flex flex-col p-0">
-        <p class="flex items-center justify-between p-2 text-start text-sm leading-5 text-muted-foreground">
+        <p class="text-muted-foreground flex items-center justify-between p-2 text-start text-sm leading-5">
           > After installing, run the following commands to get started:
         </p>
         <Shiki lang="bash" :code="cliCommands.join('\n')" class="code-block" />
       </article>
 
-      <div class="absolute bottom-2 right-2 z-10 hidden select-none items-end gap-2 text-sm text-muted-foreground md:flex">
+      <div class="text-muted-foreground absolute right-2 bottom-2 z-10 hidden items-end gap-2 text-sm select-none md:flex">
         <span>Powered by Go</span>
         <img src="/assets/gopher.png" alt="Go Gopher" width="50" height="50">
       </div>
@@ -188,7 +188,7 @@ const cliCommands = [
 
 useHead({
   title: "SecretKeepR - Securely Manage Your Environment Variables",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app" }, { rel: "icon", href: "/favicon.ico" }],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app" }, { rel: "icon", href: "/favicon.svg" }],
   meta: [
     { name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." },
     { property: "og:title", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." },

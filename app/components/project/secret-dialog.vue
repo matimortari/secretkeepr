@@ -4,7 +4,7 @@
       <div class="flex flex-col items-start gap-1">
         <label for="key" class="text-sm font-semibold">Key</label>
         <input id="key" v-model="form.key" type="text" class="w-full">
-        <span class="text-xs text-muted-foreground">
+        <span class="text-muted-foreground text-xs">
           The unique identifier for the secret.
         </span>
       </div>
@@ -12,7 +12,7 @@
       <div class="flex flex-col items-start gap-1">
         <label for="description" class="text-sm font-semibold">Description (optional)</label>
         <input id="description" v-model="form.description" type="text" class="w-full">
-        <span class="text-xs text-muted-foreground">
+        <span class="text-muted-foreground text-xs">
           An optional description for the secret usage.
         </span>
       </div>
@@ -32,7 +32,7 @@
         </p>
 
         <div class="navigation-group">
-          <button type="button" class="text-sm font-semibold hover:underline" aria-label="Cancel" @click="emit('close')">
+          <button class="text-sm font-semibold hover:underline" aria-label="Cancel" @click="emit('close')">
             Cancel
           </button>
           <button class="btn-success" type="submit" aria-label="Save Secret">

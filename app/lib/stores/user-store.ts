@@ -1,5 +1,5 @@
 export const useUserStore = defineStore("user", () => {
-  const user = ref<UserType | null>(null)
+  const user = ref<UserType>()
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
@@ -73,7 +73,7 @@ export const useUserStore = defineStore("user", () => {
 
     try {
       const response = await deleteUserService()
-      user.value = null
+      user.value = undefined
       localStorage.removeItem("active_org_id")
       return response
     }

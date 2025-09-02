@@ -48,10 +48,15 @@ export function useAuditLogs() {
     return rest
   }
 
-  function formatSensitiveData(metadata: Record<string, any>) {
+  function formatSensitiveData(metadata: Record<string, any>, maxLength = 50) {
     const ip = metadata.ip ?? "N/A"
     const agent = metadata.userAgent ?? "N/A"
-    return `IP: ${ip}; Agent: ${agent}`
+    const str = `IP: ${ip}; Agent: ${agent}`
+
+    if (str.length > maxLength) {
+      return `${str.slice(0, maxLength)}…`
+    }
+    return str
   }
 
   function formatDate(date?: string | Date): string {
@@ -65,6 +70,7 @@ export function useAuditLogs() {
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
+          hour12: false,
         })
   }
 
@@ -77,12 +83,12 @@ export function useAuditLogs() {
 
     for (const [key, value] of Object.entries(safeMetadata)) {
       if (value === null || value === undefined || value === "")
-        continue // skip empty values
+        continue
 
       if (Array.isArray(value)) {
         value.forEach((item, i) => {
           if (!item)
-            return // skip null/undefined
+            return
           const valStr = typeof item === "object" ? JSON.stringify(item) : item
           entries.push(`${key} ${i + 1}: ${valStr}`)
         })
@@ -95,7 +101,6 @@ export function useAuditLogs() {
       }
     }
 
-    // Wrap each entry in a div with truncate so it remains one line
     return entries.map(e => `<div class="truncate max-w-full">${e}</div>`).join("")
   }
 

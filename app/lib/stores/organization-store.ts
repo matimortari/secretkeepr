@@ -4,7 +4,7 @@ export const useOrganizationStore = defineStore("organization", () => {
     members?: UserOrgMembershipType[]
     inviteLink?: string
     auditLogs?: AuditLogType[]
-  } | null>(null)
+  }>()
   const members = ref<UserOrgMembershipType[]>([])
   const inviteLink = ref<string | null>(null)
   const auditLogs = ref({
@@ -100,8 +100,6 @@ export const useOrganizationStore = defineStore("organization", () => {
     try {
       const response = await deleteOrgService(orgId)
       orgs.value = orgs.value.filter(org => org.id !== orgId)
-      if (activeOrg.value?.id === orgId)
-        activeOrg.value = null
       return response
     }
     catch (error: any) {

@@ -20,17 +20,16 @@
               <icon name="ph:caret-down-bold" size="15" />
             </button>
             <transition name="dropdown">
-              <ul v-if="isUserDropdownOpen" class="dropdown scroll-area overflow-y-auto whitespace-nowrap text-sm" role="menu" aria-label="Filter by User">
-                <li class="rounded p-2 hover:bg-muted" role="menuitem" @click="setUserFilter('')">
+              <ul v-if="isUserDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm whitespace-nowrap" role="menu" aria-label="Filter by User">
+                <li class="hover:bg-muted rounded p-2" role="menuitem" @click="setUserFilter('')">
                   All Users
                 </li>
                 <li
                   v-for="userId in users" :key="userId"
-                  class="flex flex-row items-center gap-1 rounded p-2 hover:bg-muted" role="menuitem"
+                  class="hover:bg-muted flex flex-row items-center gap-1 rounded p-2" role="menuitem"
                   @click="setUserFilter(userId)"
                 >
                   <span>{{ userMap.get(userId) || userId }}</span>
-                  <span class="text-xs text-muted-foreground">({{ userId }})</span>
                 </li>
               </ul>
             </transition>
@@ -42,11 +41,11 @@
               <icon name="ph:caret-down-bold" size="15" />
             </button>
             <transition name="dropdown">
-              <ul v-if="isActionDropdownOpen" class="dropdown scroll-area overflow-y-auto whitespace-nowrap text-sm">
-                <li class="rounded p-2 hover:bg-muted" @click="setActionFilter('')">
+              <ul v-if="isActionDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm whitespace-nowrap">
+                <li class="hover:bg-muted rounded p-2" @click="setActionFilter('')">
                   All Actions
                 </li>
-                <li v-for="action in actions" :key="action.value" class="rounded p-2 hover:bg-muted" @click="setActionFilter(action.value)">
+                <li v-for="action in actions" :key="action.value" class="hover:bg-muted rounded p-2" @click="setActionFilter(action.value)">
                   {{ action.label }}
                 </li>
               </ul>
@@ -65,32 +64,29 @@
           <input v-model="filters.date" type="date" title="Filter by date" class="md:hidden">
 
           <button
-            type="button" class="btn-secondary disabled:opacity-80"
-            :disabled="!orgStore.hasPrevPage" title="Previous Page"
-            aria-label="Previous Page" @click="orgStore.prevAuditLogPage"
+            class="btn-secondary disabled:opacity-80" :disabled="!orgStore.hasPrevPage"
+            title="Previous Page" aria-label="Previous Page"
+            @click="orgStore.prevAuditLogPage"
           >
             <icon name="ph:arrow-left-bold" size="20" />
           </button>
 
-          <div class="text-info flex flex-col items-center justify-center gap-1 whitespace-nowrap md:mx-4">
+          <div class="text-caption flex flex-col items-center justify-center gap-1 whitespace-nowrap md:mx-4">
             <span>{{ orgStore.auditLogs.page }} / {{ orgStore.totalPages }}</span>
             <span v-if="logs.length" class="text-xs italic">{{ logsSummary }}</span>
           </div>
 
           <button
-            type="button" class="btn-secondary disabled:opacity-80"
-            :disabled="!orgStore.hasNextPage" title="Next Page"
-            aria-label="Next Page" @click="orgStore.nextAuditLogPage"
+            class="btn-secondary disabled:opacity-80" :disabled="!orgStore.hasNextPage"
+            title="Next Page" aria-label="Next Page"
+            @click="orgStore.nextAuditLogPage"
           >
             <icon name="ph:arrow-right-bold" size="20" />
           </button>
 
           <button
-            type="button"
-            class="btn-danger"
-            :disabled="!logs.length"
-            title="Delete Filtered Logs"
-            aria-label="Delete Filtered Logs"
+            class="btn-danger" :disabled="!logs.length"
+            title="Delete Filtered Logs" aria-label="Delete Filtered Logs"
             @click="handleDeleteLogs"
           >
             <icon name="ph:trash-bold" size="20" />
@@ -99,17 +95,17 @@
       </div>
     </section>
 
-    <p v-if="orgStore.isLoading" class="text-info py-4">
+    <p v-if="orgStore.isLoading" class="text-caption py-4">
       Loading logs...
     </p>
-    <p v-else-if="!logs.length" class="text-info py-4">
+    <p v-else-if="!logs.length" class="text-caption py-4">
       No audit logs found.
     </p>
 
     <div v-else class="scroll-area w-full overflow-x-auto">
       <table class="min-w-full table-auto rounded-sm md:w-full md:overflow-hidden">
         <thead>
-          <tr class="bg-muted text-sm font-semibold">
+          <tr class="bg-muted border text-sm font-semibold">
             <th v-for="header in headers" :key="header.value">
               <div class="navigation-group truncate p-2">
                 <icon :name="header.icon" size="20" />
@@ -120,21 +116,27 @@
         </thead>
 
         <tbody>
-          <tr v-for="log in logs" :key="log.id" class="border text-sm hover:bg-muted">
+          <tr v-for="log in logs" :key="log.id" class="hover:bg-muted border text-sm">
             <td class="max-w-sm p-2 align-top font-medium md:max-w-24" :title="actions.find(a => a.value === log.action)?.label">
               {{ actions.find(a => a.value === log.action)?.label }}
             </td>
-            <td class="text-info max-w-sm overflow-hidden text-ellipsis p-2 align-top md:max-w-32" :title="log.resource">
+            <td class="text-caption max-w-sm overflow-hidden p-2 align-top text-ellipsis md:max-w-32" :title="log.resource">
               {{ log.resource }}
             </td>
-            <td class="text-info max-w-md overflow-hidden text-ellipsis p-2 align-top md:max-w-60" :title="JSON.stringify(log.metadata, null, 2)" v-html="formatMetadata(log.metadata)" />
-            <td class="text-info max-w-sm overflow-hidden text-ellipsis p-2 align-top md:max-w-24" :title="userMap.get(log.userId)">
+            <td
+              class="text-caption max-w-md overflow-hidden p-2 align-top text-ellipsis md:max-w-60" :title="JSON.stringify(log.metadata, null, 2)"
+              v-html="formatMetadata(log.metadata)"
+            />
+            <td class="text-caption max-w-sm overflow-hidden p-2 align-top text-ellipsis md:max-w-24" :title="userMap.get(log.userId)">
               {{ userMap.get(log.userId) }}
             </td>
-            <td class="text-info max-w-sm overflow-hidden text-ellipsis p-2 align-top md:max-w-32" :title="formatDate(log.createdAt)">
+            <td class="text-caption max-w-sm overflow-hidden p-2 align-top text-ellipsis md:max-w-32" :title="formatDate(log.createdAt)">
               {{ formatDate(log.createdAt) }}
             </td>
-            <td class="text-info max-w-sm overflow-hidden text-ellipsis p-2 align-top md:max-w-32" :title="filters.showSensitiveInfo ? formatSensitiveData(log.metadata) : ''">
+            <td
+              class="text-caption max-w-sm overflow-hidden p-2 align-top text-ellipsis md:max-w-32"
+              :title="filters.showSensitiveInfo ? formatSensitiveData(log.metadata, 200) : ''"
+            >
               <span v-if="filters.showSensitiveInfo">
                 {{ formatSensitiveData(log.metadata) }}
               </span>
@@ -156,9 +158,11 @@ const isActionDropdownOpen = ref(false)
 const userDropdownRef = ref<HTMLElement | null>(null)
 const actionDropdownRef = ref<HTMLElement | null>(null)
 
+const activeOrg = computed(() => orgStore.activeOrg as OrganizationType)
+
 const userMap = computed(() => {
   const map = new Map<string, string>()
-  orgStore.activeOrg?.memberships?.forEach((membership) => {
+  activeOrg.value?.memberships?.forEach((membership) => {
     const user = membership.user
     if (user) {
       map.set(user.id, user.name)
@@ -202,16 +206,16 @@ const logsSummary = computed(() => {
 })
 
 async function handleDeleteLogs() {
-  if (!orgStore.activeOrg?.id)
+  if (!activeOrg.value.id)
     return
   if (!confirm(`Are you sure you want to delete ${logsSummary.value}? This action cannot be undone. Only the logs matching your current filters will be deleted.`)) {
     return
   }
 
   const deleteFilters = {
-    orgId: orgStore.activeOrg.id,
-    action: filters.value.action || undefined,
-    beforeDate: filters.value.date || undefined,
+    orgId: activeOrg.value.id,
+    action: filters.value.action,
+    beforeDate: filters.value.date,
     createdBySelfOnly: filters.value.user === "self",
     protectedActions: [],
   }
@@ -225,7 +229,7 @@ async function handleDeleteLogs() {
   }
 }
 
-watch(() => orgStore.activeOrg, async (org) => {
+watch(() => activeOrg.value, async (org) => {
   if (org?.id) {
     await orgStore.getAuditLogs(org.id)
   }
@@ -233,7 +237,7 @@ watch(() => orgStore.activeOrg, async (org) => {
 
 useHead({
   title: "Audit Logs - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/audit-logs" }, { rel: "icon", href: "/favicon.ico" }],
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/audit-logs" }, { rel: "icon", href: "/favicon.svg" }],
   meta: [{ name: "description", content: "SecretKeepR audit logs page." }],
 })
 
@@ -266,7 +270,6 @@ definePageMeta({
 
 input[type="date"] {
   padding: 0.5rem;
-  border: 2px solid var(--border);
   border-radius: 0.25rem;
   white-space: nowrap;
   color: var(--muted-foreground);
