@@ -109,13 +109,8 @@ const userStore = useUserStore()
 
 const user = computed(() => userStore.user as UserType)
 const activeOrg = computed(() => orgStore.activeOrg as OrganizationType)
-
 const currentMembership = computed(() => {
-  const user = userStore.user
-  if (!activeOrg.value || !user || !user.memberships)
-    return null
-
-  return user.memberships.find(m => m.organization?.id === activeOrg.value.id)
+  return userStore.user?.memberships.find(m => m.orgId === activeOrg.value.id && m.userId === user.value.id)
 })
 
 const userFields = [
@@ -171,10 +166,8 @@ const userFields = [
   },
 ]
 
+const copyIcon = userFields.map(field => field.copyable ? createActionHandler("ph:copy-bold") : null)
 const saveIcon = createActionHandler("ph:floppy-disk-bold")
-const copyIcon = userFields.map(field =>
-  field.copyable ? createActionHandler("ph:copy-bold") : null,
-)
 
 async function handleUploadImage(event: Event) {
   userStore.error = null

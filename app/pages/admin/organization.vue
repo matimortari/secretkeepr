@@ -216,10 +216,10 @@ const inviteError = ref<string | null>(null)
 const inviteSuccess = ref<string | null>(null)
 
 const activeOrg = computed(() => orgStore.activeOrg as OrganizationType)
-const currentRole = computed(() => activeOrg.value.memberships?.find(m => m.userId === userStore.user?.id)?.role ?? "member" )
+const currentRole = computed(() => activeOrg.value.memberships?.find(m => m.userId === userStore.user?.id)?.role ?? "member")
 const isOwner = computed(() => currentRole.value === "owner")
 const isAdmin = computed(() => currentRole.value === "admin")
-
+const projectsFromOrg = computed(() => projectsStore.projects.filter(p => p.orgId === activeOrg.value.id))
 const usersFromOrg = computed(() =>
   (activeOrg.value.memberships ?? []).map(m => ({
     id: m.user?.id,
@@ -227,13 +227,8 @@ const usersFromOrg = computed(() =>
     email: m.user?.email,
     image: m.user?.image,
     role: m.role || "member",
-  }))
+  })),
 )
-
-const projectsFromOrg = computed(() =>
-  projectsStore.projects.filter(p => p.orgId === activeOrg.value.id)
-)
-
 
 const orgFields = [
   {
@@ -266,10 +261,8 @@ const orgFields = [
   },
 ]
 
+const copyIcon = orgFields.map(field => field.copyable ? createActionHandler("ph:copy-bold") : null)
 const saveIcon = createActionHandler("ph:floppy-disk-bold")
-const copyIcon = orgFields.map(field =>
-  field.copyable ? createActionHandler("ph:copy-bold") : null,
-)
 
 async function handleCreateInvite() {
   inviteError.value = null

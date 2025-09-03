@@ -36,8 +36,7 @@ export const useProjectsStore = defineStore("projects", () => {
     try {
       projects.value = await getProjectsService()
       if (currentProject.value) {
-        currentProject.value =
-          projects.value.find(p => p.id === currentProject.value?.id)
+        currentProject.value = projects.value.find(p => p.id === currentProject.value?.id)
       }
       return projects.value
     }
