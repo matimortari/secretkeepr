@@ -184,10 +184,7 @@ const deleteProjectError = ref<string | null>(null)
 const newMemberId = ref("")
 const newMemberRole = ref(roles[0]?.value ?? "member")
 
-const project = computed(() => {
-  return projectsStore.projects.find(p => p.slug === slug) || null
-})
-
+const project = computed(() => projectsStore.projects.find(p => p.slug === slug) || null)
 const projectId = computed(() => project.value?.id ?? "")
 const projectMembers = computed(() => project.value?.members || [])
 const currentUserRole = computed(() => projectMembers.value.find(m => m.userId === userStore.user?.id)?.role)
@@ -249,10 +246,8 @@ const projectFields = [
   },
 ]
 
+const copyIcon = projectFields.map(field => field.copyable ? createActionHandler("ph:copy-bold") : null)
 const saveIcon = createActionHandler("ph:floppy-disk-bold")
-const copyIcon = projectFields.map(field =>
-  field.copyable ? createActionHandler("ph:copy-bold") : null,
-)
 
 async function handleAddMember() {
   addMemberError.value = null

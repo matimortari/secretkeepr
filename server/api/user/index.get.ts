@@ -12,8 +12,7 @@ export default defineEventHandler(async (event) => {
           organization: {
             include: {
               memberships: {
-                include: { user: { omit: { cliToken: true } },
-                },
+                include: { user: { omit: { cliToken: true } } },
               },
             },
           },
