@@ -10,7 +10,7 @@
     </header>
 
     <section class="flex flex-col">
-      <div class="md:navigation-group gap-2 border-b p-2">
+      <div class="md:navigation-group gap-2 border-b p-4">
         <header class="flex flex-col gap-2">
           <h3>
             Project Details
@@ -26,7 +26,7 @@
       </div>
 
       <!-- Project Details -->
-      <div v-for="(field, index) in projectFields" :key="index" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10">
+      <div v-for="(field, index) in projectFields" :key="index" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-4 md:px-10">
         <div class="flex flex-col items-start justify-center gap-1 text-start">
           <h5>
             {{ field.label }}
@@ -57,7 +57,7 @@
       </div>
 
       <!-- Project Members List -->
-      <section class="flex flex-col justify-between border-b p-2 md:px-10">
+      <section class="flex flex-col justify-between border-b p-4 md:px-10">
         <h5>
           Project Members
         </h5>
@@ -93,7 +93,7 @@
     </section>
 
     <!-- Add New Member -->
-    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10" aria-label="Add New Member">
+    <section v-if="isOwner || isAdmin" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-4 md:px-10" aria-label="Add New Member">
       <header class="flex flex-col gap-1">
         <h5>
           Add New Member
@@ -130,7 +130,7 @@
 
     <!-- Danger Zone -->
     <section v-if="isOwner" class="flex flex-col">
-      <header class="flex flex-col items-start gap-1 border-b p-2 text-start">
+      <header class="flex flex-col items-start gap-1 border-b p-4 text-start">
         <h3>
           Danger Zone
         </h3>
@@ -139,7 +139,7 @@
         </p>
       </header>
 
-      <nav class="md:navigation-group flex flex-col justify-between gap-2 border-b p-2 md:px-10" aria-label="Delete Project">
+      <nav class="md:navigation-group flex flex-col justify-between gap-2 border-b p-4 md:px-10" aria-label="Delete Project">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Project

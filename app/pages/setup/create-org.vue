@@ -31,8 +31,8 @@
     <p class="text-caption flex min-h-4 flex-col items-center gap-2">
       <span v-if="orgStore.error" class="text-danger-foreground">{{ orgStore.error }}</span>
       <span> Already have an invite? <nuxt-link to="/setup/join-org" class="text-primary hover:underline">
-        Join an Organization.
-      </nuxt-link>
+        Join an Organization
+      </nuxt-link>.
       </span>
     </p>
   </div>
