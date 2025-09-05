@@ -45,6 +45,8 @@
         <ProjectCard :project="project" />
       </li>
       <button
+        v-motion :initial="{ opacity: 0 }"
+        :enter="{ opacity: 1 }" :duration="600"
         class="card group text-muted-foreground flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 !border-dashed bg-transparent transition-all"
         aria-label="Add New Project" @click="isDialogOpen = true"
       >
