@@ -43,8 +43,8 @@
 
         <div v-else-if="field.type === 'input'" class="navigation-group justify-end">
           <input class="w-full" type="text" :value="field.model?.value" @input="field.update?.(($event.target as HTMLInputElement).value)">
-          <button class="btn" aria-label="Save Changes" @click="field.onSave">
-            <icon :name="saveIcon.icon.value" size="20" />
+          <button class="btn" aria-label="Save Changes" @click="field.onSave(index)">
+            <icon :name="saveIcon[index]?.icon.value || 'ph:floppy-disk-bold'" size="20" />
           </button>
         </div>
 
@@ -262,7 +262,7 @@ const orgFields = [
 ]
 
 const copyIcon = orgFields.map(field => field.copyable ? createActionHandler("ph:copy-bold") : null)
-const saveIcon = createActionHandler("ph:floppy-disk-bold")
+const saveIcon = orgFields.map(() => createActionHandler("ph:floppy-disk-bold"))
 
 async function handleCreateInvite() {
   inviteError.value = null
@@ -311,7 +311,7 @@ async function handleRemoveMember(memberId: string) {
   }
 }
 
-async function handleSubmit() {
+async function handleSubmit(index: number) {
   orgStore.error = null
   if (!activeOrg.value.id)
     return
@@ -322,7 +322,7 @@ async function handleSubmit() {
       name: activeOrg.value.name || "",
     })
     await userStore.getUser()
-    saveIcon.triggerSuccess()
+    saveIcon[index]?.triggerSuccess()
   }
   catch (error: any) {
     console.error("Failed to update organization:", error)
