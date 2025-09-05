@@ -4,7 +4,12 @@ import { createAuditLog, getUserFromSession, requireProjectRole } from "#server/
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
 
-  const secretId = event.context.params?.id
+  const projectId = event.context.params?.id
+  if (!projectId || typeof projectId !== "string") {
+    throw createError({ statusCode: 400, statusMessage: "Project ID is required" })
+  }
+
+  const secretId = event.context.params?.secret
   if (!secretId || typeof secretId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Secret ID is required" })
   }

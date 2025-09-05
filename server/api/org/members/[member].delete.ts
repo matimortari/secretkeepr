@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
-  const memberId = event.context.params?.id
+  const memberId = event.context.params?.member
   if (!memberId || typeof memberId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Member ID is required" })
   }

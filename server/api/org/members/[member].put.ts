@@ -4,9 +4,9 @@ import { createAuditLog, getUserFromSession, requireOrgRole } from "#server/lib/
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
 
-  const userId = event.context.params?.id
-  if (!userId || typeof userId !== "string") {
-    throw createError({ statusCode: 400, statusMessage: "User ID is required" })
+  const memberId = event.context.params?.member
+  if (!memberId || typeof memberId !== "string") {
+    throw createError({ statusCode: 400, statusMessage: "Member ID is required" })
   }
 
   const body = await readBody(event)
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const targetMembership = await db.userOrganizationMembership.findUnique({
     where: {
       userId_orgId: {
-        userId,
+        userId: memberId,
         orgId,
       },
     },
@@ -45,14 +45,14 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, statusMessage: "Cannot demote the last remaining owner" })
     }
   }
-  if (userId === sessionUser.id && currentMembership.role !== "owner") {
+  if (memberId === sessionUser.id && currentMembership.role !== "owner") {
     throw createError({ statusCode: 403, statusMessage: "Access denied: only owners can change their own role" })
   }
 
   const updatedMembership = await db.userOrganizationMembership.update({
     where: {
       userId_orgId: {
-        userId,
+        userId: memberId,
         orgId,
       },
     },
@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
     userId: sessionUser.id!,
     orgId,
     action: "org.member.update",
-    resource: `User: ${userId}`,
+    resource: `User: ${memberId}`,
     metadata: {
       role: updatedMembership.role,
     },
