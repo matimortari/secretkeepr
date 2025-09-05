@@ -2,24 +2,21 @@ import { fileURLToPath } from "node:url"
 import tailwindcss from "@tailwindcss/vite"
 
 export default defineNuxtConfig({
+  compatibilityDate: "2025-09-05",
   modules: ["@nuxt/icon", "@nuxtjs/google-fonts", "@pinia/nuxt", "@vueuse/motion/nuxt", "nuxt-auth-utils", "nuxt-shiki"],
+  imports: { dirs: ["lib/**"] },
   alias: {
     "#server": fileURLToPath(new URL("./server", import.meta.url)),
-  },
-  imports: {
-    dirs: ["lib", "lib/middleware", "lib/services"],
   },
   runtimeConfig: {
     public: {
       baseUrl: process.env.NUXT_PUBLIC_BASE_URL,
     },
   },
-  css: ["~/assets/styles.css"],
   vite: {
-    plugins: [
-      tailwindcss(),
-    ],
+    plugins: [tailwindcss()],
   },
+  css: ["~/assets/styles.css"],
   googleFonts: {
     display: "swap",
     prefetch: true,
@@ -32,6 +29,7 @@ export default defineNuxtConfig({
     },
   },
   icon: {
+    mode: "svg",
     clientBundle: {
       scan: true,
     },
@@ -43,5 +41,4 @@ export default defineNuxtConfig({
       theme: "vesper",
     },
   },
-  compatibilityDate: "2025-05-24",
 })
