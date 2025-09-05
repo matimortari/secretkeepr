@@ -44,19 +44,13 @@
       >
         <ProjectCard :project="project" />
       </li>
-      <li
-        v-motion :initial="{ opacity: 0 }"
-        :visible="{ opacity: 1 }" :duration="600"
-        :delay="200 * filteredProjects.length"
+      <button
+        class="card group text-muted-foreground flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 !border-dashed bg-transparent transition-all"
+        aria-label="Add New Project" @click="isDialogOpen = true"
       >
-        <button
-          class="card group text-muted-foreground flex h-[180px] w-full flex-col items-center justify-center gap-4 border-2 !border-dashed bg-transparent transition-all"
-          aria-label="Add New Project" @click="isDialogOpen = true"
-        >
-          <icon name="ph:plus" size="50" class="group-hover:scale-md group-hover:text-accent transition-all" />
-          <span class="group-hover:scale-sm transition-all">Add New Project</span>
-        </button>
-      </li>
+        <icon name="ph:plus" size="50" class="group-hover:scale-md group-hover:text-accent transition-all" />
+        <span class="group-hover:scale-sm transition-all">Add New Project</span>
+      </button>
     </ul>
 
     <ProjectDialog :is-open="isDialogOpen" @close="isDialogOpen = false" @save="handleCreateProject" />

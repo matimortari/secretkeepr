@@ -68,12 +68,12 @@
               <img :src="member.user?.image ?? undefined" alt="Avatar" class="hidden size-10 rounded-full border-2 md:block">
               <div class="flex min-w-0 flex-col">
                 <span class="truncate">{{ member.user?.name }}</span>
-                <span class="text-caption truncate">{{ member.role }}</span>
+                <span class="text-caption truncate">{{ member.role.toUpperCase() }}</span>
                 <span class="text-caption truncate">{{ member.userId }}</span>
               </div>
             </div>
 
-            <nav v-if="(isOwner || isAdmin) && member.userId !== userStore.user?.id" class="navigation-group justify-end md:w-1/3" aria-label="Project Member Actions">
+            <nav v-if="(isOwner || isAdmin) && member.userId !== userStore.user?.id && member.role !== 'owner'" class="navigation-group justify-end md:w-1/3" aria-label="Project Member Actions">
               <select v-model="member.role">
                 <option v-for="role in roles.filter(r => r.value !== 'owner')" :key="role.value" :value="role.value" class="capitalize">
                   {{ role.label }}
@@ -83,7 +83,7 @@
               <button class="btn" aria-label="Update Member Role" @click="handleUpdateMemberRole(member.userId, member.role)">
                 <icon name="ph:floppy-disk-bold" size="15" />
               </button>
-              <button v-if="isOwner && member.role !== 'owner'" class="btn" aria-label="Remove Member" @click="handleRemoveMember(member.userId)">
+              <button v-if="isOwner && String(member.role) !== 'owner'" class="btn" aria-label="Remove Member" @click="handleRemoveMember(member.userId)">
                 <icon name="ph:x" size="15" />
               </button>
             </nav>
