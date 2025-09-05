@@ -9,11 +9,11 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Project ID is required" })
   }
 
-  const userId = event.context.params?.member
-  if (!userId || typeof userId !== "string") {
-    throw createError({ statusCode: 400, statusMessage: "User ID is required" })
+  const memberId = event.context.params?.member
+  if (!memberId || typeof memberId !== "string") {
+    throw createError({ statusCode: 400, statusMessage: "Member ID is required" })
   }
-  if (sessionUser.id === userId) {
+  if (sessionUser.id === memberId) {
     throw createError({ statusCode: 403, statusMessage: "You cannot modify your own project membership" })
   }
 
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
   await db.projectMember.delete({
     where: {
       userId_projectId: {
-        userId,
+        userId: memberId,
         projectId,
       },
     },
@@ -42,10 +42,10 @@ export default defineEventHandler(async (event) => {
     action: "project.member.remove",
     resource: `Project: ${projectId}`,
     metadata: {
-      id: userId,
+      id: memberId,
     },
     req: event.node.req,
   })
 
-  return { message: "User removed from project", userId }
+  return { message: "User removed from project", userId: memberId }
 })

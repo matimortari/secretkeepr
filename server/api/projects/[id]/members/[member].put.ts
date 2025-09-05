@@ -4,16 +4,16 @@ import { createAuditLog, getUserFromSession, requireProjectRole } from "#server/
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
 
-  const projectId = event.context.params?.id
+  const projectId = event.context.params?.member
   if (!projectId || typeof projectId !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Project ID is required" })
   }
 
-  const userId = event.context.params?.member
-  if (!userId || typeof userId !== "string") {
-    throw createError({ statusCode: 400, statusMessage: "User ID is required" })
+  const memberId = event.context.params?.member
+  if (!memberId || typeof memberId !== "string") {
+    throw createError({ statusCode: 400, statusMessage: "Member ID is required" })
   }
-  if (sessionUser.id === userId) {
+  if (sessionUser.id === memberId) {
     throw createError({ statusCode: 403, statusMessage: "You cannot modify your own project membership" })
   }
 
@@ -32,10 +32,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Project not found" })
   }
 
-  const updatedUser = await db.projectMember.update({
+  const updatedMember = await db.projectMember.update({
     where: {
       userId_projectId: {
-        userId,
+        userId: memberId,
         projectId,
       },
     },
@@ -53,16 +53,16 @@ export default defineEventHandler(async (event) => {
   })
 
   await createAuditLog({
-    userId: sessionUser.id!,
+    memberId: sessionUser.id!,
     orgId: project.orgId,
     action: "project.member.update",
     resource: `Project: ${projectId}`,
     metadata: {
-      id: updatedUser.userId,
-      newRole: updatedUser.role,
+      id: updatedMember.userId,
+      newRole: updatedMember.role,
     },
     req: event.node.req,
   })
 
-  return { message: "User project role updated", updatedUser }
+  return { message: "User project role updated", updatedMember }
 })
