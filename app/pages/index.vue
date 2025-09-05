@@ -37,7 +37,7 @@
         :visible="{ opacity: 1, y: 0 }" :duration="800"
         :delay="200 * index" class="flex flex-col items-center gap-2"
       >
-        <span class="text-primary text-lg font-bold md:text-4xl">{{ highlight.title }}</span>
+        <span class="text-primary text-lg font-bold md:text-2xl">{{ highlight.title }}</span>
         <span class="text-muted-foreground text-sm">{{ highlight.description }}</span>
       </div>
     </div>
