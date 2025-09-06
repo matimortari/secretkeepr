@@ -68,7 +68,7 @@
               <img :src="member.user?.image ?? undefined" alt="Avatar" class="hidden size-10 rounded-full border-2 md:block">
               <div class="flex min-w-0 flex-col">
                 <span class="truncate">{{ member.user?.name }}</span>
-                <span class="text-caption truncate">{{ member.role.toUpperCase() }}</span>
+                <span class="text-caption truncate">Role: {{ member.role }}</span>
                 <span class="text-caption truncate">{{ member.userId }}</span>
               </div>
             </div>

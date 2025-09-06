@@ -21,7 +21,7 @@
     </div>
 
     <nav v-if="projectsFromOrg.length" aria-label="Projects Navigation" class="scroll-area flex max-h-64 flex-col overflow-x-hidden">
-      <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-caption p-2 break-words hover:underline">
+      <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-caption truncate p-2 hover:underline">
         {{ project.name }}
       </nuxt-link>
     </nav>
