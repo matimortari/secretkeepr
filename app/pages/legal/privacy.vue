@@ -4,7 +4,7 @@
     :initial="{ opacity: 0, scale: 0.8 }" :visible="{ opacity: 1, scale: 1 }"
     :duration="800"
   >
-    <img src="/assets/logo.png" alt="Logo" width="80" height="80">
+    <img src="/assets/logo-icon.png" alt="Logo" width="80" height="80">
     <h2 class="font-display">
       Privacy Policy
     </h2>

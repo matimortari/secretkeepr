@@ -2,11 +2,7 @@
   <div v-if="userStore.user" class="navigation-group bg-card justify-between border-b-2 p-4">
     <div class="navigation-group">
       <nuxt-link to="/" class="hover:scale-sm flex flex-row items-center gap-2 transition-all">
-        <img
-          src="/assets/logo.png" alt="Logo"
-          width="30" height="30"
-          class="rounded-full"
-        >
+        <img src="/assets/logo-icon.png" alt="Logo" width="35" height="35">
       </nuxt-link>
 
       <nav class="navigation-group text-sm" aria-label="Breadcrumbs Navigation">
