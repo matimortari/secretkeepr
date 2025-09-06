@@ -23,7 +23,7 @@
           <icon name="ph:arrow-right-bold" size="20" class="transition-transform group-hover:translate-x-1" />
         </nuxt-link>
 
-        <nuxt-link to="/cli" class="flex flex-row items-center gap-2 text-sm whitespace-nowrap hover:underline">
+        <nuxt-link to="/cli" class="flex flex-row items-center gap-2 text-sm font-semibold whitespace-nowrap hover:underline">
           <span>SecretKeepR CLI</span>
           <icon name="ph:terminal-window" size="30" />
         </nuxt-link>

@@ -139,7 +139,7 @@
     </section>
 
     <!-- Danger Zone -->
-    <section v-if="isOwner" class="flex flex-col">
+    <section class="flex flex-col">
       <header class="flex flex-col items-start gap-1 border-b p-4 text-start">
         <h3>
           Danger Zone
@@ -171,7 +171,7 @@
         </div>
       </nav>
 
-      <nav class="md:navigation-group flex flex-col justify-between gap-2 border-b p-4 md:px-10" aria-label="Delete Organization">
+      <nav v-if="isOwner" class="md:navigation-group flex flex-col justify-between gap-2 border-b p-4 md:px-10" aria-label="Delete Organization">
         <header class="flex flex-col gap-1">
           <h5>
             Delete Organization
