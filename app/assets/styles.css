@@ -127,7 +127,7 @@ h6 {
   border: 1px solid var(--border);
   border-radius: 0.25rem;
   padding: 0.5rem;
-  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .popover {
@@ -137,7 +137,7 @@ h6 {
   border-radius: 0.25rem;
   padding: 1rem;
   box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.4);
-  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dropdown {
@@ -154,17 +154,29 @@ h6 {
   max-height: 8rem;
 }
 
+.code-block {
+  background-color: #0d1117;
+  padding: 1.25rem;
+  font-size: 0.875rem;
+  text-align: start;
+  overflow-x: auto;
+}
+
 input,
 textarea,
 select {
-  font-family: var(--font-mono);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background-color: var(--input);
   color: var(--muted-foreground);
+  font-family: var(--font-mono);
   border: 2px solid var(--border);
+  accent-color: var(--accent);
   border-radius: 0.25rem;
   padding: 0.5rem;
   font-size: 0.875rem;
-  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 input:hover,
@@ -177,7 +189,6 @@ textarea:focus,
 select:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--accent);
-  outline: 2px solid transparent;
   outline-offset: 2px;
 }
 
@@ -188,14 +199,6 @@ select:focus {
   gap: 0.5rem;
 }
 
-.code-block {
-  background-color: #101010;
-  padding: 1.25rem;
-  font-size: 0.875rem;
-  text-align: start;
-  overflow-x: auto;
-}
-
 .btn,
 .btn-primary,
 .btn-secondary,
@@ -204,7 +207,6 @@ select:focus {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
   padding: 0.5rem;
   gap: 0.5rem;
   font-size: 0.875rem;
@@ -214,7 +216,7 @@ select:focus {
   white-space: nowrap;
   user-select: none;
   cursor: pointer;
-  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn:hover,
@@ -276,6 +278,11 @@ select:focus {
   padding: 0.5rem;
 }
 
+.gradient-mask {
+  background-color: var(--background);
+  box-shadow: 0px 0px 15px 10px var(--background);
+}
+
 .footer-bg {
   background-image: url("./footer-bg.png");
 }
@@ -283,11 +290,6 @@ select:focus {
 .footer-vignette {
   border-radius: inherit;
   box-shadow: inset 0 0 60px 20px var(--background);
-}
-
-.gradient-mask {
-  background-color: var(--background);
-  box-shadow: 0px 0px 15px 10px var(--background);
 }
 
 /* Match background and foreground colors */
