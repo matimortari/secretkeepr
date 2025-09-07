@@ -6,7 +6,7 @@
   >
     <div class="hero-background" />
 
-    <header class="z-20 flex w-full max-w-2xl flex-col items-center gap-8 border-b py-8">
+    <header class="z-20 flex w-full max-w-2xl flex-col items-center gap-8 border-b py-16">
       <div class="flex flex-col items-center gap-4">
         <h1>
           Your Secrets, Secured.
@@ -30,14 +30,14 @@
       </div>
     </header>
 
-    <div class="flex flex-wrap justify-center gap-8 py-12">
+    <div class="flex flex-wrap justify-center gap-4 py-12 md:gap-8">
       <div
         v-for="(highlight, index) in highlights" :key="index"
         v-motion :initial="{ opacity: 0, y: 20 }"
         :visible="{ opacity: 1, y: 0 }" :duration="800"
-        :delay="200 * index" class="flex flex-col items-center gap-2"
+        :delay="200 * index" class="flex flex-col items-center gap-1 text-center"
       >
-        <span class="text-primary text-lg font-bold md:text-2xl">{{ highlight.title }}</span>
+        <span class="text-primary text-xl font-bold md:text-2xl">{{ highlight.title }}</span>
         <span class="text-muted-foreground text-sm">{{ highlight.description }}</span>
       </div>
     </div>
@@ -149,7 +149,7 @@ const copyIcon = createActionHandler("ph:copy-bold")
 
 const highlights = [
   { title: "Fast Setup", description: "Get started in under 5 minutes." },
-  { title: "Open Source", description: "Fully transparent & contributed by the community." },
+  { title: "Open Source", description: "Fully transparent and free to use." },
   { title: "Secure by Design", description: "Secrets are encrypted end-to-end." },
 ]
 
