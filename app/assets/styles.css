@@ -289,7 +289,7 @@ select:focus {
 
 .footer-vignette {
   border-radius: inherit;
-  box-shadow: inset 0 0 60px 20px var(--background);
+  box-shadow: inset 0 0 40px 20px var(--background);
 }
 
 /* Match background and foreground colors */
