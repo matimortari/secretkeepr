@@ -3,7 +3,7 @@
     <table class="table-fixed rounded-sm md:w-full md:overflow-hidden">
       <thead>
         <tr class="bg-muted text-sm font-semibold">
-          <th class="navigation-group w-full p-2 text-left">
+          <th class="navigation-group w-full p-2 text-start">
             <span>Key</span>
             <icon
               name="ph:arrow-down-bold" size="15"
@@ -13,7 +13,7 @@
             />
           </th>
 
-          <th v-for="env in environments" :key="env" class="p-2 text-left capitalize md:w-1/6">
+          <th v-for="env in environments" :key="env" class="p-2 text-start capitalize md:w-1/6">
             <span>{{ env }}</span>
           </th>
         </tr>
