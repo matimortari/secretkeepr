@@ -10,7 +10,7 @@
 
   <div class="mx-auto flex gap-8 px-8 py-4 md:px-24">
     <article
-      v-motion class="flex flex-col gap-4 p-4 text-left"
+      v-motion class="flex flex-col gap-4 p-4 text-start"
       :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
       :duration="800"
     >
@@ -28,7 +28,7 @@
       </section>
     </article>
 
-    <aside class="bg-card sticky top-24 hidden w-72 self-start rounded-lg p-4 text-right shadow-2xl lg:block">
+    <aside class="bg-card sticky top-24 hidden w-72 self-start rounded-lg p-4 text-end shadow-2xl lg:block">
       <nav class="space-y-4">
         <h3 class="border-b py-4">
           On this page
