@@ -49,25 +49,19 @@
     </p>
 
     <ProjectSecrets
-      v-if="secrets.length"
-      :secrets="secrets"
-      :project-id="project?.id ?? ''"
-      @edit="(secret: SecretType) => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = secret }"
+      v-if="secrets.length" :secrets="secrets"
+      :project-id="project?.id ?? ''" @edit="(secret: SecretType) => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = secret }"
     />
 
     <ProjectSecretDialog
-      :is-open="isDialogOpen && dialogType === 'secret'"
-      :selected-secret="selectedSecret"
-      :project-id="project?.id ?? ''"
-      @close="() => { isDialogOpen = false; dialogType = null; selectedSecret = null }"
+      :is-open="isDialogOpen && dialogType === 'secret'" :selected-secret="selectedSecret"
+      :project-id="project?.id ?? ''" @close="() => { isDialogOpen = false; dialogType = null; selectedSecret = null }"
       @save="handleSaveSecret"
     />
 
     <ProjectSecretImportDialog
-      :is-open="isDialogOpen && dialogType === 'env'"
-      :project-id="project?.id ?? ''"
-      :existing-secrets="secrets"
-      @close="() => { isDialogOpen = false; dialogType = null; selectedSecret = null }"
+      :is-open="isDialogOpen && dialogType === 'env'" :project-id="project?.id ?? ''"
+      :secrets="secrets" @close="() => { isDialogOpen = false; dialogType = null; selectedSecret = null }"
       @save="handleImportFromEnv"
     />
   </div>
