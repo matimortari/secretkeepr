@@ -41,7 +41,7 @@
 const props = defineProps<{
   isOpen: boolean
   projectId: string
-  existingSecrets: SecretType[]
+  secrets: SecretType[]
 }>()
 
 const emit = defineEmits<{
@@ -92,7 +92,7 @@ function handleSubmit() {
 
   const duplicateKeys: string[] = []
   for (const [key] of Object.entries(parsed)) {
-    const existing = props.existingSecrets.find(secret => secret.key === key)
+    const existing = props.secrets.find(secret => secret.key === key)
     const existsInEnv = existing?.values?.some(v => v.environment === selectedEnv.value)
     if (existsInEnv) {
       duplicateKeys.push(key)
