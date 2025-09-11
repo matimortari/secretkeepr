@@ -3,6 +3,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
+
 enum Environment {
   development
   staging
@@ -18,7 +22,7 @@ enum Role {
 model User {
   id            String                   @id @default(cuid())
   email         String                   @unique
-  name          String?
+  name          String
   image         String?
   cliToken      String?                  @unique
   createdAt     DateTime                 @default(now())

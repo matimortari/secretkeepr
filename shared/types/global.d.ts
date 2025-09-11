@@ -1,36 +1,16 @@
 type Environment = "development" | "staging" | "production"
 type Role = "owner" | "admin" | "member"
 
-interface UserOrgMembershipType {
-  id?: string
-  userId: string
-  orgId: string
-  role: Role
-  createdAt?: Date
-  user?: UserType
-  organization?: OrganizationType
-}
-
-interface ProjectMemberType {
-  id?: string
-  userId: string
-  projectId: string
-  role: Role
-  createdAt?: Date
-  user?: UserType
-  project?: ProjectType
-}
-
 interface UserType {
   id: string
-  name: string
   email: string
-  image: string | null
+  name: string
+  image?: string | null
   cliToken?: string | null
   createdAt?: Date
   updatedAt?: Date
-  organizations: UserOrgMembershipType[]
-  projects?: ProjectMemberType[]
+  organizations: OrganizationMembershipType[]
+  projects?: ProjectMembershipType[]
 }
 
 interface OrganizationType {
@@ -38,13 +18,13 @@ interface OrganizationType {
   name: string
   createdAt?: Date
   updatedAt?: Date
-  organizations?: UserOrgMembershipType[]
+  memberships?: OrganizationMembershipType[]
   projects?: ProjectType[]
   auditLogs?: AuditLogType[]
 }
 
 interface ProjectType {
-  id?: string
+  id: string
   name: string
   slug: string
   description?: string | null
@@ -52,8 +32,26 @@ interface ProjectType {
   createdAt?: Date
   updatedAt?: Date
   organization?: OrganizationType
-  members?: ProjectMemberType[]
+  members?: ProjectMembershipType[]
   secrets?: SecretType[]
+}
+
+interface OrganizationMembershipType {
+  userId: string
+  orgId: string
+  role: Role
+  createdAt?: Date
+  user?: UserType
+  organization?: OrganizationType
+}
+
+interface ProjectMembershipType {
+  userId: string
+  projectId: string
+  role: Role
+  createdAt?: Date
+  user?: UserType
+  project?: ProjectType
 }
 
 interface SecretType {

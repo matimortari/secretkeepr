@@ -27,10 +27,7 @@ export async function handleOAuthUser(event: H3Event, userData: {
             select: {
               role: true,
               organization: {
-                select: {
-                  id: true,
-                  name: true,
-                },
+                select: { id: true, name: true },
               },
             },
           },
@@ -39,8 +36,8 @@ export async function handleOAuthUser(event: H3Event, userData: {
     },
   })
 
-  // If no user found by account, try to find existing user by email. Create user if none found
-  let user = existingAccount?.user ?? undefined
+  // Find or create user
+  let user = existingAccount?.user
   if (!user) {
     const foundUser = await db.user.findUnique({
       where: { email },
@@ -48,14 +45,7 @@ export async function handleOAuthUser(event: H3Event, userData: {
         organizations: {
           select: {
             role: true,
-            organization: {
-              select: {
-                id: true,
-                name: true,
-                createdAt: true,
-                updatedAt: true,
-              },
-            },
+            organization: { select: { id: true, name: true } },
           },
         },
       },
@@ -66,25 +56,22 @@ export async function handleOAuthUser(event: H3Event, userData: {
       user = await db.user.create({
         data: {
           email,
-          name,
+          name: name ?? "",
           image: image ?? undefined,
         },
         include: {
           organizations: {
             select: {
               role: true,
-              organization: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
+              organization: { select: { id: true, name: true } },
             },
           },
         },
       })
     }
   }
+
+  // Create account if it doesn't exist
   if (!existingAccount) {
     await db.account.create({
       data: {
@@ -95,21 +82,19 @@ export async function handleOAuthUser(event: H3Event, userData: {
     })
   }
 
-  // Always regenerate the CLI token on login
   const cliToken = randomBytes(16).toString("hex")
   await db.user.update({
     where: { id: user.id },
-    data: {
-      cliToken,
-    },
+    data: { cliToken },
   })
 
+  // Construct session user
   const sessionUser = {
     id: user.id,
     email: user.email,
-    name: user.name!,
+    name: user.name ?? "",
     image: user.image ?? null,
-    organizations: user.organizations,
+    organizations: user.organizations ?? [],
     projects: [],
     cliToken,
   }

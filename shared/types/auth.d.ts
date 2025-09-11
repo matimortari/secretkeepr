@@ -4,6 +4,7 @@ declare module "#auth-utils" {
     email: string
     name: string
     image?: string | null
+    cliToken?: string
     organizations: {
       role: Role
       organization: {
@@ -17,7 +18,6 @@ declare module "#auth-utils" {
       name: string
       role: Role
     }[]
-    cliToken?: string
   }
 
   interface UserSession {

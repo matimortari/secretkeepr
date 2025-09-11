@@ -1,11 +1,11 @@
 export const useOrganizationStore = defineStore("organization", () => {
   const orgs = ref<OrganizationType[]>([])
   const activeOrg = ref<OrganizationType & {
-    members?: UserOrgMembershipType[]
+    members?: OrganizationMembershipType[]
     inviteLink?: string
     auditLogs?: AuditLogType[]
   }>()
-  const members = ref<UserOrgMembershipType[]>([])
+  const members = ref<OrganizationMembershipType[]>([])
   const inviteLink = ref<string | null>(null)
   const auditLogs = ref({
     logs: [] as AuditLogType[],
@@ -118,7 +118,7 @@ export const useOrganizationStore = defineStore("organization", () => {
 
     try {
       const response = await updateOrgMemberService(memberId, { role, orgId })
-      members.value = members.value.map(m => (m.id === memberId ? response : m))
+      members.value = members.value.map(m => (m.userId === memberId ? response : m))
       if (activeOrg.value?.id === orgId) {
         activeOrg.value.members = [...members.value]
       }
@@ -140,7 +140,7 @@ export const useOrganizationStore = defineStore("organization", () => {
 
     try {
       const response = await removeUserFromOrgService(orgId, memberId)
-      members.value = members.value.filter(m => m.id !== memberId)
+      members.value = members.value.filter(m => m.userId !== memberId)
       if (activeOrg.value?.id === orgId) {
         activeOrg.value.members = [...members.value]
       }
