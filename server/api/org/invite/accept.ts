@@ -37,9 +37,8 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  await db.invitation.update({
+  await db.invitation.delete({
     where: { id: invite.id },
-    data: { usedAt: new Date() },
   })
 
   await createAuditLog({

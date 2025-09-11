@@ -27,6 +27,16 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Project not found" })
   }
 
+  const member = await db.projectMembership.findUnique({
+    where: { userId_projectId: { userId: memberId, projectId } },
+  })
+  if (!member) {
+    throw createError({ statusCode: 404, statusMessage: "Project member not found" })
+  }
+  if (member.role === "owner") {
+    throw createError({ statusCode: 403, statusMessage: "You cannot remove the project owner" })
+  }
+
   await db.projectMembership.delete({
     where: {
       userId_projectId: {

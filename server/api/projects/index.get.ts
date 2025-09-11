@@ -8,29 +8,17 @@ export default defineEventHandler(async (event) => {
   const projects = await db.project.findMany({
     where: {
       members: {
-        some: {
-          userId: sessionUser.id,
-        },
+        some: { userId: sessionUser.id },
       },
     },
     include: {
       secrets: {
-        include: {
-          values: true,
-        },
+        include: { values: true },
       },
       members: {
         select: {
           role: true,
-          userId: true,
-          user: {
-            select: {
-              id: true,
-              email: true,
-              name: true,
-              image: true,
-            },
-          },
+          user: { select: { id: true, name: true, image: true } },
         },
       },
 

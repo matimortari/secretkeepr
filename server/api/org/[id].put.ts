@@ -13,6 +13,10 @@ export default defineEventHandler(async (event) => {
   if (!body.name || typeof body.name !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Organization name is required" })
   }
+  body.name = body.name.trim()
+  if (body.name.length === 0 || body.name.length > 50) {
+    throw createError({ statusCode: 400, statusMessage: "Organization name must be 1-50 characters" })
+  }
 
   await requireOrgRole(sessionUser.id!, orgId, ["owner"])
 

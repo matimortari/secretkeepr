@@ -17,11 +17,7 @@ export default defineEventHandler(async (event) => {
     action: action ? { equals: action } : undefined,
     createdAt: beforeDate ? { lt: new Date(beforeDate) } : undefined,
     userId: createdBySelfOnly ? sessionUser.id : undefined,
-    NOT: {
-      action: {
-        in: protectedActions,
-      },
-    },
+    NOT: { action: { in: protectedActions } },
   }
 
   const logsToDelete = await db.auditLog.findMany({
