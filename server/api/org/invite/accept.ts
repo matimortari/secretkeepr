@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Invalid or expired invitation token." })
   }
 
-  const existingMembership = await db.userOrganizationMembership.findUnique({
+  const existingMembership = await db.organizationMembership.findUnique({
     where: {
       userId_orgId: {
         userId: sessionUser.id!,
@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "User is already a member of this organization" })
   }
 
-  await db.userOrganizationMembership.create({
+  await db.organizationMembership.create({
     data: {
       userId: sessionUser.id!,
       orgId: invite.orgId,

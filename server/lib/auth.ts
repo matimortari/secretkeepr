@@ -23,7 +23,7 @@ export async function handleOAuthUser(event: H3Event, userData: {
     include: {
       user: {
         include: {
-          memberships: {
+          organizations: {
             select: {
               role: true,
               organization: {
@@ -45,7 +45,7 @@ export async function handleOAuthUser(event: H3Event, userData: {
     const foundUser = await db.user.findUnique({
       where: { email },
       include: {
-        memberships: {
+        organizations: {
           select: {
             role: true,
             organization: {
@@ -70,7 +70,7 @@ export async function handleOAuthUser(event: H3Event, userData: {
           image: image ?? undefined,
         },
         include: {
-          memberships: {
+          organizations: {
             select: {
               role: true,
               organization: {
@@ -109,7 +109,7 @@ export async function handleOAuthUser(event: H3Event, userData: {
     email: user.email,
     name: user.name!,
     image: user.image ?? null,
-    memberships: user.memberships!,
+    organizations: user.organizations,
     projects: [],
     cliToken,
   }

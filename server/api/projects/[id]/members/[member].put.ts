@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Project not found" })
   }
 
-  const updatedMember = await db.projectMember.update({
+  const updatedMember = await db.projectMembership.update({
     where: {
       userId_projectId: {
         userId: memberId,

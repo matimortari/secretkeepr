@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
   const currentMembership = await requireOrgRole(sessionUser.id!, orgId, ["owner", "admin"])
 
-  const targetMembership = await db.userOrganizationMembership.findUnique({
+  const targetMembership = await db.organizationMembership.findUnique({
     where: {
       userId_orgId: {
         userId: memberId,
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
   // Prevent demoting the last owner
   if (targetMembership.role === "owner" && body.role !== "owner") {
-    const ownerCount = await db.userOrganizationMembership.count({
+    const ownerCount = await db.organizationMembership.count({
       where: {
         orgId,
         role: "owner",
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, statusMessage: "Access denied: only owners can change their own role" })
   }
 
-  const updatedMembership = await db.userOrganizationMembership.update({
+  const updatedMembership = await db.organizationMembership.update({
     where: {
       userId_orgId: {
         userId: memberId,

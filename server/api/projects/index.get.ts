@@ -21,7 +21,6 @@ export default defineEventHandler(async (event) => {
       },
       members: {
         select: {
-          id: true,
           role: true,
           userId: true,
           user: {

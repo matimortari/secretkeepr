@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
   await requireOrgRole(sessionUser.id!, orgId, ["owner"])
 
-  await db.userOrganizationMembership.deleteMany({
+  await db.organizationMembership.deleteMany({
     where: { orgId },
   })
 

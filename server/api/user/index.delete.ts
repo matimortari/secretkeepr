@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     where: { id: sessionUser.id },
     select: {
       id: true,
-      memberships: {
+      organizations: {
         select: {
           orgId: true,
         },
@@ -25,8 +25,8 @@ export default defineEventHandler(async (event) => {
 
   // Check organizations where user was a member for remaining users
   const orgsDeleted = []
-  for (const membership of user.memberships) {
-    const remainingMembersCount = await db.userOrganizationMembership.count({
+  for (const membership of user.organizations) {
+    const remainingMembersCount = await db.organizationMembership.count({
       where: { orgId: membership.orgId },
     })
     if (remainingMembersCount === 0) {

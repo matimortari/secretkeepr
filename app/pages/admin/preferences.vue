@@ -110,7 +110,7 @@ const userStore = useUserStore()
 const user = computed(() => userStore.user as UserType)
 const activeOrg = computed(() => orgStore.activeOrg as OrganizationType)
 const currentMembership = computed(() => {
-  return userStore.user?.memberships.find(m => m.orgId === activeOrg.value.id && m.userId === user.value.id)
+  return userStore.user?.organizations.find(m => m.orgId === activeOrg.value.id && m.userId === user.value.id)
 })
 
 const userFields = [

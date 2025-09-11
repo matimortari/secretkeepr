@@ -30,7 +30,7 @@ export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
 }
 
 export async function requireOrgRole(userId: string, orgId: string, roles: string[]) {
-  const membership = await db.userOrganizationMembership.findUnique({
+  const membership = await db.organizationMembership.findUnique({
     where: { userId_orgId: { userId, orgId } },
     select: { role: true },
   })
@@ -45,7 +45,7 @@ export async function requireOrgRole(userId: string, orgId: string, roles: strin
 }
 
 export async function requireProjectRole(userId: string, projectId: string, roles: string[]) {
-  const membership = await db.projectMember.findUnique({
+  const membership = await db.projectMembership.findUnique({
     where: { userId_projectId: { userId, projectId } },
     select: { role: true },
   })
