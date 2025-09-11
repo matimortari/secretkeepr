@@ -181,7 +181,8 @@ export const useOrganizationStore = defineStore("organization", () => {
     error.value = null
 
     try {
-      return await acceptOrgInviteService(token)
+      const response = await acceptOrgInviteService(token)
+      return response
     }
     catch (error: any) {
       error.value = error.message || "Failed to accept invite"
@@ -252,6 +253,22 @@ export const useOrganizationStore = defineStore("organization", () => {
     }
   }
 
+  async function setActiveOrg(org: OrganizationType) {
+    isLoading.value = true
+    error.value = null
+    try {
+      await setActiveOrgService(org.id)
+      activeOrg.value = org
+    }
+    catch (error: any) {
+      error.value = error.message || "Failed to switch organization"
+      throw error
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     orgs,
     error,
@@ -274,5 +291,6 @@ export const useOrganizationStore = defineStore("organization", () => {
     deleteAuditLogs,
     nextAuditLogPage,
     prevAuditLogPage,
+    setActiveOrg,
   }
 })

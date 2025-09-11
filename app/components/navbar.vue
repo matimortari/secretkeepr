@@ -86,12 +86,14 @@ const currentPage = computed(() => {
 })
 
 async function setActiveOrg(org: OrganizationType) {
-  const found = orgStore.orgs.find(o => o.id === org.id)
-  if (found) {
-    orgStore.activeOrg = found
-    localStorage.setItem("active_org_id", org.id)
+  try {
+    await setActiveOrgService(org.id)
+    orgStore.activeOrg = org
   }
-  isDropdownOpen.value = false
+  catch (error: any) {
+    error.value = error.message || "Failed to switch organization"
+    throw error
+  }
 }
 
 function signOut() {

@@ -74,7 +74,6 @@ export const useUserStore = defineStore("user", () => {
     try {
       const response = await deleteUserService()
       user.value = undefined
-      localStorage.removeItem("active_org_id")
       return response
     }
     catch (error: any) {

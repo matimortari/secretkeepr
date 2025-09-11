@@ -56,6 +56,19 @@ export async function removeUserFromOrgService(orgId: string, memberId: string):
   return await response.json()
 }
 
+export async function setActiveOrgService(orgId: string): Promise<{ success: boolean }> {
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}/api/org/active`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ orgId }),
+    credentials: "include",
+  })
+  if (!response.ok)
+    throw new Error(response.statusText)
+  return await response.json()
+}
+
 export async function createOrgInviteService(): Promise<{ inviteLink: string }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/org/invite/create`, {
@@ -67,7 +80,7 @@ export async function createOrgInviteService(): Promise<{ inviteLink: string }> 
   return await response.json()
 }
 
-export async function acceptOrgInviteService(token: string): Promise<{ message: string }> {
+export async function acceptOrgInviteService(token: string): Promise<{ message: string, organization: OrganizationType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/org/invite/accept`, {
     method: "POST",

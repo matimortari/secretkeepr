@@ -4,7 +4,11 @@ import db from "#server/lib/db"
 export async function getUserFromSession(event: H3Event<EventHandlerRequest>) {
   const session = await getUserSession(event)
   if (session?.user?.id) {
-    return session.user
+    const dbUser = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { id: true, email: true, name: true, activeOrgId: true },
+    })
+    return { ...session.user, activeOrgId: dbUser?.activeOrgId ?? null }
   }
 
   const authHeader = event.node.req.headers.authorization
@@ -87,12 +91,6 @@ export function sanitizeMetadata(metadata: any) {
   return metadata
 }
 
-export function getInviteBaseUrl(event: any) {
-  const protocol = event.req.headers["x-forwarded-proto"] || "http"
-  const host = event.req.headers.host
-  return `${protocol}://${host}`
-}
-
 export async function generateProjectSlug(orgId: string, baseSlug: string) {
   let slug = baseSlug
   let count = 1
@@ -103,4 +101,10 @@ export async function generateProjectSlug(orgId: string, baseSlug: string) {
   }
 
   return slug
+}
+
+export function getInviteBaseUrl(event: any) {
+  const protocol = event.req.headers["x-forwarded-proto"] || "http"
+  const host = event.req.headers.host
+  return `${protocol}://${host}`
 }

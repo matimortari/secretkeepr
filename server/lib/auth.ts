@@ -58,6 +58,7 @@ export async function handleOAuthUser(event: H3Event, userData: {
           email,
           name: name ?? "",
           image: image ?? undefined,
+          activeOrgId: null,
         },
         include: {
           organizations: {
@@ -70,8 +71,6 @@ export async function handleOAuthUser(event: H3Event, userData: {
       })
     }
   }
-
-  // Create account if it doesn't exist
   if (!existingAccount) {
     await db.account.create({
       data: {

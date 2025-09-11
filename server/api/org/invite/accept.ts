@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     where: { token: body.token },
     include: { organization: true },
   })
-  if (!invite || invite.expiresAt < new Date() || invite.usedAt) {
+  if (!invite || invite.expiresAt < new Date()) {
     throw createError({ statusCode: 400, statusMessage: "Invalid or expired invitation token." })
   }
 
