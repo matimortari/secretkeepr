@@ -162,7 +162,7 @@ const activeOrg = computed(() => orgStore.activeOrg as OrganizationType)
 
 const userMap = computed(() => {
   const map = new Map<string, string>()
-  activeOrg.value?.memberships?.forEach((membership) => {
+  activeOrg.value?.organizations?.forEach((membership) => {
     const user = membership.user
     if (user) {
       map.set(user.id, user.name)

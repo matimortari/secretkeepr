@@ -3,11 +3,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
-}
-
 enum Environment {
   development
   staging
@@ -21,17 +16,17 @@ enum Role {
 }
 
 model User {
-  id                 String                       @id @default(cuid())
-  email              String                       @unique
-  name               String?
-  image              String?
-  createdAt          DateTime                     @default(now())
-  updatedAt          DateTime                     @updatedAt
-  accounts           Account[]
-  memberships        UserOrganizationMembership[]
-  projectMemberships ProjectMember[]
-  auditLogs          AuditLog[]
-  cliToken           String?                      @unique
+  id            String                   @id @default(cuid())
+  email         String                   @unique
+  name          String?
+  image         String?
+  cliToken      String?                  @unique
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  accounts      Account[]
+  organizations OrganizationMembership[]
+  projects      ProjectMembership[]
+  auditLogs     AuditLog[]
 }
 
 model Account {
@@ -47,18 +42,17 @@ model Account {
 }
 
 model Organization {
-  id          String                       @id @default(cuid())
+  id          String                   @id @default(cuid())
   name        String
-  createdAt   DateTime                     @default(now())
-  updatedAt   DateTime                     @updatedAt
-  memberships UserOrganizationMembership[]
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  memberships OrganizationMembership[]
   projects    Project[]
   invitations Invitation[]
-  AuditLog    AuditLog[]
+  auditLogs   AuditLog[]
 }
 
-model UserOrganizationMembership {
-  id           String       @id @default(cuid())
+model OrganizationMembership {
   userId       String
   orgId        String
   role         Role         @default(member)
@@ -66,11 +60,10 @@ model UserOrganizationMembership {
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, orgId])
+  @@id([userId, orgId])
 }
 
-model ProjectMember {
-  id        String   @id @default(cuid())
+model ProjectMembership {
   userId    String
   projectId String
   role      Role     @default(member)
@@ -78,20 +71,20 @@ model ProjectMember {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, projectId])
+  @@id([userId, projectId])
 }
 
 model Project {
-  id           String          @id @default(cuid())
+  id           String              @id @default(cuid())
   name         String
   slug         String
   description  String?
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @default(now()) @updatedAt
   orgId        String
-  organization Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  organization Organization        @relation(fields: [orgId], references: [id], onDelete: Cascade)
   secrets      Secret[]
-  members      ProjectMember[]
+  members      ProjectMembership[]
 
   @@unique([orgId, slug])
 }
@@ -102,7 +95,7 @@ model Secret {
   description String?
   projectId   String
   createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  updatedAt   DateTime      @default(now()) @updatedAt
   project     Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
   values      SecretValue[]
 
@@ -110,15 +103,14 @@ model Secret {
 }
 
 model SecretValue {
-  id          String      @id @default(cuid())
   value       String
   environment Environment
   secretId    String
   createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  updatedAt   DateTime    @default(now()) @updatedAt
   secret      Secret      @relation(fields: [secretId], references: [id], onDelete: Cascade)
 
-  @@unique([secretId, environment], name: "secretId_environment")
+  @@id([secretId, environment])
 }
 
 model AuditLog {
@@ -127,7 +119,7 @@ model AuditLog {
   orgId        String
   action       String
   resource     String
-  metadata     Json?
+  metadata     Json
   createdAt    DateTime     @default(now())
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)

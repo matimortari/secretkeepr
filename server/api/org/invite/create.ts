@@ -5,7 +5,7 @@ import { nanoid } from "nanoid"
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
 
-  const membership = await db.userOrganizationMembership.findFirst({
+  const membership = await db.organizationMembership.findFirst({
     where: { userId: sessionUser.id },
     select: {
       orgId: true,

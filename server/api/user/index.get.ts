@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const user = await db.user.findUnique({
     where: { id: sessionUser.id },
     include: {
-      memberships: {
+      organizations: {
         include: {
           organization: {
             include: {
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
-      projectMemberships: {
+      projects: {
         include: {
           project: {
             include: {

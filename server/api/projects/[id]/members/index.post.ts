@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Project not found" })
   }
 
-  const orgMembership = await db.userOrganizationMembership.findUnique({
+  const orgMembership = await db.organizationMembership.findUnique({
     where: {
       userId_orgId: {
         userId: body.userId,
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "User is not a member of the organization this project belongs to" })
   }
 
-  const existing = await db.projectMember.findUnique({
+  const existing = await db.projectMembership.findUnique({
     where: {
       userId_projectId: {
         userId: body.userId,
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "User is already a member of the project" })
   }
 
-  const newUser = await db.projectMember.create({
+  const newUser = await db.projectMembership.create({
     data: {
       userId: body.userId,
       role: body.role,

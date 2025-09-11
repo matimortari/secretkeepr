@@ -29,8 +29,8 @@ interface UserType {
   cliToken?: string | null
   createdAt?: Date
   updatedAt?: Date
-  memberships: UserOrgMembershipType[]
-  projectMemberships?: ProjectMemberType[]
+  organizations: UserOrgMembershipType[]
+  projects?: ProjectMemberType[]
 }
 
 interface OrganizationType {
@@ -38,7 +38,7 @@ interface OrganizationType {
   name: string
   createdAt?: Date
   updatedAt?: Date
-  memberships?: UserOrgMembershipType[]
+  organizations?: UserOrgMembershipType[]
   projects?: ProjectType[]
   auditLogs?: AuditLogType[]
 }

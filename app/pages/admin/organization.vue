@@ -216,12 +216,12 @@ const inviteError = ref<string | null>(null)
 const inviteSuccess = ref<string | null>(null)
 
 const activeOrg = computed(() => orgStore.activeOrg as OrganizationType)
-const currentRole = computed(() => activeOrg.value.memberships?.find(m => m.userId === userStore.user?.id)?.role ?? "member")
+const currentRole = computed(() => activeOrg.value.organizations?.find(m => m.userId === userStore.user?.id)?.role ?? "member")
 const isOwner = computed(() => currentRole.value === "owner")
 const isAdmin = computed(() => currentRole.value === "admin")
 const projectsFromOrg = computed(() => projectsStore.projects.filter(p => p.orgId === activeOrg.value.id))
 const usersFromOrg = computed(() =>
-  (activeOrg.value.memberships ?? []).map(m => ({
+  (activeOrg.value.organizations ?? []).map(m => ({
     id: m.user?.id,
     name: m.user?.name,
     email: m.user?.email,
@@ -361,7 +361,7 @@ async function handleDeleteOrg() {
     const result = await orgStore.deleteOrg(orgId)
     if (result?.message === "Organization deleted successfully") {
       await userStore.getUser()
-      if (!userStore.user?.memberships?.length) {
+      if (!userStore.user?.organizations?.length) {
         await router.push("/setup/create-org")
       }
       else {

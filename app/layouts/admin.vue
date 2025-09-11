@@ -25,25 +25,25 @@ const isSidebarOpen = ref(false)
 const isLoading = ref(true)
 
 const orgs = computed(() =>
-  userStore.user?.memberships
+  userStore.user?.organizations
     ?.map(m => m.organization)
     .filter((org: unknown): org is OrganizationType => !!org) ?? [],
 )
 
 function initActiveOrg(user: UserType) {
-  if (!user?.memberships?.length)
+  if (!user?.organizations?.length)
     return
 
   if (import.meta.client) {
     const orgFromStorage = localStorage.getItem("active_org_id")
-    const matchedOrg = user.memberships.find(m => m.organization?.id === orgFromStorage)?.organization
-    orgStore.activeOrg = matchedOrg || user.memberships[0]?.organization
+    const matchedOrg = user.organizations.find(m => m.organization?.id === orgFromStorage)?.organization
+    orgStore.activeOrg = matchedOrg || user.organizations[0]?.organization
     if (orgStore.activeOrg) {
       localStorage.setItem("active_org_id", orgStore.activeOrg.id)
     }
   }
   else {
-    orgStore.activeOrg = user.memberships[0]?.organization
+    orgStore.activeOrg = user.organizations[0]?.organization
   }
 }
 
@@ -53,12 +53,12 @@ async function getGlobalData() {
       userStore.getUser(),
       projectsStore.getProjects(),
     ])
-    if (!user?.memberships?.length) {
+    if (!user?.organizations?.length) {
       await router.replace("/setup/create-org")
       return
     }
 
-    orgStore.orgs = user.memberships
+    orgStore.orgs = user.organizations
       .map((m: UserOrgMembershipType) => m.organization)
       .filter((org: OrganizationType | undefined | null): org is OrganizationType => !!org)
 

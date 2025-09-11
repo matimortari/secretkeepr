@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Project not found" })
   }
 
-  await db.projectMember.delete({
+  await db.projectMembership.delete({
     where: {
       userId_projectId: {
         userId: memberId,
