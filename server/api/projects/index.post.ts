@@ -1,5 +1,5 @@
 import db from "#server/lib/db"
-import { createAuditLog, generateprojectSlug, getUserFromSession, requireOrgRole } from "#server/lib/utils"
+import { createAuditLog, generateProjectSlug, getUserFromSession, requireOrgRole } from "#server/lib/utils"
 
 export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
   await requireOrgRole(sessionUser.id!, body.orgId, ["owner"])
 
-  const projectSlug = await generateprojectSlug(body.orgId, slug)
+  const projectSlug = await generateProjectSlug(body.orgId, slug)
   const existingProject = await db.project.findFirst({
     where: {
       orgId: body.orgId,

@@ -74,6 +74,7 @@ async function handleSubmit() {
   }
 
   const payload: ProjectType = {
+    id: props.selectedProject?.id ?? "",
     name: form.value.name.trim(),
     slug: form.value.slug.trim() || form.value.name.trim().toLowerCase().replace(/\s+/g, "-"),
     description: form.value.description.trim(),

@@ -33,7 +33,7 @@ export async function deleteOrgService(orgId: string): Promise<{ message: string
   return await response.json()
 }
 
-export async function updateOrgMemberService(memberId: string, payload: { role: Role, orgId: string }): Promise<UserOrgMembershipType> {
+export async function updateOrgMemberService(memberId: string, payload: { role: Role, orgId: string }): Promise<OrganizationMembershipType> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/org/members/${memberId}`, {
     method: "PUT",

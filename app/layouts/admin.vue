@@ -59,7 +59,7 @@ async function getGlobalData() {
     }
 
     orgStore.orgs = user.organizations
-      .map((m: UserOrgMembershipType) => m.organization)
+      .map((m: OrganizationMembershipType) => m.organization)
       .filter((org: OrganizationType | undefined | null): org is OrganizationType => !!org)
 
     initActiveOrg(user)

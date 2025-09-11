@@ -43,7 +43,7 @@ export async function deleteProjectService(projectId: string): Promise<{ message
   return await response.json()
 }
 
-export async function addProjectMemberService(projectId: string, payload: AddProjectMemberPayload): Promise<{ message: string, newMember: ProjectMemberType }> {
+export async function addProjectMemberService(projectId: string, payload: AddProjectMemberPayload): Promise<{ message: string, newMember: ProjectMembershipType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects/${projectId}/members`, {
     method: "POST",
@@ -55,7 +55,7 @@ export async function addProjectMemberService(projectId: string, payload: AddPro
   return await response.json()
 }
 
-export async function updateProjectMemberService(projectId: string, memberId: string, payload: { role: Role }): Promise<{ message: string, updatedMember: ProjectMemberType }> {
+export async function updateProjectMemberService(projectId: string, memberId: string, payload: { role: Role }): Promise<{ message: string, updatedMember: ProjectMembershipType }> {
   const baseUrl = getBaseUrl()
   const response = await fetch(`${baseUrl}/api/projects/${projectId}/members/${memberId}`, {
     method: "PUT",

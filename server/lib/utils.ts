@@ -93,7 +93,7 @@ export function getInviteBaseUrl(event: any) {
   return `${protocol}://${host}`
 }
 
-export async function generateprojectSlug(orgId: string, baseSlug: string) {
+export async function generateProjectSlug(orgId: string, baseSlug: string) {
   let slug = baseSlug
   let count = 1
 
