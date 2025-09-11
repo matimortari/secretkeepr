@@ -5,23 +5,33 @@ export default defineEventHandler(async (event) => {
   const sessionUser = await getUserFromSession(event)
 
   const body = await readBody(event)
+
   if (!body.name || typeof body.name !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Project name is required" })
   }
   if (!body.orgId || typeof body.orgId !== "string") {
-    throw createError({ statusCode: 400, statusMessage: "organization ID is required" })
+    throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
+
+  const name = body.name.trim()
+  if (name.length === 0 || name.length > 50) {
+    throw createError({ statusCode: 400, statusMessage: "Project name must be 1-50 characters" })
+  }
+
+  const description = body.description?.trim() || ""
+  if (description.length > 255) {
+    throw createError({ statusCode: 400, statusMessage: "Project description must be 255 characters or less" })
+  }
+
+  const slug = (body.slug?.trim() || name).toLowerCase().replace(/[^a-z0-9\-]/g, "-")
 
   await requireOrgRole(sessionUser.id!, body.orgId, ["owner"])
 
-  const projectSlug = await generateprojectSlug(body.orgId, body.slug || body.name)
+  const projectSlug = await generateprojectSlug(body.orgId, slug)
   const existingProject = await db.project.findFirst({
     where: {
       orgId: body.orgId,
-      OR: [
-        { slug: projectSlug },
-        { name: body.name },
-      ],
+      OR: [{ slug: projectSlug }, { name }],
     },
   })
   if (existingProject) {
@@ -30,9 +40,9 @@ export default defineEventHandler(async (event) => {
 
   const newProject = await db.project.create({
     data: {
-      name: body.name,
+      name,
       slug: projectSlug,
-      description: body.description || "",
+      description,
       orgId: body.orgId,
       members: {
         create: {

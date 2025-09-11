@@ -12,7 +12,10 @@ export default defineEventHandler(async (event) => {
           organization: {
             include: {
               memberships: {
-                include: { user: { omit: { cliToken: true } } },
+                select: {
+                  role: true,
+                  user: { select: { id: true, name: true, image: true } },
+                },
               },
             },
           },
@@ -25,7 +28,7 @@ export default defineEventHandler(async (event) => {
               members: {
                 select: {
                   role: true,
-                  user: { omit: { cliToken: true } },
+                  user: { select: { id: true, name: true, image: true } },
                 },
               },
             },

@@ -136,7 +136,6 @@ model Invitation {
   role         Role
   expiresAt    DateTime
   createdAt    DateTime     @default(now())
-  usedAt       DateTime?
 
   @@index([orgId])
 }
