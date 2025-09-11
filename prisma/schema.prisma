@@ -25,6 +25,7 @@ model User {
   name          String
   image         String?
   cliToken      String?                  @unique
+  activeOrgId   String?
   createdAt     DateTime                 @default(now())
   updatedAt     DateTime                 @updatedAt
   accounts      Account[]
@@ -84,7 +85,7 @@ model Project {
   slug         String
   description  String?
   createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @default(now()) @updatedAt
+  updatedAt    DateTime            @updatedAt
   orgId        String
   organization Organization        @relation(fields: [orgId], references: [id], onDelete: Cascade)
   secrets      Secret[]
@@ -99,7 +100,7 @@ model Secret {
   description String?
   projectId   String
   createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @default(now()) @updatedAt
+  updatedAt   DateTime      @updatedAt
   project     Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
   values      SecretValue[]
 
@@ -111,7 +112,7 @@ model SecretValue {
   environment Environment
   secretId    String
   createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @default(now()) @updatedAt
+  updatedAt   DateTime    @updatedAt
   secret      Secret      @relation(fields: [secretId], references: [id], onDelete: Cascade)
 
   @@id([secretId, environment])

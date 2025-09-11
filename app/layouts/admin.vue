@@ -33,36 +33,22 @@ const orgs = computed(() =>
 function initActiveOrg(user: UserType) {
   if (!user?.organizations?.length)
     return
-
-  if (import.meta.client) {
-    const orgFromStorage = localStorage.getItem("active_org_id")
-    const matchedOrg = user.organizations.find(m => m.organization?.id === orgFromStorage)?.organization
-    orgStore.activeOrg = matchedOrg || user.organizations[0]?.organization
-    if (orgStore.activeOrg) {
-      localStorage.setItem("active_org_id", orgStore.activeOrg.id)
-    }
-  }
-  else {
-    orgStore.activeOrg = user.organizations[0]?.organization
-  }
+  orgStore.activeOrg = user.organizations[0]?.organization
 }
 
 async function getGlobalData() {
   try {
-    const [user] = await Promise.all([
+    await Promise.all([
       userStore.getUser(),
       projectsStore.getProjects(),
     ])
-    if (!user?.organizations?.length) {
+    if (!userStore.user?.organizations?.length) {
       await router.replace("/setup/create-org")
       return
     }
 
-    orgStore.orgs = user.organizations
-      .map((m: OrganizationMembershipType) => m.organization)
-      .filter((org: OrganizationType | undefined | null): org is OrganizationType => !!org)
-
-    initActiveOrg(user)
+    orgStore.orgs = userStore.user.organizations.map(m => m.organization).filter((org): org is OrganizationType => !!org)
+    initActiveOrg(userStore.user)
   }
   catch (error: any) {
     console.error("Failed to load global data:", error)

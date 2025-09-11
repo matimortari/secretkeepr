@@ -54,8 +54,9 @@ async function handleCreateOrg() {
   }
 
   try {
-    await orgStore.createOrg(localOrg.value)
+    const response = await orgStore.createOrg(localOrg.value)
     localOrg.value.name = ""
+    await orgStore.setActiveOrg(response.newOrg)
     router.push("/admin/projects")
   }
   catch (error: any) {

@@ -104,6 +104,18 @@ async function handleCreateProject(project: ProjectType) {
   }
 }
 
+watch(() => orgStore.activeOrg, async (newOrg) => {
+  if (newOrg) {
+    try {
+      await projectsStore.getProjects()
+    }
+    catch (error: any) {
+      console.error("Failed to load projects for active organization:", error)
+      projectsStore.error = error.message
+    }
+  }
+}, { immediate: true })
+
 useHead({
   title: "Projects - SecretKeepR",
   link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/projects" }, { rel: "icon", href: "/favicon.svg" }],

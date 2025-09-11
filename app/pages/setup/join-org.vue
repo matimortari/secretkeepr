@@ -50,8 +50,13 @@ async function handleAcceptInvite() {
   joinOrgSuccess.value = null
 
   try {
-    await orgStore.acceptInvite(token.value)
+    const response = await orgStore.acceptInvite(token.value)
+    if (response.organization) {
+      await orgStore.setActiveOrg(response.organization)
+    }
+
     joinOrgSuccess.value = "Invitation accepted! Redirecting."
+
     setTimeout(() => router.push("/admin/projects"), 2000)
   }
   catch (error: any) {

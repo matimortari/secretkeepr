@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
             include: {
               memberships: {
                 select: {
+                  userId: true,
                   role: true,
                   user: { select: { id: true, name: true, image: true } },
                 },
@@ -27,6 +28,7 @@ export default defineEventHandler(async (event) => {
             include: {
               members: {
                 select: {
+                  userId: true,
                   role: true,
                   user: { select: { id: true, name: true, image: true } },
                 },

@@ -175,6 +175,7 @@ const router = useRouter()
 const route = useRoute()
 const slug = route.params.project as string
 const { createActionHandler } = useActionIcon()
+const orgStore = useOrganizationStore()
 const userStore = useUserStore()
 const projectsStore = useProjectsStore()
 
@@ -187,7 +188,9 @@ const newMemberRole = ref(roles[0]?.value ?? "member")
 const project = computed(() => projectsStore.projects.find(p => p.slug === slug) || null)
 const projectId = computed(() => project.value?.id ?? "")
 const projectMembers = computed(() => project.value?.members || [])
-const currentUserRole = computed(() => projectMembers.value.find(m => m.userId === userStore.user?.id)?.role)
+
+const currentUserMembership = computed(() => projectMembers.value.find(m => m.userId === userStore.user?.id) )
+const currentUserRole = computed(() => currentUserMembership.value?.role ?? "member")
 const isOwner = computed(() => currentUserRole.value === "owner")
 const isAdmin = computed(() => currentUserRole.value === "admin")
 
@@ -341,6 +344,13 @@ async function handleDeleteProject() {
     deleteProjectError.value = error.message
   }
 }
+
+watch([() => project.value, () => orgStore.activeOrg], ([proj, activeOrg]) => {
+  if (proj && activeOrg && proj.orgId !== activeOrg.id) {
+    console.warn("Attempted to access project settings from non-active org")
+    router.push("/admin/projects")
+  }
+}, { immediate: true })
 
 watch(() => projectId.value, async (id) => {
   const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name

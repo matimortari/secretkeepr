@@ -70,6 +70,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const slug = route.params.project as string
+const orgStore = useOrganizationStore()
 const projectsStore = useProjectsStore()
 const secretsStore = useSecretsStore()
 
@@ -118,6 +119,13 @@ async function handleSaveSecret(secret: SecretType) {
     secretsStore.error = error.message
   }
 }
+
+watch([project, () => orgStore.activeOrg], ([proj, activeOrg]) => {
+  if (proj && activeOrg && proj.orgId !== activeOrg.id) {
+    console.warn("Attempted to access project from non-active org")
+    useRouter().push("/admin/projects")
+  }
+}, { immediate: true })
 
 watch(() => projectId.value, async (id) => {
   if (!id)
