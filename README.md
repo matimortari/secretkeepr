@@ -1,20 +1,46 @@
-# SecretKeepR 🗝️
+<div align="center">
+  <h1>
+    <img src="public/logo-full-dark.png" alt="Logo" width="300"/>
+  </h1>
 
-SecretKeepR is a secrets manager designed to help users and organizations securely manage and share environment variables. It provides access controls for managing projects, users, and encrypted secrets across multiple organizations. It also includes a command-line interface (CLI) for easy interaction with your secrets and projects.
+  <p>
+    <a href="https://sonarcloud.io/summary/new_code?id=matimortari_secretkeepr">
+      <img src="https://sonarcloud.io/api/project_badges/measure?project=matimortari_secretkeepr&metric=alert_status" alt="Quality Gate Status"/>
+    </a>
+    <a href="https://sonarcloud.io/summary/new_code?id=matimortari_secretkeepr">
+      <img src="https://sonarcloud.io/api/project_badges/measure?project=matimortari_secretkeepr&metric=vulnerabilities" alt="Vulnerabilities"/>
+    </a>
+    <a href="https://sonarcloud.io/summary/new_code?id=matimortari_secretkeepr">
+      <img src="https://sonarcloud.io/api/project_badges/measure?project=matimortari_secretkeepr&metric=ncloc" alt="Lines of Code"/>
+    </a>
+    <a href="https://opensource.org/licenses/MIT">
+      <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat&colorA=0d1117" alt="MIT License"/>
+    </a>
+    <a href="https://github.com/matimortari">
+      <img src="https://img.shields.io/github/followers/matimortari?label=Follow&style=social" alt="Follow on GitHub"/>
+    </a>
+  </p>
+</div>
 
-For detailed instructions on building and using the command-line interface, see [`cli/README.md`](./cli/README.md).
+<div align="center">
+
+**SecretKeepR** is a secrets manager designed to help users and organizations **securely manage and share environment variables**. It provides access controls for managing projects, users, and encrypted secrets across multiple organizations. It also includes a **command-line interface** for easy interaction with your secrets and projects.
+
+For detailed instructions on building and using the command-line interface, see the [CLI documentation](./cli/README.md).
 
 [**Check it out!** 🔍](https://secretkeepr.vercel.app)
+
+</div>
 
 ## 📦 Key Features
 
 - **User Authentication:** Sign in with Google, GitHub, or GitLab accounts.
 - **Multi-Tenant Architecture:** Support for multiple organizations, each with its own projects, members, and secrets.
 - **Project-Based Secrets Management:** Create, manage, import, and export secrets within projects.
-- **Role-Based Access Control:** Assign roles to members within organizations and control access to projects and secrets. Invite new members to your organization via the invitation system.
+- **Role-Based Access Control:** Assign roles to members within organizations and control access to projects and secrets. Invite new members via the invitation system.
 - **Audit Logs:** Track sensitive operations like secret changes and organization updates.
 - **Encrypted Secrets:** Secrets are encrypted at rest and never exposed unencrypted beyond the UI.
-- **CLI Integration:** Manage secrets and projects directly from your terminal with the command-line tool for SecretKeepR.
+- **CLI Integration:** Manage secrets and projects directly from your terminal with the SecretKeepR CLI.
 
 ## 🛠️ Stack
 
@@ -37,3 +63,17 @@ Feel free to reach out to discuss collaboration opportunities or to say hello!
 - [**My Email**](mailto:matheus.felipe.19rt@gmail.com)
 - [**My LinkedIn Profile**](https://www.linkedin.com/in/matheus-mortari-19rt)
 - [**My GitHub Profile**](https://github.com/matimortari)
+
+---
+
+## 📄 License
+
+MIT License
+
+Copyright (c) 2024 Matheus Mortari
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
