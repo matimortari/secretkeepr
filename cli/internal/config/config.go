@@ -10,8 +10,6 @@ import (
 )
 
 // configFilePath returns the full path to the token file used by the CLI.
-//
-// The file is located at $HOME/.secretkeepr and is used to securely save and load the user's access token.
 func configFilePath() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -21,8 +19,6 @@ func configFilePath() (string, error) {
 }
 
 // SaveToken writes the given token string to the configuration file.
-//
-// It trims whitespace and saves it via configFilePath(), allowing only its owner to read and write, and returns an error if the write operation fails.
 func SaveToken(token string) error {
 	token = strings.TrimSpace(token)
 	path, err := configFilePath()
@@ -33,8 +29,6 @@ func SaveToken(token string) error {
 }
 
 // LoadAuthToken reads the authentication token from the configuration file.
-//
-// It trims any leading/trailing whitespace from the token, and prints a login prompt if the file does not exist or is inaccessible.
 func LoadAuthToken() (string, error) {
 	path, err := configFilePath()
 	if err != nil {
@@ -43,15 +37,33 @@ func LoadAuthToken() (string, error) {
 
 	data, err := os.ReadFile(path)
 	if err != nil {
-		fmt.Println("You're not logged in. Please run `secretkeepr login`.")
 		return "", errors.New("authentication token not found")
 	}
 	return strings.TrimSpace(string(data)), nil
 }
 
-// ParseDotEnv reads key=value pairs from a .env file and returns them as a map.
-//
-// It reads the file line by line, ignoring comments and blank lines, and returns an error if the file cannot be read or if the contents are invalid.
+// ClearAuthToken deletes the stored CLI token from the configuration file.
+func ClearAuthToken() error {
+	path, err := configFilePath()
+	if err != nil {
+		return err
+	}
+
+	if _, err := os.Stat(path); err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return fmt.Errorf("failed to access token file: %w", err)
+	}
+
+	if err := os.Remove(path); err != nil {
+		return fmt.Errorf("failed to remove token file: %w", err)
+	}
+
+	return nil
+}
+
+// ParseDotEnv reads key-value pairs from a .env file and returns them as a map.
 func ParseDotEnv(filename string) (map[string]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
