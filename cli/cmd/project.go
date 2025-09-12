@@ -17,6 +17,13 @@ type Member struct {
 	UserID string `json:"userId"`
 }
 
+type Secret struct {
+	ID          string `json:"id"`
+	Key         string `json:"key"`
+	Description string `json:"description"`
+	ProjectID   string `json:"projectId"`
+}
+
 type Project struct {
 	ID          string   `json:"id"`
 	Name        string   `json:"name"`
@@ -24,6 +31,9 @@ type Project struct {
 	Description string   `json:"description,omitempty"`
 	OrgID       string   `json:"orgId,omitempty"`
 	Members     []Member `json:"members,omitempty"`
+	Secrets     []Secret `json:"secrets,omitempty"`
+	CreatedAt   string   `json:"createdAt"`
+	UpdatedAt   string   `json:"updatedAt"`
 	Role        string   `json:"role,omitempty"`
 }
 
@@ -36,7 +46,7 @@ var (
 	projectUpdateDescription string
 )
 
-// annotateProjectRoles sets the current user's role for each project based on membership info
+// annotateProjectRoles sets the current user's role for each project based on membership info.
 func annotateProjectRoles(projects []Project, currentUserID string) {
 	for i := range projects {
 		for _, m := range projects[i].Members {
@@ -101,19 +111,20 @@ func getProjectBySlug(token, slug string) (Project, error) {
 }
 
 var projectCmd = &cobra.Command{
-	Use:   "project",
-	Short: "Manage projects: list, info, create, update",
+	Use:     "project",
+	Aliases: []string{"p", "projects"},
+	Short:   "Manage projects: list, list-all, create, update",
 	Long: `Manage your projects.
 
 Commands:
-  • list     List projects you belong to
-  • info     Show project info by slug
-  • create   Create a new project
-  • update   Update an existing project by slug`,
+  • list-all   List all projects you belong to
+  • list       List projects you belong to (alias for list-all)
+  • create     Create a new project
+  • update     Update an existing project`,
 }
 
-var projectListCmd = &cobra.Command{
-	Use:   "list",
+var projectListAllCmd = &cobra.Command{
+	Use:   "list-all",
 	Short: "List all projects you belong to",
 
 	Run: func(cmd *cobra.Command, args []string) {
@@ -157,43 +168,10 @@ var projectListCmd = &cobra.Command{
 	},
 }
 
-var projectInfoCmd = &cobra.Command{
-	Use:   "info",
-	Short: "Show detailed info about a project",
-	Args:  cobra.ExactArgs(1),
-
-	Run: func(cmd *cobra.Command, args []string) {
-		projectSlug := args[0]
-
-		token, err := config.LoadAuthToken()
-		if err != nil {
-			color.Red("Failed to load authentication token: %v", err)
-			return
-		}
-
-		currentUserID, err := getCurrentUserID(token)
-		if err != nil {
-			color.Red("Failed to get current user ID: %v", err)
-			return
-		}
-
-		project, err := getProjectBySlug(token, projectSlug)
-		if err != nil {
-			color.Red("Failed to get project info: %v", err)
-			return
-		}
-
-		annotateProjectRoles([]Project{project}, currentUserID)
-
-		color.Cyan("Project Info:")
-		fmt.Printf("   %s %s\n", color.YellowString("ID:"), project.ID)
-		fmt.Printf("   %s %s\n", color.YellowString("Name:"), project.Name)
-		fmt.Printf("   %s %s\n", color.YellowString("Slug:"), project.Slug)
-		fmt.Printf("   %s %s\n", color.YellowString("Description:"), project.Description)
-		if project.Role != "" {
-			fmt.Printf("   %s %s\n", color.YellowString("Your Role:"), project.Role)
-		}
-	},
+var projectListCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List projects you belong to",
+	Run:   projectListAllCmd.Run,
 }
 
 var projectCreateCmd = &cobra.Command{
@@ -277,7 +255,7 @@ var projectUpdateCmd = &cobra.Command{
 			return
 		}
 
-		bodyMap := map[string]interface{}{
+		bodyMap := map[string]any{
 			"name": projectUpdateName,
 		}
 		if projectUpdateDescription != "" {
@@ -313,14 +291,22 @@ var projectUpdateCmd = &cobra.Command{
 }
 
 func init() {
+	projectCmd.AddCommand(projectListAllCmd)
 	projectCmd.AddCommand(projectListCmd)
-	projectCmd.AddCommand(projectInfoCmd)
 
+	// Flags for "create" subcommand
+	// --name / -n: Project name (required)
+	// --org-id / -o: Organization ID (required)
+	// --desc / -d: Project description (optional)
 	projectCreateCmd.Flags().StringVarP(&projectCreateName, "name", "n", "", "Project name (required)")
 	projectCreateCmd.Flags().StringVarP(&projectCreateOrgID, "org-id", "o", "", "Organization ID (required)")
 	projectCreateCmd.Flags().StringVarP(&projectCreateDescription, "desc", "d", "", "Project description")
 	projectCmd.AddCommand(projectCreateCmd)
 
+	// Flags for "update" subcommand
+	// --slug / -s: Project slug (required)
+	// --name / -n: New project name (required)
+	// --desc / -d: New project description (optional)
 	projectUpdateCmd.Flags().StringVarP(&projectUpdateSlug, "slug", "s", "", "Project slug (required)")
 	projectUpdateCmd.Flags().StringVarP(&projectUpdateName, "name", "n", "", "New project name (required)")
 	projectUpdateCmd.Flags().StringVarP(&projectUpdateDescription, "desc", "d", "", "New project description")

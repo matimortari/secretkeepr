@@ -12,15 +12,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type Organization struct {
+	Name string `json:"name"`
+}
+
+type UserOrganization struct {
+	Role         string       `json:"role"`
+	Organization Organization `json:"organization"`
+}
+
 type User struct {
-	Name        string `json:"name"`
-	Email       string `json:"email"`
-	Memberships []struct {
-		Role         string `json:"role"`
-		Organization struct {
-			Name string `json:"name"`
-		} `json:"organization"`
-	} `json:"memberships"`
+	Name          string             `json:"name"`
+	Email         string             `json:"email"`
+	Organizations []UserOrganization `json:"organizations"`
 }
 
 var whoamiCmd = &cobra.Command{
@@ -47,18 +51,26 @@ var whoamiCmd = &cobra.Command{
 		}
 
 		var user User
-		err = json.NewDecoder(resp.Body).Decode(&user)
-		if err != nil {
+		if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
 			color.Red("Failed to parse user data: %v", err)
 			return
 		}
 
-		fmt.Printf("%s %s\n", color.CyanString("User:"), user.Name)
-		fmt.Printf("%s %s\n", color.CyanString("Email:"), user.Email)
-		color.Cyan("Organizations:")
-		for _, m := range user.Memberships {
-			fmt.Printf(" - %s (role: %s)\n", m.Organization.Name, m.Role)
+		/* Output */
+		fmt.Println()
+		fmt.Printf("%s %s\n", color.YellowString("User:"), user.Name)
+		fmt.Printf("%s %s\n", color.YellowString("Email:"), user.Email)
+		fmt.Println()
+
+		if len(user.Organizations) == 0 {
+			color.Yellow("No organizations found.")
+		} else {
+			fmt.Println(color.YellowString("Organizations:"))
+			for _, o := range user.Organizations {
+				fmt.Printf("  • %s (role: %s)\n", color.CyanString(o.Organization.Name), o.Role)
+			}
 		}
+		fmt.Println()
 	},
 }
 

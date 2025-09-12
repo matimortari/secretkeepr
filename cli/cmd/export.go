@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 
 	"github.com/fatih/color"
 	"github.com/matimortari/secretkeepr/cli/internal/api"
@@ -38,7 +37,7 @@ func uploadSecret(token, projectID, key, environment, value string) error {
 		return err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != 200 && resp.StatusCode != 201 {
 		return fmt.Errorf("API error: %s", resp.Status)
 	}
 
@@ -46,8 +45,9 @@ func uploadSecret(token, projectID, key, environment, value string) error {
 }
 
 var exportCmd = &cobra.Command{
-	Use:   "export",
-	Short: "Export secrets from a local .env file to a SecretKeepR project environment",
+	Use:     "export",
+	Aliases: []string{"e"},
+	Short:   "Export secrets from a local .env file to a SecretKeepR project environment",
 	Long: `Export secrets stored in a local .env file into a specified SecretKeepR project environment.
 
 You can specify:
@@ -60,17 +60,6 @@ Example:
 `,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		if exportProjectSlug == "" {
-			color.Red("Error: --project flag is required")
-			return
-		}
-		if exportEnv == "" {
-			exportEnv = "development"
-		}
-		if exportFile == "" {
-			exportFile = ".env"
-		}
-
 		token, err := config.LoadAuthToken()
 		if err != nil {
 			color.Red("Failed to load authentication token: %v", err)
@@ -95,8 +84,7 @@ Example:
 
 		color.Cyan("Uploading secrets to project %s (env: %s):", project.Name, exportEnv)
 		for key, value := range secrets {
-			err := uploadSecret(token, project.ID, key, exportEnv, value)
-			if err != nil {
+			if err := uploadSecret(token, project.ID, key, exportEnv, value); err != nil {
 				color.Red("Failed to upload %s: %v", key, err)
 			} else {
 				color.Green("Uploaded %s", key)
