@@ -36,6 +36,9 @@ The following commands are available in the SecretKeepR CLI:
 secretkeepr login # Authenticate with your SecretKeepR account
 secretkeepr whoami # Display currently authenticated user
 secretkeepr project # Manage projects
+secretkeepr import # Import secrets from a local file into a project
+secretkeepr export # Export secrets from a project into a local file
+secretkeepr run # Run a command with secrets from a project environment
 ```
 
 ### Project Commands
@@ -82,4 +85,18 @@ secretkeepr export --project <projectSlug> --env <environment> --file <filePath>
 -p, --project  Project slug to upload secrets to (required)
 -e, --env      Environment for the secrets (optional, default: development)
 -f, --file     Path to local .env file (optional, default: .env)
+```
+
+### Run Command
+
+```bash
+secretkeepr run --project <projectSlug> --env <environment> -- <command> # Run a terminal command with secrets injected from a project environment
+```
+
+#### Run Command Flags
+
+```bash
+-p, --project  Project slug to fetch secrets from (required)
+-e, --env      Environment to fetch secrets from (optional, default: development)
+--             Separator before the command to run (required)
 ```
