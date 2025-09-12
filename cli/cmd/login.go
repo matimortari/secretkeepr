@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
@@ -10,6 +12,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/joho/godotenv"
+	"github.com/matimortari/secretkeepr/cli/internal/api"
 	"github.com/matimortari/secretkeepr/cli/internal/config"
 	"github.com/spf13/cobra"
 )
@@ -30,15 +33,38 @@ func openBrowser(url string) error {
 }
 
 func handleToken(token string) {
+	token = strings.TrimSpace(token)
 	if token == "" {
 		color.Red("No token entered. Aborting.")
 		return
 	}
+
+	resp, err := api.Get(token, "/user")
+	if err != nil {
+		color.Red("Failed to validate token: %v", err)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		color.Red("Token is invalid or expired (HTTP %d)", resp.StatusCode)
+		return
+	}
+
+	var user struct {
+		Name  string `json:"name"`
+		Email string `json:"email"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
+		color.Red("Failed to parse user data: %v", err)
+		return
+	}
+
 	if err := config.SaveToken(token); err != nil {
 		color.Red("Failed to save token: %v", err)
 		return
 	}
-	color.Green("Authenticated successfully.")
+
+	color.Green("Authenticated successfully as %s (%s).", user.Name, user.Email)
 }
 
 var loginCmd = &cobra.Command{
@@ -79,7 +105,7 @@ You can:
 		fmt.Println("Paste your CLI token from the dashboard below.")
 		fmt.Print("CLI Token: ")
 
-		// Read user input (CLI Token), trim whitespace, and pass it to the handler function for processing.
+		// Read user input (CLI Token), trim whitespace, and pass it to the handler function for processing
 		reader := bufio.NewReader(os.Stdin)
 		token, _ := reader.ReadString('\n')
 		handleToken(strings.TrimSpace(token))
@@ -87,6 +113,9 @@ You can:
 }
 
 func init() {
+	// Flags for "login" command
+	// --token / -t: Provide CLI token directly without browser flow
 	loginCmd.Flags().StringVarP(&tokenFlag, "token", "t", "", "Provide CLI token directly without browser flow")
+
 	rootCmd.AddCommand(loginCmd)
 }

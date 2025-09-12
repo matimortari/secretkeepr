@@ -8,9 +8,10 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "secretkeepr",
-	Short: "Manage your secrets from the terminal",
-	Long:  "SecretKeepR CLI lets you log in to your account, manage projects, and sync secrets easily.",
+	Use:     "secretkeepr",
+	Aliases: []string{"sk"},
+	Short:   "Manage your secrets from the terminal",
+	Long:    "SecretKeepR CLI lets you log in to your account, manage projects, and sync secrets easily.",
 }
 
 // Execute runs the root command and handles any unexpected panics gracefully.

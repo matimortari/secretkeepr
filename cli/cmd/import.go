@@ -3,8 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"strings"
 
@@ -21,25 +19,13 @@ var (
 )
 
 func fetchSecrets(token, projectID, environment string) (map[string]string, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/projects/%s/secrets?environment=%s", api.BaseURL, projectID, environment), nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Authorization", "Bearer "+token)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := api.Get(token, fmt.Sprintf("/projects/%s/secrets?environment=%s", projectID, environment))
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("API error: %s", resp.Status)
-	}
-
-	bodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
 	}
 
 	var data struct {
@@ -51,8 +37,7 @@ func fetchSecrets(token, projectID, environment string) (map[string]string, erro
 			} `json:"values"`
 		} `json:"secrets"`
 	}
-
-	if err := json.Unmarshal(bodyBytes, &data); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return nil, err
 	}
 
@@ -77,8 +62,7 @@ func writeDotEnv(filename string, secrets map[string]string) error {
 	defer f.Close()
 
 	for key, val := range secrets {
-		line := fmt.Sprintf("%s=%s\n", key, val)
-		if _, err := f.WriteString(line); err != nil {
+		if _, err := f.WriteString(fmt.Sprintf("%s=%s\n", key, val)); err != nil {
 			return err
 		}
 	}
@@ -86,8 +70,9 @@ func writeDotEnv(filename string, secrets map[string]string) error {
 }
 
 var importCmd = &cobra.Command{
-	Use:   "import",
-	Short: "Import secrets from a SecretKeepR project environment into a local .env file",
+	Use:     "import",
+	Aliases: []string{"i"},
+	Short:   "Import secrets from a SecretKeepR project environment into a local .env file",
 	Long: `Fetch secrets from a SecretKeepR project environment and save them to a local .env file.
 
 You can specify:
@@ -100,17 +85,6 @@ Example:
 `,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		if importProjectSlug == "" {
-			color.Red("Error: --project flag is required")
-			return
-		}
-		if importEnv == "" {
-			importEnv = "development"
-		}
-		if importFile == "" {
-			importFile = ".env"
-		}
-
 		token, err := config.LoadAuthToken()
 		if err != nil {
 			color.Red("Failed to load authentication token: %v", err)
@@ -133,9 +107,7 @@ Example:
 			color.Yellow("No secrets found for environment %s", importEnv)
 			return
 		}
-
-		err = writeDotEnv(importFile, secrets)
-		if err != nil {
+		if err := writeDotEnv(importFile, secrets); err != nil {
 			color.Red("Failed to write .env file: %v", err)
 			return
 		}

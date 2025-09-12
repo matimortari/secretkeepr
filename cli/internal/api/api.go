@@ -50,7 +50,10 @@ func request(method, token, path string, body []byte) (*http.Response, error) {
 		req.Header.Set("Content-Type", "application/json")
 	}
 
-	return http.DefaultClient.Do(req)
+	client := &http.Client{
+		Timeout: 20 * 1e9, // 20 seconds timeout
+	}
+	return client.Do(req)
 }
 
 // Get performs a GET request to the API.

@@ -26,18 +26,60 @@ cd secretkeepr/cli
 go build -o secretkeepr.exe .
 ```
 
-This will create the `secretkeepr.exe` binary in the current directory. You can move it to a directory in your PATH for easier access.
+This will create the `secretkeepr.exe` binary in the current directory.
 
 ## 📜 Commands
 
 The following commands are available in the SecretKeepR CLI:
 
 ```bash
-login # Open browser to authenticate and save token locally
-whoami # Display currently authenticated user
-projects # List your projects
-projects --secrets <project-id> # View secrets in a project
-projects --export-env --env <env> # Export secrets to a .env.<env> file
-import --env <env> # Import secrets from a local .env file into a specific project
-help # Display help information for the CLI
+secretkeepr login # Authenticate with your SecretKeepR account
+secretkeepr whoami # Display currently authenticated user
+secretkeepr project # Manage projects
+```
+
+### Project Commands
+
+```bash
+secretkeepr project list-all # List all projects you belong to
+secretkeepr project list # Alias for list-all
+secretkeepr project create -n <name> -o <orgId> -d <description> # Create a new project
+secretkeepr project update -s <slug> -n <newName> -d <newDescription> # Update an existing project
+```
+
+#### Project Command Flags
+
+```bash
+-n, --name   Name of the project (required for create and update)
+-o, --org-id Organization ID (required for create)
+-d, --desc   Project description (optional)
+-s, --slug   Project slug (required for update)
+```
+
+### Import Command
+
+```bash
+secretkeepr import --project <projectSlug> --env <environment> --file <filePath> # Import secrets from a file into a specified project and environment
+```
+
+#### Import Command Flags
+
+```bash
+-p, --project  Project slug to import secrets from (required)
+-e, --env      Environment to import secrets from (optional, default: development)
+-f, --file     Path to save .env file (optional, default: .env)
+```
+
+### Export Command
+
+```bash
+secretkeepr export --project <projectSlug> --env <environment> --file <filePath> # Export secrets to a file from a specified project and environment
+```
+
+#### Export Command Flags
+
+```bash
+-p, --project  Project slug to upload secrets to (required)
+-e, --env      Environment for the secrets (optional, default: development)
+-f, --file     Path to local .env file (optional, default: .env)
 ```
