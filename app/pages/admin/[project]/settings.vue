@@ -1,7 +1,7 @@
 <template>
   <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <header class="navigation-group border-b py-2">
-      <nuxt-link :to="`/admin/${project?.slug}`" class="flex items-center">
+      <nuxt-link :to="`/admin/${project?.slug}`" aria-label="Go back" class="flex items-center">
         <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent" />
       </nuxt-link>
       <h2 class="max-w-lg truncate">
@@ -189,7 +189,7 @@ const project = computed(() => projectsStore.projects.find(p => p.slug === slug)
 const projectId = computed(() => project.value?.id ?? "")
 const projectMembers = computed(() => project.value?.members || [])
 
-const currentUserMembership = computed(() => projectMembers.value.find(m => m.userId === userStore.user?.id) )
+const currentUserMembership = computed(() => projectMembers.value.find(m => m.userId === userStore.user?.id))
 const currentUserRole = computed(() => currentUserMembership.value?.role ?? "member")
 const isOwner = computed(() => currentUserRole.value === "owner")
 const isAdmin = computed(() => currentUserRole.value === "admin")

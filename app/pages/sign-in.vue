@@ -1,4 +1,11 @@
 <template>
+  <nav class="absolute top-0 left-0 z-50 w-full p-6">
+    <nuxt-link to="/" class="hover:scale-sm flex flex-row items-center justify-center gap-2 transition-all select-none">
+      <img src="/assets/logo-icon.png" alt="Logo" width="35" height="35">
+      <img src="/assets/logo-title-dark.png" alt="Logo" width="140" height="35">
+    </nuxt-link>
+  </nav>
+
   <div class="bg-background flex flex-col items-center justify-center gap-4 p-8 md:flex-row md:p-24">
     <header
       v-motion class="flex flex-col items-center gap-8 p-8 text-start md:flex-row"

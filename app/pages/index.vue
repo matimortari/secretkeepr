@@ -1,4 +1,11 @@
 <template>
+  <nav class="absolute top-0 left-0 z-50 w-full p-6">
+    <nuxt-link to="/" class="hover:scale-sm flex flex-row items-center justify-center gap-2 transition-all select-none">
+      <img src="/assets/logo-icon.png" alt="Logo" width="35" height="35">
+      <img src="/assets/logo-title-dark.png" alt="Logo" width="140" height="35">
+    </nuxt-link>
+  </nav>
+
   <section
     id="hero" v-motion
     :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
