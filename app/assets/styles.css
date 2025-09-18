@@ -78,8 +78,8 @@ h1 {
   font-family: var(--font-display);
 }
 h2 {
-  font-size: 2rem;
-  line-height: 2.25rem;
+  font-size: 1.875rem;
+  line-height: 1.875rem;
   font-weight: 800;
 }
 h3 {
@@ -123,19 +123,17 @@ h6 {
   background-color: var(--card);
   color: var(--card-foreground);
   border: 1px solid var(--border);
-  border-radius: 0.25rem;
-  padding: 0.5rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
 }
 
 .popover {
   background-color: var(--popover);
   color: var(--popover-foreground);
   border: 1px solid var(--border);
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   padding: 1rem;
   box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.4);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dropdown {
@@ -280,15 +278,6 @@ select:focus {
 .gradient-mask {
   background-color: var(--background);
   box-shadow: 0px 0px 15px 10px var(--background);
-}
-
-.footer-bg {
-  background-image: url("./footer-bg.png");
-}
-
-.footer-vignette {
-  border-radius: inherit;
-  box-shadow: inset 0 0 40px 20px var(--background);
 }
 
 /* Match background and foreground colors */

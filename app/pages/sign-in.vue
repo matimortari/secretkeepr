@@ -1,20 +1,15 @@
 <template>
-  <nav class="absolute top-0 left-0 z-50 w-full p-6">
-    <nuxt-link to="/" class="hover:scale-sm flex flex-row items-center justify-center gap-2 transition-all select-none">
-      <img src="/assets/logo-icon.png" alt="Logo" width="35" height="35">
-      <img src="/assets/logo-title-dark.png" alt="Logo" width="140" height="35">
-    </nuxt-link>
-  </nav>
+  <div class="bg-background flex flex-col items-center justify-center p-8 md:p-24">
+    <div class="hero-background" />
 
-  <div class="bg-background flex flex-col items-center justify-center gap-4 p-8 md:flex-row md:p-24">
     <header
-      v-motion class="flex flex-col items-center gap-8 p-8 text-start md:flex-row"
+      v-motion class="flex flex-col items-center gap-8 border-b p-8 text-start"
       :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
       :duration="800"
     >
       <img src="/assets/logo-icon.png" alt="Logo" width="120" height="120">
 
-      <div class="flex flex-col items-center gap-2 md:items-start">
+      <div class="flex flex-col items-center gap-4">
         <h1>
           Sign In
         </h1>
@@ -32,7 +27,7 @@
     </header>
 
     <div
-      v-motion class="flex flex-col items-center gap-8 p-8 text-center md:items-end md:p-12 md:text-start"
+      v-motion class="flex flex-col items-center gap-8 p-8 text-center md:items-end md:text-start"
       :initial="{ opacity: 0, x: -20 }" :visible="{ opacity: 1, x: 0 }"
       :duration="800"
     >
@@ -84,3 +79,31 @@ definePageMeta({
   middleware: guest,
 })
 </script>
+
+<style scoped>
+.hero-background {
+  background: linear-gradient(360deg, var(--background) 20%, var(--primary) 80%, var(--secondary) 100%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: top;
+  animation: gradientGrow 10s ease-in-out infinite;
+}
+
+@keyframes gradientGrow {
+  0% {
+    transform: scaleY(0.5);
+    opacity: 0.1;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scaleY(0.5);
+    opacity: 0.1;
+  }
+}
+</style>

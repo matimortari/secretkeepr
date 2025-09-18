@@ -20,7 +20,11 @@
       </button>
     </div>
 
-    <nav v-if="projectsFromOrg.length" aria-label="Projects Navigation" class="scroll-area flex max-h-64 flex-col overflow-x-hidden">
+    <p v-if="!projectsFromOrg.length" class="text-muted-foreground py-2 text-sm">
+      No projects yet.
+    </p>
+
+    <nav v-else aria-label="Projects Navigation" class="scroll-area flex max-h-64 flex-col overflow-x-hidden">
       <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-caption truncate p-2 hover:underline">
         {{ project.name }}
       </nuxt-link>

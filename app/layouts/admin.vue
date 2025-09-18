@@ -6,7 +6,7 @@
 
     <div class="flex flex-1">
       <Sidebar v-if="orgStore.activeOrg" :org="orgStore.activeOrg" :is-open="isSidebarOpen" @update:is-open="isSidebarOpen = $event" />
-      <main class="flex flex-1 flex-col overflow-x-hidden p-4">
+      <main class="flex flex-1 flex-col overflow-x-hidden p-4 md:p-8">
         <slot :active-org="orgStore.activeOrg" />
       </main>
     </div>

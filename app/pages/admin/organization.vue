@@ -226,7 +226,7 @@ const usersFromOrg = computed(() =>
     role: m.role || "member",
   })),
 )
-const currentMembership = computed(() => activeOrg.value.memberships?.find(m => m.user?.id === userStore.user?.id) )
+const currentMembership = computed(() => activeOrg.value.memberships?.find(m => m.user?.id === userStore.user?.id))
 const currentRole = computed(() => currentMembership.value?.role ?? "member")
 const isOwner = computed(() => currentRole.value === "owner")
 const isAdmin = computed(() => currentRole.value === "admin")
