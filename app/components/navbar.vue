@@ -1,8 +1,8 @@
 <template>
-  <div v-if="userStore.user" class="navigation-group bg-card justify-between border-b-2 p-4">
+  <div v-if="userStore.user" class="navigation-group bg-card justify-between border-b-2 px-4 py-2">
     <div class="navigation-group">
       <nuxt-link to="/" class="hover:scale-sm flex flex-row items-center gap-2 transition-all">
-        <img src="/assets/logo-icon.png" alt="Logo" width="35" height="35">
+        <img src="/assets/logo-icon.png" alt="Logo" width="30" height="30">
       </nuxt-link>
 
       <nav class="navigation-group text-sm" aria-label="Breadcrumbs Navigation">
@@ -45,8 +45,8 @@
     </div>
 
     <nav class="navigation-group" aria-label="User Actions">
-      <nuxt-link to="/admin/preferences" title="User Preferences" aria-label="User Preferences">
-        <img :src="userStore.user.image ?? undefined" alt="Avatar" class="size-10 rounded-full border-2">
+      <nuxt-link to="/admin/preferences" title="User Preferences" aria-label="User Preferences" class="btn">
+        <icon name="ph:user-bold" size="20" />
       </nuxt-link>
       <button class="btn md:!hidden" aria-label="Toggle Sidebar" @click="$emit('toggleSidebar')">
         <icon :name="props.isSidebarOpen ? 'ph:x' : 'ph:list'" size="20" />

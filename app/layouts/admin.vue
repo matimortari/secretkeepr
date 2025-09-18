@@ -4,7 +4,7 @@
   <div v-show="!isLoading" class="min-h-screen">
     <Navbar :orgs="orgs" :org="orgStore.activeOrg" :is-sidebar-open="isSidebarOpen" @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
 
-    <div class="flex flex-1">
+    <div class="flex flex-1 pb-8">
       <Sidebar v-if="orgStore.activeOrg" :org="orgStore.activeOrg" :is-open="isSidebarOpen" @update:is-open="isSidebarOpen = $event" />
       <main class="flex flex-1 flex-col overflow-x-hidden p-4">
         <slot :active-org="orgStore.activeOrg" />

@@ -6,7 +6,7 @@
     :class="isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
   >
     <span class="font-semibold">Overview</span>
-    <nav class="text-muted-foreground flex flex-col gap-1 border-b py-2 text-sm font-semibold" aria-label="Main Navigation">
+    <nav class="text-muted-foreground flex flex-col gap-1 py-2 text-sm font-semibold" aria-label="Main Navigation">
       <nuxt-link v-for="link in navLinks" :key="link.url" :to="link.url" class="navigation-group hover:bg-muted rounded p-2">
         <icon :name="link.icon" size="30" />
         <span>{{ link.label }}</span>
@@ -20,7 +20,11 @@
       </button>
     </div>
 
-    <nav v-if="projectsFromOrg.length" aria-label="Projects Navigation" class="scroll-area flex max-h-64 flex-col overflow-x-hidden">
+    <p v-if="!projectsFromOrg.length" class="text-muted-foreground py-2 text-sm">
+      No projects yet.
+    </p>
+
+    <nav v-else aria-label="Projects Navigation" class="scroll-area flex max-h-64 flex-col overflow-x-hidden">
       <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-caption truncate p-2 hover:underline">
         {{ project.name }}
       </nuxt-link>

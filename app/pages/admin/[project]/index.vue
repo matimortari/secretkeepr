@@ -26,7 +26,7 @@
           </button>
 
           <transition name="dropdown" mode="out-in">
-            <ul v-if="isDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm" role="menu" aria-label="Export environments">
+            <ul v-if="isDropdownOpen" class="dropdown scroll-area -left-8 overflow-y-auto text-sm" role="menu" aria-label="Export environments">
               <li
                 v-for="env in ['development', 'staging', 'production']" :key="env"
                 role="menuitem" class="hover:bg-muted rounded p-2 capitalize"
@@ -48,7 +48,7 @@
       No secrets found for this project. Add a new secret or import from an .env file to get started.
     </p>
 
-    <ProjectSecrets
+    <ProjectSecretsTable
       v-if="secrets.length" :secrets="secrets"
       :project-id="project?.id ?? ''" @edit="(secret: SecretType) => { isDialogOpen = true; dialogType = 'secret'; selectedSecret = secret }"
     />

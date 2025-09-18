@@ -1,19 +1,23 @@
 <template>
-  <nav class="absolute top-0 left-0 z-50 w-full p-6">
-    <nuxt-link to="/" class="hover:scale-sm flex flex-row items-center justify-center gap-2 transition-all select-none">
+  <nav class="absolute top-4 right-0 left-0 z-50 flex items-center justify-end p-4 md:top-0">
+    <div class="absolute top-1/2 left-1/2 my-2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-2 select-none">
       <img src="/assets/logo-icon.png" alt="Logo" width="35" height="35">
       <img src="/assets/logo-title-dark.png" alt="Logo" width="140" height="35">
+    </div>
+    <nuxt-link to="/sign-in" class="hidden flex-row items-center gap-2 text-sm font-semibold whitespace-nowrap hover:underline md:flex">
+      <icon name="ph:sign-in-bold" size="20" />
+      <span>Sign In</span>
     </nuxt-link>
   </nav>
 
   <section
     id="hero" v-motion
     :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
-    :duration="800" class="hero-container flex min-h-screen flex-col items-center px-4 py-20 text-center md:p-28 2xl:min-h-[60vh]"
+    :duration="800" class="hero-container flex min-h-screen flex-col items-center px-4 py-16 text-center md:p-32 2xl:min-h-[60vh]"
   >
     <div class="hero-background" />
 
-    <header class="z-20 flex w-full max-w-2xl flex-col items-center gap-8 border-b py-16">
+    <header class="z-20 flex w-full max-w-2xl flex-col items-center gap-8 border-b py-20">
       <div class="flex flex-col items-center gap-4">
         <h1>
           Your Secrets, Secured.
@@ -27,74 +31,69 @@
       <div class="flex w-full flex-row items-center justify-center gap-8 md:gap-12">
         <nuxt-link to="/sign-in" class="btn-primary hero-btn group">
           <span>Get Started</span>
-          <icon name="ph:arrow-right-bold" size="20" class="transition-transform group-hover:translate-x-1" />
+          <icon name="dinkie-icons:heart-black-suit-circled" size="25" />
         </nuxt-link>
 
         <nuxt-link to="/cli" class="flex flex-row items-center gap-2 text-sm font-semibold whitespace-nowrap hover:underline">
           <span>SecretKeepR CLI</span>
-          <icon name="ph:terminal-window" size="30" />
+          <icon name="dinkie-icons:code-filled" size="25" />
         </nuxt-link>
       </div>
     </header>
 
-    <div class="flex flex-wrap justify-center gap-4 py-12 md:gap-8">
+    <div class="flex flex-wrap justify-center gap-4 py-12 2xl:gap-8">
       <div
         v-for="(highlight, index) in highlights" :key="index"
         v-motion :initial="{ opacity: 0, y: 20 }"
         :visible="{ opacity: 1, y: 0 }" :duration="800"
-        :delay="200 * index" class="flex flex-col items-center gap-1 text-center"
+        :delay="200 * index" class="card flex max-w-sm flex-col items-center gap-2 text-center"
       >
-        <span class="text-primary text-xl font-bold md:text-2xl">{{ highlight.title }}</span>
-        <span class="text-muted-foreground text-sm">{{ highlight.description }}</span>
+        <span class="text-lg font-bold">{{ highlight.title }}</span>
+        <span class="text-muted-foreground px-4 text-sm">{{ highlight.description }}</span>
       </div>
     </div>
   </section>
 
-  <section id="features" class="z-10 flex flex-col items-center gap-8 p-12">
+  <section id="features" class="z-10 flex flex-col items-center gap-12 p-20 md:px-32 md:pb-36">
     <h2 class="font-display">
       Features
     </h2>
 
-    <div class="flex flex-col flex-wrap items-center justify-center gap-4 md:flex-row 2xl:flex-row 2xl:flex-nowrap">
+    <div class="flex flex-col flex-wrap items-center justify-center gap-8 md:flex-row md:gap-2 2xl:flex-row 2xl:flex-nowrap">
       <div
         v-for="(feature, index) in features" :key="index"
         v-motion :initial="{ opacity: 0, y: -20 }"
         :visible="{ opacity: 1, y: 0 }" :duration="800"
-        :delay="200 * index" class="flex max-w-sm min-w-[350px] grow-0 flex-col items-center gap-2 p-4 text-center"
+        :delay="200 * index" class="flex max-w-sm min-w-[350px] grow-0 flex-col items-center gap-4 p-4 text-center"
       >
         <icon :name="feature.icon" class="text-primary" size="60" />
         <h3 class="font-display-alt tracking-tight whitespace-nowrap">
           {{ feature.title }}
         </h3>
-        <p class="text-muted-foreground leading-5 tracking-tight">
+        <p class="text-muted-foreground text-sm leading-5">
           {{ feature.description }}
         </p>
       </div>
     </div>
   </section>
 
-  <section
-    id="how-to-use" v-motion
-    :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
-    :duration="800" class="flex flex-col items-center gap-8 border-y p-8 text-center md:p-12"
-  >
+  <section id="faq" class="flex flex-col items-center gap-12 px-8 py-16 md:px-32">
     <h2 class="font-display">
-      Getting Started
+      Frequently Asked Questions
     </h2>
 
-    <div class="grid grid-cols-1 gap-12 text-center md:grid-cols-5 md:gap-4">
-      <div
-        v-for="(step, index) in howToUseSteps" :key="index"
-        v-motion :initial="{ opacity: 0, x: -20 }"
-        :visible="{ opacity: 1, x: 0 }" :duration="800"
-        :delay="200 * index" class="flex flex-col items-center gap-1"
-      >
-        <h5 class="whitespace-nowrap">
-          {{ index + 1 }}. {{ step.title }}
-        </h5>
-        <p class="text-muted-foreground max-w-xs leading-5 tracking-tight">
-          {{ step.description }}
-        </p>
+    <div class="flex w-full max-w-2xl flex-col divide-y">
+      <div v-for="(item, index) in faqs" :key="index" class="py-4">
+        <button class="hover:text-primary flex w-full items-center justify-between text-start font-semibold transition" @click="toggleAccordion(index)">
+          <span>{{ item.question }}</span>
+          <icon :name="openIndex === index ? 'ph:minus-bold' : 'ph:plus-bold'" size="20" class="shrink-0" />
+        </button>
+
+        <transition name="accordion">
+          <p v-if="openIndex === index" class="text-muted-foreground mt-2 text-sm leading-5">
+            {{ item.answer }}
+          </p>
+        </transition>
       </div>
     </div>
   </section>
@@ -102,7 +101,7 @@
   <section
     id="cli" v-motion
     :initial="{ opacity: 0, y: 20 }" :visible="{ opacity: 1, y: 0 }"
-    :duration="800" class="flex flex-col items-center gap-8 p-8 text-center md:p-12 md:text-start"
+    :duration="800" class="flex flex-col items-center gap-12 px-8 py-16 text-center md:px-32 md:text-start"
   >
     <header class="flex flex-col items-center gap-2">
       <h2 class="font-display">
@@ -113,11 +112,11 @@
       </p>
     </header>
 
-    <div class="relative flex w-full max-w-2xl flex-col gap-8">
+    <div class="relative flex w-full max-w-2xl flex-col gap-4 2xl:gap-8">
       <article class="card flex flex-col p-0">
         <div class="text-muted-foreground flex items-center justify-between p-2 text-start text-sm leading-5">
           <p>
-            > Install the CLI tool using the following command:
+            > Install the Go module:
           </p>
           <button
             class="hover:scale-sm flex items-center transition-all" title="Copy to Clipboard"
@@ -136,13 +135,13 @@
         <Shiki lang="bash" :code="cliCommands.join('\n')" class="code-block" />
       </article>
 
-      <div class="text-muted-foreground absolute right-2 bottom-2 z-10 hidden items-end gap-2 text-sm select-none md:flex">
+      <div class="text-muted-foreground absolute right-6 bottom-6 z-10 hidden items-end gap-2 text-xs select-none md:flex">
         <span>Powered by Go</span>
         <img src="/assets/gopher.png" alt="Go Gopher" width="50" height="50">
       </div>
     </div>
 
-    <p class="text-muted-foreground">
+    <p class="text-muted-foreground border-b pb-2 text-sm">
       Read the <nuxt-link to="/cli" class="text-primary hover:underline">
         documentation
       </nuxt-link> for more details.
@@ -155,35 +154,75 @@ const { createActionHandler } = useActionIcon()
 const copyIcon = createActionHandler("ph:copy-bold")
 
 const highlights = [
-  { title: "Fast Setup", description: "Get started in under 5 minutes." },
-  { title: "Open Source", description: "Fully transparent and free to use." },
-  { title: "Secure by Design", description: "Secrets are encrypted end-to-end." },
+  {
+    title: "Rapid Onboarding",
+    description: "Provision your workspace and start managing secrets in seconds with minimal configuration.",
+  },
+  {
+    title: "Open Source Transparency",
+    description: "All code is open-source and free to use, ensuring trust and extensibility.",
+  },
+  {
+    title: "Security-First Architecture",
+    description: "Secrets are encrypted end-to-end using AES-256-CBC with per-secret random IVs.",
+  },
 ]
 
 const features = [
-  { title: "End-to-End Encryption", description: "Your secrets are encrypted at rest and never exposed beyond the UI.", icon: "dinkie-icons:lock" },
-  { title: "Access Control", description: "Manage who can view and edit secrets with fine-grained permissions.", icon: "dinkie-icons:entry" },
-  { title: "Audit Logging", description: "Track sensitive operations like secret changes and organization updates.", icon: "dinkie-icons:right-magnifying-glass" },
-  { title: "CLI Support", description: "Manage secrets and projects directly from your terminal.", icon: "dinkie-icons:window-browser" },
-  { title: "Open Source", description: "Built with Go, TypeScript, and Nuxt.js. Contributions are welcome!", icon: "dinkie-icons:heart-black-suit-circled" },
+  {
+    title: "End-to-End Encryption",
+    description: "Secrets remain encrypted at rest and in transit, via AES-256 encryption.",
+    icon: "dinkie-icons:lock",
+  },
+  {
+    title: "Access Control",
+    description: "Role-based permissions allow fine-grained control over who can view, edit, or manage secrets at organization and project level.",
+    icon: "dinkie-icons:entry",
+  },
+  {
+    title: "Audit Logging",
+    description: "All sensitive operations, including secret modifications and organization changes, are logged and timestamped.",
+    icon: "dinkie-icons:right-magnifying-glass",
+  },
+  {
+    title: "Command Line Interface",
+    description: "Interact with secrets programmatically via the open-source command-line interface, powered by Go.",
+    icon: "dinkie-icons:code",
+  },
 ]
 
-const howToUseSteps = [
-  { title: "Sign In", description: "Get started securely using Google, GitHub, or GitLab." },
-  { title: "Create an Organization", description: "Set up your organization to manage projects and users." },
-  { title: "Create a Project", description: "Group secrets by project to keep things organized." },
-  { title: "Add Secrets", description: "Store and encrypt your environment variables." },
-  { title: "Invite Teammates", description: "Assign roles and collaborate securely via the invite system." },
+const faqs = [
+  {
+    question: "How does role-based access control work for organizations?",
+    answer: "Organizations have three roles: Owner, Admin, and Member. Owners have full control over the organization, its projects, and members. Admins can invite and manage members. Members don't have any administrative privileges, but can access the secrets of projects they are part of.",
+  },
+  {
+    question: "How does role-based access control work for projects?",
+    answer: "Projects have three roles: Owner, Admin, and Member. Owners have full control over the project and its secrets. Admins can add and remove members, update roles, and handle secrets. Members can only view secrets within the project.",
+  },
+  {
+    question: "How does audit logging work?",
+    answer: "All actions within an organization are logged with timestamps and metadata, providing a clear history for transparency and accountability. Audit logs are visible to all members, but only the organization Owner can selectively delete entries.",
+  },
+  {
+    question: "What are the benefits of using the CLI?",
+    answer: "The CLI tool allows users to retrieve secrets for a project directly from their IDE or terminal, eliminating the need for a hardcoded .env file. It also enables the automation of project/organization management tasks via scripts.",
+  },
 ]
 
 const installCommand = "go install github.com/matimortari/secretkeepr/cli@latest"
 
 const cliCommands = [
   "secretkeepr login",
-  "secretkeepr create org my-org",
-  "secretkeepr create project my-project",
-  "secretkeepr add secret MY_SECRET my-secret-value",
+  "secretkeepr whoami",
+  "secretkeepr project list-all",
 ]
+
+const openIndex = ref<number | null>(null)
+
+function toggleAccordion(index: number) {
+  openIndex.value = openIndex.value === index ? null : index
+}
 
 useHead({
   title: "SecretKeepR - Securely Manage Your Environment Variables",
@@ -252,5 +291,25 @@ definePageMeta({
 }
 .hero-btn:hover {
   box-shadow: 0 0 8px 2px var(--accent);
+}
+
+.accordion-enter-active,
+.accordion-leave-active {
+  transition:
+    max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.accordion-enter-from,
+.accordion-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+.accordion-enter-to,
+.accordion-leave-from {
+  max-height: 500px;
+  opacity: 1;
 }
 </style>
