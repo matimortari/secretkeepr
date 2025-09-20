@@ -2,29 +2,29 @@ import logoTitleDark from "~/assets/logo-title-dark.png"
 import logoTitleLight from "~/assets/logo-title-light.png"
 
 export function useTheme() {
-  const colorMode = useState<"light" | "dark">("theme", () => "light")
+  const colorMode = useState<"dark" | "light">("theme", () => "dark")
   const storageKey = "nuxt-color-mode"
 
   const updateHtmlClass = () => {
     const html = document.documentElement
-    html.classList.remove("light", "dark")
+    html.classList.remove("dark", "light")
     html.classList.add(colorMode.value)
   }
 
   const syncThemeFromLocalStorage = () => {
     const saved = localStorage.getItem(storageKey)
-    if (saved === "dark" || saved === "light") {
+    if (saved === "light" || saved === "dark") {
       colorMode.value = saved
     }
     else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-      colorMode.value = prefersDark ? "dark" : "light"
+      const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches
+      colorMode.value = prefersLight ? "light" : "dark"
     }
     updateHtmlClass()
   }
 
   const toggleTheme = () => {
-    colorMode.value = colorMode.value === "dark" ? "light" : "dark"
+    colorMode.value = colorMode.value === "light" ? "dark" : "light"
     localStorage.setItem(storageKey, colorMode.value)
     updateHtmlClass()
   }
