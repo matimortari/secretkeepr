@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Organization ID is required" })
   }
 
-  await requireOrgRole(sessionUser.id, orgId, ["owner", "admin"])
+  await requireOrgRole(sessionUser.id, orgId, ["owner"])
 
   const whereClause: any = {
     orgId,

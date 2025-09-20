@@ -42,6 +42,7 @@ var (
 	projectCreateOrgID       string
 	projectCreateDescription string
 	projectUpdateSlug        string
+	projectListSlug          string
 	projectUpdateName        string
 	projectUpdateDescription string
 )
@@ -110,6 +111,19 @@ func getProjectBySlug(token, slug string) (Project, error) {
 	return Project{}, fmt.Errorf("project with slug %s not found", slug)
 }
 
+func printProject(p Project) {
+	fmt.Printf("   %s %s\n", color.YellowString("Name:"), p.Name)
+	fmt.Printf("   %s %s\n", color.YellowString("ID:"), p.ID)
+	fmt.Printf("   %s %s\n", color.YellowString("Slug:"), p.Slug)
+	if p.Role != "" {
+		fmt.Printf("   %s %s\n", color.YellowString("Role:"), p.Role)
+	}
+	if p.Description != "" {
+		fmt.Printf("   %s %s\n", color.YellowString("Description:"), p.Description)
+	}
+	fmt.Println()
+}
+
 var projectCmd = &cobra.Command{
 	Use:     "project",
 	Aliases: []string{"p", "projects"},
@@ -170,8 +184,47 @@ var projectListAllCmd = &cobra.Command{
 
 var projectListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List projects you belong to",
-	Run:   projectListAllCmd.Run,
+	Short: "List projects you belong to (or a specific project by slug)",
+	Run: func(cmd *cobra.Command, args []string) {
+		token, err := config.LoadAuthToken()
+		if err != nil {
+			color.Red("Failed to load authentication token: %v", err)
+			return
+		}
+
+		currentUserID, err := getCurrentUserID(token)
+		if err != nil {
+			color.Red("Failed to get current user ID: %v", err)
+			return
+		}
+
+		if projectListSlug != "" {
+			project, err := getProjectBySlug(token, projectListSlug)
+			if err != nil {
+				color.Red("Failed to find project by slug: %v", err)
+				return
+			}
+			annotateProjectRoles([]Project{project}, currentUserID)
+			printProject(project)
+			return
+		}
+
+		projects, err := getProjects(token)
+		if err != nil {
+			color.Red("Failed to get projects: %v", err)
+			return
+		}
+		if len(projects) == 0 {
+			color.Yellow("You don't belong to any projects.")
+			return
+		}
+		annotateProjectRoles(projects, currentUserID)
+
+		color.Cyan("Projects you belong to:")
+		for _, p := range projects {
+			printProject(p)
+		}
+	},
 }
 
 var projectCreateCmd = &cobra.Command{
@@ -292,6 +345,9 @@ var projectUpdateCmd = &cobra.Command{
 
 func init() {
 	projectCmd.AddCommand(projectListAllCmd)
+	projectCmd.AddCommand(projectListCmd)
+
+	projectListCmd.Flags().StringVarP(&projectListSlug, "slug", "s", "", "Project slug to fetch a single project")
 	projectCmd.AddCommand(projectListCmd)
 
 	// Flags for "create" subcommand
