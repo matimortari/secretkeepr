@@ -47,11 +47,11 @@
       <button
         v-motion :initial="{ opacity: 0 }"
         :enter="{ opacity: 1 }" :duration="600"
-        class="card group text-muted-foreground flex h-[180px] w-full flex-col items-center justify-center gap-4 !border-dashed !bg-transparent transition-all"
+        class="card group text-muted-foreground flex h-[180px] flex-col items-center justify-center gap-4 !border-dashed !bg-transparent hover:!border-accent transition-all"
         aria-label="Add New Project" @click="isDialogOpen = true"
       >
         <icon name="ph:plus" size="50" class="group-hover:scale-md group-hover:text-accent transition-all" />
-        <span class="group-hover:scale-sm text-muted-foreground transition-all">Add New Project</span>
+        <span class="group-hover:scale-sm text-muted-foreground transition-all">Add New Project...</span>
       </button>
     </ul>
 

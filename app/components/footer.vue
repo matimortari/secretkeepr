@@ -1,7 +1,7 @@
 <template>
   <footer class="bg-card mx-auto flex flex-col-reverse items-end gap-4 border-t p-8 md:flex-row md:justify-between md:border-t-0">
     <div class="flex w-full flex-col gap-4 border-t pt-8 md:w-auto md:border-t-0 md:pt-0">
-      <img src="/assets/logo-title-dark.png" alt="Logo" width="100">
+      <img :src="themeTitle" alt="Logo" width="100">
 
       <div class="flex flex-row items-center justify-between gap-4">
         <p class="text-muted-foreground text-sm whitespace-nowrap">
@@ -36,6 +36,7 @@
 
 <script setup lang="ts">
 const { clear, loggedIn } = useUserSession()
+const { themeTitle } = useTheme()
 
 const footerSections = [
   {

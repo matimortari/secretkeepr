@@ -2,12 +2,18 @@
   <nav class="absolute top-4 right-0 left-0 z-50 flex items-center justify-end p-4 md:top-0">
     <div class="absolute top-1/2 left-1/2 my-2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-2 select-none">
       <img src="/assets/logo-icon.png" alt="Logo" width="35" height="35">
-      <img src="/assets/logo-title-dark.png" alt="Logo" width="140" height="35">
+      <img :src="themeTitle" alt="Logo" width="140" height="35">
     </div>
-    <nuxt-link to="/sign-in" class="hidden flex-row items-center gap-2 text-sm font-semibold whitespace-nowrap hover:underline md:flex">
-      <icon name="ph:sign-in-bold" size="20" />
-      <span>Sign In</span>
-    </nuxt-link>
+
+    <div class="navigation-group" aria-label="User Actions">
+      <button aria-label="Toggle Theme" @click="toggleTheme()">
+        <icon :name="themeIcon" size="20" />
+      </button>
+      <nuxt-link to="/sign-in" class="hidden flex-row items-center gap-2 text-sm font-semibold whitespace-nowrap hover:underline md:flex">
+        <icon name="ph:sign-in-bold" size="20" />
+        <span>Sign In</span>
+      </nuxt-link>
+    </div>
   </nav>
 
   <section
@@ -150,6 +156,7 @@
 </template>
 
 <script setup lang="ts">
+const { toggleTheme, themeIcon, themeTitle } = useTheme()
 const { createActionHandler } = useActionIcon()
 const copyIcon = createActionHandler("ph:copy-bold")
 

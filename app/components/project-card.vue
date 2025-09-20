@@ -1,6 +1,6 @@
 <template>
   <nuxt-link :to="`/admin/${project.slug}`">
-    <div class="card group relative h-[180px] w-full overflow-hidden">
+    <div class="card group relative h-[180px] w-full overflow-hidden hover:!border-accent">
       <div class="flex h-full flex-col gap-2 p-2">
         <h3 class="truncate">
           {{ project.name }}
@@ -14,7 +14,7 @@
         <nuxt-link :to="`/admin/${project.slug}/settings`" class="flex items-center">
           <icon name="ph:gear-bold" size="20" class="hover:scale-md hover:text-accent transition-all" />
         </nuxt-link>
-        <div class="flex flex-row items-center gap-2">
+        <div class="navigation-group">
           <icon name="ph:key-bold" size="20" />
           <span class="text-sm">{{ totalProjectSecrets }}</span>
         </div>

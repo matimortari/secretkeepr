@@ -3,7 +3,7 @@
     <header class="flex flex-col items-start gap-2">
       <div class="flex flex-row items-center gap-4">
         <nuxt-link to="/" aria-label="Go back" class="hover:text-primary transition-colors">
-          <icon name="mdi:arrow-left" size="30" />
+          <icon name="ph:arrow-left" size="30" />
         </nuxt-link>
         <h2>
           Privacy Policy
@@ -13,6 +13,9 @@
         Learn how SecretKeepR collects, uses, and protects your data.
       </p>
     </header>
+    <button class="btn absolute top-4 right-4" aria-label="Toggle Theme" @click="toggleTheme">
+      <icon :name="themeIcon" size="25" />
+    </button>
   </div>
 
   <div class="mx-auto flex w-full flex-row justify-between px-8 md:pl-20">
@@ -57,6 +60,8 @@
 </template>
 
 <script setup lang="ts">
+const { toggleTheme, themeIcon } = useTheme()
+
 const privacyContent = [
   {
     title: "Introduction",

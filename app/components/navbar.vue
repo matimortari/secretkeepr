@@ -45,9 +45,12 @@
     </div>
 
     <nav class="navigation-group" aria-label="User Actions">
-      <nuxt-link to="/admin/preferences" title="User Preferences" aria-label="User Preferences" class="btn">
+      <nuxt-link to="/admin/preferences" title="User Preferences" aria-label="User Preferences" class="btn !hidden md:!block">
         <icon name="ph:user-bold" size="20" />
       </nuxt-link>
+      <button aria-label="Toggle Theme" class="btn" @click="toggleTheme()">
+        <icon :name="themeIcon" size="20" />
+      </button>
       <button class="btn md:!hidden" aria-label="Toggle Sidebar" @click="$emit('toggleSidebar')">
         <icon :name="props.isSidebarOpen ? 'ph:x' : 'ph:list'" size="20" />
       </button>
@@ -70,6 +73,7 @@ const route = useRoute()
 const { clear } = useUserSession()
 const orgStore = useOrganizationStore()
 const userStore = useUserStore()
+const { toggleTheme, themeIcon } = useTheme()
 
 const isDropdownOpen = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)

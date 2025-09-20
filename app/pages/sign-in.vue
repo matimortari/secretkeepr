@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-background flex flex-col items-center justify-center p-8 md:p-24">
+  <div class="bg-background flex flex-col items-center justify-center p-8">
     <div class="hero-background" />
 
     <header
