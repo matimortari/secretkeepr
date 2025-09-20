@@ -26,7 +26,7 @@
           :enter="{ opacity: 1 }" :duration="400"
           :delay="100 * index" class="border"
         >
-          <td class="text-muted-foreground flex flex-row items-center justify-between gap-4 p-2 font-mono text-sm">
+          <td class="text-muted-foreground flex flex-row items-center justify-between gap-4 p-2 font-mono text-sm font-semibold">
             <div class="flex flex-row items-center gap-2">
               <span class="w-full truncate">{{ secret.key }}</span>
               <icon

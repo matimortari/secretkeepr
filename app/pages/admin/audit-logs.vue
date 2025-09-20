@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
     <h2 class="border-b py-2">
       Audit Logs
     </h2>

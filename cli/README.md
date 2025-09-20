@@ -33,21 +33,23 @@ This will create the `secretkeepr.exe` binary in the current directory.
 The following commands are available in the SecretKeepR CLI:
 
 ```bash
-secretkeepr login # Authenticate with your SecretKeepR account
-secretkeepr whoami # Display currently authenticated user
-secretkeepr project # Manage projects
-secretkeepr import # Import secrets from a local file into a project
-secretkeepr export # Export secrets from a project into a local file
-secretkeepr run # Run a command with secrets from a project environment
+secretkeepr login    # Authenticate with your SecretKeepR account  
+secretkeepr whoami   # Display currently authenticated user  
+secretkeepr project  # Manage projects  
+secretkeepr import   # Import secrets from a local file into a project  
+secretkeepr export   # Export secrets from a project into a local file  
+secretkeepr run      # Run a command with secrets from a project environment  
 ```
 
 ### Project Commands
 
+Description.
+
 ```bash
-secretkeepr project list-all # List all projects you belong to
-secretkeepr project list # Alias for list-all
-secretkeepr project create -n <name> -o <orgId> -d <description> # Create a new project
-secretkeepr project update -s <slug> -n <newName> -d <newDescription> # Update an existing project
+secretkeepr project list-all
+secretkeepr project list 
+secretkeepr project create -n <name> -o <orgId> -d <description>
+secretkeepr project update -s <slug> -n <newName> -d <newDescription>
 ```
 
 #### Project Command Flags
@@ -61,8 +63,10 @@ secretkeepr project update -s <slug> -n <newName> -d <newDescription> # Update a
 
 ### Import Command
 
+Description.
+
 ```bash
-secretkeepr import --project <projectSlug> --env <environment> --file <filePath> # Import secrets from a file into a specified project and environment
+secretkeepr import --project <projectSlug> --env <environment> --file <filePath>
 ```
 
 #### Import Command Flags
@@ -75,8 +79,10 @@ secretkeepr import --project <projectSlug> --env <environment> --file <filePath>
 
 ### Export Command
 
+Description.
+
 ```bash
-secretkeepr export --project <projectSlug> --env <environment> --file <filePath> # Export secrets to a file from a specified project and environment
+secretkeepr export --project <projectSlug> --env <environment> --file <filePath>
 ```
 
 #### Export Command Flags
@@ -89,8 +95,10 @@ secretkeepr export --project <projectSlug> --env <environment> --file <filePath>
 
 ### Run Command
 
+Description.
+
 ```bash
-secretkeepr run --project <projectSlug> --env <environment> -- <command> # Run a terminal command with secrets injected from a project environment
+secretkeepr run --project <projectSlug> --env <environment> -- <command>
 ```
 
 #### Run Command Flags
