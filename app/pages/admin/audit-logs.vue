@@ -1,238 +1,43 @@
 <template>
-  <div v-motion :initial="{ opacity: 0 }" :enter="{ opacity: 1 }" :duration="800">
-    <header class="navigation-group border-b py-2">
-      <nuxt-link to="/admin/organization" aria-label="Go back" class="flex items-center">
-        <icon name="ph:arrow-left-bold" size="25" class="hover:scale-sm text-muted-foreground hover:text-accent" />
-      </nuxt-link>
-      <h2 class="max-w-lg truncate">
-        Audit Logs
-      </h2>
-    </header>
+  <div>
+    <h2 class="border-b py-2">
+      Audit Logs
+    </h2>
 
-    <section class="flex flex-col">
-      <div class="md:navigation-group flex flex-col items-start justify-between gap-2 border-b p-2">
-        <nav class="navigation-group" aria-label="Filters">
-          <input v-model="filters.date" type="date" title="Filter by date" class="hidden md:block">
-
-          <div ref="userDropdownRef" class="relative">
-            <button class="btn" title="Filter by user" aria-label="Filter by User" @click="isUserDropdownOpen = !isUserDropdownOpen">
-              <span class="capitalize">{{ userMap.get(filters.user) || 'All Users' }}</span>
-              <icon name="ph:caret-down-bold" size="15" />
-            </button>
-            <transition name="dropdown">
-              <ul v-if="isUserDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm whitespace-nowrap" role="menu" aria-label="Filter by User">
-                <li class="hover:bg-muted rounded p-2" role="menuitem" @click="setUserFilter('')">
-                  All Users
-                </li>
-                <li
-                  v-for="userId in users" :key="userId"
-                  class="hover:bg-muted flex flex-row items-center gap-1 rounded p-2" role="menuitem"
-                  @click="setUserFilter(userId)"
-                >
-                  <span>{{ userMap.get(userId) || userId }}</span>
-                </li>
-              </ul>
-            </transition>
-          </div>
-
-          <div ref="actionDropdownRef" class="relative">
-            <button class="btn" title="Filter by action" aria-label="Filter by Action" @click="isActionDropdownOpen = !isActionDropdownOpen">
-              <span>{{ actions.find(a => a.value === filters.action)?.label || 'All Actions' }}</span>
-              <icon name="ph:caret-down-bold" size="15" />
-            </button>
-            <transition name="dropdown">
-              <ul v-if="isActionDropdownOpen" class="dropdown scroll-area overflow-y-auto text-sm whitespace-nowrap">
-                <li class="hover:bg-muted rounded p-2" @click="setActionFilter('')">
-                  All Actions
-                </li>
-                <li v-for="action in actions" :key="action.value" class="hover:bg-muted rounded p-2" @click="setActionFilter(action.value)">
-                  {{ action.label }}
-                </li>
-              </ul>
-            </transition>
-          </div>
-
-          <button
-            class="btn" :title="filters.showSensitiveInfo ? 'Hide Sensitive Info' : 'Show Sensitive Info'"
-            aria-label="Toggle Sensitive Info" @click="filters.showSensitiveInfo = !filters.showSensitiveInfo"
-          >
-            <icon :name="filters.showSensitiveInfo ? 'ph:eye-slash-bold' : 'ph:eye-bold'" size="20" />
-          </button>
-        </nav>
-
-        <nav v-if="orgStore.totalPages > 0" class="navigation-group" aria-label="Pagination">
-          <input v-model="filters.date" type="date" title="Filter by date" class="md:hidden">
-
-          <button
-            class="btn-secondary disabled:opacity-80" :disabled="!orgStore.hasPrevPage"
-            title="Previous Page" aria-label="Previous Page"
-            @click="orgStore.prevAuditLogPage"
-          >
-            <icon name="ph:arrow-left-bold" size="20" />
-          </button>
-
-          <div class="text-caption flex flex-col items-center justify-center gap-1 whitespace-nowrap md:mx-4">
-            <span>{{ orgStore.auditLogs.page }} / {{ orgStore.totalPages }}</span>
-            <span v-if="logs.length" class="text-xs italic">{{ logsSummary }}</span>
-          </div>
-
-          <button
-            class="btn-secondary disabled:opacity-80" :disabled="!orgStore.hasNextPage"
-            title="Next Page" aria-label="Next Page"
-            @click="orgStore.nextAuditLogPage"
-          >
-            <icon name="ph:arrow-right-bold" size="20" />
-          </button>
-
-          <button
-            class="btn-danger" :disabled="!logs.length"
-            title="Delete Filtered Logs" aria-label="Delete Filtered Logs"
-            @click="handleDeleteLogs"
-          >
-            <icon name="ph:trash-bold" size="20" />
-          </button>
-        </nav>
-      </div>
-    </section>
+    <AuditLogsFilter :filters="filters" :actions="actions" :logs="logs" :user-map="userMap" />
 
     <p v-if="orgStore.isLoading" class="text-caption py-4">
-      Loading logs...
+      Loading logs…
     </p>
     <p v-else-if="!logs.length" class="text-caption py-4">
       No audit logs found.
     </p>
 
-    <div v-else class="scroll-area w-full overflow-x-auto">
-      <table class="min-w-full table-auto rounded-sm md:w-full md:overflow-hidden">
-        <thead>
-          <tr class="bg-muted border text-sm font-semibold">
-            <th v-for="header in headers" :key="header.value">
-              <div class="navigation-group truncate p-2">
-                <icon :name="header.icon" size="20" />
-                <span>{{ header.label }}</span>
-              </div>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr v-for="log in logs" :key="log.id" class="hover:bg-muted border text-sm">
-            <td class="max-w-sm p-2 align-top font-medium md:max-w-24" :title="actions.find(a => a.value === log.action)?.label">
-              {{ actions.find(a => a.value === log.action)?.label }}
-            </td>
-            <td class="text-caption max-w-sm overflow-hidden p-2 align-top text-ellipsis md:max-w-32" :title="log.resource">
-              {{ log.resource }}
-            </td>
-            <td
-              class="text-caption max-w-md overflow-hidden p-2 align-top text-ellipsis md:max-w-60" :title="JSON.stringify(log.metadata, null, 2)"
-              v-html="formatMetadata(log.metadata)"
-            />
-            <td class="text-caption max-w-sm overflow-hidden p-2 align-top text-ellipsis md:max-w-24" :title="userMap.get(log.userId)">
-              {{ userMap.get(log.userId) }}
-            </td>
-            <td class="text-caption max-w-sm overflow-hidden p-2 align-top text-ellipsis md:max-w-32" :title="formatDate(log.createdAt)">
-              {{ formatDate(log.createdAt) }}
-            </td>
-            <td
-              class="text-caption max-w-sm overflow-hidden p-2 align-top text-ellipsis md:max-w-32"
-              :title="filters.showSensitiveInfo ? formatSensitiveData(log.metadata, 200) : ''"
-            >
-              <span v-if="filters.showSensitiveInfo">
-                {{ formatSensitiveData(log.metadata) }}
-              </span>
-              <span v-else>Hidden</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <AuditLogsTable
+      v-else
+      :logs="logs"
+      :headers="headers"
+      :actions="actions"
+      :filters="filters"
+      :user-map="userMap"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 const orgStore = useOrganizationStore()
-const { filters, actions, headers, logs, formatDate, formatMetadata, formatSensitiveData } = useAuditLogs()
+const { filters, actions, headers, logs } = useAuditLogs()
 
-const isUserDropdownOpen = ref(false)
-const isActionDropdownOpen = ref(false)
-const userDropdownRef = ref<HTMLElement | null>(null)
-const actionDropdownRef = ref<HTMLElement | null>(null)
-
-const activeOrg = computed(() => orgStore.activeOrg as OrganizationType)
-
+const activeOrg = computed(() => orgStore.activeOrg)
 const userMap = computed(() => {
-  const map = new Map<string, string>()
-  activeOrg.value?.memberships?.forEach((membership) => {
-    const user = membership.user
-    if (user) {
-      map.set(user.id, user.name)
-    }
-  })
-
-  return map
+  const m = new Map<string, string>()
+  activeOrg.value?.memberships?.forEach(mb => mb.user && m.set(mb.user.id, mb.user.name))
+  return m
 })
-
-const users = computed(() => {
-  const userSet = new Set<string>()
-  orgStore.auditLogs.logs.forEach((log) => {
-    if (log.userId)
-      userSet.add(log.userId)
-  })
-  return Array.from(userSet).sort()
-})
-
-useClickOutside(userDropdownRef, () => {
-  isUserDropdownOpen.value = false
-}, { escapeKey: true })
-
-useClickOutside(actionDropdownRef, () => {
-  isActionDropdownOpen.value = false
-}, { escapeKey: true })
-
-function setUserFilter(user: string) {
-  filters.value.user = user
-  isUserDropdownOpen.value = false
-}
-
-function setActionFilter(action: string) {
-  filters.value.action = action
-  isActionDropdownOpen.value = false
-}
-
-const logsSummary = computed(() => {
-  const count = logs.value.length
-  const logLabel = count === 1 ? "log" : "logs"
-  return count ? `${count} ${logLabel}` : "no matching logs"
-})
-
-async function handleDeleteLogs() {
-  if (!activeOrg.value.id)
-    return
-  if (!confirm(`Are you sure you want to delete ${logsSummary.value}? This action cannot be undone. Only the logs matching your current filters will be deleted.`)) {
-    return
-  }
-
-  const deleteFilters = {
-    orgId: activeOrg.value.id,
-    action: filters.value.action,
-    beforeDate: filters.value.date,
-    createdBySelfOnly: filters.value.user === "self",
-    protectedActions: [],
-  }
-
-  try {
-    await orgStore.deleteAuditLogs(deleteFilters)
-  }
-  catch (error: any) {
-    console.error("Failed to delete audit logs:", error)
-    orgStore.error = error.message
-  }
-}
 
 watch(() => activeOrg.value, async (org) => {
-  if (org?.id) {
+  if (org?.id)
     await orgStore.getAuditLogs(org.id)
-  }
 }, { immediate: true })
 
 useHead({
@@ -251,36 +56,3 @@ definePageMeta({
   middleware: auth,
 })
 </script>
-
-<style scoped>
-.dropdown-enter-active,
-.dropdown-leave-active {
-  transition: all 0.2s ease;
-}
-.dropdown-enter-from,
-.dropdown-leave-to {
-  opacity: 0;
-  transform: translateY(0.25rem);
-}
-.dropdown-enter-to,
-.dropdown-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-input[type="date"] {
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-  white-space: nowrap;
-  color: var(--muted-foreground);
-  color-scheme: dark;
-}
-input[type="date"]::-webkit-inner-spin-button,
-input[type="date"]::-webkit-clear-button {
-  display: none;
-}
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.5);
-  cursor: pointer;
-}
-</style>

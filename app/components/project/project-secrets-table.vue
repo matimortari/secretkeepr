@@ -1,9 +1,9 @@
 <template>
-  <div class="scroll-area overflow-x-auto">
-    <table class="table-fixed rounded-sm md:w-full md:overflow-hidden">
+  <div class="scroll-area w-full overflow-x-auto">
+    <table class="bg-card min-w-full table-auto rounded-t-lg border md:w-full md:overflow-hidden">
       <thead>
         <tr class="bg-muted text-sm font-semibold">
-          <th class="navigation-group w-full p-2 text-start">
+          <th class="flex w-full flex-row items-center gap-2 p-2 text-start">
             <span>Key</span>
             <icon
               name="ph:arrow-down-bold" size="15"
@@ -13,7 +13,7 @@
             />
           </th>
 
-          <th v-for="env in environments" :key="env" class="p-2 text-start capitalize md:w-1/6">
+          <th v-for="env in environments" :key="env" class="border-x p-2 text-start capitalize md:w-1/6">
             <span>{{ env }}</span>
           </th>
         </tr>
@@ -24,9 +24,9 @@
           v-for="(secret, index) in sortedSecrets" :key="secret.key"
           v-motion :initial="{ opacity: 0 }"
           :enter="{ opacity: 1 }" :duration="400"
-          :delay="100 * index"
+          :delay="100 * index" class="border"
         >
-          <td class="text-muted-foreground flex flex-row items-center justify-between gap-4 p-2 font-mono text-sm font-semibold">
+          <td class="text-muted-foreground flex flex-row items-center justify-between gap-4 p-2 font-mono text-sm">
             <div class="flex flex-row items-center gap-2">
               <span class="w-full truncate">{{ secret.key }}</span>
               <icon
@@ -49,13 +49,12 @@
             </nav>
           </td>
 
-          <td v-for="env in environments" :key="env" class="text-muted-foreground w-[150px] max-w-[150px] overflow-hidden p-2 font-mono text-sm">
+          <td v-for="env in environments" :key="env" class="text-muted-foreground w-[150px] max-w-[150px] overflow-hidden border p-2 font-mono text-sm">
             <div class="flex flex-row items-center justify-between gap-4">
               <span
                 class="max-w-[80%] truncate select-none"
-                :class="[
-                  getSecretValue(secret.key, env) ? 'bg-card hover:text-accent cursor-pointer rounded px-1 transition-all' : '',
-                ]" @click="copyToClipboard(getSecretValue(secret.key, env))"
+                :class="[getSecretValue(secret.key, env) ? 'bg-muted hover:!text-accent cursor-pointer rounded px-1 transition-all' : '']"
+                @click="copyToClipboard(getSecretValue(secret.key, env))"
               >
                 {{ renderValue(secret.key, env) }}
               </span>
