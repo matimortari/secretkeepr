@@ -2,7 +2,7 @@
   <div v-if="isOpen" class="fixed inset-0 z-30 bg-black/50 transition-opacity md:hidden" @click="$emit('update:isOpen', false)" />
 
   <aside
-    class="bg-background fixed top-0 left-0 z-30 flex h-screen w-60 flex-col gap-2 overflow-y-auto rounded-br-xl border-r-2 border-b-2 p-4 transition-all md:static"
+    class="bg-background fixed top-0 left-0 z-30 flex h-screen w-64 flex-col gap-2 overflow-y-auto border-r-2 p-4 transition-all md:static md:rounded-br-xl md:border-b-2 2xl:w-72 2xl:p-8"
     :class="isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
   >
     <span class="font-semibold">Overview</span>
@@ -24,8 +24,8 @@
       No projects yet.
     </p>
 
-    <nav v-else aria-label="Projects Navigation" class="scroll-area flex max-h-64 flex-col overflow-x-hidden">
-      <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-caption truncate p-2 hover:underline">
+    <nav v-else aria-label="Projects Navigation" class="scroll-area flex max-h-64 flex-col gap-2 overflow-x-hidden">
+      <nuxt-link v-for="project in projectsFromOrg" :key="project.id" :to="`/admin/${project.slug}`" class="text-caption truncate hover:underline">
         {{ project.name }}
       </nuxt-link>
     </nav>

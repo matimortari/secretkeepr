@@ -49,7 +49,10 @@
         </h4>
         <ul class="text-muted-foreground space-y-2">
           <li v-for="(section, index) in privacyContent" :key="`toc-${index}`">
-            <a :href="`#${section.title?.toLowerCase().replace(/\s+/g, '-')}`" class="hover:text-primary block transition-colors">
+            <a
+              :href="`#${section.title?.toLowerCase().replace(/\s+/g, '-')}`" class="hover:text-primary block transition-colors"
+              :class="{ 'text-primary border-primary border-r-4 pr-2 font-semibold': activeSection === section.title.toLowerCase().replace(/\s+/g, '-') }"
+            >
               {{ index + 1 }}. {{ section.title }}
             </a>
           </li>
@@ -61,6 +64,7 @@
 
 <script setup lang="ts">
 const { toggleTheme, themeIcon } = useTheme()
+const { activeSection } = useActiveHeading()
 
 const privacyContent = [
   {
@@ -148,7 +152,7 @@ const privacyContent = [
       `If you have any questions about the Privacy Policy, email the maintainer at 
       <a href="mailto:matheus.felipe.19rt@gmail.com" class='text-primary hover:underline'>
         matheus.felipe.19rt@gmail.com
-      </a>.`,
+        </a>.`,
     ],
   },
 ]
