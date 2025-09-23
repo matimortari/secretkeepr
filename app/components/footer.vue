@@ -5,10 +5,10 @@
 
       <div class="flex flex-row items-center justify-between gap-4">
         <p class="text-muted-foreground text-sm whitespace-nowrap">
-          © {{ new Date().getFullYear() }} LinkNest. All rights reserved.
+          © {{ new Date().getFullYear() }} SecretKeepR. All rights reserved.
         </p>
 
-        <nuxt-link to="https://github.com/matimortari/linknest">
+        <nuxt-link to="https://github.com/matimortari/secretkeepr">
           <icon name="simple-icons:github" size="25" class="text-muted-foreground hover:scale-md hover:text-accent transition-all" />
         </nuxt-link>
       </div>

@@ -257,7 +257,7 @@ const orgFields = [
   },
   {
     label: "Updated At",
-    description: "Last update time for your organization.",
+    description: "When your organization was last updated.",
     value: computed(() => formatDate(activeOrg.value.updatedAt)),
   },
 ]

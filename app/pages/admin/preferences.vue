@@ -143,12 +143,12 @@ const userFields = [
   },
   {
     label: "Active Organization Role",
-    description: "Your role within the selected organization.",
+    description: "Your role within the active organization.",
     value: computed(() => currentMembership.value?.role),
   },
   {
     label: "Joined On",
-    description: "Date you joined SecretKeepR.",
+    description: "The date you joined SecretKeepR.",
     value: computed(() => formatDate(user.value.createdAt)),
   },
   {

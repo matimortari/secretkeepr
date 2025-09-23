@@ -293,7 +293,6 @@ definePageMeta({
 
 .hero-btn {
   box-shadow: 0 0 0 2px var(--primary);
-  transition: box-shadow 0.5s ease;
   border-radius: 5rem;
 }
 .hero-btn:hover {

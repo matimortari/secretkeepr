@@ -244,7 +244,7 @@ const projectFields = [
   },
   {
     label: "Updated At",
-    description: "Last update time for your project.",
+    description: "When your project was last updated.",
     value: computed(() => formatDate(project.value?.updatedAt)),
   },
 ]
