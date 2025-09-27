@@ -132,7 +132,7 @@
         </p>
 
         <button class="btn-primary" aria-label="Create Invite Link" @click="handleCreateInvite">
-          <icon name="ph:link" size="20" />
+          <icon name="ph:link-bold" size="20" />
           <span>Copy Invite Link</span>
         </button>
       </div>

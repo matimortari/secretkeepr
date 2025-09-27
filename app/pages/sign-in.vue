@@ -7,7 +7,7 @@
       :initial="{ opacity: 0 }" :visible="{ opacity: 1 }"
       :duration="800"
     >
-      <img src="/assets/logo-icon.png" alt="Logo" width="120" height="120">
+      <img src="/assets/logo-icon.png" alt="Logo Icon" width="80">
 
       <div class="flex flex-col items-center gap-4">
         <h1>

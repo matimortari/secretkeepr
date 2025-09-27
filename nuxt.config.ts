@@ -42,9 +42,9 @@ export default defineNuxtConfig({
   },
   shiki: {
     bundledLangs: ["bash", "html", "javascript", "json", "markdown", "typescript", "vue"],
-    bundledThemes: ["github-dark-default"],
+    bundledThemes: ["monokai"],
     highlightOptions: {
-      theme: "github-dark-default",
+      theme: "monokai",
     },
   },
 })

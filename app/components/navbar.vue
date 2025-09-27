@@ -2,7 +2,7 @@
   <div v-if="userStore.user" class="navigation-group bg-card justify-between border-b-2 px-4 py-2">
     <div class="navigation-group">
       <nuxt-link to="/" class="hover:scale-sm flex flex-row items-center gap-2 transition-all">
-        <img src="/assets/logo-icon.png" alt="Logo" width="30" height="30">
+        <img src="/assets/logo-icon.png" alt="Logo Icon" width="30">
       </nuxt-link>
 
       <nav class="navigation-group text-sm" aria-label="Breadcrumbs Navigation">
@@ -52,7 +52,7 @@
         <icon :name="themeIcon" size="20" />
       </button>
       <button class="btn md:!hidden" aria-label="Toggle Sidebar" @click="$emit('toggleSidebar')">
-        <icon :name="props.isSidebarOpen ? 'ph:x' : 'ph:list'" size="20" />
+        <icon :name="props.isSidebarOpen ? 'ph:x-bold' : 'ph:list-bold'" size="20" />
       </button>
       <button class="btn" aria-label="Sign Out" @click="signOut">
         <icon name="ph:sign-out-bold" size="20" />
@@ -69,11 +69,12 @@ const props = defineProps<{
 
 defineEmits<(e: "toggleSidebar") => void>()
 
-const route = useRoute()
+const { toggleTheme, themeIcon } = useTheme()
 const { clear } = useUserSession()
+const route = useRoute()
+const router = useRouter()
 const orgStore = useOrganizationStore()
 const userStore = useUserStore()
-const { toggleTheme, themeIcon } = useTheme()
 
 const isDropdownOpen = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)
@@ -102,7 +103,7 @@ async function setActiveOrg(org: OrganizationType) {
 
 function signOut() {
   clear()
-  window.location.href = "/"
+  router.push("/")
 }
 </script>
 

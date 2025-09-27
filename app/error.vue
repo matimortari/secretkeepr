@@ -16,8 +16,8 @@
     </div>
 
     <div class="flex items-center justify-center md:items-end md:justify-end">
-      <icon :name="statusIcons[error.statusCode] || 'ph:smiley-sad-light'" size="180" class="md:hidden" />
-      <icon :name="statusIcons[error.statusCode] || 'ph:smiley-sad-light'" size="300" class="hidden md:block" />
+      <icon :name="statusIcons[error.statusCode] || 'ph:smiley-sad-bold'" size="180" class="md:hidden" />
+      <icon :name="statusIcons[error.statusCode] || 'ph:smiley-sad-bold'" size="300" class="hidden md:block" />
     </div>
   </div>
 </template>
@@ -32,12 +32,12 @@ defineProps<{
 const handleError = () => clearError({ redirect: "/" })
 
 const statusIcons: Record<number, string> = {
-  400: "ph:smiley-sad-light", // Bad Request
-  401: "ph:warning-light", // Unauthorized
-  403: "ph:shield-warning-light", // Forbidden
-  404: "ph:smiley-sad-light", // Not Found
-  500: "ph:cloud-warning-light", // Internal Server Error
-  502: "ph:cloud-warning-light", // Bad Gateway
-  503: "ph:cloud-x-light", // Service Unavailable
+  400: "ph:smiley-sad-bold", // Bad Request
+  401: "ph:warning-bold", // Unauthorized
+  403: "ph:shield-warning-bold", // Forbidden
+  404: "ph:smiley-sad-bold", // Not Found
+  500: "ph:cloud-warning-bold", // Internal Server Error
+  502: "ph:cloud-warning-bold", // Bad Gateway
+  503: "ph:cloud-x-bold", // Service Unavailable
 }
 </script>

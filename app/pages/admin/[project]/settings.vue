@@ -84,7 +84,7 @@
                 <icon name="ph:floppy-disk-bold" size="15" />
               </button>
               <button v-if="isOwner && String(member.role) !== 'owner'" class="btn" aria-label="Remove Member" @click="handleRemoveMember(member.userId)">
-                <icon name="ph:x" size="15" />
+                <icon name="ph:x-bold" size="15" />
               </button>
             </nav>
           </li>

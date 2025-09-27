@@ -30,7 +30,11 @@
       </nuxt-link>
     </nav>
 
-    <nuxt-link to="https://github.com/matimortari/secretkeepr" class="navigation-group group border-t py-4">
+    <nuxt-link
+      to="https://github.com/matimortari/secretkeepr" class="navigation-group group border-t py-4"
+      rel="noopener" target="_blank"
+      aria-label="GitHub Repository"
+    >
       <icon name="simple-icons:github" size="25" class="group-hover:scale-md group-hover:text-accent transition-all" />
       <span class="text-muted-foreground text-sm font-semibold">
         Support This Project

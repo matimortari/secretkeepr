@@ -1,16 +1,16 @@
 <template>
   <nav class="absolute top-4 right-0 left-0 z-50 flex items-center justify-end p-4 md:top-0">
     <div class="absolute top-1/2 left-1/2 my-2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-2 select-none">
-      <img src="/assets/logo-icon.png" alt="Logo" width="35" height="35">
-      <img :src="themeTitle" alt="Logo" width="140" height="35">
+      <img src="/assets/logo-icon.png" alt="Logo Icon" width="30">
+      <img :src="themeTitle" alt="Logo Title" width="100">
     </div>
 
-    <div class="navigation-group" aria-label="User Actions">
+    <div class="flex flex-row items-center gap-4" aria-label="User Actions">
       <button aria-label="Toggle Theme" @click="toggleTheme()">
-        <icon :name="themeIcon" size="20" />
+        <icon :name="themeIcon" size="25" />
       </button>
       <nuxt-link to="/sign-in" class="hidden flex-row items-center gap-2 text-sm font-semibold whitespace-nowrap hover:underline md:flex">
-        <icon name="ph:sign-in-bold" size="20" />
+        <icon name="ph:sign-in-bold" size="25" />
         <span>Sign In</span>
       </nuxt-link>
     </div>
@@ -143,7 +143,7 @@
 
       <div class="text-muted-foreground absolute right-6 bottom-6 z-10 hidden items-end gap-2 text-xs select-none md:flex">
         <span>Powered by Go</span>
-        <img src="/assets/gopher.png" alt="Go Gopher" width="50" height="50">
+        <img src="/assets/gopher.png" alt="Gopher" width="50" height="50">
       </div>
     </div>
 
