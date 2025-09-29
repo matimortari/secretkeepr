@@ -1,32 +1,17 @@
 <div align="center">
-  <h1>
-    <img src="public/logo-full-dark.png" alt="Logo" width="300"/>
-  </h1>
+<h1>
+    <img src="public/logo-full-dark.png" alt="Logo" width="300" />
+</h1>
 
-  <p>
-    <a href="https://sonarcloud.io/summary/new_code?id=matimortari_secretkeepr">
-      <img src="https://sonarcloud.io/api/project_badges/measure?project=matimortari_secretkeepr&metric=alert_status" alt="Quality Gate Status"/>
-    </a>
-    <a href="https://sonarcloud.io/summary/new_code?id=matimortari_secretkeepr">
-      <img src="https://sonarcloud.io/api/project_badges/measure?project=matimortari_secretkeepr&metric=vulnerabilities" alt="Vulnerabilities"/>
-    </a>
-    <a href="https://sonarcloud.io/summary/new_code?id=matimortari_secretkeepr">
-      <img src="https://sonarcloud.io/api/project_badges/measure?project=matimortari_secretkeepr&metric=ncloc" alt="Lines of Code"/>
-    </a>
-    <a href="https://opensource.org/licenses/MIT">
-      <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat&colorA=0d1117" alt="MIT License"/>
-    </a>
-    <a href="https://github.com/matimortari">
-      <img src="https://img.shields.io/github/followers/matimortari?label=Follow&style=social" alt="Follow on GitHub"/>
-    </a>
-  </p>
-</div>
-
-<div align="center">
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=matimortari_secretkeepr&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=matimortari_secretkeepr)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=matimortari_secretkeepr&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=matimortari_secretkeepr)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=matimortari_secretkeepr&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=matimortari_secretkeepr)
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat&colorA=0d1117)](https://opensource.org/licenses/MIT)
+[![Follow on GitHub](https://img.shields.io/github/followers/matimortari?label=Follow&style=social)](https://github.com/matimortari)
 
 **SecretKeepR** is a secrets manager designed to help users and organizations **securely manage and share environment variables**. It provides access controls for managing projects, users, and encrypted secrets across multiple organizations. It also includes a **command-line interface** for easy interaction with your secrets and projects.
 
-For detailed instructions on building and using the command-line interface, see the [CLI documentation](./cli/README.md).
+For CLI usage and setup, see the [CLI documentation](./cli/README.md).
 
 [**Check it out!** 🔍](https://secretkeepr.vercel.app)
 
@@ -71,7 +56,7 @@ Feel free to reach out to discuss collaboration opportunities or to say hello!
 
 MIT License
 
-Copyright (c) 2024 Matheus Mortari
+Copyright (c) 2025 Matheus Mortari
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

@@ -33,12 +33,12 @@ This will create the `secretkeepr.exe` binary in the current directory.
 The following commands are available in the SecretKeepR CLI:
 
 ```bash
-secretkeepr login    # Authenticate with your SecretKeepR account  
-secretkeepr whoami   # Display currently authenticated user  
-secretkeepr project  # Manage projects  
-secretkeepr import   # Import secrets from a local file into a project  
-secretkeepr export   # Export secrets from a project into a local file  
-secretkeepr run      # Run a command with secrets from a project environment  
+secretkeepr login    # Authenticate with your SecretKeepR account
+secretkeepr whoami   # Display currently authenticated user
+secretkeepr project  # Manage projects
+secretkeepr import   # Import secrets from a local file into a project
+secretkeepr export   # Export secrets from a project into a local file
+secretkeepr run      # Run a command with secrets from a project environment
 ```
 
 ### Project Commands
@@ -47,7 +47,7 @@ Description.
 
 ```bash
 secretkeepr project list-all
-secretkeepr project list 
+secretkeepr project list
 secretkeepr project create -n <name> -o <orgId> -d <description>
 secretkeepr project update -s <slug> -n <newName> -d <newDescription>
 ```

@@ -24,9 +24,9 @@
         <button class="btn" title="Filter by action" @click="isActionDropdownOpen = !isActionDropdownOpen">
           <span>{{ actions.find(a => a.value === filters.action)?.label || 'All Actions' }}</span>
           <icon name="ph:caret-down-bold" size="15" />
-        </button> 
+        </button>
         <transition name="dropdown">
-          <ul v-if="isActionDropdownOpen" class="dropdown -left-8 scroll-area overflow-y-auto text-sm whitespace-nowrap">
+          <ul v-if="isActionDropdownOpen" class="dropdown scroll-area -left-8 overflow-y-auto text-sm whitespace-nowrap">
             <li class="hover:bg-muted rounded p-2" @click="setActionFilter('')">
               All Actions
             </li>
