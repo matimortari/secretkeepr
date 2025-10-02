@@ -237,14 +237,9 @@ async function handleDeleteUser() {
 }
 
 useHead({
-  title: "Preferences - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/preferences" }, { rel: "icon", href: "/favicon.svg" }],
+  title: "Preferences",
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/preferences" }],
   meta: [{ name: "description", content: "SecretKeepR user preferences page." }],
-})
-
-useSeoMeta({
-  title: "Preferences - SecretKeepR",
-  description: "SecretKeepR user preferences page.",
 })
 
 definePageMeta({

@@ -82,13 +82,8 @@ const cliContent = [
 ]
 
 useHead({
-  title: "Command-Line Interface - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/cli" }, { rel: "icon", href: "/favicon.svg" }],
+  title: "Command-Line Interface",
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/cli" }],
   meta: [{ name: "description", content: "The guide for the command-line interface for SecretKeepR, powered by Go." }],
-})
-
-useSeoMeta({
-  title: "Command-Line Interface - SecretKeepR",
-  description: "The guide for the command-line interface for SecretKeepR, powered by Go.",
 })
 </script>

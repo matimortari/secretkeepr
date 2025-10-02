@@ -158,13 +158,8 @@ const privacyContent = [
 ]
 
 useHead({
-  title: "Privacy Policy - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/legal/privacy" }, { rel: "icon", href: "/favicon.svg" }],
+  title: "Privacy Policy",
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/legal/privacy" }],
   meta: [{ name: "description", content: "Read the privacy policy for SecretKeepR." }],
-})
-
-useSeoMeta({
-  title: "Privacy Policy - SecretKeepR",
-  description: "Read the privacy policy for SecretKeepR.",
 })
 </script>

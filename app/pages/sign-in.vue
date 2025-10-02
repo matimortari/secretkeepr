@@ -65,14 +65,9 @@ const providers = [
 ]
 
 useHead({
-  title: "Sign In - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/sign-in" }, { rel: "icon", href: "/favicon.svg" }],
+  title: "Sign In",
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/sign-in" }],
   meta: [{ name: "description", content: "Sign In to SecretKeepR." }],
-})
-
-useSeoMeta({
-  title: "Sign In - SecretKeepR",
-  description: "Sign In to SecretKeepR.",
 })
 
 definePageMeta({

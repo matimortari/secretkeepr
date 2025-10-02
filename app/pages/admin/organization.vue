@@ -381,14 +381,9 @@ watch(usersFromOrg, (users) => {
 }, { immediate: true })
 
 useHead({
-  title: "Organization - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/organization" }, { rel: "icon", href: "/favicon.svg" }],
+  title: "Organization",
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/organization" }],
   meta: [{ name: "description", content: "SecretKeepR organization page." }],
-})
-
-useSeoMeta({
-  title: "Organization - SecretKeepR",
-  description: "SecretKeepR organization page.",
 })
 
 definePageMeta({

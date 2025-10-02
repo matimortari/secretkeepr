@@ -117,14 +117,9 @@ watch(() => orgStore.activeOrg, async (newOrg) => {
 }, { immediate: true })
 
 useHead({
-  title: "Projects - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/projects" }, { rel: "icon", href: "/favicon.svg" }],
+  title: "Projects",
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/projects" }],
   meta: [{ name: "description", content: "SecretKeepR projects page." }],
-})
-
-useSeoMeta({
-  title: "Projects - SecretKeepR",
-  description: "SecretKeepR projects page.",
 })
 
 definePageMeta({

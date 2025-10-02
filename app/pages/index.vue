@@ -233,25 +233,8 @@ function toggleAccordion(index: number) {
 
 useHead({
   title: "SecretKeepR - Securely Manage Your Environment Variables",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app" }, { rel: "icon", href: "/favicon.svg" }],
-  meta: [
-    { name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." },
-    { property: "og:title", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." },
-    { property: "og:description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." },
-    { property: "og:type", content: "website" },
-    { property: "og:image", content: "https://secretkeepr.vercel.app/og-image.png" },
-    { property: "og:url", content: "https://secretkeepr.vercel.app" },
-    { name: "google-site-verification", content: "2j0bcfhh8FCYPpzFylzbiPjl3Pa0X7lMuG060ctsCsA" },
-  ],
-})
-
-useSeoMeta({
-  title: "SecretKeepR - Securely Manage Your Environment Variables",
-  description: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
-  ogTitle: "SecretKeepR - Securely Manage Your Environment Variables",
-  ogDescription: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use.",
-  ogImage: "https://secretkeepr.vercel.app/og-image.png",
-  ogUrl: "https://secretkeepr.vercel.app",
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app" }],
+  meta: [{ name: "description", content: "Centralize, encrypt, and share your secrets with confidence. Fast, safe, and easy to use." }],
 })
 
 definePageMeta({

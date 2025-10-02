@@ -66,14 +66,9 @@ async function handleAcceptInvite() {
 }
 
 useHead({
-  title: "Join Organization - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/setup/join-org" }, { rel: "icon", href: "/favicon.svg" }],
+  title: "Join Organization",
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/setup/join-org" }],
   meta: [{ name: "description", content: "Join an organization on SecretKeepR." }],
-})
-
-useSeoMeta({
-  title: "Join Organization - SecretKeepR",
-  description: "Join an organization on SecretKeepR.",
 })
 
 definePageMeta({

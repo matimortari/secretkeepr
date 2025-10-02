@@ -41,14 +41,9 @@ watch(() => activeOrg.value, async (org) => {
 }, { immediate: true })
 
 useHead({
-  title: "Audit Logs - SecretKeepR",
-  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/audit-logs" }, { rel: "icon", href: "/favicon.svg" }],
+  title: "Audit Logs",
+  link: [{ rel: "canonical", href: "https://secretkeepr.vercel.app/admin/audit-logs" }],
   meta: [{ name: "description", content: "SecretKeepR audit logs page." }],
-})
-
-useSeoMeta({
-  title: "Audit Logs - SecretKeepR",
-  description: "SecretKeepR audit logs page.",
 })
 
 definePageMeta({

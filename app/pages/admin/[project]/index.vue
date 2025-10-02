@@ -135,14 +135,9 @@ watch(() => projectId.value, async (id) => {
   const projectTitle = projectsStore.projects?.find(p => p.id === id)?.name
 
   useHead({
-    title: `${projectTitle} - SecretKeepR`,
-    link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}` }, { rel: "icon", href: "/favicon.svg" }],
+    title: `${projectTitle}`,
+    link: [{ rel: "canonical", href: `https://secretkeepr.vercel.app/${id}` }],
     meta: [{ name: "description", content: `${projectTitle} project page.` }],
-  })
-
-  useSeoMeta({
-    title: `${projectTitle} - SecretKeepR`,
-    description: `${projectTitle} project page.`,
   })
 }, { immediate: true })
 
