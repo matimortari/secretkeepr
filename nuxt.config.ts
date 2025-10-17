@@ -16,6 +16,15 @@ export default defineNuxtConfig({
     fallback: "light",
     storageKey: "nuxt-color-mode",
   },
+  fonts: {
+    processCSSVariables: true,
+    families: [
+      { name: "Inter", provider: "google" },
+      { name: "Jockey One", provider: "google" },
+      { name: "Siklscreen", provider: "google" },
+      { name: "JetBrains Mono", provider: "google" },
+    ],
+  },
   icon: {
     mode: "svg",
     clientBundle: { scan: true },
