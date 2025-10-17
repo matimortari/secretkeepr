@@ -109,7 +109,7 @@ const userStore = useUserStore()
 const user = computed(() => userStore.user as User)
 const activeOrg = computed(() => userStore.activeOrg as Organization)
 const currentMembership = computed(() => {
-  return userStore.organizations.find(m => m.orgId === activeOrg.value.id && m.userId === user.value.id)
+  return activeOrg.value.members?.find(m => m.userId === user.value.id)
 })
 
 const userFields = [
@@ -148,12 +148,12 @@ const userFields = [
   {
     label: "Joined On",
     description: "The date you joined SecretkepR.",
-    value: computed(() => formatDate(user.value.createdAt)),
+    value: computed(() => user.value.createdAt ? formatDate(new Date(user.value.createdAt)) : "N/A"),
   },
   {
     label: "CLI Token",
     description: "This token is used for CLI access. Keep it secret and secure.",
-    value: computed(() => user.value.cliToken),
+    value: computed(() => user.value.apiToken),
     copyable: true,
   },
   {

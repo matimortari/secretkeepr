@@ -215,10 +215,10 @@ const deleteOrgError = ref<string | null>(null)
 const inviteError = ref<string | null>(null)
 const inviteSuccess = ref<string | null>(null)
 
-const activeOrg = computed(() => orgStore.activeOrg as OrganizationType)
+const activeOrg = computed(() => userStore.activeOrg as Organization)
 const projectsFromOrg = computed(() => projectsStore.projects.filter(p => p.orgId === activeOrg.value.id))
 const usersFromOrg = computed(() =>
-  (activeOrg.value.memberships ?? []).map(m => ({
+  (activeOrg.value.members ?? []).map((m: OrganizationMember) => ({
     id: m.user?.id,
     name: m.user?.name,
     email: m.user?.email,
@@ -226,7 +226,7 @@ const usersFromOrg = computed(() =>
     role: m.role || "member",
   })),
 )
-const currentMembership = computed(() => activeOrg.value.memberships?.find(m => m.user?.id === userStore.user?.id))
+const currentMembership = computed(() => activeOrg.value.members?.find((m: OrganizationMember) => m.user?.id === userStore.user?.id))
 const currentRole = computed(() => currentMembership.value?.role ?? "member")
 const isOwner = computed(() => currentRole.value === "owner")
 const isAdmin = computed(() => currentRole.value === "admin")
@@ -253,12 +253,12 @@ const orgFields = [
   {
     label: "Created At",
     description: "When your organization was created.",
-    value: computed(() => formatDate(activeOrg.value.createdAt)),
+    value: computed(() => formatDate(activeOrg.value.createdAt ? new Date(activeOrg.value.createdAt) : null)),
   },
   {
     label: "Updated At",
     description: "When your organization was last updated.",
-    value: computed(() => formatDate(activeOrg.value.updatedAt)),
+    value: computed(() => formatDate(activeOrg.value.updatedAt ? new Date(activeOrg.value.updatedAt) : null)),
   },
 ]
 
@@ -266,17 +266,27 @@ const copyIcon = orgFields.map(field => field.copyable ? createActionHandler("ph
 const saveIcon = orgFields.map(() => createActionHandler("ph:floppy-disk-bold"))
 
 async function handleCreateInvite() {
-  inviteError.value = null
+  orgStore.errors.createInvite = null
   inviteSuccess.value = null
 
+  if (!activeOrg.value.id) {
+    orgStore.errors.createInvite = "Organization ID is required"
+    return
+  }
+
   try {
-    const link = await orgStore.createInvite()
-    navigator.clipboard.writeText(link)
+    const invite = await orgStore.createInvite(activeOrg.value.id, {
+      email: "",
+      role: "member",
+    }) as { token: string }
+    const baseUrl = getBaseUrl()
+    const inviteLink = `${baseUrl}/onboarding/join-org?token=${invite.token}`
+    await navigator.clipboard.writeText(inviteLink)
     inviteSuccess.value = "Invite link copied to clipboard!"
   }
   catch (error: any) {
     console.error("Failed to create invite link:", error)
-    inviteError.value = error.message
+    orgStore.errors.createInvite = error.message
   }
 }
 
@@ -286,7 +296,7 @@ async function handleUpdateMemberRole(memberId: string, newRole: Role) {
     return
 
   try {
-    await orgStore.updateOrgMember(memberId, newRole, activeOrg.value.id)
+    await orgStore.updateOrgMember(activeOrg.value.id, memberId, { role: newRole })
     await userStore.getUser()
   }
   catch (error: any) {
@@ -331,26 +341,26 @@ async function handleSubmit(index: number) {
 }
 
 async function handleLeaveOrg() {
-  leaveOrgError.value = null
+  orgStore.errors.removeOrgMember = null
   if (!activeOrg.value.id || !userStore.user?.id) {
-    leaveOrgError.value = "Missing organization or user ID."
+    orgStore.errors.removeOrgMember = "Missing organization or user ID."
     return
   }
   if (!confirm("Are you sure you want to leave this organization? This action cannot be undone."))
     return
 
   try {
-    await orgStore.removeOrgMember(userStore.user.id, activeOrg.value.id)
-    await router.push("/setup/create-org")
+    await orgStore.removeOrgMember(activeOrg.value.id, userStore.user.id)
+    await router.push("/onboarding/create-org")
   }
   catch (error: any) {
     console.error("Failed to leave organization:", error)
-    leaveOrgError.value = error.message
+    orgStore.errors.removeOrgMember = error.message
   }
 }
 
 async function handleDeleteOrg() {
-  deleteOrgError.value = null
+  orgStore.errors.deleteOrg = null
   const orgId = activeOrg.value.id
   if (!orgId)
     return
@@ -358,25 +368,23 @@ async function handleDeleteOrg() {
     return
 
   try {
-    const result = await orgStore.deleteOrg(orgId)
-    if (result?.message === "Organization deleted successfully") {
-      await userStore.getUser()
-      if (!userStore.organizations?.length) {
-        await router.push("/setup/create-org")
-      }
-      else {
-        await router.push("/admin/projects")
-      }
+    await orgStore.deleteOrg(orgId)
+    await userStore.getUser()
+    if (!userStore.organizations?.length) {
+      await router.push("/onboarding/create-org")
+    }
+    else {
+      await router.push("/admin/projects")
     }
   }
   catch (error: any) {
     console.error("Failed to delete organization:", error)
-    deleteOrgError.value = error.message
+    orgStore.errors.deleteOrg = error.message
   }
 }
 
-watch(usersFromOrg, (users) => {
-  userRoles.value = Object.fromEntries(users.map(u => [u.id, u.role]))
+watch(usersFromOrg, (users: Array<{ id?: string, role: string }>) => {
+  userRoles.value = Object.fromEntries(users.map((u: { id?: string, role: string }) => [u.id, u.role]))
 }, { immediate: true })
 
 useHead({

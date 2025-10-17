@@ -8,6 +8,7 @@ interface User {
   email: string
   image?: string | null
   activeOrgId?: string | null
+  apiToken?: string | null
   createdAt?: string
   updatedAt?: string
 }

@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
   const user = await db.user.findUnique({
     where: { id: sessionUser.id },
-    select: { id: true, email: true, name: true, image: true, activeOrgId: true },
+    select: { id: true, email: true, name: true, image: true, activeOrgId: true, apiToken: true, createdAt: true, updatedAt: true },
   })
   if (!user) {
     throw createError({ statusCode: 404, message: "User not found" })

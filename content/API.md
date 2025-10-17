@@ -86,7 +86,9 @@ Get current user information with organizations and active organization details.
     "email": "string",
     "name": "string",
     "image": "string",
-    "activeOrgId": "string"
+    "activeOrgId": "string",
+    "apiToken": "string",
+    "createdAt": "datetime"
   },
   "organizations": [
     {
