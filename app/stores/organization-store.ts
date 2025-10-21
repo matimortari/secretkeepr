@@ -3,28 +3,7 @@ import type { AcceptInviteInput, CreateOrgInput, InviteMemberInput, UpdateOrgInp
 export const useOrganizationStore = defineStore("org", () => {
   const organizations = ref<Organization[]>([])
   const currentOrg = ref<any | null>(null)
-
-  const loading = ref<Record<
-    | "createOrg"
-    | "getOrg"
-    | "updateOrg"
-    | "deleteOrg"
-    | "updateOrgMember"
-    | "removeOrgMember"
-    | "createInvite"
-    | "acceptInvite",
-    boolean
-  >>({
-    createOrg: false,
-    getOrg: false,
-    updateOrg: false,
-    deleteOrg: false,
-    updateOrgMember: false,
-    removeOrgMember: false,
-    createInvite: false,
-    acceptInvite: false,
-  })
-
+  const loading = ref<boolean>(false)
   const errors = ref<Record<
     | "createOrg"
     | "getOrg"
@@ -47,7 +26,7 @@ export const useOrganizationStore = defineStore("org", () => {
   })
 
   async function createOrg(data: CreateOrgInput) {
-    loading.value.createOrg = true
+    loading.value = true
     errors.value.createOrg = null
 
     try {
@@ -61,12 +40,12 @@ export const useOrganizationStore = defineStore("org", () => {
       throw err
     }
     finally {
-      loading.value.createOrg = false
+      loading.value = false
     }
   }
 
   async function getOrg(orgId: string) {
-    loading.value.getOrg = true
+    loading.value = true
     errors.value.getOrg = null
 
     try {
@@ -79,12 +58,12 @@ export const useOrganizationStore = defineStore("org", () => {
       throw err
     }
     finally {
-      loading.value.getOrg = false
+      loading.value = false
     }
   }
 
   async function updateOrg(orgId: string, data: UpdateOrgInput) {
-    loading.value.updateOrg = true
+    loading.value = true
     errors.value.updateOrg = null
 
     try {
@@ -105,12 +84,12 @@ export const useOrganizationStore = defineStore("org", () => {
       throw err
     }
     finally {
-      loading.value.updateOrg = false
+      loading.value = false
     }
   }
 
   async function deleteOrg(orgId: string) {
-    loading.value.deleteOrg = true
+    loading.value = true
     errors.value.deleteOrg = null
 
     try {
@@ -126,12 +105,12 @@ export const useOrganizationStore = defineStore("org", () => {
       throw err
     }
     finally {
-      loading.value.deleteOrg = false
+      loading.value = false
     }
   }
 
   async function updateOrgMember(orgId: string, memberId: string, data: UpdateOrgMemberInput) {
-    loading.value.updateOrgMember = true
+    loading.value = true
     errors.value.updateOrgMember = null
 
     try {
@@ -151,12 +130,12 @@ export const useOrganizationStore = defineStore("org", () => {
       throw err
     }
     finally {
-      loading.value.updateOrgMember = false
+      loading.value = false
     }
   }
 
   async function removeOrgMember(orgId: string, memberId: string) {
-    loading.value.removeOrgMember = true
+    loading.value = true
     errors.value.removeOrgMember = null
 
     try {
@@ -171,12 +150,12 @@ export const useOrganizationStore = defineStore("org", () => {
       throw err
     }
     finally {
-      loading.value.removeOrgMember = false
+      loading.value = false
     }
   }
 
   async function createInvite(orgId: string, data: InviteMemberInput) {
-    loading.value.createInvite = true
+    loading.value = true
     errors.value.createInvite = null
 
     try {
@@ -196,12 +175,12 @@ export const useOrganizationStore = defineStore("org", () => {
       throw err
     }
     finally {
-      loading.value.createInvite = false
+      loading.value = false
     }
   }
 
   async function acceptInvite(orgId: string, data: AcceptInviteInput) {
-    loading.value.acceptInvite = true
+    loading.value = true
     errors.value.acceptInvite = null
 
     try {
@@ -219,7 +198,7 @@ export const useOrganizationStore = defineStore("org", () => {
       throw err
     }
     finally {
-      loading.value.acceptInvite = false
+      loading.value = false
     }
   }
 

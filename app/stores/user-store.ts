@@ -4,14 +4,7 @@ export const useUserStore = defineStore("user", () => {
   const user = ref<User | null>(null)
   const organizations = ref<Organization[]>([])
   const activeOrg = ref<ActiveOrg | null>(null)
-
-  const loading = ref<Record<"getUser" | "setActiveOrg" | "updateUser" | "deleteUser", boolean>>({
-    getUser: false,
-    setActiveOrg: false,
-    updateUser: false,
-    deleteUser: false,
-  })
-
+  const loading = ref<boolean>(false)
   const errors = ref<Record<"getUser" | "setActiveOrg" | "updateUser" | "deleteUser", string | null>>({
     getUser: null,
     setActiveOrg: null,
@@ -20,7 +13,7 @@ export const useUserStore = defineStore("user", () => {
   })
 
   async function getUser() {
-    loading.value.getUser = true
+    loading.value = true
     errors.value.getUser = null
 
     try {
@@ -39,12 +32,12 @@ export const useUserStore = defineStore("user", () => {
       throw err
     }
     finally {
-      loading.value.getUser = false
+      loading.value = false
     }
   }
 
   async function setActiveOrg(orgId: string) {
-    loading.value.setActiveOrg = true
+    loading.value = true
     errors.value.setActiveOrg = null
 
     try {
@@ -70,12 +63,12 @@ export const useUserStore = defineStore("user", () => {
       throw err
     }
     finally {
-      loading.value.setActiveOrg = false
+      loading.value = false
     }
   }
 
   async function updateUser(data: UpdateUserInput) {
-    loading.value.updateUser = true
+    loading.value = true
     errors.value.updateUser = null
 
     try {
@@ -88,12 +81,12 @@ export const useUserStore = defineStore("user", () => {
       throw err
     }
     finally {
-      loading.value.updateUser = false
+      loading.value = false
     }
   }
 
   async function deleteUser() {
-    loading.value.deleteUser = true
+    loading.value = true
     errors.value.deleteUser = null
 
     try {
@@ -108,7 +101,7 @@ export const useUserStore = defineStore("user", () => {
       throw err
     }
     finally {
-      loading.value.deleteUser = false
+      loading.value = false
     }
   }
 

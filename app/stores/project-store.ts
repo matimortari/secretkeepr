@@ -5,34 +5,7 @@ export const useProjectStore = defineStore("project", () => {
   const projects = ref<any[]>([])
   const currentProject = ref<any | null>(null)
   const secrets = ref<any[]>([])
-
-  const loading = ref<Record<
-    | "getProjects"
-    | "createProject"
-    | "updateProject"
-    | "deleteProject"
-    | "addProjectMember"
-    | "updateProjectMember"
-    | "removeProjectMember"
-    | "getProjectSecrets"
-    | "createProjectSecret"
-    | "updateProjectSecret"
-    | "deleteProjectSecret",
-    boolean
-  >>({
-    getProjects: false,
-    createProject: false,
-    updateProject: false,
-    deleteProject: false,
-    addProjectMember: false,
-    updateProjectMember: false,
-    removeProjectMember: false,
-    getProjectSecrets: false,
-    createProjectSecret: false,
-    updateProjectSecret: false,
-    deleteProjectSecret: false,
-  })
-
+  const loading = ref<boolean>(false)
   const errors = ref<Record<
     | "getProjects"
     | "createProject"
@@ -61,7 +34,7 @@ export const useProjectStore = defineStore("project", () => {
   })
 
   async function getProjects(orgId?: string) {
-    loading.value.getProjects = true
+    loading.value = true
     errors.value.getProjects = null
 
     try {
@@ -74,12 +47,12 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.getProjects = false
+      loading.value = false
     }
   }
 
   async function createProject(data: CreateProjectInput) {
-    loading.value.createProject = true
+    loading.value = true
     errors.value.createProject = null
 
     try {
@@ -93,12 +66,12 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.createProject = false
+      loading.value = false
     }
   }
 
   async function updateProject(projectId: string, data: UpdateProjectInput) {
-    loading.value.updateProject = true
+    loading.value = true
     errors.value.updateProject = null
 
     try {
@@ -118,12 +91,12 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.updateProject = false
+      loading.value = false
     }
   }
 
   async function deleteProject(projectId: string) {
-    loading.value.deleteProject = true
+    loading.value = true
     errors.value.deleteProject = null
 
     try {
@@ -139,12 +112,12 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.deleteProject = false
+      loading.value = false
     }
   }
 
   async function addProjectMember(projectId: string, data: AddProjectMemberInput) {
-    loading.value.addProjectMember = true
+    loading.value = true
     errors.value.addProjectMember = null
 
     try {
@@ -160,12 +133,12 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.addProjectMember = false
+      loading.value = false
     }
   }
 
   async function updateProjectMember(projectId: string, memberId: string, data: UpdateProjectMemberInput) {
-    loading.value.updateProjectMember = true
+    loading.value = true
     errors.value.updateProjectMember = null
 
     try {
@@ -184,12 +157,12 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.updateProjectMember = false
+      loading.value = false
     }
   }
 
   async function removeProjectMember(projectId: string, memberId: string) {
-    loading.value.removeProjectMember = true
+    loading.value = true
     errors.value.removeProjectMember = null
 
     try {
@@ -204,12 +177,12 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.removeProjectMember = false
+      loading.value = false
     }
   }
 
   async function getProjectSecrets(projectId: string) {
-    loading.value.getProjectSecrets = true
+    loading.value = true
     errors.value.getProjectSecrets = null
 
     try {
@@ -226,12 +199,12 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.getProjectSecrets = false
+      loading.value = false
     }
   }
 
   async function createProjectSecret(projectId: string, data: CreateSecretInput) {
-    loading.value.createProjectSecret = true
+    loading.value = true
     errors.value.createProjectSecret = null
 
     try {
@@ -250,12 +223,12 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.createProjectSecret = false
+      loading.value = false
     }
   }
 
   async function updateProjectSecret(projectId: string, secretId: string, data: UpdateSecretInput) {
-    loading.value.updateProjectSecret = true
+    loading.value = true
     errors.value.updateProjectSecret = null
 
     try {
@@ -274,12 +247,12 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.updateProjectSecret = false
+      loading.value = false
     }
   }
 
   async function deleteProjectSecret(projectId: string, secretId: string) {
-    loading.value.deleteProjectSecret = true
+    loading.value = true
     errors.value.deleteProjectSecret = null
 
     try {
@@ -294,7 +267,7 @@ export const useProjectStore = defineStore("project", () => {
       throw err
     }
     finally {
-      loading.value.deleteProjectSecret = false
+      loading.value = false
     }
   }
 

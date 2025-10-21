@@ -267,9 +267,9 @@ async function handleAddMember() {
     newMemberId.value = ""
     newMemberRole.value = roles[0]?.value ?? "member"
   }
-  catch (error: any) {
-    console.error("Failed to add member", error)
-    projectsStore.errors.addProjectMember = error.message
+  catch (err: any) {
+    console.error("Failed to add member", err)
+    projectsStore.errors.addProjectMember = err.message
   }
 }
 
@@ -282,9 +282,9 @@ async function handleUpdateMemberRole(memberId: string, newRole: Role) {
     await projectsStore.updateProjectMember(project.value.id, memberId, { role: newRole })
     await projectsStore.getProjects()
   }
-  catch (error: any) {
-    console.error("Failed to update member role", error)
-    projectsStore.errors.updateProjectMember = error.message
+  catch (err: any) {
+    console.error("Failed to update member role", err)
+    projectsStore.errors.updateProjectMember = err.message
   }
 }
 
@@ -299,9 +299,9 @@ async function handleRemoveMember(memberId: string) {
     await projectsStore.removeProjectMember(project.value.id, memberId)
     await projectsStore.getProjects()
   }
-  catch (error: any) {
-    console.error("Failed to remove member", error)
-    projectsStore.errors.removeProjectMember = error.message
+  catch (err: any) {
+    console.error("Failed to remove member", err)
+    projectsStore.errors.removeProjectMember = err.message
   }
 }
 
@@ -318,9 +318,9 @@ async function handleSubmit(index: number) {
     await projectsStore.getProjects()
     saveIcon[index]?.triggerSuccess()
   }
-  catch (error: any) {
-    console.error("Failed to update project", error)
-    projectsStore.errors.updateProject = error.message
+  catch (err: any) {
+    console.error("Failed to update project", err)
+    projectsStore.errors.updateProject = err.message
   }
 }
 
@@ -336,9 +336,9 @@ async function handleDeleteProject() {
     await projectsStore.deleteProject(project.value.id)
     router.push("/admin/projects")
   }
-  catch (error: any) {
-    console.error("Failed to delete project:", error)
-    projectsStore.errors.deleteProject = error.message
+  catch (err: any) {
+    console.error("Failed to delete project:", err)
+    projectsStore.errors.deleteProject = err.message
   }
 }
 

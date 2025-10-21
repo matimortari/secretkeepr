@@ -19,13 +19,14 @@ export function useEnvFile(projectId: string) {
         if (existing) {
           const existingValues = existing.values ?? []
           const newValues = secret.values ?? []
-          
+
           const mergedValues = [...existingValues]
           newValues.forEach((newValue: any) => {
             const existingIndex = mergedValues.findIndex((v: any) => v.environment === newValue.environment)
             if (existingIndex >= 0) {
               mergedValues[existingIndex] = newValue
-            } else {
+            }
+            else {
               mergedValues.push(newValue)
             }
           })
@@ -44,19 +45,19 @@ export function useEnvFile(projectId: string) {
         }
       }))
 
-      const failures = results.filter(result => result.status === 'rejected')
+      const failures = results.filter(result => result.status === "rejected")
       if (failures.length > 0) {
         console.error(`Failed to import ${failures.length} secrets:`, failures)
       }
 
-      const successes = results.filter(result => result.status === 'fulfilled')
+      const successes = results.filter(result => result.status === "fulfilled")
       console.log(`Successfully imported ${successes.length} secrets`)
 
       await projectsStore.getProjectSecrets(projectId)
     }
-    catch (error: any) {
-      console.error("Failed to import secrets:", error)
-      throw error
+    catch (err: any) {
+      console.error("Failed to import secrets:", err)
+      throw err
     }
   }
 
@@ -93,8 +94,9 @@ export function useEnvFile(projectId: string) {
 
       setTimeout(() => URL.revokeObjectURL(url), 1000)
     }
-    catch (error: any) {
-      console.error("Failed to export secrets:", error)
+    catch (err: any) {
+      console.error("Failed to export secrets:", err)
+      throw err
     }
   }
 

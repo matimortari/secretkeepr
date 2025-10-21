@@ -284,9 +284,9 @@ async function handleCreateInvite() {
     await navigator.clipboard.writeText(inviteLink)
     inviteSuccess.value = "Invite link copied to clipboard!"
   }
-  catch (error: any) {
-    console.error("Failed to create invite link:", error)
-    orgStore.errors.createInvite = error.message
+  catch (err: any) {
+    console.error("Failed to create invite link:", err)
+    orgStore.errors.createInvite = err.message
   }
 }
 
@@ -299,9 +299,9 @@ async function handleUpdateMemberRole(memberId: string, newRole: Role) {
     await orgStore.updateOrgMember(activeOrg.value.id, memberId, { role: newRole })
     await userStore.getUser()
   }
-  catch (error: any) {
-    console.error("Failed to update member role:", error)
-    orgStore.errors.updateOrgMember = error.message
+  catch (err: any) {
+    console.error("Failed to update member role:", err)
+    orgStore.errors.updateOrgMember = err.message
   }
 }
 
@@ -316,9 +316,9 @@ async function handleRemoveMember(memberId: string) {
     await orgStore.removeOrgMember(memberId, activeOrg.value.id)
     await userStore.getUser()
   }
-  catch (error: any) {
-    console.error("Failed to remove member:", error)
-    orgStore.errors.removeOrgMember = error.message
+  catch (err: any) {
+    console.error("Failed to remove member:", err)
+    orgStore.errors.removeOrgMember = err.message
   }
 }
 
@@ -334,9 +334,9 @@ async function handleSubmit(index: number) {
     await userStore.getUser()
     saveIcon[index]?.triggerSuccess()
   }
-  catch (error: any) {
-    console.error("Failed to update organization:", error)
-    orgStore.errors.updateOrg = error.message
+  catch (err: any) {
+    console.error("Failed to update organization:", err)
+    orgStore.errors.updateOrg = err.message
   }
 }
 
@@ -353,9 +353,9 @@ async function handleLeaveOrg() {
     await orgStore.removeOrgMember(activeOrg.value.id, userStore.user.id)
     await router.push("/onboarding/create-org")
   }
-  catch (error: any) {
-    console.error("Failed to leave organization:", error)
-    orgStore.errors.removeOrgMember = error.message
+  catch (err: any) {
+    console.error("Failed to leave organization:", err)
+    orgStore.errors.removeOrgMember = err.message
   }
 }
 
@@ -377,9 +377,9 @@ async function handleDeleteOrg() {
       await router.push("/admin/projects")
     }
   }
-  catch (error: any) {
-    console.error("Failed to delete organization:", error)
-    orgStore.errors.deleteOrg = error.message
+  catch (err: any) {
+    console.error("Failed to delete organization:", err)
+    orgStore.errors.deleteOrg = err.message
   }
 }
 

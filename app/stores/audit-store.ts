@@ -8,13 +8,7 @@ export const useAuditStore = defineStore("audit", () => {
     page: 1,
     limit: 20,
   })
-
-  const loading = ref<Record<"getAuditLogs" | "deleteAuditLogs" | "getFilters", boolean>>({
-    getAuditLogs: false,
-    deleteAuditLogs: false,
-    getFilters: false,
-  })
-
+  const loading = ref<boolean>(false)
   const errors = ref<Record<"getAuditLogs" | "deleteAuditLogs" | "getFilters", string | null>>({
     getAuditLogs: null,
     deleteAuditLogs: null,
@@ -22,7 +16,7 @@ export const useAuditStore = defineStore("audit", () => {
   })
 
   async function getAuditLogs(orgId: string, params?: GetAuditLogsInput) {
-    loading.value.getAuditLogs = true
+    loading.value = true
     errors.value.getAuditLogs = null
 
     try {
@@ -42,12 +36,12 @@ export const useAuditStore = defineStore("audit", () => {
       throw err
     }
     finally {
-      loading.value.getAuditLogs = false
+      loading.value = false
     }
   }
 
   async function deleteAuditLogs(orgId: string, data: DeleteAuditLogsInput) {
-    loading.value.deleteAuditLogs = true
+    loading.value = true
     errors.value.deleteAuditLogs = null
 
     try {
@@ -63,12 +57,12 @@ export const useAuditStore = defineStore("audit", () => {
       throw err
     }
     finally {
-      loading.value.deleteAuditLogs = false
+      loading.value = false
     }
   }
 
   async function getFilters(orgId: string) {
-    loading.value.getFilters = true
+    loading.value = true
     errors.value.getFilters = null
 
     try {
@@ -82,7 +76,7 @@ export const useAuditStore = defineStore("audit", () => {
       throw err
     }
     finally {
-      loading.value.getFilters = false
+      loading.value = false
     }
   }
 

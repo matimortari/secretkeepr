@@ -191,9 +191,9 @@ const saveIcon = userFields.map(() => createActionHandler("ph:floppy-disk-bold")
 //       userStore.user.image = response.imageUrl
 //     }
 //   }
-//   catch (error: any) {
-//     console.error("Failed to upload image:", error)
-//     userStore.errors.updateUser = error.message
+//   catch (err: any) {
+//     console.error("Failed to upload image:", err)
+//     userStore.errors.updateUser = err.message
 //   }
 // }
 
@@ -213,9 +213,9 @@ async function handleSubmit(index: number) {
     await userStore.getUser()
     saveIcon[index]?.triggerSuccess()
   }
-  catch (error: any) {
-    console.error("Failed to update user data:", error)
-    userStore.errors.updateUser = error.message
+  catch (err: any) {
+    console.error("Failed to update user data:", err)
+    userStore.errors.updateUser = err.message
   }
 }
 
@@ -229,9 +229,9 @@ async function handleDeleteUser() {
     clear()
     await router.push("/")
   }
-  catch (error: any) {
-    console.error("Failed to delete account:", error)
-    userStore.errors.deleteUser = error.message
+  catch (err: any) {
+    console.error("Failed to delete account:", err)
+    userStore.errors.deleteUser = err.message
   }
 }
 

@@ -111,9 +111,9 @@ async function handleSaveSecret(secret: any) {
     }
     await projectsStore.getProjectSecrets(projectId.value)
   }
-  catch (error: any) {
-    console.error("Failed to create or update secret:", error)
-    projectsStore.errors.createProjectSecret = error.message
+  catch (err: any) {
+    console.error("Failed to create or update secret:", err)
+    projectsStore.errors.createProjectSecret = err.message
   }
 }
 
