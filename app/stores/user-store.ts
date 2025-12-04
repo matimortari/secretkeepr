@@ -78,10 +78,12 @@ export const useUserStore = defineStore("user", () => {
     try {
       await $fetch(`${API_URL}/user`, { method: "DELETE", credentials: "include" })
       user.value = null
+      return true
     }
     catch (err: any) {
       errors.value.deleteUser = err.data.message || "Failed to delete user"
       console.error("deleteUser error:", err)
+      return false
     }
     finally {
       loading.value = false
