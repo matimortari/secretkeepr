@@ -4,14 +4,29 @@ export const HIGHLIGHTS = [
   {
     title: "Rapid Onboarding",
     description: "Get your workspace up and running in seconds with a minimal setup, so you can quickly start managing your secrets.",
+    icon: "ph:users-three-bold",
   },
   {
     title: "Free & Open Source",
     description: "SecretkeepR is a fully open-source project, giving you full visibility into the codebase and the flexibility to extend it as needed.",
+    icon: "ph:code-bold",
   },
   {
     title: "Encrypted & Safe",
     description: "Every secret is securely encrypted from end to end using AES-256-CBC with a unique key for each secret, keeping your data safe and private.",
+    icon: "ph:lock-key-bold",
+  },
+]
+
+export const CLI_BULLETS = [
+  {
+    description: "Scriptable Workflows",
+  },
+  {
+    description: "No Hardcoded .env Files",
+  },
+  {
+    description: "Lightweight & Fast",
   },
 ]
 
